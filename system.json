@@ -16,9 +16,9 @@
     "notes": "Original author of the Naruto 2.5 paper system"
     }
   ],
-  "url": "https://github.com/TON_COMPTE/foundryvtt-naruto-25e",
-  "manifest": "https://github.com/TON_COMPTE/foundryvtt-naruto-25e/releases/latest/download/system.json",
-  "download": "https://github.com/TON_COMPTE/foundryvtt-naruto-25e/releases/download/v0.1.0/naruto-25e.zip",
+  "url": "https://github.com/Shibito-Seis/foundryvtt-naruto-25e",
+  "manifest": "https://github.com/Shibito-Seis/foundryvtt-naruto-25e/releases/download/v0.1.0/system.json",
+  "download": "https://github.com/Shibito-Seis/foundryvtt-naruto-25e/releases/download/v0.1.0/naruto-25e.zip",
   "esmodules": [
     "scripts/main.js"
   ],
