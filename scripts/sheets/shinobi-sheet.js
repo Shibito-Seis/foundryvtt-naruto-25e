@@ -37,12 +37,45 @@ export class Naruto25eShinobiSheet extends ActorSheet {
     { key: "sPlus", label: "S+", data: this.actor.system.missions.sPlus }
   ];
 
+  context.baseCap = this.actor.getBaseCap();
+
+context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) => {
+  const current = Number(base.value ?? 1);
+  const next = current + 1;
+  const nextCost = this.actor.getBaseUpgradeCost(key);
+
+  return {
+    key,
+    label: base.label,
+    value: current,
+    bonus: Number(base.bonus ?? 0),
+    max: Number(base.max ?? 14),
+    cap: context.baseCap,
+    xpSpent: Number(base.xpSpent ?? 0),
+    nextCost,
+    canIncrease: next <= context.baseCap && nextCost !== null,
+    canDecrease: current > 1
+  };
+});
+
   return context;
 }
 
   activateListeners(html) {
-    super.activateListeners(html);
+  super.activateListeners(html);
 
-    if (!this.isEditable) return;
+  if (!this.isEditable) return;
+
+  html.find(".base-increase").on("click", async (event) => {
+    event.preventDefault();
+    const baseKey = event.currentTarget.dataset.base;
+    await this.actor.increaseBase(baseKey);
+  });
+
+  html.find(".base-decrease").on("click", async (event) => {
+    event.preventDefault();
+    const baseKey = event.currentTarget.dataset.base;
+    await this.actor.decreaseBase(baseKey);
+  });
   }
 }

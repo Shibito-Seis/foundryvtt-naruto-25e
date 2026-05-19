@@ -2,7 +2,23 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
-## [0.1.4] - En cours
+## [0.1.5] - En cours
+
+### Ajouté
+- Ajout des boutons d’augmentation et de réduction des Bases.
+- Ajout des coûts XP automatiques pour les Bases.
+- Calcul automatique de l’XP investie dans chaque Base.
+- Calcul automatique de l’XP dépensée totale à partir des Bases.
+- Blocage de l’augmentation si l’XP disponible est insuffisante.
+- Blocage de l’augmentation si le plafond de rang est atteint.
+
+### Modifié
+- Les valeurs de Bases ne sont plus modifiées directement à la main.
+- Le plafond actuel des Bases est affiché dans l’onglet Bases.
+
+---
+
+## [0.1.4]
 
 ### Modifié
 - Déplacement du choix de formule de Chakra vers les paramètres de monde.

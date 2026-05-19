@@ -150,21 +150,49 @@
     </div>
 
     <div class="tab" data-group="primary" data-tab="bases">
-      <section class="panel">
-        <h2>Bases</h2>
+  <section class="panel">
+    <h2>Bases</h2>
 
-        <div class="bases-grid">
-          {{#each system.bases as |base key|}}
-            <div class="base-card">
-              <label>{{base.label}}</label>
-              <input name="system.bases.{{key}}.value" type="number" value="{{base.value}}" min="1" max="{{base.max}}" />
-              <small>Bonus</small>
-              <input name="system.bases.{{key}}.bonus" type="number" value="{{base.bonus}}" />
-            </div>
-          {{/each}}
-        </div>
-      </section>
+    <div class="base-cap-info">
+      Plafond actuel des Bases : <strong>{{baseCap}}</strong>
     </div>
+
+    <div class="bases-grid">
+      {{#each bases as |base|}}
+        <div class="base-card">
+          <label>{{base.label}}</label>
+
+          <div class="base-controls">
+            <button type="button" class="base-decrease" data-base="{{base.key}}" {{#unless base.canDecrease}}disabled{{/unless}}>
+              −
+            </button>
+
+            <input name="system.bases.{{base.key}}.value" type="number" value="{{base.value}}" readonly />
+
+            <button type="button" class="base-increase" data-base="{{base.key}}" {{#unless base.canIncrease}}disabled{{/unless}}>
+              +
+            </button>
+          </div>
+
+          <small>Bonus</small>
+          <input name="system.bases.{{base.key}}.bonus" type="number" value="{{base.bonus}}" />
+
+          <div class="base-xp-info">
+            <span>XP investie : {{base.xpSpent}}</span>
+            <span>
+              Prochain rang :
+              {{#if base.nextCost}}
+                {{base.nextCost}} XP
+              {{else}}
+                —
+              {{/if}}
+            </span>
+          </div>
+        </div>
+      {{/each}}
+    </div>
+  </section>
+</div>
 
     <div class="tab" data-group="primary" data-tab="missions">
       <section class="panel">

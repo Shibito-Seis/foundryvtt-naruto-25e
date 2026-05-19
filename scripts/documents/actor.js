@@ -1,3 +1,5 @@
+import { NARUTO25E } from "../config.js";
+
 export class Naruto25eActor extends Actor {
   prepareDerivedData() {
     super.prepareDerivedData();
@@ -73,14 +75,29 @@ export class Naruto25eActor extends Actor {
     }
   }
 
-  _prepareExperience(system) {
-    const experience = system.progression?.experience;
-    if (!experience) return;
+_prepareExperience(system) {
+  const experience = system.progression?.experience;
+  if (!experience) return;
 
-    experience.total = Number(experience.total ?? 0);
-    experience.spent = Number(experience.spent ?? 0);
-    experience.available = Math.max(0, experience.total - experience.spent);
+  experience.total = Number(experience.total ?? 0);
+
+  let baseXpSpent = 0;
+
+  for (const base of Object.values(system.bases ?? {})) {
+    const value = Number(base.value ?? 1);
+    let spent = 0;
+
+    for (let rank = 2; rank <= value; rank++) {
+      spent += Number(NARUTO25E.baseXpCosts[rank] ?? 0);
+    }
+
+    base.xpSpent = spent;
+    baseXpSpent += spent;
   }
+
+  experience.spent = baseXpSpent;
+  experience.available = Math.max(0, experience.total - experience.spent);
+}
 
   _prepareMissions(system) {
     const missions = system.missions;
@@ -117,5 +134,75 @@ export class Naruto25eActor extends Actor {
   _clampNumber(value, min, max) {
     const number = Number(value ?? 0);
     return Math.min(Math.max(number, min), max);
+  }
+  getBaseCap() {
+  const rankKey = this.system.progression?.rank?.key ?? this.system.identity?.rang ?? "aspirant";
+  return NARUTO25E.baseCaps[rankKey] ?? NARUTO25E.baseCaps.aspirant;
+  }
+
+getBaseUpgradeCost(baseKey) {
+  const base = this.system.bases?.[baseKey];
+  if (!base) return null;
+
+  const current = Number(base.value ?? 1);
+  const next = current + 1;
+
+  return NARUTO25E.baseXpCosts[next] ?? null;
+  }
+
+async increaseBase(baseKey) {
+  if (this.type !== "shinobi") return;
+
+  const base = this.system.bases?.[baseKey];
+  if (!base) return;
+
+  const current = Number(base.value ?? 1);
+  const cap = this.getBaseCap();
+  const next = current + 1;
+
+  if (next > cap) {
+    ui.notifications.warn(`Impossible d’augmenter ${base.label ?? baseKey} : plafond de rang atteint (${cap}).`);
+    return;
+  }
+
+  const cost = Number(NARUTO25E.baseXpCosts[next] ?? 0);
+  const available = Number(this.system.progression?.experience?.available ?? 0);
+
+  if (cost <= 0) {
+    ui.notifications.warn(`Aucun coût XP défini pour le rang ${next}.`);
+    return;
+  }
+
+  if (available < cost) {
+    ui.notifications.warn(`XP insuffisante : ${cost} XP nécessaires, ${available} disponibles.`);
+    return;
+  }
+
+  await this.update({
+    [`system.bases.${baseKey}.value`]: next
+  });
+
+  ui.notifications.info(`${base.label ?? baseKey} augmenté à ${next} pour ${cost} XP.`);
+  }
+
+async decreaseBase(baseKey) {
+  if (this.type !== "shinobi") return;
+
+  const base = this.system.bases?.[baseKey];
+  if (!base) return;
+
+  const current = Number(base.value ?? 1);
+  const previous = current - 1;
+
+  if (previous < 1) {
+    ui.notifications.warn(`${base.label ?? baseKey} ne peut pas descendre sous 1.`);
+    return;
+  }
+
+  await this.update({
+    [`system.bases.${baseKey}.value`]: previous
+  });
+
+  ui.notifications.info(`${base.label ?? baseKey} réduit à ${previous}.`);
   }
 }
