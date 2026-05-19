@@ -20,14 +20,24 @@ export class Naruto25eShinobiSheet extends ActorSheet {
   }
 
   async getData(options = {}) {
-    const context = await super.getData(options);
+  const context = await super.getData(options);
 
-    context.system = this.actor.system;
-    context.actor = this.actor;
-    context.items = this.actor.items;
+  context.system = this.actor.system;
+  context.actor = this.actor;
+  context.items = this.actor.items;
 
-    return context;
-  }
+  context.missionRanks = [
+    { key: "d", label: "D", data: this.actor.system.missions.d },
+    { key: "c", label: "C", data: this.actor.system.missions.c },
+    { key: "b", label: "B", data: this.actor.system.missions.b },
+    { key: "a", label: "A", data: this.actor.system.missions.a },
+    { key: "s", label: "S", data: this.actor.system.missions.s },
+    { key: "aa", label: "AA", data: this.actor.system.missions.aa },
+    { key: "sPlus", label: "S+", data: this.actor.system.missions.sPlus }
+  ];
+
+  return context;
+}
 
   activateListeners(html) {
     super.activateListeners(html);

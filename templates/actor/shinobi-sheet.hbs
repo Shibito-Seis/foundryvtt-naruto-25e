@@ -142,20 +142,16 @@
             </tr>
           </thead>
           <tbody>
-            {{#each system.missions as |mission key|}}
-              {{#unless (eq key "totalCompleted")}}
-                {{#unless (eq key "totalFailed")}}
-                  <tr>
-                    <td>{{key}}</td>
-                    <td>
-                      <input name="system.missions.{{key}}.completed" type="number" value="{{mission.completed}}" min="0" />
-                    </td>
-                    <td>
-                      <input name="system.missions.{{key}}.failed" type="number" value="{{mission.failed}}" min="0" />
-                    </td>
-                  </tr>
-                {{/unless}}
-              {{/unless}}
+            {{#each missionRanks as |mission|}}
+             <tr>
+              <td>{{mission.label}}</td>
+              <td>
+               <input name="system.missions.{{mission.key}}.completed" type="number" value="{{mission.data.completed}}" min="0" />
+              </td>
+              <td>
+               <input name="system.missions.{{mission.key}}.failed" type="number" value="{{mission.data.failed}}" min="0" />
+              </td>
+             </tr>
             {{/each}}
           </tbody>
         </table>
