@@ -25,6 +25,7 @@ export class Naruto25eShinobiSheet extends ActorSheet {
   context.system = this.actor.system;
   context.actor = this.actor;
   context.items = this.actor.items;
+  context.chakraFormulaMode = game.settings.get("naruto-25e", "chakraFormulaMode");
 
   context.missionRanks = [
     { key: "d", label: "D", data: this.actor.system.missions.d },

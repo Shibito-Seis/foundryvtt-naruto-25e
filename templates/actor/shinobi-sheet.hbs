@@ -81,23 +81,16 @@
          <input name="system.resources.chakra.value" type="number" value="{{system.resources.chakra.value}}" />
          <span>/</span>
 
-         {{#if (eq system.resources.chakra.formulaMode "manual")}}
-            <input name="system.resources.chakra.max" type="number" value="{{system.resources.chakra.max}}" />
+         {{#if (eq chakraFormulaMode "manual")}}
+          <input name="system.resources.chakra.max" type="number" value="{{system.resources.chakra.max}}" />
          {{else}}
-            <input name="system.resources.chakra.max" type="number" value="{{system.resources.chakra.max}}" readonly />
+          <input name="system.resources.chakra.max" type="number" value="{{system.resources.chakra.max}}" readonly />
          {{/if}}
          </div>
         </label>
-
-        <label>
-         Formule de Chakra
-         <select name="system.resources.chakra.formulaMode">
-          <option value="standard" {{#if (eq system.resources.chakra.formulaMode "standard")}}selected{{/if}}>A — COR×30 + ESP×30 + 50</option>
-          <option value="harsh" {{#if (eq system.resources.chakra.formulaMode "harsh")}}selected{{/if}}>B — COR×30 + ESP×30</option>
-          <option value="heroic" {{#if (eq system.resources.chakra.formulaMode "heroic")}}selected{{/if}}>C — COR×50 + ESP×50</option>
-          <option value="manual" {{#if (eq system.resources.chakra.formulaMode "manual")}}selected{{/if}}>D — Manuel</option>
-         </select>
-        </label>
+        <p class="formula-hint">
+        Formule de Chakra : {{chakraFormulaMode}}
+        </p>
 
         <label>
          Bonus Chakra

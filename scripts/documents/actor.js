@@ -57,7 +57,7 @@ export class Naruto25eActor extends Actor {
       chakra.activeRegen = Number(chakra.activeRegen ?? 0);
       chakra.sonneThreshold = Number(chakra.sonneThreshold ?? 50);
 
-      const formulaMode = chakra.formulaMode ?? "standard";
+      const formulaMode = game.settings?.get("naruto-25e", "chakraFormulaMode") ?? "standard";
 
       if (formulaMode === "manual") {
         chakra.max = Math.max(0, Number(chakra.max ?? 0));

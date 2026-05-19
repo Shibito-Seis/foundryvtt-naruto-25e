@@ -2,7 +2,16 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
-## [0.1.3] - En cours
+## [0.1.4] - En cours
+
+### Modifié
+- Déplacement du choix de formule de Chakra vers les paramètres de monde.
+- La formule de Chakra est désormais configurée par le MJ dans les paramètres Foundry.
+- Retrait du sélecteur de formule de Chakra depuis la fiche Shinobi.
+
+---
+
+## [0.1.3]
 
 ### Ajouté
 - Calcul automatique de la Vigueur maximale.
