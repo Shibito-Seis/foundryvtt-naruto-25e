@@ -45,35 +45,79 @@
       <div class="summary-grid">
 
         <section class="panel">
-          <h2>Ressources</h2>
+         <h2>Ressources</h2>
 
-          <label>
-            Vigueur
-            <div class="resource-row">
-              <input name="system.resources.vigueur.value" type="number" value="{{system.resources.vigueur.value}}" />
-              <span>/</span>
-              <input name="system.resources.vigueur.max" type="number" value="{{system.resources.vigueur.max}}" readonly />
-            </div>
-          </label>
+         <label>
+          Vigueur
+          <div class="resource-row">
+           <input name="system.resources.vigueur.value" type="number" value="{{system.resources.vigueur.value}}" />
+           <span>/</span>
+           <input name="system.resources.vigueur.max" type="number" value="{{system.resources.vigueur.max}}" readonly />
+          </div>
+        </label>
 
-          <label>
-            Caractère
-            <div class="resource-row">
-              <input name="system.resources.caractere.value" type="number" value="{{system.resources.caractere.value}}" />
-              <span>/</span>
-              <input name="system.resources.caractere.max" type="number" value="{{system.resources.caractere.max}}" readonly />
-            </div>
-          </label>
+        <label>
+         Bonus Vigueur
+          <input name="system.resources.vigueur.bonus" type="number" value="{{system.resources.vigueur.bonus}}" />
+        </label>
 
-          <label>
-            Chakra
-            <div class="resource-row">
-              <input name="system.resources.chakra.value" type="number" value="{{system.resources.chakra.value}}" />
-              <span>/</span>
-              <input name="system.resources.chakra.max" type="number" value="{{system.resources.chakra.max}}" readonly />
-            </div>
-          </label>
-        </section>
+        <label>
+         Caractère
+         <div class="resource-row">
+          <input name="system.resources.caractere.value" type="number" value="{{system.resources.caractere.value}}" />
+          <span>/</span>
+          <input name="system.resources.caractere.max" type="number" value="{{system.resources.caractere.max}}" readonly />
+         </div>
+        </label>
+
+        <label>
+         Bonus Caractère
+         <input name="system.resources.caractere.bonus" type="number" value="{{system.resources.caractere.bonus}}" />
+        </label>
+
+        <label>
+         Chakra
+         <div class="resource-row">
+         <input name="system.resources.chakra.value" type="number" value="{{system.resources.chakra.value}}" />
+         <span>/</span>
+
+         {{#if (eq system.resources.chakra.formulaMode "manual")}}
+            <input name="system.resources.chakra.max" type="number" value="{{system.resources.chakra.max}}" />
+         {{else}}
+            <input name="system.resources.chakra.max" type="number" value="{{system.resources.chakra.max}}" readonly />
+         {{/if}}
+         </div>
+        </label>
+
+        <label>
+         Formule de Chakra
+         <select name="system.resources.chakra.formulaMode">
+          <option value="standard" {{#if (eq system.resources.chakra.formulaMode "standard")}}selected{{/if}}>A — COR×30 + ESP×30 + 50</option>
+          <option value="harsh" {{#if (eq system.resources.chakra.formulaMode "harsh")}}selected{{/if}}>B — COR×30 + ESP×30</option>
+          <option value="heroic" {{#if (eq system.resources.chakra.formulaMode "heroic")}}selected{{/if}}>C — COR×50 + ESP×50</option>
+          <option value="manual" {{#if (eq system.resources.chakra.formulaMode "manual")}}selected{{/if}}>D — Manuel</option>
+         </select>
+        </label>
+
+        <label>
+         Bonus Chakra
+         <input name="system.resources.chakra.bonus" type="number" value="{{system.resources.chakra.bonus}}" />
+        </label>
+
+        <div class="resource-row">
+        <label>
+         Régén. passive
+          <input name="system.resources.chakra.passiveRegen" type="number" value="{{system.resources.chakra.passiveRegen}}" />
+        </label>
+
+        <span></span>
+
+        <label>
+          Régén. active
+          <input name="system.resources.chakra.activeRegen" type="number" value="{{system.resources.chakra.activeRegen}}" />
+        </label>
+        </div>
+</section>
 
         <section class="panel">
           <h2>Nindō</h2>
@@ -155,6 +199,11 @@
             {{/each}}
           </tbody>
         </table>
+        <div class="mission-totals">
+        <strong>Total réussies :</strong> {{system.missions.totalCompleted}}
+        |
+        <strong>Total échouées :</strong> {{system.missions.totalFailed}}
+        </div>
       </section>
     </div>
 

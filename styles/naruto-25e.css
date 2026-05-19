@@ -96,3 +96,9 @@
   padding: 4px;
   text-align: center;
 }
+.naruto-25e-shinobi-sheet .mission-totals {
+  margin-top: 10px;
+  padding: 8px;
+  border-top: 1px solid #111;
+  text-align: right;
+}
