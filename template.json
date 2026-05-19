@@ -1,0 +1,105 @@
+{
+  "Actor": {
+    "types": ["shinobi"],
+    "templates": {
+      "base": {
+        "identity": {
+          "prenom": "",
+          "village": "",
+          "clan": "",
+          "rang": "aspirant",
+          "nindoText": ""
+        },
+        "progression": {
+          "experience": {
+            "total": 100,
+            "spent": 0,
+            "available": 100
+          }
+        },
+        "bases": {
+          "cor": { "label": "Corps", "value": 1, "bonus": 0, "max": 14, "absoluteMax": 16 },
+          "esp": { "label": "Esprit", "value": 1, "bonus": 0, "max": 14, "absoluteMax": 16 },
+          "arm": { "label": "Armes", "value": 1, "bonus": 0, "max": 14, "absoluteMax": 16 },
+          "tai": { "label": "Taijutsu", "value": 1, "bonus": 0, "max": 14, "absoluteMax": 16 },
+          "nin": { "label": "Ninjutsu", "value": 1, "bonus": 0, "max": 14, "absoluteMax": 16 },
+          "gen": { "label": "Genjutsu", "value": 1, "bonus": 0, "max": 14, "absoluteMax": 16 },
+          "lign": { "label": "Lignée", "value": 1, "bonus": 0, "max": 14, "absoluteMax": 16 }
+        },
+        "resources": {
+          "vigueur": { "value": 0, "max": 0, "bonus": 0 },
+          "caractere": { "value": 0, "max": 0, "bonus": 0 },
+          "chakra": {
+            "value": 0,
+            "max": 0,
+            "bonus": 0,
+            "formulaMode": "standard",
+            "passiveRegen": 0,
+            "activeRegen": 0,
+            "sonneThreshold": 50
+          }
+        },
+        "nindo": {
+          "value": 0,
+          "max": 10
+        },
+        "missions": {
+          "d": { "completed": 0, "failed": 0 },
+          "c": { "completed": 0, "failed": 0 },
+          "b": { "completed": 0, "failed": 0 },
+          "a": { "completed": 0, "failed": 0 },
+          "s": { "completed": 0, "failed": 0 },
+          "aa": { "completed": 0, "failed": 0 },
+          "sPlus": { "completed": 0, "failed": 0 },
+          "totalCompleted": 0,
+          "totalFailed": 0
+        }
+      }
+    },
+    "shinobi": {
+      "templates": ["base"]
+    }
+  },
+  "Item": {
+    "types": ["technique", "arme", "armure", "equipement", "clan", "pouvoirLignee", "developpement", "condition", "blessure", "nindoAction"],
+    "templates": {
+      "baseItem": {
+        "description": ""
+      }
+    },
+    "technique": {
+      "templates": ["baseItem"],
+      "family": "",
+      "domain": "",
+      "rank": "",
+      "level": 1,
+      "skill": "",
+      "base": "",
+      "range": "",
+      "duration": "",
+      "target": "",
+      "area": "",
+      "damage": {
+        "value": 0,
+        "type": "",
+        "scaling": ""
+      },
+      "chakra": {
+        "initial": 0,
+        "maintenance": 0,
+        "text": ""
+      },
+      "roll": {
+        "enabled": true,
+        "defaultDifficulty": 6,
+        "opposed": false
+      },
+      "effect": ""
+    },
+    "nindoAction": {
+      "templates": ["baseItem"],
+      "cost": 1,
+      "effect": ""
+    }
+  }
+}

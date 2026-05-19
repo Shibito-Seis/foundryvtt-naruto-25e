@@ -1,0 +1,69 @@
+{
+  "id": "naruto-25e",
+  "title": "Naruto 2.5e",
+  "description": "Système maison Naruto 2.5e pour Foundry VTT v13.",
+  "version": "0.1.0",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13.351"
+  },
+  "authors": [
+    {
+      "name": "Shibito Seis",
+      "name": "Paps the original Author of Naruto 2.5 paper system"
+    }
+  ],
+  "url": "https://github.com/TON_COMPTE/foundryvtt-naruto-25e",
+  "manifest": "https://github.com/TON_COMPTE/foundryvtt-naruto-25e/releases/latest/download/system.json",
+  "download": "https://github.com/TON_COMPTE/foundryvtt-naruto-25e/releases/download/v0.1.0/naruto-25e.zip",
+  "esmodules": [
+    "scripts/main.js"
+  ],
+  "styles": [
+    "styles/naruto-25e.css"
+  ],
+  "languages": [
+    {
+      "lang": "fr",
+      "name": "Français",
+      "path": "lang/fr.json"
+    }
+  ],
+  "documentTypes": {
+    "Actor": {
+      "shinobi": {}
+    },
+    "Item": {
+      "technique": {
+        "htmlFields": ["description", "effect"]
+      },
+      "arme": {
+        "htmlFields": ["description"]
+      },
+      "armure": {
+        "htmlFields": ["description"]
+      },
+      "equipement": {
+        "htmlFields": ["description"]
+      },
+      "clan": {
+        "htmlFields": ["description", "history", "ideals"]
+      },
+      "pouvoirLignee": {
+        "htmlFields": ["description"]
+      },
+      "developpement": {
+        "htmlFields": ["description"]
+      },
+      "condition": {
+        "htmlFields": ["description"]
+      },
+      "blessure": {
+        "htmlFields": ["description"]
+      },
+      "nindoAction": {
+        "htmlFields": ["description", "effect"]
+      }
+    }
+  }
+}
