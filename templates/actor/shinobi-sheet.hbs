@@ -1,0 +1,173 @@
+<form class="{{cssClass}} naruto-25e-shinobi-sheet" autocomplete="off">
+
+  <header class="sheet-header">
+    <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+
+    <div class="header-fields">
+      <h1>
+        <input name="name" type="text" value="{{actor.name}}" placeholder="Nom du personnage" />
+      </h1>
+
+      <div class="identity-grid">
+        <label>
+          Prénom(s)
+          <input name="system.identity.prenom" type="text" value="{{system.identity.prenom}}" />
+        </label>
+
+        <label>
+          Village caché
+          <input name="system.identity.village" type="text" value="{{system.identity.village}}" />
+        </label>
+
+        <label>
+          Clan
+          <input name="system.identity.clan" type="text" value="{{system.identity.clan}}" />
+        </label>
+
+        <label>
+          Rang
+          <input name="system.identity.rang" type="text" value="{{system.identity.rang}}" readonly />
+        </label>
+      </div>
+    </div>
+  </header>
+
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="summary">Résumé</a>
+    <a class="item" data-tab="bases">Bases</a>
+    <a class="item" data-tab="missions">Missions</a>
+    <a class="item" data-tab="progression">Progression</a>
+  </nav>
+
+  <section class="sheet-body">
+
+    <div class="tab" data-group="primary" data-tab="summary">
+      <div class="summary-grid">
+
+        <section class="panel">
+          <h2>Ressources</h2>
+
+          <label>
+            Vigueur
+            <div class="resource-row">
+              <input name="system.resources.vigueur.value" type="number" value="{{system.resources.vigueur.value}}" />
+              <span>/</span>
+              <input name="system.resources.vigueur.max" type="number" value="{{system.resources.vigueur.max}}" readonly />
+            </div>
+          </label>
+
+          <label>
+            Caractère
+            <div class="resource-row">
+              <input name="system.resources.caractere.value" type="number" value="{{system.resources.caractere.value}}" />
+              <span>/</span>
+              <input name="system.resources.caractere.max" type="number" value="{{system.resources.caractere.max}}" readonly />
+            </div>
+          </label>
+
+          <label>
+            Chakra
+            <div class="resource-row">
+              <input name="system.resources.chakra.value" type="number" value="{{system.resources.chakra.value}}" />
+              <span>/</span>
+              <input name="system.resources.chakra.max" type="number" value="{{system.resources.chakra.max}}" readonly />
+            </div>
+          </label>
+        </section>
+
+        <section class="panel">
+          <h2>Nindō</h2>
+
+          <div class="resource-row">
+            <input name="system.nindo.value" type="number" value="{{system.nindo.value}}" min="0" max="{{system.nindo.max}}" />
+            <span>/</span>
+            <input name="system.nindo.max" type="number" value="{{system.nindo.max}}" readonly />
+          </div>
+
+          <label>
+            Texte du Nindō
+            <textarea name="system.identity.nindoText">{{system.identity.nindoText}}</textarea>
+          </label>
+        </section>
+
+        <section class="panel">
+          <h2>Expérience</h2>
+
+          <label>
+            XP totale
+            <input name="system.progression.experience.total" type="number" value="{{system.progression.experience.total}}" />
+          </label>
+
+          <label>
+            XP dépensée
+            <input name="system.progression.experience.spent" type="number" value="{{system.progression.experience.spent}}" readonly />
+          </label>
+
+          <label>
+            XP disponible
+            <input name="system.progression.experience.available" type="number" value="{{system.progression.experience.available}}" readonly />
+          </label>
+        </section>
+
+      </div>
+    </div>
+
+    <div class="tab" data-group="primary" data-tab="bases">
+      <section class="panel">
+        <h2>Bases</h2>
+
+        <div class="bases-grid">
+          {{#each system.bases as |base key|}}
+            <div class="base-card">
+              <label>{{base.label}}</label>
+              <input name="system.bases.{{key}}.value" type="number" value="{{base.value}}" min="1" max="{{base.max}}" />
+              <small>Bonus</small>
+              <input name="system.bases.{{key}}.bonus" type="number" value="{{base.bonus}}" />
+            </div>
+          {{/each}}
+        </div>
+      </section>
+    </div>
+
+    <div class="tab" data-group="primary" data-tab="missions">
+      <section class="panel">
+        <h2>Missions</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Rang</th>
+              <th>Réussies</th>
+              <th>Échouées</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each system.missions as |mission key|}}
+              {{#unless (eq key "totalCompleted")}}
+                {{#unless (eq key "totalFailed")}}
+                  <tr>
+                    <td>{{key}}</td>
+                    <td>
+                      <input name="system.missions.{{key}}.completed" type="number" value="{{mission.completed}}" min="0" />
+                    </td>
+                    <td>
+                      <input name="system.missions.{{key}}.failed" type="number" value="{{mission.failed}}" min="0" />
+                    </td>
+                  </tr>
+                {{/unless}}
+              {{/unless}}
+            {{/each}}
+          </tbody>
+        </table>
+      </section>
+    </div>
+
+    <div class="tab" data-group="primary" data-tab="progression">
+      <section class="panel">
+        <h2>Progression</h2>
+        <p>Les conditions de promotion seront affichées ici en v0.1.2 / v0.1.3.</p>
+      </section>
+    </div>
+
+  </section>
+</form>

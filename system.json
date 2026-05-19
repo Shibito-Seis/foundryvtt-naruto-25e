@@ -2,7 +2,7 @@
   "id": "naruto-25e",
   "title": "Naruto 2.5e",
   "description": "Système maison Naruto 2.5e pour Foundry VTT v13.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "compatibility": {
     "minimum": "13",
     "verified": "13.351"
@@ -17,8 +17,8 @@
     }
   ],
   "url": "https://github.com/Shibito-Seis/foundryvtt-naruto-25e",
-  "manifest": "https://github.com/Shibito-Seis/foundryvtt-naruto-25e/releases/download/v0.1.0/system.json",
-  "download": "https://github.com/Shibito-Seis/foundryvtt-naruto-25e/releases/download/v0.1.0/naruto-25e.zip",
+  "manifest": "https://github.com/Shibito-Seis/foundryvtt-naruto-25e/releases/download/v0.1.1/system.json",
+  "download": "https://github.com/Shibito-Seis/foundryvtt-naruto-25e/releases/download/v0.1.1/naruto-25e.zip",
   "esmodules": [
     "scripts/main.js"
   ],
