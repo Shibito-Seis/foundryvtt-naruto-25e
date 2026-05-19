@@ -9,8 +9,11 @@
   },
   "authors": [
     {
-      "name": "Shibito Seis",
-      "name": "Paps the original Author of Naruto 2.5 paper system"
+    "name": "Shibito Seis"
+    },
+    {
+    "name": "Paps",
+    "notes": "Original author of the Naruto 2.5 paper system"
     }
   ],
   "url": "https://github.com/TON_COMPTE/foundryvtt-naruto-25e",
