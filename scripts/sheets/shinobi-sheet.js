@@ -76,6 +76,16 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     };
   });
 
+  const categoryOrder = ["common", "combat", "terrain", "clan"];
+
+context.skillGroups = categoryOrder.map((category) => {
+  return {
+    key: category,
+    label: NARUTO25E.skillCategoryLabels[category] ?? category,
+    skills: context.skills.filter((skill) => skill.category === category)
+    };
+  });
+
   return context;
 }
 

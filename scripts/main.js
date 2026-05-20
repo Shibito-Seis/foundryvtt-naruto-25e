@@ -28,6 +28,20 @@ Hooks.once("init", async function () {
     }
   });
 
+  game.settings.register("naruto-25e", "startingMode", {
+  name: "Mode de création des personnages",
+  hint: "Détermine le rang et l’expérience de départ utilisés par défaut lors de la création guidée des Shinobi.",
+  scope: "world",
+  config: true,
+  restricted: true,
+  type: String,
+  choices: {
+    aspirant100: "Aspirant Ninja — 100 XP",
+    geninD125: "Genin rang D — 125 XP"
+    },
+  default: "aspirant100"
+  });
+
   Handlebars.registerHelper("eq", function (a, b) {
     return a === b;
   });

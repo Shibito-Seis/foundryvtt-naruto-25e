@@ -2,7 +2,22 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
-## [0.1.6] - En cours
+## [0.1.7] - En cours
+
+### Ajouté
+- Ajout de la liste complète des compétences communes, de combat, de terrain et de clan.
+- Ajout des catégories de compétences.
+- Ajout d’un affichage groupé des compétences par catégorie.
+- Ajout du paramètre MJ de mode de création :
+  - Aspirant Ninja — 100 XP
+  - Genin rang D — 125 XP
+
+### Modifié
+- Les compétences affichées sur la fiche utilisent désormais la liste complète du système papier.
+
+---
+
+## [0.1.6]
 
 ### Ajouté
 - Ajout de l’onglet Compétences.
