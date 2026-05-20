@@ -469,7 +469,8 @@ NARUTO25E.villageStatuses = {
 NARUTO25E.heritageModes = {
   clan: "Clan",
   voie: "Voie",
-  hybridClan: "Clan hybride"
+  hybridClan: "Clan hybride",
+  hybridVoie: "Voie hybridée"
 };
 
 NARUTO25E.clans = {
@@ -501,10 +502,34 @@ NARUTO25E.clans = {
 };
 
 NARUTO25E.voies = {
-  marionnettisme: {
-    label: "Voie du Marionnettisme",
+  shokanShi: {
+    label: "Shōkan-shi - Voie du Genjutsu",
+    village: "any",
+    selectable: true,
+    tags: ["voie", "genjutsu"]
+  },
+  ninpo: {
+    label: "Ninpō - Voie du Ninjutsu",
+    village: "any",
+    selectable: true,
+    tags: ["voie", "ninjutsu"]
+  },
+  kriegsiter: {
+    label: "Kriegsiter - Voie des Armes",
+    village: "any",
+    selectable: true,
+    tags: ["voie", "armes"]
+  },
+  kugutsu: {
+    label: "Kugutsu - Voie du Marionnettiste",
     village: "suna",
     selectable: false,
-    tags: ["voie", "puppet", "suna"]
+    tags: ["voie", "puppet", "suna", "kugutsu"]
+  },
+  hachimon: {
+    label: "Hachimon - Voie du Taijutsu",
+    village: "konoha",
+    selectable: true,
+    tags: ["voie", "taijutsu", "konoha"]
   }
 };

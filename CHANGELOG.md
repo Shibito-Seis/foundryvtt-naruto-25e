@@ -2,7 +2,27 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
-## [0.1.9] - En cours
+## [0.1.9.1] - En cours
+
+### Ajouté
+- Ajout des voies connues :
+  - Shōkan-shi - Voie du Genjutsu
+  - Ninpō - Voie du Ninjutsu
+  - Kriegsiter - Voie des Armes
+  - Kugutsu - Voie du Marionnettiste
+  - Hachimon - Voie du Taijutsu
+- Ajout du mode d’héritage Voie hybridée.
+- Ajout d’un résumé automatique de l’héritage dans l’en-tête de la fiche.
+
+### Modifié
+- Retrait des champs libres Village caché et Clan depuis l’en-tête.
+- L’onglet Lignée devient la source principale des informations de village, clan, voie et hybridation.
+- Les voies respectent désormais leurs restrictions de village.
+- Le champ “Clan hybride secondaire” devient “Clan secondaire / hybridation”.
+
+---
+
+## [0.1.9]
 
 ### Ajouté
 - Ajout des villages shinobi dans la configuration système.

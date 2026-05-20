@@ -206,3 +206,29 @@
   opacity: 0.85;
   margin-bottom: 6px;
 }
+
+.naruto-25e-shinobi-sheet .heritage-summary {
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(120px, 1fr));
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid #999;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.naruto-25e-shinobi-sheet .heritage-summary div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.naruto-25e-shinobi-sheet .heritage-summary strong {
+  font-size: 11px;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.naruto-25e-shinobi-sheet .heritage-summary span {
+  font-weight: bold;
+}

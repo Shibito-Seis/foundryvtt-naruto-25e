@@ -10,24 +10,36 @@
 
       <div class="identity-grid">
         <label>
-          Prénom(s)
-          <input name="system.identity.prenom" type="text" value="{{system.identity.prenom}}" />
-        </label>
-
-        <label>
-          Village caché
-          <input name="system.identity.village" type="text" value="{{system.identity.village}}" />
-        </label>
-
-        <label>
-          Clan
-          <input name="system.identity.clan" type="text" value="{{system.identity.clan}}" />
+        Prénom(s)
+        <input name="system.identity.prenom" type="text" value="{{system.identity.prenom}}" />
         </label>
 
         <label>
           Rang
-          <input name="system.identity.rang" type="text" value="{{system.identity.rang}}" readonly />
+        < input name="system.identity.rang" type="text" value="{{system.identity.rang}}" readonly />
         </label>
+      </div>
+
+      <div class="heritage-summary">
+        <div>
+          <strong>Village :</strong>
+            <span>{{heritageSummary.village}}</span>
+        </div>
+
+        <div>
+          <strong>Statut :</strong>
+            <span>{{heritageSummary.status}}</span>
+        </div>
+
+        <div>
+          <strong>Héritage :</strong>
+            <span>{{heritageSummary.main}}</span>
+        </div>
+
+        <div>
+          <strong>Type :</strong>
+          <span>{{heritageSummary.mode}}</span>
+        </div>
       </div>
     </div>
   </header>
@@ -331,7 +343,7 @@
         </label>
 
         <label>
-          Clan hybride secondaire
+          Clan secondaire / hybridation
           <select name="system.heritage.hybrid.secondaryClan">
             <option value="">Aucun</option>
             {{#each secondaryClans as |clan|}}
@@ -344,7 +356,7 @@
       </div>
 
        <label>
-        Raison / origine du clan hybride
+        Raison / origine de l’hybridation
         <textarea name="system.heritage.hybrid.reason">{{system.heritage.hybrid.reason}}</textarea>
        </label>
 

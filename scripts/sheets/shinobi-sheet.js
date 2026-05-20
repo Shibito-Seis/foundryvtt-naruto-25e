@@ -134,13 +134,53 @@ context.skillGroups = categoryOrder.map((category) => {
       selected: this.actor.system.heritage?.hybrid?.secondaryClan === key
     }));
 
-  context.voies = Object.entries(NARUTO25E.voies).map(([key, voie]) => ({
-    key,
-    label: voie.label,
-    village: voie.village,
-    selectable: Boolean(voie.selectable),
-    selected: this.actor.system.heritage?.voie === key
-  }));
+  context.voies = Object.entries(NARUTO25E.voies).map(([key, voie]) => {
+    const allowedByVillage = voie.village === "any" || voie.village === selectedVillage;
+    const selectable = Boolean(voie.selectable) && allowedByVillage;
+
+    return {
+      key,
+      label: voie.label,
+      village: voie.village,
+      selectable,
+      selected: this.actor.system.heritage?.voie === key
+    };
+  });
+
+  const heritage = this.actor.system.heritage ?? {};
+  const villageKey = heritage.village ?? "konoha";
+  const village = NARUTO25E.villages[villageKey];
+
+  const statusKey = heritage.villageStatus ?? "loyal";
+  const statusLabel = NARUTO25E.villageStatuses[statusKey] ?? "Loyal";
+
+  const modeKey = heritage.mode ?? "clan";
+  const modeLabel = NARUTO25E.heritageModes[modeKey] ?? "Clan";
+
+  const clan = NARUTO25E.clans[heritage.clan];
+  const voie = NARUTO25E.voies[heritage.voie];
+  const secondaryClan = NARUTO25E.clans[heritage.hybrid?.secondaryClan];
+
+  let heritageMainLabel = "Aucun héritage sélectionné";
+
+  if (modeKey === "clan" && clan) {
+    heritageMainLabel = `Clan ${clan.label}`;
+  } else if (modeKey === "voie" && voie) {
+    heritageMainLabel = voie.label;
+  } else if (modeKey === "hybridClan" && clan) {
+    heritageMainLabel = `Clan ${clan.label}`;
+    if (secondaryClan) heritageMainLabel += ` / ${secondaryClan.label}`;
+  } else if (modeKey === "hybridVoie" && voie) {
+    heritageMainLabel = voie.label;
+    if (secondaryClan) heritageMainLabel += ` / ${secondaryClan.label}`;
+  }
+
+  context.heritageSummary = {
+    village: village?.label ?? villageKey,
+    status: statusLabel,
+    mode: modeLabel,
+    main: heritageMainLabel
+  };
 
   return context;
 }
