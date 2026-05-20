@@ -96,6 +96,52 @@ context.skillGroups = categoryOrder.map((category) => {
     };
   });
 
+  context.villages = Object.entries(NARUTO25E.villages).map(([key, village]) => ({
+    key,
+    label: village.label,
+    selectable: Boolean(village.selectable),
+    selected: this.actor.system.heritage?.village === key
+  }));
+
+  context.villageStatuses = Object.entries(NARUTO25E.villageStatuses).map(([key, label]) => ({
+    key,
+    label,
+    selected: this.actor.system.heritage?.villageStatus === key
+  }));
+
+  context.heritageModes = Object.entries(NARUTO25E.heritageModes).map(([key, label]) => ({
+    key,
+    label,
+    selected: this.actor.system.heritage?.mode === key
+  }));
+
+  const selectedVillage = this.actor.system.heritage?.village ?? "konoha";
+
+  context.clans = Object.entries(NARUTO25E.clans)
+    .filter(([, clan]) => clan.village === selectedVillage)
+    .map(([key, clan]) => ({
+      key,
+      label: clan.label,
+      skillKey: clan.skillKey,
+      selected: this.actor.system.heritage?.clan === key
+    }));
+
+  context.secondaryClans = Object.entries(NARUTO25E.clans)
+    .filter(([, clan]) => clan.village === selectedVillage)
+    .map(([key, clan]) => ({
+      key,
+      label: clan.label,
+      selected: this.actor.system.heritage?.hybrid?.secondaryClan === key
+    }));
+
+  context.voies = Object.entries(NARUTO25E.voies).map(([key, voie]) => ({
+    key,
+    label: voie.label,
+    village: voie.village,
+    selectable: Boolean(voie.selectable),
+    selected: this.actor.system.heritage?.voie === key
+  }));
+
   return context;
 }
 

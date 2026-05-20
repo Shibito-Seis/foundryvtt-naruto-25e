@@ -10,6 +10,19 @@
           "rang": "aspirant",
           "nindoText": ""
         },
+        "heritage": {
+          "mode": "clan",
+          "village": "konoha",
+          "villageStatus": "loyal",
+          "clan": "",
+          "voie": "",
+          "hybrid": {
+            "enabled": false,
+            "secondaryClan": "",
+            "reason": ""
+          },
+          "notes": ""
+        },
         "progression": {
           "experience": {
             "total": 100,

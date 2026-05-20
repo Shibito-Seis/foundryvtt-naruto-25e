@@ -443,3 +443,68 @@ NARUTO25E.skillDefinitions = {
 NARUTO25E.getSkillXpCost = function (rank) {
   return Number(rank ?? 0);
 };
+
+NARUTO25E.villages = {
+  konoha: { label: "Konoha", selectable: true },
+  suna: { label: "Suna", selectable: false },
+  kumo: { label: "Kumo", selectable: false },
+  iwa: { label: "Iwa", selectable: false },
+  kiri: { label: "Kiri", selectable: false },
+  kusa: { label: "Kusa", selectable: false },
+  ame: { label: "Ame", selectable: false },
+  taki: { label: "Taki", selectable: false },
+  oto: { label: "Oto", selectable: false },
+  yuki: { label: "Yuki", selectable: false },
+  hoshi: { label: "Hoshi", selectable: false }
+};
+
+NARUTO25E.villageStatuses = {
+  loyal: "Loyal",
+  deserter: "Déserteur",
+  hermit: "Ermite",
+  exile: "Exilé",
+  independent: "Indépendant"
+};
+
+NARUTO25E.heritageModes = {
+  clan: "Clan",
+  voie: "Voie",
+  hybridClan: "Clan hybride"
+};
+
+NARUTO25E.clans = {
+  aburame: { label: "Aburame", village: "konoha", skillKey: "kikaichu" },
+  akaba: { label: "Akaba", village: "konoha", skillKey: "" },
+  akimichi: { label: "Akimichi", village: "konoha", skillKey: "" },
+  aniki: { label: "Aniki", village: "konoha", skillKey: "sumi" },
+  ao: { label: "Ao", village: "konoha", skillKey: "" },
+  eshimuro: { label: "Eshimuro", village: "konoha", skillKey: "" },
+  hyuga: { label: "Hyūga", village: "konoha", skillKey: "juken" },
+  inuzuka: { label: "Inuzuka", village: "konoha", skillKey: "" },
+  ishida: { label: "Ishida", village: "konoha", skillKey: "" },
+  kagayaki: { label: "Kagayaki", village: "konoha", skillKey: "" },
+  kato: { label: "Katō", village: "konoha", skillKey: "" },
+  kenta: { label: "Kenta", village: "konoha", skillKey: "" },
+  kurama: { label: "Kurama", village: "konoha", skillKey: "" },
+  mitokado: { label: "Mitokado", village: "konoha", skillKey: "" },
+  morino: { label: "Morino", village: "konoha", skillKey: "" },
+  munefuda: { label: "Munefuda", village: "konoha", skillKey: "jiton" },
+  nara: { label: "Nara", village: "konoha", skillKey: "kage" },
+  sarutobi: { label: "Sarutobi", village: "konoha", skillKey: "" },
+  senju: { label: "Senju", village: "konoha", skillKey: "mokuton" },
+  shimadoku: { label: "Shimadoku", village: "konoha", skillKey: "" },
+  shimura: { label: "Shimura", village: "konoha", skillKey: "" },
+  takeda: { label: "Takeda", village: "konoha", skillKey: "" },
+  uchiha: { label: "Uchiha", village: "konoha", skillKey: "" },
+  utatane: { label: "Utatane", village: "konoha", skillKey: "" },
+  yamanaka: { label: "Yamanaka", village: "konoha", skillKey: "resistancesEmotionnelles" }
+};
+
+NARUTO25E.voies = {
+  marionnettisme: {
+    label: "Voie du Marionnettisme",
+    village: "suna",
+    selectable: false,
+    tags: ["voie", "puppet", "suna"]
+  }
+};

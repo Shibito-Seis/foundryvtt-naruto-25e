@@ -2,7 +2,20 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
-## [0.1.8.1] - En cours
+## [0.1.9] - En cours
+
+### Ajouté
+- Ajout des villages shinobi dans la configuration système.
+- Ajout des 25 clans de Konoha.
+- Ajout du statut vis-à-vis du village : Loyal, Déserteur, Ermite, Exilé, Indépendant.
+- Ajout de la structure d’héritage : Clan, Voie, Clan hybride.
+- Ajout de l’onglet Lignée / Clan / Voie.
+- Ajout de la Voie du Marionnettisme comme voie liée à Suna, indisponible pour le moment.
+- Les villages autres que Konoha sont visibles mais non sélectionnables.
+
+---
+
+## [0.1.8.1]
 
 ### Corrigé
 - Correction de l’ordre de préparation des données acteur.

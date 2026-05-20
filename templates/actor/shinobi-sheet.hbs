@@ -36,6 +36,7 @@
   <a class="item" data-tab="summary">Résumé</a>
   <a class="item" data-tab="bases">Bases</a>
   <a class="item" data-tab="skills">Compétences</a>
+  <a class="item" data-tab="heritage">Lignée</a>
   <a class="item" data-tab="missions">Missions</a>
   <a class="item" data-tab="progression">Progression</a>
   </nav>
@@ -264,6 +265,93 @@
           </table>
         </section>
       {{/each}}
+    </section>
+    </div>
+
+    <div class="tab" data-group="primary" data-tab="heritage">
+    <section class="panel">
+      <h2>Lignée / Clan / Voie</h2>
+
+      <div class="identity-grid">
+        <label>
+          Village d’origine
+          <select name="system.heritage.village">
+            {{#each villages as |village|}}
+              <option value="{{village.key}}" {{#if village.selected}}selected{{/if}} {{#unless village.selectable}}disabled{{/unless}}>
+                {{village.label}}{{#unless village.selectable}} — indisponible{{/unless}}
+              </option>
+            {{/each}}
+          </select>
+        </label>
+
+        <label>
+          Statut
+          <select name="system.heritage.villageStatus">
+            {{#each villageStatuses as |status|}}
+              <option value="{{status.key}}" {{#if status.selected}}selected{{/if}}>
+                {{status.label}}
+              </option>
+            {{/each}}
+          </select>
+        </label>
+
+        <label>
+          Type d’héritage
+          <select name="system.heritage.mode">
+            {{#each heritageModes as |mode|}}
+              <option value="{{mode.key}}" {{#if mode.selected}}selected{{/if}}>
+                {{mode.label}}
+              </option>
+            {{/each}}
+          </select>
+        </label>
+
+        <label>
+          Clan principal
+          <select name="system.heritage.clan">
+            <option value="">Aucun clan sélectionné</option>
+            {{#each clans as |clan|}}
+              <option value="{{clan.key}}" {{#if clan.selected}}selected{{/if}}>
+                {{clan.label}}
+              </option>
+            {{/each}}
+          </select>
+        </label>
+
+        <label>
+          Voie
+          <select name="system.heritage.voie">
+            <option value="">Aucune voie sélectionnée</option>
+            {{#each voies as |voie|}}
+              <option value="{{voie.key}}" {{#if voie.selected}}selected{{/if}} {{#unless voie.selectable}}disabled{{/unless}}>
+                {{voie.label}}{{#unless voie.selectable}} — indisponible{{/unless}}
+              </option>
+            {{/each}}
+          </select>
+        </label>
+
+        <label>
+          Clan hybride secondaire
+          <select name="system.heritage.hybrid.secondaryClan">
+            <option value="">Aucun</option>
+            {{#each secondaryClans as |clan|}}
+              <option value="{{clan.key}}" {{#if clan.selected}}selected{{/if}}>
+                {{clan.label}}
+              </option>
+            {{/each}}
+          </select>
+        </label>
+      </div>
+
+       <label>
+        Raison / origine du clan hybride
+        <textarea name="system.heritage.hybrid.reason">{{system.heritage.hybrid.reason}}</textarea>
+       </label>
+
+      <label>
+        Notes de lignée
+        <textarea name="system.heritage.notes">{{system.heritage.notes}}</textarea>
+      </label>
     </section>
     </div>
 
