@@ -2,7 +2,14 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
-## [0.1.9.1] - En cours
+## [0.1.9.2] - En cours
+
+### Corrigé
+- Correction de l’affichage du champ Rang dans l’en-tête de la fiche.
+
+---
+
+## [0.1.9.1]
 
 ### Ajouté
 - Ajout des voies connues :
