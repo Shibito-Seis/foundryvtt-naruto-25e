@@ -2,7 +2,23 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
-## [0.1.7] - En cours
+## [0.1.8] - En cours
+
+### Ajouté
+- Ajout des boutons d’augmentation et de réduction des compétences.
+- Ajout des coûts XP automatiques pour les compétences.
+- Calcul automatique de l’XP investie dans chaque compétence.
+- Ajout du détail XP dépensée entre Bases et Compétences.
+- Blocage de l’augmentation si l’XP disponible est insuffisante.
+- Blocage de l’augmentation si la compétence n’est pas possédée.
+- Blocage de l’augmentation selon la règle permanente : compétence max = Base associée + 2.
+
+### Modifié
+- L’XP dépensée totale inclut désormais les Bases et les Compétences.
+
+---
+
+## [0.1.7]
 
 ### Ajouté
 - Ajout de la liste complète des compétences communes, de combat, de terrain et de clan.

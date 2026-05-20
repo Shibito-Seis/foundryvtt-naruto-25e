@@ -141,6 +141,11 @@
             <input name="system.progression.experience.spent" type="number" value="{{system.progression.experience.spent}}" readonly />
           </label>
 
+        <div class="xp-breakdown">
+          <span>Bases : {{system.progression.experience.baseSpent}}</span>
+          <span>Compétences : {{system.progression.experience.skillSpent}}</span>
+        </div>
+
           <label>
             XP disponible
             <input name="system.progression.experience.available" type="number" value="{{system.progression.experience.available}}" readonly />
@@ -211,6 +216,8 @@
                 <th>Score</th>
                 <th>Bonus</th>
                 <th>Total</th>
+                <th>XP</th>
+                <th>Prochain</th>
                 <th>Maîtrise</th>
                 <th>Possédée</th>
               </tr>
@@ -221,13 +228,31 @@
                   <td>{{skill.label}}</td>
                   <td>{{skill.baseLabel}}</td>
                   <td>
-                    <input name="system.skills.{{skill.key}}.natural" type="number" value="{{skill.natural}}" readonly />
+                    <div class="skill-controls">
+                      <button type="button" class="skill-decrease" data-skill="{{skill.key}}" {{#unless skill.canDecrease}}disabled{{/unless}}>
+                        −
+                      </button>
+
+                      <input name="system.skills.{{skill.key}}.natural" type="number" value="{{skill.natural}}" readonly />
+
+                      <button type="button" class="skill-increase" data-skill="{{skill.key}}" {{#unless skill.canIncrease}}disabled{{/unless}}>
+                        +
+                      </button>
+                    </div>
                   </td>
                   <td>
                     <input name="system.skills.{{skill.key}}.bonus" type="number" value="{{skill.bonus}}" />
                   </td>
                   <td>
                     <input type="number" value="{{skill.total}}" readonly />
+                  </td>
+                  <td>{{skill.xpSpent}}</td>
+                  <td>
+                    {{#if skill.canIncrease}}
+                      {{skill.nextCost}} XP
+                    {{else}}
+                      —
+                    {{/if}}
                   </td>
                   <td>{{skill.masteryLabel}}</td>
                   <td>

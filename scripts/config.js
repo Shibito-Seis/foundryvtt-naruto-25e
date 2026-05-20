@@ -439,3 +439,7 @@ NARUTO25E.skillDefinitions = {
     ownedByDefault: false
   }
 };
+
+NARUTO25E.getSkillXpCost = function (rank) {
+  return Number(rank ?? 0);
+};

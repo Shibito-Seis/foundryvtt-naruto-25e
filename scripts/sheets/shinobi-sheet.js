@@ -61,6 +61,11 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
 
   context.skills = Object.entries(NARUTO25E.skillDefinitions).map(([key, definition]) => {
     const skill = this.actor.system.skills?.[key] ?? {};
+    const current = Number(skill.natural ?? 1);
+    const next = current + 1;
+    const nextCost = this.actor.getSkillUpgradeCost(key);
+    const cap = this.actor.getSkillCap(key);
+
     return {
       key,
       label: definition.label,
@@ -68,11 +73,16 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
       baseLabel: NARUTO25E.baseLabels[definition.base] ?? definition.base,
       category: definition.category,
       tags: definition.tags ?? [],
-      natural: Number(skill.natural ?? 1),
+      natural: current,
       bonus: Number(skill.bonus ?? 0),
       total: Number(skill.total ?? 0),
       owned: Boolean(skill.owned),
-      masteryLabel: skill.masteryLabel ?? ""
+      masteryLabel: skill.masteryLabel ?? "",
+      xpSpent: Number(skill.xpSpent ?? 0),
+      nextCost,
+      cap,
+      canIncrease: Boolean(skill.owned) && next <= cap,
+      canDecrease: current > 1
     };
   });
 
@@ -104,6 +114,18 @@ context.skillGroups = categoryOrder.map((category) => {
     event.preventDefault();
     const baseKey = event.currentTarget.dataset.base;
     await this.actor.decreaseBase(baseKey);
+  });
+
+  html.find(".skill-increase").on("click", async (event) => {
+  event.preventDefault();
+  const skillKey = event.currentTarget.dataset.skill;
+  await this.actor.increaseSkill(skillKey);
+  });
+
+  html.find(".skill-decrease").on("click", async (event) => {
+  event.preventDefault();
+  const skillKey = event.currentTarget.dataset.skill;
+  await this.actor.decreaseSkill(skillKey);
   });
   }
 }

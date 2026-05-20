@@ -96,7 +96,15 @@ _prepareExperience(system) {
     baseXpSpent += spent;
   }
 
-  experience.spent = baseXpSpent;
+  let skillXpSpent = 0;
+
+  for (const skill of Object.values(system.skills ?? {})) {
+    skillXpSpent += Number(skill.xpSpent ?? 0);
+  }
+
+  experience.baseSpent = baseXpSpent;
+  experience.skillSpent = skillXpSpent;
+  experience.spent = baseXpSpent + skillXpSpent;
   experience.available = Math.max(0, experience.total - experience.spent);
 }
 
@@ -210,7 +218,7 @@ async decreaseBase(baseKey) {
     if (!system.skills) system.skills = {};
 
     for (const [key, definition] of Object.entries(NARUTO25E.skillDefinitions)) {
-     if (!system.skills[key]) {
+      if (!system.skills[key]) {
         system.skills[key] = {
           natural: 1,
           bonus: 0,
@@ -221,6 +229,7 @@ async decreaseBase(baseKey) {
       const skill = system.skills[key];
       const baseKey = definition.base;
       const baseValue = this._getBaseEffective(system, baseKey);
+      const naturalBaseValue = Number(system.bases?.[baseKey]?.value ?? 1);
 
       skill.label = definition.label;
       skill.base = baseKey;
@@ -232,9 +241,17 @@ async decreaseBase(baseKey) {
       skill.bonus = Number(skill.bonus ?? 0);
       skill.total = skill.natural + baseValue + skill.bonus;
 
+      skill.max = naturalBaseValue + 2;
+
       if (typeof skill.owned !== "boolean") {
         skill.owned = Boolean(definition.ownedByDefault);
       }
+
+      let xpSpent = 0;
+      for (let rank = 2; rank <= skill.natural; rank++) {
+        xpSpent += NARUTO25E.getSkillXpCost(rank);
+      }
+      skill.xpSpent = xpSpent;
 
       if (skill.natural >= 7) {
         skill.masteryLabel = "Maîtrise";
@@ -244,5 +261,88 @@ async decreaseBase(baseKey) {
         skill.masteryLabel = "";
       }
     }
+  }
+
+    getSkillUpgradeCost(skillKey) {
+    const skill = this.system.skills?.[skillKey];
+    if (!skill) return null;
+
+    const current = Number(skill.natural ?? 1);
+    const next = current + 1;
+
+    return NARUTO25E.getSkillXpCost(next);
+  }
+
+  getSkillCap(skillKey) {
+    const definition = NARUTO25E.skillDefinitions[skillKey];
+    if (!definition) return 1;
+
+    const baseKey = definition.base;
+    const baseValue = Number(this.system.bases?.[baseKey]?.value ?? 1);
+
+    return baseValue + 2;
+  }
+
+  async increaseSkill(skillKey) {
+    if (this.type !== "shinobi") return;
+
+    const skill = this.system.skills?.[skillKey];
+    const definition = NARUTO25E.skillDefinitions[skillKey];
+
+    if (!skill || !definition) return;
+
+    const label = definition.label ?? skillKey;
+
+    if (!skill.owned) {
+      ui.notifications.warn(`Impossible d’augmenter ${label} : cette compétence n’est pas possédée.`);
+      return;
+    }
+
+    const current = Number(skill.natural ?? 1);
+    const next = current + 1;
+    const cap = this.getSkillCap(skillKey);
+
+    if (next > cap) {
+      ui.notifications.warn(`Impossible d’augmenter ${label} : limite atteinte (${definition.base.toUpperCase()} + 2 = ${cap}).`);
+      return;
+    }
+
+    const cost = this.getSkillUpgradeCost(skillKey);
+    const available = Number(this.system.progression?.experience?.available ?? 0);
+
+    if (available < cost) {
+      ui.notifications.warn(`XP insuffisante : ${cost} XP nécessaires, ${available} disponibles.`);
+      return;
+    }
+
+    await this.update({
+      [`system.skills.${skillKey}.natural`]: next
+    });
+
+    ui.notifications.info(`${label} augmenté à ${next} pour ${cost} XP.`);
+  }
+
+  async decreaseSkill(skillKey) {
+    if (this.type !== "shinobi") return;
+
+    const skill = this.system.skills?.[skillKey];
+    const definition = NARUTO25E.skillDefinitions[skillKey];
+
+    if (!skill || !definition) return;
+
+    const label = definition.label ?? skillKey;
+    const current = Number(skill.natural ?? 1);
+    const previous = current - 1;
+
+    if (previous < 1) {
+      ui.notifications.warn(`${label} ne peut pas descendre sous 1.`);
+      return;
+    }
+
+    await this.update({
+      [`system.skills.${skillKey}.natural`]: previous
+    });
+
+    ui.notifications.info(`${label} réduit à ${previous}.`);
   }
 }

@@ -179,3 +179,30 @@
   text-transform: uppercase;
   font-size: 14px;
 }
+
+.naruto-25e-shinobi-sheet .skill-controls {
+  display: grid;
+  grid-template-columns: 28px 48px 28px;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+}
+
+.naruto-25e-shinobi-sheet .skill-controls button {
+  height: 24px;
+  font-weight: bold;
+  padding: 0;
+}
+
+.naruto-25e-shinobi-sheet .skill-controls input {
+  text-align: center;
+}
+
+.naruto-25e-shinobi-sheet .xp-breakdown {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+  opacity: 0.85;
+  margin-bottom: 6px;
+}
