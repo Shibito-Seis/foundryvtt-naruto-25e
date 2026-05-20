@@ -9,11 +9,11 @@ export class Naruto25eActor extends Actor {
     const system = this.system;
 
     this._prepareBases(system);
+    this._prepareSkills(system);
     this._prepareResources(system);
     this._prepareExperience(system);
     this._prepareMissions(system);
     this._prepareNindo(system);
-    this._prepareSkills(system);
   }
 
   _getBaseEffective(system, key) {

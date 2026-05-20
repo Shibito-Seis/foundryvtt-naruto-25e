@@ -2,7 +2,15 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
-## [0.1.8] - En cours
+## [0.1.8.1] - En cours
+
+### Corrigé
+- Correction de l’ordre de préparation des données acteur.
+- L’XP des compétences est désormais calculée avant le total d’XP dépensée.
+
+---
+
+## [0.1.8]
 
 ### Ajouté
 - Ajout des boutons d’augmentation et de réduction des compétences.
