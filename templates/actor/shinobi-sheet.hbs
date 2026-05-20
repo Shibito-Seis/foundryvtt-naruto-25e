@@ -33,10 +33,11 @@
   </header>
 
   <nav class="sheet-tabs tabs" data-group="primary">
-    <a class="item" data-tab="summary">Résumé</a>
-    <a class="item" data-tab="bases">Bases</a>
-    <a class="item" data-tab="missions">Missions</a>
-    <a class="item" data-tab="progression">Progression</a>
+  <a class="item" data-tab="summary">Résumé</a>
+  <a class="item" data-tab="bases">Bases</a>
+  <a class="item" data-tab="skills">Compétences</a>
+  <a class="item" data-tab="missions">Missions</a>
+  <a class="item" data-tab="progression">Progression</a>
   </nav>
 
   <section class="sheet-body">
@@ -193,6 +194,47 @@
     </div>
   </section>
 </div>
+
+    <div class="tab" data-group="primary" data-tab="skills">
+      <section class="panel">
+        <h2>Compétences</h2>
+
+      <table class="skills-table">
+          <thead>
+            <tr>
+            <th>Nom</th>
+            <th>Base</th>
+            <th>Score</th>
+            <th>Bonus</th>
+            <th>Total</th>
+            <th>Maîtrise</th>
+            <th>Possédée</th>
+            </tr>
+          </thead>
+        <tbody>
+          {{#each skills as |skill|}}
+            <tr class="{{#unless skill.owned}}skill-unowned{{/unless}}">
+              <td>{{skill.label}}</td>
+              <td>{{skill.baseLabel}}</td>
+              <td>
+                <input name="system.skills.{{skill.key}}.natural" type="number" value="{{skill.natural}}" readonly />
+              </td>
+              <td>
+                <input name="system.skills.{{skill.key}}.bonus" type="number" value="{{skill.bonus}}" />
+              </td>
+              <td>
+                <input type="number" value="{{skill.total}}" readonly />
+              </td>
+              <td>{{skill.masteryLabel}}</td>
+              <td>
+                <input name="system.skills.{{skill.key}}.owned" type="checkbox" {{#if skill.owned}}checked{{/if}} />
+              </td>
+            </tr>
+            {{/each}}
+        </tbody>
+      </table>
+      </section>
+    </div>
 
     <div class="tab" data-group="primary" data-tab="missions">
       <section class="panel">

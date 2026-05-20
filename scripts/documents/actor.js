@@ -13,6 +13,7 @@ export class Naruto25eActor extends Actor {
     this._prepareExperience(system);
     this._prepareMissions(system);
     this._prepareNindo(system);
+    this._prepareSkills(system);
   }
 
   _getBaseEffective(system, key) {
@@ -204,5 +205,44 @@ async decreaseBase(baseKey) {
   });
 
   ui.notifications.info(`${base.label ?? baseKey} réduit à ${previous}.`);
+  }
+    _prepareSkills(system) {
+    if (!system.skills) system.skills = {};
+
+    for (const [key, definition] of Object.entries(NARUTO25E.skillDefinitions)) {
+     if (!system.skills[key]) {
+        system.skills[key] = {
+          natural: 1,
+          bonus: 0,
+          owned: Boolean(definition.ownedByDefault)
+        };
+      }
+
+      const skill = system.skills[key];
+      const baseKey = definition.base;
+      const baseValue = this._getBaseEffective(system, baseKey);
+
+      skill.label = definition.label;
+      skill.base = baseKey;
+      skill.baseLabel = NARUTO25E.baseLabels[baseKey] ?? baseKey;
+      skill.category = definition.category;
+      skill.tags = definition.tags ?? [];
+
+      skill.natural = Number(skill.natural ?? 1);
+      skill.bonus = Number(skill.bonus ?? 0);
+      skill.total = skill.natural + baseValue + skill.bonus;
+
+      if (typeof skill.owned !== "boolean") {
+        skill.owned = Boolean(definition.ownedByDefault);
+      }
+
+      if (skill.natural >= 7) {
+        skill.masteryLabel = "Maîtrise";
+      } else if (skill.natural >= 5) {
+        skill.masteryLabel = "Expérimenté";
+      } else {
+        skill.masteryLabel = "";
+      }
+    }
   }
 }

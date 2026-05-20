@@ -1,3 +1,4 @@
+import { NARUTO25E } from "../config.js";
 export class Naruto25eShinobiSheet extends ActorSheet {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -57,6 +58,23 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     canDecrease: current > 1
   };
 });
+
+  context.skills = Object.entries(NARUTO25E.skillDefinitions).map(([key, definition]) => {
+    const skill = this.actor.system.skills?.[key] ?? {};
+    return {
+      key,
+      label: definition.label,
+      base: definition.base,
+      baseLabel: NARUTO25E.baseLabels[definition.base] ?? definition.base,
+      category: definition.category,
+      tags: definition.tags ?? [],
+      natural: Number(skill.natural ?? 1),
+      bonus: Number(skill.bonus ?? 0),
+      total: Number(skill.total ?? 0),
+      owned: Boolean(skill.owned),
+      masteryLabel: skill.masteryLabel ?? ""
+    };
+  });
 
   return context;
 }

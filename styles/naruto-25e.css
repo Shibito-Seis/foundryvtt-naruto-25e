@@ -140,3 +140,29 @@
   font-size: 12px;
   opacity: 0.85;
 }
+
+.naruto-25e-shinobi-sheet .skills-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.naruto-25e-shinobi-sheet .skills-table th,
+.naruto-25e-shinobi-sheet .skills-table td {
+  border: 1px solid #999;
+  padding: 4px;
+  text-align: center;
+}
+
+.naruto-25e-shinobi-sheet .skills-table td:first-child {
+  text-align: left;
+  font-weight: bold;
+}
+
+.naruto-25e-shinobi-sheet .skill-unowned {
+  opacity: 0.45;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.naruto-25e-shinobi-sheet .skills-table input[type="number"] {
+  text-align: center;
+}

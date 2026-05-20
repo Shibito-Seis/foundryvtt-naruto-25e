@@ -53,6 +53,31 @@
           "sPlus": { "completed": 0, "failed": 0 },
           "totalCompleted": 0,
           "totalFailed": 0
+        },
+        "skills": {
+         "physique": { "natural": 1, "bonus": 0, "owned": true },
+         "mental": { "natural": 1, "bonus": 0, "owned": true },
+         "armesSimples": { "natural": 1, "bonus": 0, "owned": true },
+         "parade": { "natural": 1, "bonus": 0, "owned": true },
+         "corpsACorps": { "natural": 1, "bonus": 0, "owned": true },
+         "esquive": { "natural": 1, "bonus": 0, "owned": true },
+         "camouflage": { "natural": 1, "bonus": 0, "owned": true },
+         "vigilance": { "natural": 1, "bonus": 0, "owned": true },
+         "survie": { "natural": 1, "bonus": 0, "owned": true },
+         "henge": { "natural": 1, "bonus": 0, "owned": true },
+         "kawarimi": { "natural": 1, "bonus": 0, "owned": true },
+         "gensou": { "natural": 1, "bonus": 0, "owned": true },
+
+         "katon": { "natural": 1, "bonus": 0, "owned": false },
+         "futon": { "natural": 1, "bonus": 0, "owned": false },
+         "suiton": { "natural": 1, "bonus": 0, "owned": false },
+         "doton": { "natural": 1, "bonus": 0, "owned": false },
+         "raiton": { "natural": 1, "bonus": 0, "owned": false },
+         "fuin": { "natural": 1, "bonus": 0, "owned": false },
+         "iryo": { "natural": 1, "bonus": 0, "owned": false },
+         "kage": { "natural": 1, "bonus": 0, "owned": false },
+         "jiton": { "natural": 1, "bonus": 0, "owned": false },
+         "ingyo": { "natural": 1, "bonus": 0, "owned": false }
         }
       }
     },

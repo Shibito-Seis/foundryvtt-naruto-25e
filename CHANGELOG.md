@@ -2,7 +2,20 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
-## [0.1.5] - En cours
+## [0.1.6] - En cours
+
+### Ajouté
+- Ajout de l’onglet Compétences.
+- Ajout d’une première liste de compétences.
+- Affichage du score naturel, de la base associée, du bonus et du total.
+- Calcul automatique du total des compétences.
+- Affichage des compétences non possédées en grisé.
+- Ajout des catégories et tags de compétences pour préparer les futures conditions de progression.
+- Affichage automatique des paliers Expérimenté et Maîtrise selon le score naturel.
+
+---
+
+## [0.1.5]
 
 ### Ajouté
 - Ajout des boutons d’augmentation et de réduction des Bases.
