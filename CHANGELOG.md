@@ -2,7 +2,15 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
-## [0.1.11.1] - En cours
+## [0.1.11.2] - En cours
+
+### Corrigé
+- Correction de la clé interne de la Base Lignée dans la fiche : `lign` au lieu de `lig`.
+- Le déverrouillage visuel des rangs de lignée utilise désormais correctement la Base Lignée.
+
+---
+
+## [0.1.11.1]
 
 ### Corrigé
 - Correction du déverrouillage visuel des rangs de lignée lors de l’augmentation de la Base Lignée.

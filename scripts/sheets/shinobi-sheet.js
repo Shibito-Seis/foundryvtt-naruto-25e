@@ -217,7 +217,7 @@ context.skillGroups = categoryOrder.map((category) => {
       (mode === "hybridVoie" && !gmOptions.allowHybridVoie)
   };
 
-  const lineageValue = Number(this.actor.system.bases?.lig?.value ?? 1);
+  const lineageValue = Number(this.actor.system.bases?.lign?.value ?? 1);
 
   const buildClanTrackForSheet = (clanKey, role) => {
     if (!clanKey) return null;
