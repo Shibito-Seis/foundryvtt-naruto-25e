@@ -2,7 +2,15 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
-## [0.1.10.1] - En cours
+## [0.1.10.2] - En cours
+
+### Corrigé
+- Correction d’une double déclaration de la variable `heritage` empêchant le chargement du script de fiche.
+- Restauration du chargement de la fiche Shinobi personnalisée et des paramètres système.
+
+---
+
+## [0.1.10.1]
 
 ### Corrigé
 - Républication propre de la version 0.1.10 suite à un problème d’installation ou de cache sur The Forge.

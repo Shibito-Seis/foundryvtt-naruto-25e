@@ -197,7 +197,6 @@ context.skillGroups = categoryOrder.map((category) => {
 
   context.isGM = game.user.isGM;
 
-  const heritage = this.actor.system.heritage ?? {};
   const mode = heritage.mode ?? "clan";
   const gmOptions = heritage.gmOptions ?? {};
 
