@@ -533,3 +533,40 @@ NARUTO25E.voies = {
     tags: ["voie", "taijutsu", "konoha"]
   }
 };
+
+NARUTO25E.clanLineageCaps = {
+  aburame: 5,
+  akaba: 5,
+  akimichi: 10,
+  aniki: 5,
+  ao: 10,
+  eshimuro: 10,
+  hyuga: 10,
+  inuzuka: 10,
+  ishida: 10,
+  kagayaki: 10,
+  kato: 10,
+  kenta: 10,
+  kurama: 10,
+  mitokado: 10,
+  morino: 10,
+  munefuda: 10,
+  nara: 5,
+  sarutobi: 5,
+  senju: 10,
+  shimadoku: 10,
+  shimura: 10,
+  takeda: 10,
+  uchiha: 10,
+  utatane: 10,
+  yamanaka: 10
+};
+
+NARUTO25E.getClanLineageCap = function (clanKey) {
+  return Number(NARUTO25E.clanLineageCaps[clanKey] ?? 10);
+};
+
+NARUTO25E.getClanMandatorySkill = function (clanKey) {
+  const clan = NARUTO25E.clans?.[clanKey];
+  return clan?.skillKey || "";
+};

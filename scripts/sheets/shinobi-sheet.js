@@ -217,6 +217,51 @@ context.skillGroups = categoryOrder.map((category) => {
       (mode === "hybridVoie" && !gmOptions.allowHybridVoie)
   };
 
+  const lineageValue = Number(this.actor.system.bases?.lig?.value ?? 1);
+
+  context.lineageTracks = heritage.tracks ?? [];
+
+  context.heritageMandatorySkills = [];
+
+  const addMandatorySkillDisplay = (clanKey, sourceLabel) => {
+    if (!clanKey) return;
+
+    const clan = NARUTO25E.clans?.[clanKey];
+    if (!clan) return;
+
+    const skillKey = NARUTO25E.getClanMandatorySkill(clanKey);
+    if (!skillKey) return;
+
+    const skillDefinition = NARUTO25E.skillDefinitions?.[skillKey];
+    if (!skillDefinition) return;
+
+    context.heritageMandatorySkills.push({
+      clanKey,
+      clanLabel: clan.label,
+      skillKey,
+      skillLabel: skillDefinition.label,
+      sourceLabel
+    });
+  };
+
+  if (heritage.mode === "clan" || heritage.mode === "hybridClan") {
+    addMandatorySkillDisplay(heritage.clan, "Clan principal");
+  }
+
+  if (heritage.mode === "hybridClan") {
+    addMandatorySkillDisplay(heritage.hybrid?.secondaryClan, "Clan secondaire");
+  }
+
+  if (heritage.mode === "hybridVoie") {
+    addMandatorySkillDisplay(heritage.hybrid?.secondaryClan, "Hybridation de voie");
+  }
+
+  context.lineageInfo = {
+    value: lineageValue,
+    hasTracks: context.lineageTracks.length > 0,
+    hasMandatorySkills: context.heritageMandatorySkills.length > 0
+  };
+
   return context;
 }
 

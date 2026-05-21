@@ -257,3 +257,83 @@
 .naruto-25e-shinobi-sheet textarea:disabled {
   opacity: 0.55;
 }
+
+.naruto-25e-shinobi-sheet .lineage-section {
+  margin-top: 14px;
+  padding: 10px;
+  border: 1px solid #999;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.naruto-25e-shinobi-sheet .lineage-section h3 {
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  font-size: 14px;
+  border-bottom: 1px solid #777;
+  padding-bottom: 4px;
+}
+
+.naruto-25e-shinobi-sheet .lineage-mandatory-skills {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.naruto-25e-shinobi-sheet .lineage-help,
+.naruto-25e-shinobi-sheet .muted {
+  opacity: 0.75;
+  font-size: 12px;
+}
+
+.naruto-25e-shinobi-sheet .lineage-track {
+  margin-top: 12px;
+}
+
+.naruto-25e-shinobi-sheet .lineage-track h4 {
+  margin: 0 0 6px;
+  font-size: 13px;
+}
+
+.naruto-25e-shinobi-sheet .lineage-ranks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 6px;
+}
+
+.naruto-25e-shinobi-sheet .lineage-rank {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 2px 6px;
+  align-items: center;
+  padding: 6px;
+  border: 1px solid #777;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.naruto-25e-shinobi-sheet .lineage-rank-number {
+  grid-row: span 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.naruto-25e-shinobi-sheet .lineage-rank-label {
+  font-weight: bold;
+}
+
+.naruto-25e-shinobi-sheet .lineage-rank-status {
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+.naruto-25e-shinobi-sheet .lineage-rank.locked {
+  opacity: 0.45;
+}
+
+.naruto-25e-shinobi-sheet .lineage-rank.unlocked {
+  border-color: #444;
+}

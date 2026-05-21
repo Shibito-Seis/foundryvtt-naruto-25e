@@ -2,7 +2,22 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
-## [0.1.10.2] - En cours
+## [0.1.11] - En cours
+
+### Ajouté
+- Ajout des limites de rangs de lignée par clan.
+- Ajout de l’affichage des pistes de capacités de lignée dans l’onglet Lignée.
+- Ajout du déverrouillage visuel des rangs de lignée selon la Base Lignée.
+- Ajout de l’affichage des compétences obligatoires de clan.
+- Ajout de l’application automatique des compétences obligatoires de clan.
+- Prise en charge du clan principal, du clan hybride et de la voie hybridée pour les compétences obligatoires.
+
+### Modifié
+- L’onglet Lignée prépare désormais les futures capacités détaillées sans les automatiser immédiatement.
+
+---
+
+## [0.1.10.2]
 
 ### Corrigé
 - Correction d’une double déclaration de la variable `heritage` empêchant le chargement du script de fiche.

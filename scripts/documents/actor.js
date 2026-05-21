@@ -10,6 +10,7 @@ export class Naruto25eActor extends Actor {
 
     this._prepareBases(system);
     this._prepareSkills(system);
+    this._prepareHeritage(system);
     this._prepareResources(system);
     this._prepareExperience(system);
     this._prepareMissions(system);
@@ -344,5 +345,98 @@ async decreaseBase(baseKey) {
     });
 
     ui.notifications.info(`${label} réduit à ${previous}.`);
+  }
+
+    _prepareHeritage(system) {
+    if (!system.heritage) return;
+
+    const heritage = system.heritage;
+    const mode = heritage.mode ?? "clan";
+
+    const grantedSkillKeys = new Set();
+
+    const addClanMandatorySkill = (clanKey) => {
+      if (!clanKey) return;
+
+      const skillKey = NARUTO25E.getClanMandatorySkill(clanKey);
+      if (!skillKey) return;
+
+      grantedSkillKeys.add(skillKey);
+    };
+
+    if (mode === "clan" || mode === "hybridClan") {
+      addClanMandatorySkill(heritage.clan);
+    }
+
+    if (mode === "hybridClan" || mode === "hybridVoie") {
+      addClanMandatorySkill(heritage.hybrid?.secondaryClan);
+    }
+
+    for (const skillKey of grantedSkillKeys) {
+      const definition = NARUTO25E.skillDefinitions?.[skillKey];
+      if (!definition) continue;
+
+      if (!system.skills[skillKey]) {
+        system.skills[skillKey] = {
+          natural: 1,
+          bonus: 0,
+          owned: true
+        };
+      }
+
+      system.skills[skillKey].owned = true;
+      system.skills[skillKey].grantedByHeritage = true;
+    }
+
+    const lineageValue = Number(system.bases?.lig?.value ?? 1);
+    heritage.lineageValue = lineageValue;
+
+    const buildClanTrack = (clanKey, role) => {
+      if (!clanKey) return null;
+
+      const clan = NARUTO25E.clans?.[clanKey];
+      if (!clan) return null;
+
+      const maxRank = NARUTO25E.getClanLineageCap(clanKey);
+      const ranks = [];
+
+      for (let rank = 1; rank <= maxRank; rank++) {
+        ranks.push({
+          rank,
+          unlocked: lineageValue >= rank,
+          label: `Rang ${rank}`,
+          placeholder: "Capacité de lignée à définir"
+        });
+      }
+
+      return {
+        key: clanKey,
+        label: clan.label,
+        role,
+        maxRank,
+        ranks
+      };
+    };
+
+    heritage.tracks = [];
+
+    if (mode === "clan") {
+      const primaryTrack = buildClanTrack(heritage.clan, "Clan principal");
+      if (primaryTrack) heritage.tracks.push(primaryTrack);
+    }
+
+    if (mode === "hybridClan") {
+      const primaryTrack = buildClanTrack(heritage.clan, "Clan principal");
+      const secondaryTrack = buildClanTrack(heritage.hybrid?.secondaryClan, "Clan secondaire");
+
+      if (primaryTrack) heritage.tracks.push(primaryTrack);
+      if (secondaryTrack) heritage.tracks.push(secondaryTrack);
+    }
+
+    if (mode === "hybridVoie") {
+      const secondaryTrack = buildClanTrack(heritage.hybrid?.secondaryClan, "Hybridation de voie");
+
+      if (secondaryTrack) heritage.tracks.push(secondaryTrack);
+    }
   }
 }

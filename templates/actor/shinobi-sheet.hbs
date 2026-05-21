@@ -389,6 +389,53 @@
         Notes de lignée
         <textarea name="system.heritage.notes">{{system.heritage.notes}}</textarea>
       </label>
+      <section class="lineage-section">
+        <h3>Compétences obligatoires de lignée</h3>
+
+        {{#if lineageInfo.hasMandatorySkills}}
+          <ul class="lineage-mandatory-skills">
+            {{#each heritageMandatorySkills as |entry|}}
+              <li>
+                <strong>{{entry.skillLabel}}</strong>
+                <span>— {{entry.clanLabel}} / {{entry.sourceLabel}}</span>
+              </li>
+            {{/each}}
+          </ul>
+        {{else}}
+          <p class="muted">Aucune compétence obligatoire de clan actuellement liée.</p>
+        {{/if}}
+      </section>
+
+      <section class="lineage-section">
+        <h3>Capacités de lignée</h3>
+
+        <p class="lineage-help">
+        Base Lignée actuelle : <strong>{{lineageInfo.value}}</strong>.
+        Les capacités détaillées seront ajoutées progressivement ; pour l’instant, cette piste sert à visualiser les rangs potentiellement accessibles.
+        </p>
+
+          {{#if lineageInfo.hasTracks}}
+            {{#each lineageTracks as |track|}}
+              <div class="lineage-track">
+                <h4>{{track.role}} — {{track.label}}</h4>
+
+                <div class="lineage-ranks">
+                  {{#each track.ranks as |rank|}}
+                    <div class="lineage-rank {{#if rank.unlocked}}unlocked{{else}}locked{{/if}}">
+                      <span class="lineage-rank-number">{{rank.rank}}</span>
+                      <span class="lineage-rank-label">{{rank.label}}</span>
+                      <span class="lineage-rank-status">
+                      {{#if rank.unlocked}}Débloqué{{else}}Verrouillé{{/if}}
+                      </span>
+                    </div>
+                  {{/each}}
+                </div>
+              </div>
+            {{/each}}
+          {{else}}
+            <p class="muted">Aucune piste de lignée à afficher pour ce mode d’héritage.</p>
+          {{/if}}
+      </section>
     </section>
     </div>
 
