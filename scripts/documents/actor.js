@@ -388,7 +388,7 @@ async decreaseBase(baseKey) {
       system.skills[skillKey].grantedByHeritage = true;
     }
 
-    const lineageValue = Number(system.bases?.lig?.value ?? 1);
+    const lineageValue = Number(system.bases?.lign?.value ?? 1);
     heritage.lineageValue = lineageValue;
 
     const buildClanTrack = (clanKey, role) => {

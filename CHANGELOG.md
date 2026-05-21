@@ -2,7 +2,15 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
-## [0.1.11] - En cours
+## [0.1.11.1] - En cours
+
+### Corrigé
+- Correction du déverrouillage visuel des rangs de lignée lors de l’augmentation de la Base Lignée.
+- Les pistes de lignée sont désormais recalculées directement au rendu de la fiche.
+
+---
+
+## [0.1.11]
 
 ### Ajouté
 - Ajout des limites de rangs de lignée par clan.

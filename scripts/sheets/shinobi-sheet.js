@@ -219,7 +219,53 @@ context.skillGroups = categoryOrder.map((category) => {
 
   const lineageValue = Number(this.actor.system.bases?.lig?.value ?? 1);
 
-  context.lineageTracks = heritage.tracks ?? [];
+  const buildClanTrackForSheet = (clanKey, role) => {
+    if (!clanKey) return null;
+
+    const clan = NARUTO25E.clans?.[clanKey];
+    if (!clan) return null;
+
+    const maxRank = NARUTO25E.getClanLineageCap(clanKey);
+    const ranks = [];
+
+    for (let rank = 1; rank <= maxRank; rank++) {
+      ranks.push({
+        rank,
+        unlocked: lineageValue >= rank,
+        label: `Rang ${rank}`,
+        placeholder: "Capacité de lignée à définir"
+      });
+    }
+
+    return {
+      key: clanKey,
+      label: clan.label,
+      role,
+      maxRank,
+      ranks
+    };
+  };
+
+  context.lineageTracks = [];
+
+  if (heritage.mode === "clan") {
+    const primaryTrack = buildClanTrackForSheet(heritage.clan, "Clan principal");
+    if (primaryTrack) context.lineageTracks.push(primaryTrack);
+  }
+
+  if (heritage.mode === "hybridClan") {
+    const primaryTrack = buildClanTrackForSheet(heritage.clan, "Clan principal");
+    const secondaryTrack = buildClanTrackForSheet(heritage.hybrid?.secondaryClan, "Clan secondaire");
+
+    if (primaryTrack) context.lineageTracks.push(primaryTrack);
+    if (secondaryTrack) context.lineageTracks.push(secondaryTrack);
+  }
+
+  if (heritage.mode === "hybridVoie") {
+    const secondaryTrack = buildClanTrackForSheet(heritage.hybrid?.secondaryClan, "Hybridation de voie");
+
+    if (secondaryTrack) context.lineageTracks.push(secondaryTrack);
+  }
 
   context.heritageMandatorySkills = [];
 
