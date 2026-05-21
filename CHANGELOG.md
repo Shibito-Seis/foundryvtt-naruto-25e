@@ -2,7 +2,15 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
-## [0.1.10] - En cours
+## [0.1.10.1] - En cours
+
+### Corrigé
+- Républication propre de la version 0.1.10 suite à un problème d’installation ou de cache sur The Forge.
+- Vérification du chargement du script principal du système.
+
+---
+
+## [0.1.10]
 
 ### Ajouté
 - Ajout d’options MJ par fiche pour autoriser le Clan hybride ou la Voie hybridée.
