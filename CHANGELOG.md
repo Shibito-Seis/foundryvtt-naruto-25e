@@ -2,7 +2,26 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
-## [0.1.11.2] - En cours
+## [0.1.12] - En cours
+
+### Ajouté
+- Ajout de la table officielle des rangs ninja.
+- Ajout des seuils d’XP par rang.
+- Ajout des plafonds de Bases selon le rang.
+- Ajout de l’affichage du rang actuel et du prochain rang.
+- Ajout des conditions de promotion Aspirant vers Genin.
+- Ajout des conditions de promotion Genin vers Chūnin.
+- Ajout des conditions de promotion Chūnin vers Jōnin.
+- Ajout d’une validation MJ pour les promotions importantes.
+- Ajout d’une validation MJ recommandée pour Jōnin S, Sannin et Kage.
+
+### Modifié
+- L’onglet Progression affiche désormais les conditions réelles de passage de rang.
+- L’en-tête de fiche utilise désormais le rang calculé par la progression.
+
+---
+
+## [0.1.11.2]
 
 ### Corrigé
 - Correction de la clé interne de la Base Lignée dans la fiche : `lign` au lieu de `lig`.

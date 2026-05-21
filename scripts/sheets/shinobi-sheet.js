@@ -308,6 +308,20 @@ context.skillGroups = categoryOrder.map((category) => {
     hasMandatorySkills: context.heritageMandatorySkills.length > 0
   };
 
+  const rank = this.actor.system.progression?.rank ?? {};
+
+  context.rankProgression = {
+    currentLabel: rank.currentLabel ?? "Aspirant Ninja",
+    currentShortLabel: rank.currentShortLabel ?? "Aspirant",
+    currentBaseCap: rank.currentBaseCap ?? 3,
+    next: rank.next ?? null,
+    checks: rank.checks ?? [],
+    canPromote: Boolean(rank.canPromote),
+    requiresGM: Boolean(rank.requiresGM),
+    automaticChecksPassed: Boolean(rank.automaticChecksPassed),
+    isMaxRank: !rank.next
+  };
+
   return context;
 }
 
@@ -412,6 +426,11 @@ context.skillGroups = categoryOrder.map((category) => {
     }
 
     await this.actor.update(updateData);
+  });
+
+  html.find(".rank-promote").on("click", async (event) => {
+  event.preventDefault();
+  await this.actor.promoteToNextRank();
   });
   }
 }

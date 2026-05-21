@@ -570,3 +570,170 @@ NARUTO25E.getClanMandatorySkill = function (clanKey) {
   const clan = NARUTO25E.clans?.[clanKey];
   return clan?.skillKey || "";
 };
+
+NARUTO25E.ranks = {
+  aspirant: {
+    label: "Aspirant Ninja",
+    shortLabel: "Aspirant",
+    xp: 0,
+    grade: "aspirant",
+    baseCap: 3,
+    requiresGM: false
+  },
+
+  geninD: {
+    label: "Genin rang D",
+    shortLabel: "Genin D",
+    xp: 0,
+    grade: "genin",
+    baseCap: 5,
+    requiresGM: true,
+    promotion: "genin"
+  },
+  geninC: {
+    label: "Genin rang C",
+    shortLabel: "Genin C",
+    xp: 200,
+    grade: "genin",
+    baseCap: 5,
+    requiresGM: false
+  },
+  geninB: {
+    label: "Genin rang B",
+    shortLabel: "Genin B",
+    xp: 400,
+    grade: "genin",
+    baseCap: 5,
+    requiresGM: false
+  },
+  geninA: {
+    label: "Genin rang A",
+    shortLabel: "Genin A",
+    xp: 600,
+    grade: "genin",
+    baseCap: 5,
+    requiresGM: false
+  },
+
+  chuninD: {
+    label: "Chūnin rang D",
+    shortLabel: "Chūnin D",
+    xp: 700,
+    grade: "chunin",
+    baseCap: 7,
+    requiresGM: true,
+    promotion: "chunin"
+  },
+  chuninC: {
+    label: "Chūnin rang C",
+    shortLabel: "Chūnin C",
+    xp: 1000,
+    grade: "chunin",
+    baseCap: 7,
+    requiresGM: false
+  },
+  chuninB: {
+    label: "Chūnin rang B",
+    shortLabel: "Chūnin B",
+    xp: 1300,
+    grade: "chunin",
+    baseCap: 7,
+    requiresGM: false
+  },
+  chuninA: {
+    label: "Chūnin rang A",
+    shortLabel: "Chūnin A",
+    xp: 1600,
+    grade: "chunin",
+    baseCap: 7,
+    requiresGM: false
+  },
+
+  joninD: {
+    label: "Jōnin rang D",
+    shortLabel: "Jōnin D",
+    xp: 1700,
+    grade: "jonin",
+    baseCap: 10,
+    requiresGM: true,
+    promotion: "jonin"
+  },
+  joninC: {
+    label: "Jōnin rang C",
+    shortLabel: "Jōnin C",
+    xp: 2200,
+    grade: "jonin",
+    baseCap: 10,
+    requiresGM: false
+  },
+  joninB: {
+    label: "Jōnin rang B",
+    shortLabel: "Jōnin B",
+    xp: 2700,
+    grade: "jonin",
+    baseCap: 10,
+    requiresGM: false
+  },
+  joninA: {
+    label: "Jōnin rang A",
+    shortLabel: "Jōnin A",
+    xp: 3200,
+    grade: "jonin",
+    baseCap: 10,
+    requiresGM: false
+  },
+
+  joninS: {
+    label: "Jōnin rang S (Sensei)",
+    shortLabel: "Jōnin S",
+    xp: 4500,
+    grade: "joninSpecial",
+    baseCap: 12,
+    requiresGM: true
+  },
+  sanninAA: {
+    label: "Sannin (AA)",
+    shortLabel: "Sannin",
+    xp: 6500,
+    grade: "sannin",
+    baseCap: 14,
+    requiresGM: true
+  },
+  kageSplus: {
+    label: "Kage (S+)",
+    shortLabel: "Kage",
+    xp: 8500,
+    grade: "kage",
+    baseCap: 16,
+    requiresGM: true
+  }
+};
+
+NARUTO25E.rankOrder = [
+  "aspirant",
+  "geninD",
+  "geninC",
+  "geninB",
+  "geninA",
+  "chuninD",
+  "chuninC",
+  "chuninB",
+  "chuninA",
+  "joninD",
+  "joninC",
+  "joninB",
+  "joninA",
+  "joninS",
+  "sanninAA",
+  "kageSplus"
+];
+
+NARUTO25E.getRank = function (rankKey) {
+  return NARUTO25E.ranks[rankKey] ?? NARUTO25E.ranks.aspirant;
+};
+
+NARUTO25E.getNextRankKey = function (rankKey) {
+  const index = NARUTO25E.rankOrder.indexOf(rankKey);
+  if (index < 0) return "geninD";
+  return NARUTO25E.rankOrder[index + 1] ?? "";
+};

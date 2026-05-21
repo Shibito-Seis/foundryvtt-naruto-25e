@@ -28,6 +28,11 @@
           "notes": ""
         },
         "progression": {
+          "rank": {
+            "current": "aspirant",
+            "lastPromotion": "",
+            "promotionNotes": ""
+          },
           "experience": {
             "total": 100,
             "spent": 0,

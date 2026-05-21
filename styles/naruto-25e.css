@@ -337,3 +337,72 @@
 .naruto-25e-shinobi-sheet .lineage-rank.unlocked {
   border-color: #444;
 }
+
+.naruto-25e-shinobi-sheet .rank-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(130px, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.naruto-25e-shinobi-sheet .rank-summary div {
+  padding: 8px;
+  border: 1px solid #999;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.naruto-25e-shinobi-sheet .rank-summary strong {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.naruto-25e-shinobi-sheet .rank-summary span {
+  display: block;
+  margin-top: 4px;
+  font-weight: bold;
+}
+
+.naruto-25e-shinobi-sheet .rank-checks {
+  margin-top: 12px;
+}
+
+.naruto-25e-shinobi-sheet .rank-check {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 6px;
+  padding: 8px;
+  border: 1px solid #999;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.naruto-25e-shinobi-sheet .rank-check-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.naruto-25e-shinobi-sheet .rank-check.passed {
+  border-color: #3f7f3f;
+}
+
+.naruto-25e-shinobi-sheet .rank-check.failed {
+  opacity: 0.7;
+}
+
+.naruto-25e-shinobi-sheet .rank-check-content strong {
+  display: block;
+}
+
+.naruto-25e-shinobi-sheet .rank-check-content span {
+  font-size: 12px;
+  opacity: 0.8;
+}

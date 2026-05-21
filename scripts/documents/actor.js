@@ -15,6 +15,7 @@ export class Naruto25eActor extends Actor {
     this._prepareExperience(system);
     this._prepareMissions(system);
     this._prepareNindo(system);
+    _prepareRankProgression(system);
   }
 
   _getBaseEffective(system, key) {
@@ -147,7 +148,7 @@ _prepareExperience(system) {
   }
   getBaseCap() {
   const rankKey = this.system.progression?.rank?.key ?? this.system.identity?.rang ?? "aspirant";
-  return NARUTO25E.baseCaps[rankKey] ?? NARUTO25E.baseCaps.aspirant;
+  return this.getCurrentBaseCap();
   }
 
 getBaseUpgradeCost(baseKey) {
@@ -438,5 +439,292 @@ async decreaseBase(baseKey) {
 
       if (secondaryTrack) heritage.tracks.push(secondaryTrack);
     }
+  }
+    _getMissionSuccessCount(system, rank) {
+    const missions = system.missions ?? {};
+
+    const candidates = [
+      missions?.[rank]?.success,
+      missions?.[rank]?.successes,
+      missions?.[rank]?.reussies,
+      missions?.[rank]?.succeeded,
+      missions?.[`mission${rank.toUpperCase()}`]?.success,
+      missions?.[`mission${rank.toUpperCase()}`]?.successes,
+      missions?.[`mission${rank.toUpperCase()}`]?.reussies,
+      missions?.[`mission${rank.toUpperCase()}`]?.succeeded,
+      missions?.success?.[rank],
+      missions?.reussies?.[rank]
+    ];
+
+    for (const value of candidates) {
+      if (Number.isFinite(Number(value))) return Number(value);
+    }
+
+    return 0;
+    }
+
+  _countBasesAtLeast(system, threshold) {
+    return Object.values(system.bases ?? {}).filter((base) => {
+      return Number(base.value ?? 0) >= threshold;
+    }).length;
+  }
+
+  _countOwnedSkillsAtLeast(system, threshold, tagFilter) {
+    return Object.values(system.skills ?? {}).filter((skill) => {
+      if (!skill.owned) return false;
+      if (Number(skill.natural ?? 0) < threshold) return false;
+
+      const tags = skill.tags ?? [];
+      return tagFilter(tags, skill);
+    }).length;
+  }
+
+  _hasOwnedSkillAtLeast(system, threshold, tagFilter) {
+    return this._countOwnedSkillsAtLeast(system, threshold, tagFilter) >= 1;
+  }
+
+  _getPromotionChecks(system, nextRankKey) {
+    const xpTotal = Number(system.progression?.experience?.total ?? 0);
+
+    const checks = [];
+
+    const addCheck = (key, label, passed, detail = "") => {
+      checks.push({
+        key,
+        label,
+        passed: Boolean(passed),
+        detail
+      });
+    };
+
+    const nextRank = NARUTO25E.getRank(nextRankKey);
+
+    addCheck(
+      "xp",
+      `XP minimale : ${nextRank.xp}`,
+      xpTotal >= nextRank.xp,
+      `${xpTotal} / ${nextRank.xp}`
+    );
+
+    if (nextRankKey === "geninD") {
+      const missionsD = this._getMissionSuccessCount(system, "d");
+
+      addCheck(
+        "missionD",
+        "Avoir réussi au moins 1 mission de rang D",
+        missionsD >= 1,
+        `${missionsD} / 1`
+      );
+
+      addCheck(
+        "gm",
+        "Validation MJ / examen Genin",
+        false,
+        "Validation manuelle requise"
+      );
+    }
+
+    if (nextRankKey === "chuninD") {
+      const missionsC = this._getMissionSuccessCount(system, "c");
+      const basesAt5 = this._countBasesAtLeast(system, 5);
+
+      const hasChakraNature5 = this._hasOwnedSkillAtLeast(system, 5, (tags) => {
+        return tags.includes("chakraNature");
+      });
+
+      const hasCombatOrInfiltration5 = this._hasOwnedSkillAtLeast(system, 5, (tags) => {
+        return tags.includes("combat") || tags.includes("infiltration");
+      });
+
+      addCheck(
+        "missionsC",
+        "Avoir réussi plus de 10 missions de rang C",
+        missionsC >= 11,
+        `${missionsC} / 11`
+      );
+
+      addCheck(
+        "chakraNature5",
+        "Avoir une nature de chakra au niveau Expérimenté",
+        hasChakraNature5,
+        "Compétence de nature de chakra à 5+"
+      );
+
+      addCheck(
+        "combatInfiltration5",
+        "Avoir une discipline de combat ou d’infiltration au niveau Expérimenté",
+        hasCombatOrInfiltration5,
+        "Compétence combat/infiltration à 5+"
+      );
+
+      addCheck(
+        "bases5",
+        "Avoir trois Bases à 5",
+        basesAt5 >= 3,
+        `${basesAt5} / 3`
+      );
+
+      addCheck(
+        "gm",
+        "Validation MJ / examen Chūnin",
+        false,
+        "Validation manuelle requise"
+      );
+    }
+
+    if (nextRankKey === "joninD") {
+      const missionsB = this._getMissionSuccessCount(system, "b");
+      const basesAt7 = this._countBasesAtLeast(system, 7);
+
+      const hasChakraNature7 = this._hasOwnedSkillAtLeast(system, 7, (tags) => {
+        return tags.includes("chakraNature");
+      });
+
+      const combatOrInfiltration7Count = this._countOwnedSkillsAtLeast(system, 7, (tags) => {
+        return tags.includes("combat") || tags.includes("infiltration");
+      });
+
+      addCheck(
+        "missionsB",
+        "Avoir réussi plus de 10 missions de rang B",
+        missionsB >= 11,
+        `${missionsB} / 11`
+      );
+
+      addCheck(
+        "chakraNature7",
+        "Avoir une nature de chakra au niveau Maîtrise",
+        hasChakraNature7,
+        "Compétence de nature de chakra à 7+"
+      );
+
+      addCheck(
+        "combatInfiltration7",
+        "Avoir deux disciplines de combat ou d’infiltration au niveau Maîtrise",
+        combatOrInfiltration7Count >= 2,
+        `${combatOrInfiltration7Count} / 2`
+      );
+
+      addCheck(
+        "bases7",
+        "Avoir trois Bases à 7",
+        basesAt7 >= 3,
+        `${basesAt7} / 3`
+      );
+
+      addCheck(
+        "gm",
+        "Validation MJ / comité Jōnin",
+        false,
+        "Validation manuelle requise"
+      );
+    }
+
+    if (["joninS", "sanninAA", "kageSplus"].includes(nextRankKey)) {
+      addCheck(
+        "gmSpecial",
+        "Validation MJ recommandée pour rang spécial",
+        false,
+        "Sensei / Sannin / Kage"
+      );
+    }
+
+    return checks;
+  }
+
+  _prepareRankProgression(system) {
+    if (!system.progression) system.progression = {};
+    if (!system.progression.rank) {
+      system.progression.rank = {
+        current: "aspirant",
+        lastPromotion: "",
+        promotionNotes: ""
+      };
+    }
+
+    const rankData = system.progression.rank;
+    const currentKey = rankData.current ?? "aspirant";
+    const currentRank = NARUTO25E.getRank(currentKey);
+    const nextKey = NARUTO25E.getNextRankKey(currentKey);
+    const nextRank = nextKey ? NARUTO25E.getRank(nextKey) : null;
+
+    rankData.currentLabel = currentRank.label;
+    rankData.currentShortLabel = currentRank.shortLabel;
+    rankData.currentBaseCap = currentRank.baseCap;
+
+    if (!nextKey || !nextRank) {
+      rankData.next = null;
+      rankData.canPromote = false;
+      rankData.checks = [];
+      return;
+    }
+
+    const checks = this._getPromotionChecks(system, nextKey);
+    const blockingChecks = checks.filter((check) => {
+      return check.key !== "gm" && check.key !== "gmSpecial";
+    });
+
+    const automaticChecksPassed = blockingChecks.every((check) => check.passed);
+    const requiresGM = Boolean(nextRank.requiresGM) || checks.some((check) => {
+      return check.key === "gm" || check.key === "gmSpecial";
+    });
+
+    rankData.next = {
+      key: nextKey,
+      label: nextRank.label,
+      shortLabel: nextRank.shortLabel,
+      xp: nextRank.xp,
+      baseCap: nextRank.baseCap,
+      requiresGM
+    };
+
+    rankData.checks = checks;
+    rankData.automaticChecksPassed = automaticChecksPassed;
+    rankData.requiresGM = requiresGM;
+    rankData.canPromote = automaticChecksPassed;
+  }
+
+  getCurrentRankKey() {
+    return this.system.progression?.rank?.current ?? "aspirant";
+  }
+
+  getCurrentRank() {
+    return NARUTO25E.getRank(this.getCurrentRankKey());
+  }
+
+  getCurrentBaseCap() {
+    return Number(this.getCurrentRank().baseCap ?? 3);
+  }
+
+  async promoteToNextRank() {
+    if (this.type !== "shinobi") return;
+
+    if (!game.user.isGM) {
+      ui.notifications.warn("Seul le MJ peut valider un passage de rang.");
+      return;
+    }
+
+    const currentKey = this.getCurrentRankKey();
+    const nextKey = NARUTO25E.getNextRankKey(currentKey);
+
+    if (!nextKey) {
+      ui.notifications.warn("Ce personnage est déjà au rang maximal.");
+      return;
+    }
+
+    const rankData = this.system.progression?.rank;
+    if (!rankData?.canPromote) {
+      ui.notifications.warn("Les conditions de promotion ne sont pas encore remplies.");
+      return;
+    }
+
+    const nextRank = NARUTO25E.getRank(nextKey);
+
+    await this.update({
+      "system.progression.rank.current": nextKey,
+      "system.progression.rank.lastPromotion": new Date().toISOString()
+    });
+
+    ui.notifications.info(`${this.name} passe au rang : ${nextRank.label}.`);
   }
 }
