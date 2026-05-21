@@ -15,7 +15,7 @@ export class Naruto25eActor extends Actor {
     this._prepareExperience(system);
     this._prepareMissions(system);
     this._prepareNindo(system);
-    _prepareRankProgression(system);
+    this._prepareRankProgression(system);
   }
 
   _getBaseEffective(system, key) {

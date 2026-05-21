@@ -2,7 +2,15 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
-## [0.1.12] - En cours
+## [0.1.12.1] - En cours
+
+### Corrigé
+- Correction de l’appel automatique de la préparation de progression de rang.
+- L’onglet Progression affiche désormais correctement le prochain rang et les conditions de promotion sans appel manuel en console.
+
+---
+
+## [0.1.12]
 
 ### Ajouté
 - Ajout de la table officielle des rangs ninja.
