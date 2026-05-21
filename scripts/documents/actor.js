@@ -444,14 +444,17 @@ async decreaseBase(baseKey) {
     const missions = system.missions ?? {};
 
     const candidates = [
+      missions?.[rank]?.completed,
       missions?.[rank]?.success,
       missions?.[rank]?.successes,
       missions?.[rank]?.reussies,
       missions?.[rank]?.succeeded,
+      missions?.[`mission${rank.toUpperCase()}`]?.completed,
       missions?.[`mission${rank.toUpperCase()}`]?.success,
       missions?.[`mission${rank.toUpperCase()}`]?.successes,
       missions?.[`mission${rank.toUpperCase()}`]?.reussies,
       missions?.[`mission${rank.toUpperCase()}`]?.succeeded,
+      missions?.completed?.[rank],
       missions?.success?.[rank],
       missions?.reussies?.[rank]
     ];
@@ -461,7 +464,7 @@ async decreaseBase(baseKey) {
     }
 
     return 0;
-    }
+  }
 
   _countBasesAtLeast(system, threshold) {
     return Object.values(system.bases ?? {}).filter((base) => {

@@ -2,7 +2,15 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
-## [0.1.12.1] - En cours
+## [0.1.12.2] - En cours
+
+### Corrigé
+- Correction de la lecture des missions réussies dans les conditions de promotion.
+- Les promotions lisent désormais correctement `system.missions.<rang>.completed`.
+
+---
+
+## [0.1.12.1]
 
 ### Corrigé
 - Correction de l’appel automatique de la préparation de progression de rang.
