@@ -109,11 +109,24 @@ context.skillGroups = categoryOrder.map((category) => {
     selected: this.actor.system.heritage?.villageStatus === key
   }));
 
-  context.heritageModes = Object.entries(NARUTO25E.heritageModes).map(([key, label]) => ({
-    key,
-    label,
-    selected: this.actor.system.heritage?.mode === key
-  }));
+  context.heritageModes = Object.entries(NARUTO25E.heritageModes).map(([key, label]) => {
+    let disabled = false;
+
+    if (key === "hybridClan" && !this.actor.system.heritage?.gmOptions?.allowHybridClan) {
+      disabled = true;
+    }
+
+    if (key === "hybridVoie" && !this.actor.system.heritage?.gmOptions?.allowHybridVoie) {
+      disabled = true;
+    }
+
+    return {
+      key,
+      label,
+      selected: this.actor.system.heritage?.mode === key,
+      disabled
+    };
+  });
 
   const selectedVillage = this.actor.system.heritage?.village ?? "konoha";
 
@@ -182,6 +195,29 @@ context.skillGroups = categoryOrder.map((category) => {
     main: heritageMainLabel
   };
 
+  context.isGM = game.user.isGM;
+
+  const heritage = this.actor.system.heritage ?? {};
+  const mode = heritage.mode ?? "clan";
+  const gmOptions = heritage.gmOptions ?? {};
+
+  context.heritageState = {
+    mode,
+    isClanMode: mode === "clan",
+    isVoieMode: mode === "voie",
+    isHybridClanMode: mode === "hybridClan",
+    isHybridVoieMode: mode === "hybridVoie",
+    allowHybridClan: Boolean(gmOptions.allowHybridClan),
+    allowHybridVoie: Boolean(gmOptions.allowHybridVoie),
+    clanDisabled: mode === "voie" || mode === "hybridVoie",
+    voieDisabled: mode === "clan" || mode === "hybridClan",
+    hybridDisabled:
+      (mode === "clan") ||
+      (mode === "voie") ||
+      (mode === "hybridClan" && !gmOptions.allowHybridClan) ||
+      (mode === "hybridVoie" && !gmOptions.allowHybridVoie)
+  };
+
   return context;
 }
 
@@ -212,6 +248,80 @@ context.skillGroups = categoryOrder.map((category) => {
   event.preventDefault();
   const skillKey = event.currentTarget.dataset.skill;
   await this.actor.decreaseSkill(skillKey);
+  });
+
+  html.find(".heritage-mode-select").on("change", async (event) => {
+  event.preventDefault();
+
+  const mode = event.currentTarget.value;
+  const gmOptions = this.actor.system.heritage?.gmOptions ?? {};
+
+  if (mode === "hybridClan" && !gmOptions.allowHybridClan) {
+    ui.notifications.warn("Le Clan hybride n’est pas autorisé sur cette fiche.");
+    await this.actor.update({ "system.heritage.mode": "clan" });
+    return;
+  }
+
+  if (mode === "hybridVoie" && !gmOptions.allowHybridVoie) {
+    ui.notifications.warn("La Voie hybridée n’est pas autorisée sur cette fiche.");
+    await this.actor.update({ "system.heritage.mode": "voie" });
+    return;
+  }
+
+  const updateData = {
+    "system.heritage.mode": mode
+  };
+
+  if (mode === "clan") {
+    updateData["system.heritage.voie"] = "";
+    updateData["system.heritage.hybrid.secondaryClan"] = "";
+    updateData["system.heritage.hybrid.reason"] = "";
+  }
+
+  if (mode === "voie") {
+    updateData["system.heritage.clan"] = "";
+    updateData["system.heritage.hybrid.secondaryClan"] = "";
+    updateData["system.heritage.hybrid.reason"] = "";
+  }
+
+  if (mode === "hybridClan") {
+    updateData["system.heritage.voie"] = "";
+  }
+
+  if (mode === "hybridVoie") {
+    updateData["system.heritage.clan"] = "";
+  }
+
+  await this.actor.update(updateData);
+});
+
+  html.find(".heritage-gm-option").on("change", async (event) => {
+    event.preventDefault();
+
+    if (!game.user.isGM) return;
+
+    const field = event.currentTarget.dataset.field;
+    const checked = event.currentTarget.checked;
+
+    const updateData = {
+      [`system.heritage.gmOptions.${field}`]: checked
+    };
+
+    const currentMode = this.actor.system.heritage?.mode;
+
+    if (field === "allowHybridClan" && !checked && currentMode === "hybridClan") {
+      updateData["system.heritage.mode"] = "clan";
+      updateData["system.heritage.hybrid.secondaryClan"] = "";
+      updateData["system.heritage.hybrid.reason"] = "";
+    }
+
+    if (field === "allowHybridVoie" && !checked && currentMode === "hybridVoie") {
+      updateData["system.heritage.mode"] = "voie";
+      updateData["system.heritage.hybrid.secondaryClan"] = "";
+      updateData["system.heritage.hybrid.reason"] = "";
+    }
+
+    await this.actor.update(updateData);
   });
   }
 }

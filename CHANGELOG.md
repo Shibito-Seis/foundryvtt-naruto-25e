@@ -2,7 +2,22 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
-## [0.1.9.2] - En cours
+## [0.1.10] - En cours
+
+### Ajouté
+- Ajout d’options MJ par fiche pour autoriser le Clan hybride ou la Voie hybridée.
+- Ajout du verrouillage des modes d’héritage hybrides si l’option MJ correspondante n’est pas activée.
+- Ajout du verrouillage des champs incompatibles selon le mode d’héritage choisi.
+
+### Modifié
+- Le mode Clan vide désormais la Voie et les données d’hybridation.
+- Le mode Voie vide désormais le Clan principal et les données d’hybridation.
+- Le mode Clan hybride interdit désormais la Voie.
+- Le mode Voie hybridée interdit désormais le Clan principal.
+
+---
+
+## [0.1.9.2]
 
 ### Corrigé
 - Correction de l’affichage du champ Rang dans l’en-tête de la fiche.

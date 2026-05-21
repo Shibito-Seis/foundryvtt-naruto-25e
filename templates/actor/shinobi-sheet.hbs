@@ -283,6 +283,31 @@
     <div class="tab" data-group="primary" data-tab="heritage">
     <section class="panel">
       <h2>Lignée / Clan / Voie</h2>
+        {{#if isGM}}
+          <section class="gm-heritage-options">
+          <h3>Options MJ de cette fiche</h3>
+
+            <label class="checkbox-row">
+              <input
+                type="checkbox"
+                class="heritage-gm-option"
+                data-field="allowHybridClan"
+                {{#if heritageState.allowHybridClan}}checked{{/if}}
+              />
+              Autoriser le Clan hybride
+            </label>
+
+            <label class="checkbox-row">
+              <input
+                type="checkbox"
+                class="heritage-gm-option"
+                data-field="allowHybridVoie"
+                {{#if heritageState.allowHybridVoie}}checked{{/if}}
+              />
+              Autoriser la Voie hybridée
+            </label>
+          </section>
+        {{/if}}
 
       <div class="identity-grid">
         <label>
@@ -309,10 +334,10 @@
 
         <label>
           Type d’héritage
-          <select name="system.heritage.mode">
+          <select class="heritage-mode-select" name="system.heritage.mode">
             {{#each heritageModes as |mode|}}
-              <option value="{{mode.key}}" {{#if mode.selected}}selected{{/if}}>
-                {{mode.label}}
+              <option value="{{mode.key}}" {{#if mode.selected}}selected{{/if}} {{#if mode.disabled}}disabled{{/if}}>
+                {{mode.label}}{{#if mode.disabled}} — option MJ requise{{/if}}
               </option>
             {{/each}}
           </select>
@@ -320,7 +345,7 @@
 
         <label>
           Clan principal
-          <select name="system.heritage.clan">
+          <select name="system.heritage.clan" {{#if heritageState.clanDisabled}}disabled{{/if}}>
             <option value="">Aucun clan sélectionné</option>
             {{#each clans as |clan|}}
               <option value="{{clan.key}}" {{#if clan.selected}}selected{{/if}}>
@@ -332,7 +357,7 @@
 
         <label>
           Voie
-          <select name="system.heritage.voie">
+          <select name="system.heritage.voie" {{#if heritageState.voieDisabled}}disabled{{/if}}>
             <option value="">Aucune voie sélectionnée</option>
             {{#each voies as |voie|}}
               <option value="{{voie.key}}" {{#if voie.selected}}selected{{/if}} {{#unless voie.selectable}}disabled{{/unless}}>
@@ -344,7 +369,7 @@
 
         <label>
           Clan secondaire / hybridation
-          <select name="system.heritage.hybrid.secondaryClan">
+          <select name="system.heritage.hybrid.secondaryClan" {{#if heritageState.hybridDisabled}}disabled{{/if}}>
             <option value="">Aucun</option>
             {{#each secondaryClans as |clan|}}
               <option value="{{clan.key}}" {{#if clan.selected}}selected{{/if}}>
@@ -355,10 +380,10 @@
         </label>
       </div>
 
-       <label>
-        Raison / origine de l’hybridation
-        <textarea name="system.heritage.hybrid.reason">{{system.heritage.hybrid.reason}}</textarea>
-       </label>
+        <label>
+          Raison / origine de l’hybridation
+          <textarea name="system.heritage.hybrid.reason" {{#if heritageState.hybridDisabled}}disabled{{/if}}>{{system.heritage.hybrid.reason}}</textarea>
+        </label>
 
       <label>
         Notes de lignée

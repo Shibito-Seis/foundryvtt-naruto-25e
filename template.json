@@ -21,6 +21,10 @@
             "secondaryClan": "",
             "reason": ""
           },
+          "gmOptions": {
+            "allowHybridClan": false,
+            "allowHybridVoie": false
+          },
           "notes": ""
         },
         "progression": {
