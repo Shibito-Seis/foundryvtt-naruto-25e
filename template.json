@@ -61,6 +61,69 @@
             "sonneThreshold": 50
           }
         },
+        "combat": {
+          "initiative": {
+            "base": 0,
+            "bonus": 0,
+            "total": 0,
+            "formula": "1d10"
+          },
+          "attacks": {
+            "arm": {
+              "label": "Attaque ARM basique",
+              "skill": "armesSimples",
+              "total": 0,
+              "bonus": 0
+            },
+            "tai": {
+              "label": "Attaque TAI basique",
+              "skill": "corpsACorps",
+              "total": 0,
+              "bonus": 0
+            }
+          },
+          "damage": {
+            "arm": {
+              "base": 0,
+              "bonus": 0,
+              "total": 0
+            },
+            "tai": {
+              "base": 0,
+              "bonus": 0,
+              "total": 0
+            }
+          },
+          "interceptions": {
+            "arm": {
+              "base": 0,
+              "bonus": 0,
+              "total": 0
+            },
+            "tai": {
+              "base": 0,
+              "bonus": 0,
+              "total": 0
+            }
+          },
+          "health": {
+            "manualState": "none",
+            "chakraState": "none",
+            "notes": "",
+            "reserves": {
+              "lineageA": {
+                "enabled": false,
+                "checked": false,
+                "label": "Lignée A"
+              },
+              "lineageB": {
+                "enabled": false,
+                "checked": false,
+                "label": "Lignée B"
+              }
+            }
+          }
+        },
         "nindo": {
           "value": 0,
           "max": 10

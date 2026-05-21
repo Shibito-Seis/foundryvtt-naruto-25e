@@ -2,7 +2,24 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
-## [0.1.12.2] - En cours
+## [0.1.13] - En cours
+
+### Ajouté
+- Ajout de l’onglet Combat / Actions.
+- Ajout de l’affichage des ressources rapides : Vigueur, Caractère, Chakra.
+- Ajout de l’affichage de la régénération passive et active du Chakra.
+- Ajout de l’initiative calculée.
+- Ajout des attaques basiques ARM et TAI.
+- Ajout des dégâts basiques ARM et TAI.
+- Ajout des interceptions ARM et TAI.
+- Ajout du bloc Santé : Fatigue, Sonné, Blessures.
+- Ajout du palier automatique lié au niveau actuel de Chakra.
+- Ajout des réserves de lignée A/B, grisées par défaut et activables par le MJ.
+- Ajout d’un mini-résumé d’état de combat dans l’onglet Résumé.
+
+---
+
+## [0.1.12.2]
 
 ### Corrigé
 - Correction de la lecture des missions réussies dans les conditions de promotion.

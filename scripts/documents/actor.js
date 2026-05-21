@@ -12,6 +12,7 @@ export class Naruto25eActor extends Actor {
     this._prepareSkills(system);
     this._prepareHeritage(system);
     this._prepareResources(system);
+    this._prepareCombat(system);
     this._prepareExperience(system);
     this._prepareMissions(system);
     this._prepareNindo(system);
@@ -633,6 +634,97 @@ async decreaseBase(baseKey) {
     }
 
     return checks;
+  }
+
+    _prepareCombat(system) {
+    if (!system.combat) system.combat = {};
+
+    const combat = system.combat;
+
+    combat.initiative = combat.initiative ?? {};
+    combat.attacks = combat.attacks ?? {};
+    combat.attacks.arm = combat.attacks.arm ?? {};
+    combat.attacks.tai = combat.attacks.tai ?? {};
+    combat.damage = combat.damage ?? {};
+    combat.damage.arm = combat.damage.arm ?? {};
+    combat.damage.tai = combat.damage.tai ?? {};
+    combat.interceptions = combat.interceptions ?? {};
+    combat.interceptions.arm = combat.interceptions.arm ?? {};
+    combat.interceptions.tai = combat.interceptions.tai ?? {};
+    combat.health = combat.health ?? {};
+    combat.health.reserves = combat.health.reserves ?? {};
+    combat.health.reserves.lineageA = combat.health.reserves.lineageA ?? {};
+    combat.health.reserves.lineageB = combat.health.reserves.lineageB ?? {};
+
+    const cor = this._getBaseEffective(system, "cor");
+    const arm = this._getBaseEffective(system, "arm");
+    const tai = this._getBaseEffective(system, "tai");
+
+    const getSkillTotal = (skillKey) => {
+      return Number(system.skills?.[skillKey]?.total ?? 0);
+    };
+
+    const armesSimples = getSkillTotal("armesSimples");
+    const corpsACorps = getSkillTotal("corpsACorps");
+
+    // Initiative provisoire validée : 1d10 + 1 + COR total + bonus éventuel.
+    combat.initiative.base = 1 + cor;
+    combat.initiative.bonus = Number(combat.initiative.bonus ?? 0);
+    combat.initiative.total = combat.initiative.base + combat.initiative.bonus;
+    combat.initiative.formula = `1d10 + ${combat.initiative.total}`;
+
+    // Attaques basiques.
+    combat.attacks.arm.label = "Attaque ARM basique";
+    combat.attacks.arm.skill = "armesSimples";
+    combat.attacks.arm.bonus = Number(combat.attacks.arm.bonus ?? 0);
+    combat.attacks.arm.total = Math.max(armesSimples, arm) + combat.attacks.arm.bonus;
+
+    combat.attacks.tai.label = "Attaque TAI basique";
+    combat.attacks.tai.skill = "corpsACorps";
+    combat.attacks.tai.bonus = Number(combat.attacks.tai.bonus ?? 0);
+    combat.attacks.tai.total = Math.max(corpsACorps, tai) + combat.attacks.tai.bonus;
+
+    // Dégâts basiques provisoires : Base effective + 1 + bonus.
+    combat.damage.arm.base = arm + 1;
+    combat.damage.arm.bonus = Number(combat.damage.arm.bonus ?? 0);
+    combat.damage.arm.total = combat.damage.arm.base + combat.damage.arm.bonus;
+
+    combat.damage.tai.base = tai + 1;
+    combat.damage.tai.bonus = Number(combat.damage.tai.bonus ?? 0);
+    combat.damage.tai.total = combat.damage.tai.base + combat.damage.tai.bonus;
+
+    // Interceptions basiques.
+    combat.interceptions.arm.base = arm;
+    combat.interceptions.arm.bonus = Number(combat.interceptions.arm.bonus ?? 0);
+    combat.interceptions.arm.total = combat.interceptions.arm.base + combat.interceptions.arm.bonus;
+
+    combat.interceptions.tai.base = tai;
+    combat.interceptions.tai.bonus = Number(combat.interceptions.tai.bonus ?? 0);
+    combat.interceptions.tai.total = combat.interceptions.tai.base + combat.interceptions.tai.bonus;
+
+    // Santé / paliers.
+    combat.health.manualState = combat.health.manualState ?? "none";
+    combat.health.notes = combat.health.notes ?? "";
+
+    const chakraValue = Number(system.resources?.chakra?.value ?? 0);
+
+    if (chakraValue < 10) {
+      combat.health.chakraState = "blessure2";
+    } else if (chakraValue < 30) {
+      combat.health.chakraState = "blessure1";
+    } else if (chakraValue < 50) {
+      combat.health.chakraState = "sonne";
+    } else {
+      combat.health.chakraState = "none";
+    }
+
+    combat.health.reserves.lineageA.label = combat.health.reserves.lineageA.label ?? "Lignée A";
+    combat.health.reserves.lineageA.enabled = Boolean(combat.health.reserves.lineageA.enabled);
+    combat.health.reserves.lineageA.checked = Boolean(combat.health.reserves.lineageA.checked);
+
+    combat.health.reserves.lineageB.label = combat.health.reserves.lineageB.label ?? "Lignée B";
+    combat.health.reserves.lineageB.enabled = Boolean(combat.health.reserves.lineageB.enabled);
+    combat.health.reserves.lineageB.checked = Boolean(combat.health.reserves.lineageB.checked);
   }
 
   _prepareRankProgression(system) {

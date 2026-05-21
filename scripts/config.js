@@ -737,3 +737,13 @@ NARUTO25E.getNextRankKey = function (rankKey) {
   if (index < 0) return "geninD";
   return NARUTO25E.rankOrder[index + 1] ?? "";
 };
+
+NARUTO25E.healthStates = {
+  none: "Pleine forme",
+  fatigue1: "Fatigue 1",
+  fatigue2: "Fatigue 2",
+  sonne: "Sonné",
+  blessure1: "Blessure 1",
+  blessure2: "Blessure 2",
+  blessure3: "Blessure 3"
+};

@@ -406,3 +406,78 @@
   font-size: 12px;
   opacity: 0.8;
 }
+
+.naruto-25e-shinobi-sheet .combat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(260px, 1fr));
+  gap: 10px;
+}
+
+.naruto-25e-shinobi-sheet .combat-card {
+  border: 1px solid #777;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.naruto-25e-shinobi-sheet .combat-card h3 {
+  margin-top: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+  padding-bottom: 4px;
+}
+
+.naruto-25e-shinobi-sheet .combat-resource-line,
+.naruto-25e-shinobi-sheet .combat-mini-state {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.naruto-25e-shinobi-sheet .combat-resource-line span,
+.naruto-25e-shinobi-sheet .combat-mini-state span,
+.naruto-25e-shinobi-sheet .combat-main-value {
+  font-weight: bold;
+}
+
+.naruto-25e-shinobi-sheet .combat-main-value {
+  font-size: 20px;
+  margin: 8px 0;
+}
+
+.naruto-25e-shinobi-sheet .health-track {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.naruto-25e-shinobi-sheet .health-track span {
+  text-align: center;
+  border: 1px solid #999;
+  padding: 6px;
+  background: rgba(0, 0, 0, 0.05);
+  font-size: 12px;
+}
+
+.naruto-25e-shinobi-sheet .chakra-alert {
+  color: #9b1c1c;
+  font-weight: bold;
+}
+
+.naruto-25e-shinobi-sheet .warning-text {
+  color: #9b1c1c;
+  font-weight: bold;
+}
+
+.naruto-25e-shinobi-sheet .disabled-field {
+  opacity: 0.45;
+}
+
+.naruto-25e-shinobi-sheet .combat-notes {
+  margin-top: 10px;
+}
+
+.naruto-25e-shinobi-sheet .combat-notes textarea {
+  min-height: 90px;
+}

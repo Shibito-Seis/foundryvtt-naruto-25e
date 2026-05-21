@@ -46,6 +46,7 @@
 
   <nav class="sheet-tabs tabs" data-group="primary">
   <a class="item" data-tab="summary">Résumé</a>
+  <a class="item" data-tab="combat">Combat / Actions</a>
   <a class="item" data-tab="bases">Bases</a>
   <a class="item" data-tab="skills">Compétences</a>
   <a class="item" data-tab="heritage">Lignée</a>
@@ -58,7 +59,7 @@
     <div class="tab" data-group="primary" data-tab="summary">
       <div class="summary-grid">
 
-        <section class="panel">
+      <section class="panel">
          <h2>Ressources</h2>
 
          <label>
@@ -124,7 +125,29 @@
           <input name="system.resources.chakra.activeRegen" type="number" value="{{system.resources.chakra.activeRegen}}" />
         </label>
         </div>
-</section>
+      </section>
+
+  <section class="panel">
+    <h2>État de combat</h2>
+
+    <div class="combat-mini-state">
+      <div>
+        <strong>État manuel</strong>
+        <span>{{combatSummary.manualStateLabel}}</span>
+      </div>
+
+      <div class="{{#if combatSummary.hasChakraAlert}}chakra-alert{{/if}}">
+        <strong>État Chakra</strong>
+        <span>{{combatSummary.chakraStateLabel}}</span>
+      </div>
+    </div>
+
+    {{#if combatSummary.hasChakraAlert}}
+      <p class="warning-text">
+        Le niveau actuel de Chakra déclenche un palier automatique.
+      </p>
+    {{/if}}
+  </section>
 
         <section class="panel">
           <h2>Nindō</h2>
@@ -166,6 +189,212 @@
         </section>
 
       </div>
+    </div>
+
+    <div class="tab" data-group="primary" data-tab="combat">
+      <section class="panel">
+        <h2>Combat / Actions</h2>
+
+        <div class="combat-grid">
+          <section class="combat-card">
+            <h3>Ressources rapides</h3>
+
+              <div class="combat-resource-line">
+                <strong>Vigueur</strong>
+                <span>{{system.resources.vigueur.value}} / {{system.resources.vigueur.max}}</span>
+              </div>
+
+              <div class="combat-resource-line">
+                <strong>Caractère</strong>
+                <span>{{system.resources.caractere.value}} / {{system.resources.caractere.max}}</span>
+              </div>
+
+              <div class="combat-resource-line">
+                <strong>Chakra</strong>
+                <span>{{system.resources.chakra.value}} / {{system.resources.chakra.max}}</span>
+              </div>
+
+              <div class="combat-resource-line">
+                <strong>Régén. passive</strong>
+                <span>{{system.resources.chakra.passiveRegen}}</span>
+                </div>
+
+              <div class="combat-resource-line">
+                <strong>Régén. active</strong>
+                <span>{{system.resources.chakra.activeRegen}}</span>
+              </div>
+          </section>
+
+          <section class="combat-card">
+            <h3>Initiative</h3>
+
+            <div class="combat-main-value">
+              {{system.combat.initiative.formula}}
+            </div>
+
+            <label>
+              Bonus Initiative
+              <input name="system.combat.initiative.bonus" type="number" value="{{system.combat.initiative.bonus}}" />
+            </label>
+
+            <p class="formula-hint">
+              Base actuelle : 1 + COR = {{system.combat.initiative.base}}
+            </p>
+          </section>
+
+          <section class="combat-card">
+            <h3>Attaques basiques</h3>
+
+              <div class="combat-resource-line">
+                <strong>ARM</strong>
+                <span>{{system.combat.attacks.arm.total}}</span>
+              </div>
+
+              <label>
+                Bonus attaque ARM
+                <input name="system.combat.attacks.arm.bonus" type="number" value="{{system.combat.attacks.arm.bonus}}" />
+              </label>
+
+              <div class="combat-resource-line">
+                <strong>TAI</strong>
+                <span>{{system.combat.attacks.tai.total}}</span>
+              </div>
+
+              <label>
+                Bonus attaque TAI
+                <input name="system.combat.attacks.tai.bonus" type="number" value="{{system.combat.attacks.tai.bonus}}" />
+              </label>
+          </section>
+
+          <section class="combat-card">
+            <h3>Dégâts basiques</h3>
+
+            <div class="combat-resource-line">
+              <strong>Dégâts ARM</strong>
+              <span>{{system.combat.damage.arm.total}}</span>
+            </div>
+
+            <label>
+              Bonus dégâts ARM
+              <input name="system.combat.damage.arm.bonus" type="number" value="{{system.combat.damage.arm.bonus}}" />
+            </label>
+
+            <div class="combat-resource-line">
+              <strong>Dégâts TAI</strong>
+              <span>{{system.combat.damage.tai.total}}</span>
+            </div>
+
+            <label>
+              Bonus dégâts TAI
+              <input name="system.combat.damage.tai.bonus" type="number" value="{{system.combat.damage.tai.bonus}}" />
+            </label>
+          </section>
+
+          <section class="combat-card">
+            <h3>Interceptions</h3>
+
+            <div class="combat-resource-line">
+              <strong>Interception ARM</strong>
+              <span>{{system.combat.interceptions.arm.total}}</span>
+            </div>
+
+            <label>
+              Bonus interception ARM
+              <input name="system.combat.interceptions.arm.bonus" type="number" value="{{system.combat.interceptions.arm.bonus}}" />
+            </label>
+
+            <div class="combat-resource-line">
+              <strong>Interception TAI</strong>
+              <span>{{system.combat.interceptions.tai.total}}</span>
+            </div>
+
+            <label>
+              Bonus interception TAI
+              <input name="system.combat.interceptions.tai.bonus" type="number" value="{{system.combat.interceptions.tai.bonus}}" />
+            </label>
+          </section>
+
+        <section class="combat-card">
+            <h3>Santé</h3>
+
+            <label>
+              Palier manuel
+              <select name="system.combat.health.manualState">
+                {{#each combatHealthStates as |state|}}
+                  <option value="{{state.key}}" {{#if state.selected}}selected{{/if}}>
+                    {{state.label}}
+                  </option>
+                {{/each}}
+              </select>
+            </label>
+
+          <div class="combat-resource-line {{#if combatSummary.hasChakraAlert}}chakra-alert{{/if}}">
+            <strong>Palier Chakra</strong>
+            <span>{{combatSummary.chakraStateLabel}}</span>
+          </div>
+
+          <div class="health-track">
+            <span>Fatigue 1</span>
+            <span>Fatigue 2</span>
+            <span>Sonné</span>
+            <span>Blessure 1</span>
+            <span>Blessure 2</span>
+            <span>Blessure 3</span>
+          </div>
+        </section>
+
+        <section class="combat-card">
+          <h3>Réserves de lignée</h3>
+
+          <label class="{{#unless system.combat.health.reserves.lineageA.enabled}}disabled-field{{/unless}}">
+            <input
+              name="system.combat.health.reserves.lineageA.checked"
+              type="checkbox"
+              {{checked system.combat.health.reserves.lineageA.checked}}
+              {{#unless system.combat.health.reserves.lineageA.enabled}}disabled{{/unless}}
+            />
+            Lignée A
+          </label>
+
+          <label class="{{#unless system.combat.health.reserves.lineageB.enabled}}disabled-field{{/unless}}">
+            <input
+              name="system.combat.health.reserves.lineageB.checked"
+              type="checkbox"
+              {{checked system.combat.health.reserves.lineageB.checked}}
+              {{#unless system.combat.health.reserves.lineageB.enabled}}disabled{{/unless}}
+            />
+            Lignée B
+          </label>
+
+          {{#if isGM}}
+            <hr />
+
+            <label>
+              <input
+                name="system.combat.health.reserves.lineageA.enabled"
+                type="checkbox"
+                {{checked system.combat.health.reserves.lineageA.enabled}}
+              />
+              MJ : autoriser Lignée A
+            </label>
+
+            <label>
+              <input
+                name="system.combat.health.reserves.lineageB.enabled"
+                type="checkbox"
+                {{checked system.combat.health.reserves.lineageB.enabled}}
+              />
+              MJ : autoriser Lignée B
+            </label>
+          {{/if}}
+        </section>
+        </div>
+
+        <section class="combat-card combat-notes">
+          <h3>Notes de combat / blessures</h3>
+          <textarea name="system.combat.health.notes">{{system.combat.health.notes}}</textarea>
+        </section>
+      </section>
     </div>
 
     <div class="tab" data-group="primary" data-tab="bases">

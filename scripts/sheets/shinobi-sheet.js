@@ -322,6 +322,20 @@ context.skillGroups = categoryOrder.map((category) => {
     isMaxRank: !rank.next
   };
 
+  context.combatHealthStates = Object.entries(NARUTO25E.healthStates).map(([key, label]) => ({
+    key,
+    label,
+    selected: this.actor.system.combat?.health?.manualState === key
+  }));
+
+  context.combatSummary = {
+    manualStateLabel:
+      NARUTO25E.healthStates[this.actor.system.combat?.health?.manualState ?? "none"] ?? "Pleine forme",
+    chakraStateLabel:
+      NARUTO25E.healthStates[this.actor.system.combat?.health?.chakraState ?? "none"] ?? "Pleine forme",
+    hasChakraAlert: (this.actor.system.combat?.health?.chakraState ?? "none") !== "none"
+  };
+
   return context;
 }
 
