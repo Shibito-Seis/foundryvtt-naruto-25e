@@ -2,6 +2,13 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.18.2]
+
+### Corrigé
+
+- Correction de l’affichage MJ-only des champs de missions.
+- Les champs de missions utilisent désormais correctement le contexte parent dans l’onglet Missions.
+
 ## [0.1.18.1]
 
 ### Corrigé

@@ -1171,20 +1171,36 @@
               <th>Échouées</th>
             </tr>
           </thead>
+
           <tbody>
             {{#each missionRanks as |mission|}}
-             <tr>
+              <tr>
               <td>{{mission.label}}</td>
+
               <td>
-               <input name="system.missions.{{mission.key}}.completed" type="number" value="{{mission.data.completed}}" min="0" {{#unless isGM}}disabled{{/unless}} />
+                <input
+                  name="system.missions.{{mission.key}}.completed"
+                  type="number"
+                  value="{{mission.data.completed}}"
+                  min="0"
+                  {{#unless ../isGM}}disabled{{/unless}}
+                />
               </td>
+
               <td>
-               <input name="system.missions.{{mission.key}}.failed" type="number" value="{{mission.data.failed}}" min="0" {{#unless isGM}}disabled{{/unless}} />
+                <input
+                  name="system.missions.{{mission.key}}.failed"
+                  type="number"
+                  value="{{mission.data.failed}}"
+                  min="0"
+                  {{#unless ../isGM}}disabled{{/unless}}
+                />
               </td>
-             </tr>
+            </tr>
             {{/each}}
           </tbody>
         </table>
+
         <div class="mission-totals">
         <strong>Total réussies :</strong> {{system.missions.totalCompleted}}
         |
