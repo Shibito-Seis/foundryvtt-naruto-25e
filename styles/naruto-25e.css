@@ -761,3 +761,63 @@
 .naruto-25e-shinobi-sheet .inventory-toggle-equipped {
   text-align: center;
 }
+
+.naruto-25e-item-sheet .item-header {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.naruto-25e-item-sheet .profile-img {
+  width: 72px;
+  height: 72px;
+  border: 1px solid #111;
+  object-fit: cover;
+}
+
+.naruto-25e-item-sheet .header-fields {
+  flex: 1;
+}
+
+.naruto-25e-item-sheet .item-type-pill {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 3px 8px;
+  border: 1px solid #777;
+  border-radius: 12px;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.naruto-25e-item-sheet .item-grid {
+  display: grid;
+  gap: 8px;
+}
+
+.naruto-25e-item-sheet .item-grid.two-columns {
+  grid-template-columns: 1fr 1fr;
+}
+
+.naruto-25e-item-sheet .item-grid .wide {
+  grid-column: 1 / -1;
+}
+
+.naruto-25e-item-sheet button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.naruto-technique-card .naruto-technique-meta,
+.naruto-technique-card .naruto-technique-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 8px;
+  margin: 8px 0;
+  font-size: 12px;
+}
+
+.naruto-technique-card .naruto-technique-effect {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0, 0, 0, 0.25);
+}

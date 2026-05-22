@@ -1,0 +1,207 @@
+<form class="{{cssClass}}" autocomplete="off">
+  <header class="sheet-header item-header">
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+
+    <div class="header-fields">
+      <h1>
+        <input name="name" type="text" value="{{item.name}}" placeholder="Nom" />
+      </h1>
+
+      <div class="item-type-pill">
+        Type : {{item.type}}
+      </div>
+    </div>
+  </header>
+
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="main">Principal</a>
+    <a class="item" data-tab="description">Description</a>
+  </nav>
+
+  <section class="sheet-body">
+    <div class="tab" data-group="primary" data-tab="main">
+      {{#if isTechnique}}
+        <section class="panel">
+          <h2>Technique / Jutsu</h2>
+
+          <div class="item-grid two-columns">
+            <label>
+              Famille
+              <select name="system.family">
+                <option value="">—</option>
+                {{#each techniqueFamilies as |family|}}
+                  <option value="{{family.key}}" {{#if family.selected}}selected{{/if}}>
+                    {{family.label}}
+                  </option>
+                {{/each}}
+              </select>
+            </label>
+
+            <label>
+              Domaine / Nature
+              <input name="system.domain" type="text" value="{{system.domain}}" placeholder="Katon, Suiton, Kage..." />
+            </label>
+
+            <label>
+              Rang
+              <select name="system.rank">
+                <option value="">—</option>
+                {{#each techniqueRanks as |rank|}}
+                  <option value="{{rank.key}}" {{#if rank.selected}}selected{{/if}}>
+                    {{rank.label}}
+                  </option>
+                {{/each}}
+              </select>
+            </label>
+
+            <label>
+              Niveau
+              <input name="system.level" type="number" value="{{system.level}}" min="1" />
+            </label>
+
+            <label>
+              Action
+              <select name="system.actionType">
+                {{#each techniqueActionTypes as |action|}}
+                  <option value="{{action.key}}" {{#if action.selected}}selected{{/if}}>
+                    {{action.label}}
+                  </option>
+                {{/each}}
+              </select>
+            </label>
+
+            <label>
+              Base
+              <select name="system.base">
+                <option value="">—</option>
+                {{#each baseOptions as |base|}}
+                  <option value="{{base.key}}" {{#if base.selected}}selected{{/if}}>
+                    {{base.label}}
+                  </option>
+                {{/each}}
+              </select>
+            </label>
+
+            <label class="wide">
+              Compétence liée
+              <select name="system.skill">
+                <option value="">— Choisir une compétence —</option>
+                {{#each skillOptions as |skill|}}
+                  <option value="{{skill.key}}" {{#if skill.selected}}selected{{/if}}>
+                    {{skill.label}}
+                  </option>
+                {{/each}}
+              </select>
+            </label>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>Paramètres</h2>
+
+          <div class="item-grid two-columns">
+            <label>
+              Coût Chakra
+              <input name="system.chakra.initial" type="number" value="{{system.chakra.initial}}" min="0" />
+            </label>
+
+            <label>
+              Entretien Chakra
+              <input name="system.chakra.maintenance" type="number" value="{{system.chakra.maintenance}}" min="0" />
+            </label>
+
+            <label>
+              Portée
+              <input name="system.range" type="text" value="{{system.range}}" />
+            </label>
+
+            <label>
+              Durée
+              <input name="system.duration" type="text" value="{{system.duration}}" />
+            </label>
+
+            <label>
+              Cible
+              <input name="system.target" type="text" value="{{system.target}}" />
+            </label>
+
+            <label>
+              Zone
+              <input name="system.area" type="text" value="{{system.area}}" />
+            </label>
+
+            <label>
+              Dégâts
+              <input name="system.damage.value" type="number" value="{{system.damage.value}}" min="0" />
+            </label>
+
+            <label>
+              Type de dégâts
+              <input name="system.damage.type" type="text" value="{{system.damage.type}}" />
+            </label>
+
+            <label class="wide">
+              Évolution / scaling
+              <input name="system.damage.scaling" type="text" value="{{system.damage.scaling}}" />
+            </label>
+
+            <label class="wide">
+              Texte Chakra
+              <input name="system.chakra.text" type="text" value="{{system.chakra.text}}" />
+            </label>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>Jet</h2>
+
+          <div class="item-grid two-columns">
+            <label>
+              Jet activé
+              <input name="system.roll.enabled" type="checkbox" {{#if system.roll.enabled}}checked{{/if}} />
+            </label>
+
+            <label>
+              Seuil par défaut
+              <input name="system.roll.defaultDifficulty" type="number" value="{{system.roll.defaultDifficulty}}" min="0" />
+            </label>
+
+            <label>
+              Jet opposé
+              <input name="system.roll.opposed" type="checkbox" {{#if system.roll.opposed}}checked{{/if}} />
+            </label>
+          </div>
+
+          <button type="button" class="technique-roll" {{#unless system.roll.enabled}}disabled{{/unless}}>
+            Lancer la technique
+          </button>
+
+          <p class="formula-hint">
+            Jet : 1d10 explosif + total de la compétence liée.
+          </p>
+        </section>
+      {{else}}
+        <section class="panel">
+          <h2>Item</h2>
+          <p class="muted">
+            Fiche générique provisoire. Les fiches détaillées arriveront dans une prochaine version.
+          </p>
+        </section>
+      {{/if}}
+    </div>
+
+    <div class="tab" data-group="primary" data-tab="description">
+      <section class="panel">
+        <h2>Description</h2>
+        {{editor system.description target="system.description" button=true owner=owner editable=editable}}
+      </section>
+
+      {{#if isTechnique}}
+        <section class="panel">
+          <h2>Effet</h2>
+          {{editor system.effect target="system.effect" button=true owner=owner editable=editable}}
+        </section>
+      {{/if}}
+    </div>
+  </section>
+</form>

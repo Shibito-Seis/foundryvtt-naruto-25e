@@ -881,3 +881,32 @@ NARUTO25E.inventoryTypeOrder = [
   "consumable",
   "misc"
 ];
+
+NARUTO25E.techniqueFamilies = {
+  ninjutsu: "Ninjutsu",
+  genjutsu: "Genjutsu",
+  taijutsu: "Taijutsu",
+  armes: "Armes",
+  lignee: "Lignée",
+  nindo: "Nindō",
+  autre: "Autre"
+};
+
+NARUTO25E.techniqueRanks = {
+  d: "Rang D",
+  c: "Rang C",
+  b: "Rang B",
+  a: "Rang A",
+  s: "Rang S",
+  aa: "Rang AA",
+  sPlus: "Rang S+"
+};
+
+NARUTO25E.techniqueActionTypes = {
+  simple: "Action simple",
+  complex: "Action complexe",
+  intervention: "Intervention",
+  lineage: "Action de lignée",
+  delayed: "Action retardée",
+  passive: "Passive"
+};

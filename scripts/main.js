@@ -1,10 +1,13 @@
 import { Naruto25eActor } from "./documents/actor.js";
+import { Naruto25eItem } from "./documents/item.js";
 import { Naruto25eShinobiSheet } from "./sheets/shinobi-sheet.js";
+import { Naruto25eItemSheet } from "./sheets/item-sheet.js";
 
 Hooks.once("init", async function () {
   console.log("Naruto 2.5e | Initialisation du système");
 
   CONFIG.Actor.documentClass = Naruto25eActor;
+  CONFIG.Item.documentClass = Naruto25eItem;
 
   game.settings.register("naruto-25e", "chakraFormulaMode", {
     name: "Formule de Chakra",
@@ -53,6 +56,23 @@ Hooks.once("init", async function () {
   Actors.unregisterSheet("core", ActorSheet);
   Actors.registerSheet("naruto-25e", Naruto25eShinobiSheet, {
     types: ["shinobi"],
+    makeDefault: true
+  });
+
+  Items.unregisterSheet("core", ItemSheet);
+  Items.registerSheet("naruto-25e", Naruto25eItemSheet, {
+    types: [
+      "technique",
+      "arme",
+      "armure",
+      "equipement",
+      "clan",
+      "pouvoirLignee",
+      "developpement",
+      "condition",
+      "blessure",
+      "nindoAction"
+    ],
     makeDefault: true
   });
 });
