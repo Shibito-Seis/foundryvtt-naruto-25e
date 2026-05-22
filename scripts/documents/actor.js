@@ -713,6 +713,48 @@ async decreaseBase(baseKey) {
     combat.interceptions.tai.bonus = Number(combat.interceptions.tai.bonus ?? 0);
     combat.interceptions.tai.total = combat.interceptions.tai.base + combat.interceptions.tai.bonus;
 
+    combat.quickSkill = combat.quickSkill ?? "";
+
+    combat.counters = combat.counters ?? {};
+    combat.counters.interceptions = combat.counters.interceptions ?? {};
+    combat.counters.interceptions.arm = combat.counters.interceptions.arm ?? {};
+    combat.counters.interceptions.tai = combat.counters.interceptions.tai ?? {};
+    combat.counters.lineagePowers = combat.counters.lineagePowers ?? {};
+
+    const prepareCounter = (counter, max) => {
+      counter.max = Math.max(0, Number(max ?? 0));
+
+      if (!Number.isFinite(Number(counter.remaining))) {
+        counter.remaining = counter.max;
+      }
+
+      counter.remaining = this._clampNumber(
+        Number(counter.remaining ?? counter.max),
+        0,
+        counter.max
+      );
+    };
+
+    prepareCounter(combat.counters.interceptions.arm, combat.interceptions.arm.total);
+    prepareCounter(combat.counters.interceptions.tai, combat.interceptions.tai.total);
+
+    const lineageBaseUses = Number(combat.counters.lineagePowers.base ?? 0);
+    const lineageBonusUses = Number(system.chakra?.specializationBonuses?.lineagePowerUses ?? 0);
+
+    combat.counters.lineagePowers.base = Math.max(0, lineageBaseUses);
+    combat.counters.lineagePowers.bonus = Math.max(0, lineageBonusUses);
+    combat.counters.lineagePowers.max = combat.counters.lineagePowers.base + combat.counters.lineagePowers.bonus;
+
+    if (!Number.isFinite(Number(combat.counters.lineagePowers.remaining))) {
+      combat.counters.lineagePowers.remaining = combat.counters.lineagePowers.max;
+    }
+
+    combat.counters.lineagePowers.remaining = this._clampNumber(
+      Number(combat.counters.lineagePowers.remaining ?? combat.counters.lineagePowers.max),
+      0,
+      combat.counters.lineagePowers.max
+    );
+
     // Santé / paliers.
     combat.health.manualState = combat.health.manualState ?? "none";
     combat.health.notes = combat.health.notes ?? "";
@@ -946,5 +988,159 @@ async decreaseBase(baseKey) {
     });
 
     ui.notifications.info(`${definition.label} réduit à ${current - 1}.`);
+  }
+
+  async _rollExplodingD10(label, modifier = 0, options = {}) {
+    if (this.type !== "shinobi") return null;
+
+    const safeModifier = Number(modifier ?? 0);
+    const formula = `1d10x + ${safeModifier}`;
+
+    const roll = new Roll(formula);
+    await roll.evaluate();
+
+    const flavor = options.flavor ?? label;
+
+    await roll.toMessage({
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+      flavor: `<strong>${flavor}</strong>`
+    });
+
+    return roll;
+  }
+
+  async rollInitiativeAction() {
+    const total = Number(this.system.combat?.initiative?.total ?? 0);
+
+    return this._rollExplodingD10("Initiative", total, {
+      flavor: `Initiative — ${this.name}`
+    });
+  }
+
+  async rollBasicAttack(kind) {
+    const attack = this.system.combat?.attacks?.[kind];
+
+    if (!attack) {
+      ui.notifications.warn("Attaque introuvable.");
+      return null;
+    }
+
+    const label = kind === "arm" ? "Attaque ARM basique" : "Attaque TAI basique";
+    const total = Number(attack.total ?? 0);
+
+    return this._rollExplodingD10(label, total, {
+      flavor: `${label} — ${this.name}`
+    });
+  }
+
+  async rollSkillAction(skillKey) {
+    if (!skillKey) {
+      ui.notifications.warn("Aucune compétence sélectionnée.");
+      return null;
+    }
+
+    const skill = this.system.skills?.[skillKey];
+    const definition = NARUTO25E.skillDefinitions?.[skillKey];
+
+    if (!skill || !definition) {
+      ui.notifications.warn("Compétence introuvable.");
+      return null;
+    }
+
+    if (!skill.owned && !definition.ownedByDefault) {
+      ui.notifications.warn("Cette compétence n’est pas possédée.");
+      return null;
+    }
+
+    const total = Number(skill.total ?? 0);
+
+    return this._rollExplodingD10(definition.label, total, {
+      flavor: `Jet de compétence : ${definition.label} — ${this.name}`
+    });
+  }
+
+  async rollInterception(kind) {
+    if (this.type !== "shinobi") return null;
+
+    const counter = this.system.combat?.counters?.interceptions?.[kind];
+    const interception = this.system.combat?.interceptions?.[kind];
+
+    if (!counter || !interception) {
+      ui.notifications.warn("Interception introuvable.");
+      return null;
+    }
+
+    const remaining = Number(counter.remaining ?? 0);
+
+    if (remaining <= 0) {
+      ui.notifications.warn("Aucune interception restante pour ce round.");
+      return null;
+    }
+
+    await this.update({
+      [`system.combat.counters.interceptions.${kind}.remaining`]: remaining - 1
+    });
+
+    const label = kind === "arm" ? "Interception ARM" : "Interception TAI";
+    const total = Number(interception.total ?? 0);
+
+    return this._rollExplodingD10(label, total, {
+      flavor: `${label} — ${this.name} (${remaining - 1}/${counter.max} restantes)`
+    });
+  }
+
+  async spendLineagePowerUse() {
+    if (this.type !== "shinobi") return;
+
+    const counter = this.system.combat?.counters?.lineagePowers;
+    if (!counter) return;
+
+    const remaining = Number(counter.remaining ?? 0);
+
+    if (remaining <= 0) {
+      ui.notifications.warn("Aucune utilisation de pouvoir de lignée restante.");
+      return;
+    }
+
+    await this.update({
+      "system.combat.counters.lineagePowers.remaining": remaining - 1
+    });
+
+    ui.notifications.info(`Utilisation de pouvoir de lignée dépensée (${remaining - 1}/${counter.max} restantes).`);
+  }
+
+  async resetCombatCounters(scope = "round") {
+    if (this.type !== "shinobi") return;
+
+    if (!game.user.isGM) {
+      ui.notifications.warn("Seul le MJ peut réinitialiser les compteurs.");
+      return;
+    }
+
+    const updates = {};
+
+    if (scope === "round") {
+      const armMax = Number(this.system.combat?.counters?.interceptions?.arm?.max ?? 0);
+      const taiMax = Number(this.system.combat?.counters?.interceptions?.tai?.max ?? 0);
+
+      updates["system.combat.counters.interceptions.arm.remaining"] = armMax;
+      updates["system.combat.counters.interceptions.tai.remaining"] = taiMax;
+    }
+
+    if (scope === "session") {
+      const lineageMax = Number(this.system.combat?.counters?.lineagePowers?.max ?? 0);
+
+      updates["system.combat.counters.lineagePowers.remaining"] = lineageMax;
+    }
+
+    await this.update(updates);
+
+    if (scope === "round") {
+      ui.notifications.info("Compteurs de round réinitialisés.");
+    }
+
+    if (scope === "session") {
+      ui.notifications.info("Compteurs de session réinitialisés.");
+    }
   }
 }

@@ -138,6 +138,25 @@
               "total": 0
             }
           },
+          "quickSkill": "",
+          "counters": {
+            "interceptions": {
+              "arm": {
+              "max": 0,
+              "remaining": 0
+              },
+              "tai": {
+              "max": 0,
+              "remaining": 0
+              }
+            },
+            "lineagePowers": {
+            "base": 0,
+            "bonus": 0,
+            "max": 0,
+            "remaining": 0
+            }
+          },
           "health": {
             "manualState": "none",
             "chakraState": "none",

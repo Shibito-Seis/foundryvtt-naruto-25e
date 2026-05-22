@@ -604,3 +604,24 @@
   font-size: 11px;
   opacity: 0.75;
 }
+
+.naruto-25e-shinobi-sheet .combat-card button {
+  margin: 4px 0;
+}
+
+.naruto-25e-shinobi-sheet .combat-card button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.naruto-25e-shinobi-sheet .formula-hint {
+  font-size: 12px;
+  opacity: 0.75;
+  margin-top: 6px;
+}
+
+.naruto-25e-shinobi-sheet .combat-card hr {
+  margin: 10px 0;
+  border: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.25);
+}

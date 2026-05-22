@@ -373,6 +373,23 @@ context.skillGroups = categoryOrder.map((category) => {
 
   context.chakraSpecializationBonuses = this.actor.system.chakra?.specializationBonuses ?? {};
 
+  context.combatSkillOptions = Object.entries(NARUTO25E.skillDefinitions ?? {})
+    .filter(([key, definition]) => {
+      const skill = this.actor.system.skills?.[key];
+
+      if (definition.ownedByDefault) return true;
+      if (skill?.owned) return true;
+
+      return false;
+    })
+    .map(([key, definition]) => ({
+      key,
+      label: definition.label,
+      selected: this.actor.system.combat?.quickSkill === key
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label, "fr"));
+
+  context.combatCounters = this.actor.system.combat?.counters ?? {};
   return context;
 }
 
@@ -494,6 +511,43 @@ context.skillGroups = categoryOrder.map((category) => {
     event.preventDefault();
     const key = event.currentTarget.dataset.specialization;
     await this.actor.decreaseChakraSpecialization(key);
+  });
+
+  html.find(".combat-roll-initiative").on("click", async (event) => {
+    event.preventDefault();
+    await this.actor.rollInitiativeAction();
+  });
+
+  html.find(".combat-roll-attack").on("click", async (event) => {
+    event.preventDefault();
+    const kind = event.currentTarget.dataset.kind;
+    await this.actor.rollBasicAttack(kind);
+  });
+
+  html.find(".combat-roll-interception").on("click", async (event) => {
+    event.preventDefault();
+    const kind = event.currentTarget.dataset.kind;
+    await this.actor.rollInterception(kind);
+  });
+
+  html.find(".combat-roll-skill").on("click", async (event) => {
+    event.preventDefault();
+
+    const skillKey = html.find('[name="system.combat.quickSkill"]').val();
+    await this.actor.rollSkillAction(skillKey);
+  });
+
+  html.find(".combat-reset-counters").on("click", async (event) => {
+    event.preventDefault();
+
+    const scope = event.currentTarget.dataset.scope;
+    await this.actor.resetCombatCounters(scope);
+  });
+
+  html.find(".combat-spend-lineage-power").on("click", async (event) => {
+    event.preventDefault();
+
+    await this.actor.spendLineagePowerUse();
   });
   }
 }

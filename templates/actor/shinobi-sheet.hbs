@@ -262,6 +262,85 @@
                 <strong>Régén. active</strong>
                 <span>{{system.resources.chakra.activeRegen}}</span>
               </div>
+
+              <section class="combat-card">
+                <h3>Jet de compétence</h3>
+
+                <label>
+                  Compétence
+                  <select name="system.combat.quickSkill">
+                    <option value="">— Choisir —</option>
+                      {{#each combatSkillOptions as |skill|}}
+                        <option value="{{skill.key}}" {{#if skill.selected}}selected{{/if}}>
+                      {{skill.label}}
+                        </option>
+                      {{/each}}
+                  </select>
+                </label>
+
+                <button type="button" class="combat-roll-skill">
+                  Lancer la compétence
+                </button>
+
+                <p class="formula-hint">
+                  Jet : 1d10 explosif + total de compétence.
+                </p>
+              </section>
+
+              <section class="combat-card">
+                <h3>Compteurs</h3>
+
+                <div class="combat-resource-line">
+                  <strong>Interceptions ARM</strong>
+                  <span>{{system.combat.counters.interceptions.arm.remaining}} / {{system.combat.counters.interceptions.arm.max}}</span>
+                </div>
+
+                <div class="combat-resource-line">
+                  <strong>Interceptions TAI</strong>
+                  <span>{{system.combat.counters.interceptions.tai.remaining}} / {{system.combat.counters.interceptions.tai.max}}</span>
+                </div>
+
+                {{#if isGM}}
+                  <button type="button" class="combat-reset-counters" data-scope="round">
+                    MJ : reset round
+                  </button>
+                {{/if}}
+
+                <hr />
+
+                <label>
+                  Utilisations de lignée de base
+                  <input
+                  name="system.combat.counters.lineagePowers.base"
+                  type="number"
+                  value="{{system.combat.counters.lineagePowers.base}}"
+                  />
+                </label>
+
+                <div class="combat-resource-line">
+                  <strong>Pouvoirs de lignée</strong>
+                  <span>
+                    {{system.combat.counters.lineagePowers.remaining}} / {{system.combat.counters.lineagePowers.max}}
+                    {{#if system.combat.counters.lineagePowers.bonus}}
+                      (+{{system.combat.counters.lineagePowers.bonus}} Héréditaire)
+                    {{/if}}
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  class="combat-spend-lineage-power"
+                  {{#unless system.combat.counters.lineagePowers.remaining}}disabled{{/unless}}
+                  >
+                  Dépenser une utilisation de lignée
+                </button>
+
+                {{#if isGM}}
+                  <button type="button" class="combat-reset-counters" data-scope="session">
+                    MJ : reset session
+                  </button>
+                {{/if}}
+              </section>
           </section>
 
           <section class="combat-card">
@@ -270,6 +349,10 @@
             <div class="combat-main-value">
               {{system.combat.initiative.formula}}
             </div>
+            
+            <button type="button" class="combat-roll-initiative">
+              Lancer l’initiative
+            </button>
 
             <label>
               Bonus Initiative
@@ -288,6 +371,10 @@
                 <strong>ARM</strong>
                 <span>{{system.combat.attacks.arm.total}}</span>
               </div>
+              
+              <button type="button" class="combat-roll-attack" data-kind="arm">
+                Attaque ARM
+              </button>
 
               <label>
                 Bonus attaque ARM
@@ -298,6 +385,10 @@
                 <strong>TAI</strong>
                 <span>{{system.combat.attacks.tai.total}}</span>
               </div>
+              
+              <button type="button" class="combat-roll-attack" data-kind="tai">
+                Attaque TAI
+              </button>
 
               <label>
                 Bonus attaque TAI
@@ -334,8 +425,20 @@
 
             <div class="combat-resource-line">
               <strong>Interception ARM</strong>
-              <span>{{system.combat.interceptions.arm.total}}</span>
+              <span>
+                {{system.combat.interceptions.arm.total}}
+                — {{system.combat.counters.interceptions.arm.remaining}} / {{system.combat.counters.interceptions.arm.max}}
+              </span>
             </div>
+
+            <button
+              type="button"
+              class="combat-roll-interception"
+              data-kind="arm"
+              {{#unless system.combat.counters.interceptions.arm.remaining}}disabled{{/unless}}
+              >
+              Intercepter ARM
+            </button>
 
             <label>
               Bonus interception ARM
@@ -344,8 +447,20 @@
 
             <div class="combat-resource-line">
               <strong>Interception TAI</strong>
-              <span>{{system.combat.interceptions.tai.total}}</span>
+              <span>
+                {{system.combat.interceptions.tai.total}}
+                — {{system.combat.counters.interceptions.tai.remaining}} / {{system.combat.counters.interceptions.tai.max}}
+              </span>
             </div>
+
+            <button
+              type="button"
+              class="combat-roll-interception"
+              data-kind="tai"
+              {{#unless system.combat.counters.interceptions.tai.remaining}}disabled{{/unless}}
+              >
+              Intercepter TAI
+            </button>
 
             <label>
               Bonus interception TAI

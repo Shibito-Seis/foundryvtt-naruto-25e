@@ -2,21 +2,33 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
-## [0.1.14.2] - En cours
+## [0.1.15] - En cours
 
-### Modifié
-- Régénération passive = 1% du Chakra max + 1% par rang d’Inépuisable.
-- Désormais Visible sur la fiche
+### Ajouté
+- Ajout du bouton de jet d’initiative.
+- Ajout des boutons d’attaque ARM et TAI basiques.
+- Ajout d’un jet de compétence rapide depuis l’onglet Combat / Actions.
+- Ajout des boutons d’interception ARM et TAI.
+- Ajout des compteurs d’interceptions par round.
+- Ajout d’un reset de round réservé au MJ.
+- Ajout d’un compteur de pouvoirs de lignée.
+- Ajout d’un reset de session réservé au MJ.
+- Ajout de la dépense manuelle d’une utilisation de pouvoir de lignée.
+- Prise en compte du bonus Héréditaire dans le compteur de pouvoirs de lignée.
 
-## [0.1.14.1]
+---
+
+## [0.1.14.2]
 
 ### Corrigé
-- La spécialisation Inépuisable modifie désormais réellement la régénération passive.
-- La régénération passive est maintenant calculée depuis le Chakra maximum.
-- La régénération passive n’est plus une valeur librement modifiable.
+- Correction de la régénération passive du Chakra.
+- La régénération passive est désormais calculée depuis le Chakra maximum.
+- La spécialisation Inépuisable augmente correctement le pourcentage de régénération passive.
+- La régénération passive affiche maintenant sa valeur et son pourcentage réel sur la fiche.
 
-### Modifié
-- Régénération passive = 1% du Chakra max + 1% par rang d’Inépuisable.
+### Validé
+- Les spécialisations de Chakra fonctionnent avec leurs limites respectives.
+- Les bonus de Chakra, Vigueur, Caractère, Initiative, dégâts ARM/TAI et régénération passive sont correctement appliqués.
 
 ## [0.1.14]
 
