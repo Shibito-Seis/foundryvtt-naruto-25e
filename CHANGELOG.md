@@ -2,12 +2,28 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
-## [0.1.13] - En cours
+## [0.1.14] - En cours
+
+### Ajouté
+- Ajout de l’onglet Chakra.
+- Ajout du système de spécialisations de Chakra.
+- Ajout des spécialisations Acéré, Colossal, Endurci, Explosif, Fulgurant, Héréditaire, Impérieux, Inépuisable, Puissant et Rémanent.
+- Ajout des limites par spécialisation : unique, 3, 5 ou 9 rangs.
+- Ajout du calcul du nombre de spécialisations disponibles selon le rang.
+- Ajout du calcul des spécialisations dépensées et restantes.
+- Ajout des bonus automatiques simples des spécialisations.
+- Ajout d’un résumé des spécialisations dans l’onglet Résumé.
+
+### Modifié
+- Les calculs de Vigueur, Caractère, Chakra, Initiative et dégâts prennent désormais en compte les spécialisations de Chakra.
+
+---
+
+## [0.1.13]
 
 ### Ajouté
 - Ajout de l’onglet Combat / Actions.
-- Ajout de l’affichage des ressources rapides : Vigueur, Caractère, Chakra.
-- Ajout de l’affichage de la régénération passive et active du Chakra.
+- Ajout des ressources rapides : Vigueur, Caractère, Chakra.
 - Ajout de l’initiative calculée.
 - Ajout des attaques basiques ARM et TAI.
 - Ajout des dégâts basiques ARM et TAI.
@@ -16,6 +32,14 @@ Toutes les modifications notables de ce système seront listées ici.
 - Ajout du palier automatique lié au niveau actuel de Chakra.
 - Ajout des réserves de lignée A/B, grisées par défaut et activables par le MJ.
 - Ajout d’un mini-résumé d’état de combat dans l’onglet Résumé.
+
+### Validé
+- Initiative = 1d10 + 1 + COR total + bonus.
+- Interception ARM suit la Base ARM.
+- Interception TAI suit la Base TAI.
+- Dégâts ARM = ARM + 1 + bonus.
+- Dégâts TAI = TAI + 1 + bonus.
+- Les seuils Chakra appliquent correctement Pleine forme / Sonné / Blessure 1 / Blessure 2.
 
 ---
 

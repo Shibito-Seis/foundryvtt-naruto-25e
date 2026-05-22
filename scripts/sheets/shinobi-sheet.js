@@ -336,6 +336,43 @@ context.skillGroups = categoryOrder.map((category) => {
     hasChakraAlert: (this.actor.system.combat?.health?.chakraState ?? "none") !== "none"
   };
 
+  const chakraSpecState = this.actor.system.chakra?.specializationState ?? {
+    available: 1,
+    spent: 0,
+    remaining: 1,
+    overLimit: false
+  };
+
+  context.chakraSpecializationState = chakraSpecState;
+
+  context.chakraSpecializations = NARUTO25E.chakraSpecializationOrder.map((key) => {
+    const definition = NARUTO25E.chakraSpecializations[key];
+    const value = Number(this.actor.system.chakra?.specializations?.[key] ?? 0);
+    const maxStacks = Number(definition.maxStacks ?? 1);
+
+    return {
+      key,
+      label: definition.label,
+      value,
+      maxStacks,
+      unique: Boolean(definition.unique),
+      specialOnly: Boolean(definition.specialOnly),
+      effect: definition.effect,
+      canIncrease: value < maxStacks && Number(chakraSpecState.remaining ?? 0) > 0,
+      canDecrease: value > 0
+    };
+  });
+
+  context.chakraSpecializationSummary = context.chakraSpecializations
+    .filter((spec) => spec.value > 0)
+    .map((spec) => ({
+      label: spec.label,
+      value: spec.value,
+      text: spec.value > 1 ? `${spec.label} x${spec.value}` : spec.label
+    }));
+
+  context.chakraSpecializationBonuses = this.actor.system.chakra?.specializationBonuses ?? {};
+
   return context;
 }
 
@@ -445,6 +482,18 @@ context.skillGroups = categoryOrder.map((category) => {
   html.find(".rank-promote").on("click", async (event) => {
   event.preventDefault();
   await this.actor.promoteToNextRank();
+  });
+
+  html.find(".chakra-specialization-increase").on("click", async (event) => {
+    event.preventDefault();
+    const key = event.currentTarget.dataset.specialization;
+    await this.actor.increaseChakraSpecialization(key);
+  });
+
+  html.find(".chakra-specialization-decrease").on("click", async (event) => {
+    event.preventDefault();
+    const key = event.currentTarget.dataset.specialization;
+    await this.actor.decreaseChakraSpecialization(key);
   });
   }
 }

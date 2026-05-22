@@ -481,3 +481,106 @@
 .naruto-25e-shinobi-sheet .combat-notes textarea {
   min-height: 90px;
 }
+
+.naruto-25e-shinobi-sheet .chakra-spec-summary,
+.naruto-25e-shinobi-sheet .chakra-spec-header {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(120px, 1fr));
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.naruto-25e-shinobi-sheet .chakra-spec-summary div,
+.naruto-25e-shinobi-sheet .chakra-spec-header div {
+  border: 1px solid #999;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.naruto-25e-shinobi-sheet .chakra-spec-summary strong,
+.naruto-25e-shinobi-sheet .chakra-spec-header strong {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.naruto-25e-shinobi-sheet .chakra-spec-summary span,
+.naruto-25e-shinobi-sheet .chakra-spec-header span {
+  display: block;
+  margin-top: 4px;
+  font-weight: bold;
+}
+
+.naruto-25e-shinobi-sheet .chakra-spec-mini-list {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+
+.naruto-25e-shinobi-sheet .chakra-bonus-panel {
+  margin: 12px 0;
+  border: 1px solid #777;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.035);
+}
+
+.naruto-25e-shinobi-sheet .chakra-bonus-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(150px, 1fr));
+  gap: 6px;
+}
+
+.naruto-25e-shinobi-sheet .chakra-bonus-grid span {
+  border: 1px solid #999;
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.naruto-25e-shinobi-sheet .chakra-specializations-list {
+  display: grid;
+  gap: 8px;
+}
+
+.naruto-25e-shinobi-sheet .chakra-spec-card {
+  border: 1px solid #777;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.naruto-25e-shinobi-sheet .chakra-spec-card.special-only {
+  border-style: dashed;
+}
+
+.naruto-25e-shinobi-sheet .chakra-spec-main {
+  display: grid;
+  grid-template-columns: 1fr 120px;
+  gap: 12px;
+  align-items: center;
+}
+
+.naruto-25e-shinobi-sheet .chakra-spec-main h4 {
+  margin: 0 0 4px;
+}
+
+.naruto-25e-shinobi-sheet .chakra-spec-main p {
+  margin: 0 0 6px;
+}
+
+.naruto-25e-shinobi-sheet .chakra-spec-tag {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 6px;
+  border: 1px solid #777;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.naruto-25e-shinobi-sheet .chakra-spec-controls {
+  display: grid;
+  grid-template-columns: 28px 1fr 28px;
+  gap: 4px;
+  align-items: center;
+}
+
+.naruto-25e-shinobi-sheet .chakra-spec-controls input {
+  text-align: center;
+}

@@ -47,6 +47,7 @@
   <nav class="sheet-tabs tabs" data-group="primary">
   <a class="item" data-tab="summary">Résumé</a>
   <a class="item" data-tab="combat">Combat / Actions</a>
+  <a class="item" data-tab="chakra">Chakra</a>
   <a class="item" data-tab="bases">Bases</a>
   <a class="item" data-tab="skills">Compétences</a>
   <a class="item" data-tab="heritage">Lignée</a>
@@ -162,6 +163,38 @@
             Texte du Nindō
             <textarea name="system.identity.nindoText">{{system.identity.nindoText}}</textarea>
           </label>
+        </section>
+
+        <section class="panel">
+          <h2>Spécialisations de Chakra</h2>
+
+          <div class="chakra-spec-summary">
+            <div>
+              <strong>Choix dépensés</strong>
+              <span>{{chakraSpecializationState.spent}} / {{chakraSpecializationState.available}}</span>
+            </div>
+
+            <div>
+              <strong>Restants</strong>
+              <span>{{chakraSpecializationState.remaining}}</span>
+            </div>
+          </div>
+
+          {{#if chakraSpecializationSummary.length}}
+            <ul class="chakra-spec-mini-list">
+              {{#each chakraSpecializationSummary as |spec|}}
+                <li>{{spec.text}}</li>
+              {{/each}}
+            </ul>
+          {{else}}
+            <p class="muted">Aucune spécialisation sélectionnée.</p>
+          {{/if}}
+
+          {{#if chakraSpecializationState.overLimit}}
+            <p class="warning-text">
+              Trop de spécialisations sélectionnées pour le rang actuel.
+            </p>
+          {{/if}}
         </section>
 
         <section class="panel">
@@ -393,6 +426,94 @@
         <section class="combat-card combat-notes">
           <h3>Notes de combat / blessures</h3>
           <textarea name="system.combat.health.notes">{{system.combat.health.notes}}</textarea>
+        </section>
+      </section>
+    </div>
+
+    <div class="tab" data-group="primary" data-tab="chakra">
+      <section class="panel">
+        <h2>Chakra / Spécialisations</h2>
+
+        <div class="chakra-spec-header">
+          <div>
+            <strong>Rang actuel</strong>
+            <span>{{rankProgression.currentLabel}}</span>
+          </div>
+
+          <div>
+            <strong>Emplacements</strong>
+            <span>{{chakraSpecializationState.spent}} / {{chakraSpecializationState.available}}</span>
+          </div>
+
+          <div>
+            <strong>Restants</strong>
+            <span>{{chakraSpecializationState.remaining}}</span>
+          </div>
+        </div>
+
+        {{#if chakraSpecializationState.overLimit}}
+          <p class="warning-text">
+            Ce personnage possède plus de spécialisations que son rang ne le permet.
+          </p>
+        {{/if}}
+
+        <section class="chakra-bonus-panel">
+        <h3>Bonus actifs</h3>
+
+          <div class="chakra-bonus-grid">
+            <span>Chakra max : +{{chakraSpecializationBonuses.chakraMax}}</span>
+            <span>Vigueur max : +{{chakraSpecializationBonuses.vigueurMax}}</span>
+            <span>Caractère max : +{{chakraSpecializationBonuses.caractereMax}}</span>
+            <span>Initiative : +{{chakraSpecializationBonuses.initiative}}</span>
+            <span>Déplacement simple : +{{chakraSpecializationBonuses.moveMeters}} m</span>
+            <span>Dégâts ARM : +{{chakraSpecializationBonuses.armDamage}}</span>
+            <span>Dégâts TAI : +{{chakraSpecializationBonuses.taiDamage}}</span>
+            <span>Régénération passive : +{{chakraSpecializationBonuses.passiveRegenPercent}}%</span>
+            <span>Pouvoirs de lignée actifs : +{{chakraSpecializationBonuses.lineagePowerUses}}</span>
+          </div>
+        </section>
+
+        <section class="chakra-specializations-list">
+        <h3>Spécialisations disponibles</h3>
+
+          {{#each chakraSpecializations as |spec|}}
+            <div class="chakra-spec-card {{#if spec.specialOnly}}special-only{{/if}}">
+              <div class="chakra-spec-main">
+                <div>
+                  <h4>{{spec.label}}</h4>
+                  <p>{{spec.effect}}</p>
+
+                    {{#if spec.unique}}
+                      <span class="chakra-spec-tag">Unique</span>
+                    {{else}}
+                      <span class="chakra-spec-tag">Max {{spec.maxStacks}}</span>
+                    {{/if}}
+                </div>
+
+                <div class="chakra-spec-controls">
+                  <button
+                    type="button"
+                    class="chakra-specialization-decrease"
+                    data-specialization="{{spec.key}}"
+                    {{#unless spec.canDecrease}}disabled{{/unless}}
+                    >
+                    −
+                  </button>
+
+                  <input type="number" value="{{spec.value}}" readonly />
+
+                  <button
+                    type="button"
+                    class="chakra-specialization-increase"
+                    data-specialization="{{spec.key}}"
+                    {{#unless spec.canIncrease}}disabled{{/unless}}
+                    >
+                    +
+                  </button>
+                </div>
+              </div>
+            </div>
+          {{/each}}
         </section>
       </section>
     </div>

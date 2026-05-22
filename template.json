@@ -61,6 +61,37 @@
             "sonneThreshold": 50
           }
         },
+        "chakra": {
+          "specializations": {
+            "acered": 0,
+            "colossal": 0,
+            "endurci": 0,
+            "explosif": 0,
+            "fulgurant": 0,
+            "hereditaire": 0,
+            "imperieux": 0,
+            "inepuisable": 0,
+            "puissant": 0,
+            "remanent": 0
+          },
+          "specializationState": {
+            "available": 1,
+            "spent": 0,
+            "remaining": 1,
+            "overLimit": false
+          },
+          "specializationBonuses": {
+            "chakraMax": 0,
+            "vigueurMax": 0,
+            "caractereMax": 0,
+            "initiative": 0,
+            "moveMeters": 0,
+            "armDamage": 0,
+            "taiDamage": 0,
+            "passiveRegenPercent": 0,
+            "lineagePowerUses": 0
+          }
+        },
         "combat": {
           "initiative": {
             "base": 0,

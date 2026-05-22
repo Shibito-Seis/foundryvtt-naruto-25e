@@ -11,6 +11,7 @@ export class Naruto25eActor extends Actor {
     this._prepareBases(system);
     this._prepareSkills(system);
     this._prepareHeritage(system);
+    this._prepareChakraSpecializations(system);
     this._prepareResources(system);
     this._prepareCombat(system);
     this._prepareExperience(system);
@@ -41,26 +42,29 @@ export class Naruto25eActor extends Actor {
   _prepareResources(system) {
     const cor = this._getBaseEffective(system, "cor");
     const esp = this._getBaseEffective(system, "esp");
+    const chakraBonuses = system.chakra?.specializationBonuses ?? {};
 
     const vigueur = system.resources?.vigueur;
     if (vigueur) {
       const bonus = Number(vigueur.bonus ?? 0);
-      vigueur.max = Math.max(0, 2 + cor + bonus);
+      vigueur.max = Math.max(0, 2 + cor + bonus + Number(chakraBonuses.vigueurMax ?? 0));
       vigueur.value = this._clampNumber(vigueur.value, 0, vigueur.max);
     }
 
     const caractere = system.resources?.caractere;
     if (caractere) {
       const bonus = Number(caractere.bonus ?? 0);
-      caractere.max = Math.max(0, 2 + esp + bonus);
+      caractere.max = Math.max(0, 2 + esp + bonus + Number(chakraBonuses.caractereMax ?? 0));
       caractere.value = this._clampNumber(caractere.value, 0, caractere.max);
     }
 
     const chakra = system.resources?.chakra;
     if (chakra) {
-      chakra.bonus = Number(chakra.bonus ?? 0);
+      const specializationChakraBonus = Number(chakraBonuses.chakraMax ?? 0);
       chakra.passiveRegen = Number(chakra.passiveRegen ?? 0);
       chakra.activeRegen = Number(chakra.activeRegen ?? 0);
+      chakra.passiveRegenBonus = Number(chakraBonuses.passiveRegenPercent ?? 0);
+      chakra.passiveRegenTotal = Number(chakra.passiveRegen ?? 0) + chakra.passiveRegenBonus;
       chakra.sonneThreshold = Number(chakra.sonneThreshold ?? 50);
 
       const formulaMode = game.settings?.get("naruto-25e", "chakraFormulaMode") ?? "standard";
@@ -68,11 +72,11 @@ export class Naruto25eActor extends Actor {
       if (formulaMode === "manual") {
         chakra.max = Math.max(0, Number(chakra.max ?? 0));
       } else if (formulaMode === "harsh") {
-        chakra.max = Math.max(0, cor * 30 + esp * 30 + chakra.bonus);
+        chakra.max = Math.max(0, cor * 30 + esp * 30 + chakra.bonus + specializationChakraBonus);
       } else if (formulaMode === "heroic") {
-        chakra.max = Math.max(0, cor * 50 + esp * 50 + chakra.bonus);
+        chakra.max = Math.max(0, cor * 50 + esp * 50 + chakra.bonus + specializationChakraBonus);
       } else {
-        chakra.max = Math.max(0, cor * 30 + esp * 30 + 50 + chakra.bonus);
+        chakra.max = Math.max(0, cor * 30 + esp * 30 + 50 + chakra.bonus + specializationChakraBonus);
       }
 
       chakra.value = this._clampNumber(chakra.value, 0, chakra.max);
@@ -640,6 +644,7 @@ async decreaseBase(baseKey) {
     if (!system.combat) system.combat = {};
 
     const combat = system.combat;
+    const chakraBonuses = system.chakra?.specializationBonuses ?? {};
 
     combat.initiative = combat.initiative ?? {};
     combat.attacks = combat.attacks ?? {};
@@ -670,7 +675,8 @@ async decreaseBase(baseKey) {
     // Initiative provisoire validée : 1d10 + 1 + COR total + bonus éventuel.
     combat.initiative.base = 1 + cor;
     combat.initiative.bonus = Number(combat.initiative.bonus ?? 0);
-    combat.initiative.total = combat.initiative.base + combat.initiative.bonus;
+    combat.initiative.specializationBonus = Number(chakraBonuses.initiative ?? 0);
+    combat.initiative.total = combat.initiative.base + combat.initiative.bonus + combat.initiative.specializationBonus;
     combat.initiative.formula = `1d10 + ${combat.initiative.total}`;
 
     // Attaques basiques.
@@ -687,11 +693,13 @@ async decreaseBase(baseKey) {
     // Dégâts basiques provisoires : Base effective + 1 + bonus.
     combat.damage.arm.base = arm + 1;
     combat.damage.arm.bonus = Number(combat.damage.arm.bonus ?? 0);
-    combat.damage.arm.total = combat.damage.arm.base + combat.damage.arm.bonus;
+    combat.damage.arm.specializationBonus = Number(chakraBonuses.armDamage ?? 0);
+    combat.damage.arm.total = combat.damage.arm.base + combat.damage.arm.bonus + combat.damage.arm.specializationBonus;
 
     combat.damage.tai.base = tai + 1;
     combat.damage.tai.bonus = Number(combat.damage.tai.bonus ?? 0);
-    combat.damage.tai.total = combat.damage.tai.base + combat.damage.tai.bonus;
+    combat.damage.tai.specializationBonus = Number(chakraBonuses.taiDamage ?? 0);
+    combat.damage.tai.total = combat.damage.tai.base + combat.damage.tai.bonus + combat.damage.tai.specializationBonus;
 
     // Interceptions basiques.
     combat.interceptions.arm.base = arm;
@@ -821,5 +829,119 @@ async decreaseBase(baseKey) {
     });
 
     ui.notifications.info(`${this.name} passe au rang : ${nextRank.label}.`);
+  }
+
+  _prepareChakraSpecializations(system) {
+    if (!system.chakra) system.chakra = {};
+    if (!system.chakra.specializations) system.chakra.specializations = {};
+
+    const chakra = system.chakra;
+    const specializations = chakra.specializations;
+
+    const bonuses = {
+      chakraMax: 0,
+      vigueurMax: 0,
+      caractereMax: 0,
+      initiative: 0,
+      moveMeters: 0,
+      armDamage: 0,
+      taiDamage: 0,
+      passiveRegenPercent: 0,
+      lineagePowerUses: 0
+    };
+
+    let spent = 0;
+
+    for (const key of NARUTO25E.chakraSpecializationOrder) {
+      const definition = NARUTO25E.chakraSpecializations[key];
+      if (!definition) continue;
+
+      const maxStacks = Number(definition.maxStacks ?? 1);
+      let value = Number(specializations[key] ?? 0);
+
+      value = this._clampNumber(value, 0, maxStacks);
+      specializations[key] = value;
+
+      spent += value;
+
+      const specBonuses = definition.bonuses ?? {};
+
+      for (const [bonusKey, bonusValue] of Object.entries(specBonuses)) {
+        bonuses[bonusKey] = Number(bonuses[bonusKey] ?? 0) + Number(bonusValue ?? 0) * value;
+      }
+    }
+
+    const rankKey = system.progression?.rank?.current ?? "aspirant";
+    const available = NARUTO25E.getChakraSpecializationSlotsForRank(rankKey);
+
+    chakra.specializationState = {
+      available,
+      spent,
+      remaining: Math.max(0, available - spent),
+      overLimit: spent > available
+    };
+
+    chakra.specializationBonuses = bonuses;
+  }
+
+  getChakraSpecializationCount(key) {
+    return Number(this.system.chakra?.specializations?.[key] ?? 0);
+  }
+
+  getChakraSpecializationState() {
+    return this.system.chakra?.specializationState ?? {
+      available: 1,
+      spent: 0,
+      remaining: 1,
+      overLimit: false
+    };
+  }
+
+  async increaseChakraSpecialization(key) {
+    if (this.type !== "shinobi") return;
+
+    const definition = NARUTO25E.chakraSpecializations[key];
+    if (!definition) return;
+
+    const current = this.getChakraSpecializationCount(key);
+    const maxStacks = Number(definition.maxStacks ?? 1);
+
+    if (current >= maxStacks) {
+      ui.notifications.warn(`${definition.label} ne peut pas être choisi davantage.`);
+      return;
+    }
+
+    const state = this.getChakraSpecializationState();
+
+    if (Number(state.remaining ?? 0) <= 0) {
+      ui.notifications.warn("Aucun emplacement de spécialisation de Chakra disponible.");
+      return;
+    }
+
+    await this.update({
+      [`system.chakra.specializations.${key}`]: current + 1
+    });
+
+    ui.notifications.info(`${definition.label} augmenté à ${current + 1}.`);
+  }
+
+  async decreaseChakraSpecialization(key) {
+    if (this.type !== "shinobi") return;
+
+    const definition = NARUTO25E.chakraSpecializations[key];
+    if (!definition) return;
+
+    const current = this.getChakraSpecializationCount(key);
+
+    if (current <= 0) {
+      ui.notifications.warn(`${definition.label} est déjà à 0.`);
+      return;
+    }
+
+    await this.update({
+      [`system.chakra.specializations.${key}`]: current - 1
+    });
+
+    ui.notifications.info(`${definition.label} réduit à ${current - 1}.`);
   }
 }

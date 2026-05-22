@@ -747,3 +747,123 @@ NARUTO25E.healthStates = {
   blessure2: "Blessure 2",
   blessure3: "Blessure 3"
 };
+
+NARUTO25E.chakraSpecializations = {
+  acered: {
+    label: "Acéré",
+    maxStacks: 5,
+    effect: "+2 dégâts ARM par rang",
+    bonuses: {
+      armDamage: 2
+    }
+  },
+
+  colossal: {
+    label: "Colossal",
+    maxStacks: 9,
+    effect: "+100 Chakra par rang",
+    bonuses: {
+      chakraMax: 100
+    }
+  },
+
+  endurci: {
+    label: "Endurci",
+    maxStacks: 5,
+    effect: "+1 Vigueur et +50 Chakra par rang",
+    bonuses: {
+      vigueurMax: 1,
+      chakraMax: 50
+    }
+  },
+
+  explosif: {
+    label: "Explosif",
+    maxStacks: 5,
+    effect: "+2 dégâts TAI par rang",
+    bonuses: {
+      taiDamage: 2
+    }
+  },
+
+  fulgurant: {
+    label: "Fulgurant",
+    maxStacks: 5,
+    effect: "+2 Initiative et +10 m au déplacement simple par rang",
+    bonuses: {
+      initiative: 2,
+      moveMeters: 10
+    }
+  },
+
+  hereditaire: {
+    label: "Héréditaire",
+    maxStacks: 3,
+    effect: "+1 utilisation de pouvoir de lignée actif par session et par rang",
+    bonuses: {
+      lineagePowerUses: 1
+    }
+  },
+
+  imperieux: {
+    label: "Impérieux",
+    maxStacks: 5,
+    effect: "+1 Caractère et +50 Chakra par rang",
+    bonuses: {
+      caractereMax: 1,
+      chakraMax: 50
+    }
+  },
+
+  inepuisable: {
+    label: "Inépuisable",
+    maxStacks: 3,
+    effect: "+1% à la régénération passive par rang",
+    bonuses: {
+      passiveRegenPercent: 1
+    }
+  },
+
+  puissant: {
+    label: "Puissant",
+    maxStacks: 1,
+    unique: true,
+    effect: "Effet spécial : annule certains paliers liés à la réserve naturelle de Chakra et certains échecs automatiques liés aux blessures.",
+    bonuses: {},
+    specialOnly: true
+  },
+
+  remanent: {
+    label: "Rémanent",
+    maxStacks: 1,
+    unique: true,
+    effect: "Effet spécial : le Chakra appliqué en petite quantité sur un objet reste actif tant que le personnage le souhaite.",
+    bonuses: {},
+    specialOnly: true
+  }
+};
+
+NARUTO25E.chakraSpecializationOrder = [
+  "acered",
+  "colossal",
+  "endurci",
+  "explosif",
+  "fulgurant",
+  "hereditaire",
+  "imperieux",
+  "inepuisable",
+  "puissant",
+  "remanent"
+];
+
+NARUTO25E.getChakraSpecializationSlotsForRank = function (rankKey) {
+  if (["joninS", "sanninAA", "kageSplus"].includes(rankKey)) return 14;
+
+  if (["joninD", "joninC", "joninB", "joninA"].includes(rankKey)) return 9;
+
+  if (["chuninD", "chuninC", "chuninB", "chuninA"].includes(rankKey)) return 4;
+
+  if (["geninC", "geninB", "geninA"].includes(rankKey)) return 2;
+
+  return 1;
+};
