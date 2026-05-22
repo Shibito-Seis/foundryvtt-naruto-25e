@@ -2,7 +2,14 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
-## [0.1.17.1] - En cours
+## [0.1.17.2]
+
+### Corrigé
+
+- Correction du prérequis strict de Maîtrise pour les techniques.
+- Le prérequis de Maîtrise utilise désormais le rang naturel de compétence au lieu d’une clé inexistante.
+
+## [0.1.17.1]
 
 ### Ajouté
 

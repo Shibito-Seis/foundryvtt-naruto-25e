@@ -97,7 +97,7 @@ export class Naruto25eItem extends Item {
 
         const skillOwned = Boolean(skill?.owned || definition.ownedByDefault);
         const masteryRank = Number(prerequisites.masteryRank ?? 5);
-        const skillValue = Number(skill?.value ?? 0);
+        const skillValue = Number(skill?.natural ?? 0);
 
         if (strictPrerequisite && prerequisiteType === "skill" && !skillOwned) {
             ui.notifications.warn(`${rollActor.name} ne possède pas la compétence requise : ${definition.label}.`);
