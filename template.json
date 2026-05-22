@@ -57,6 +57,7 @@
             "bonus": 0,
             "formulaMode": "standard",
             "passiveRegen": 0,
+            "passiveRegenPercent": 1,
             "activeRegen": 0,
             "sonneThreshold": 50
           }

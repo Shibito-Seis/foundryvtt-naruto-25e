@@ -116,7 +116,10 @@
         <div class="resource-row">
         <label>
          Régén. passive
-          <input name="system.resources.chakra.passiveRegen" type="number" value="{{system.resources.chakra.passiveRegen}}" />
+          <div class="readonly-value">
+            <strong>{{system.resources.chakra.passiveRegen}}</strong>
+            <span>({{system.resources.chakra.passiveRegenPercent}}% du Chakra max)</span>
+          </div>
         </label>
 
         <span></span>
@@ -249,8 +252,11 @@
 
               <div class="combat-resource-line">
                 <strong>Régén. passive</strong>
-                <span>{{system.resources.chakra.passiveRegen}}</span>
-                </div>
+                <span>
+                  {{system.resources.chakra.passiveRegen}}
+                  ({{system.resources.chakra.passiveRegenPercent}}%)
+                </span>
+              </div>
 
               <div class="combat-resource-line">
                 <strong>Régén. active</strong>

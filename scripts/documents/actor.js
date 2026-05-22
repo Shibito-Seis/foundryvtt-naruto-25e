@@ -61,12 +61,13 @@ export class Naruto25eActor extends Actor {
     const chakra = system.resources?.chakra;
     if (chakra) {
       const specializationChakraBonus = Number(chakraBonuses.chakraMax ?? 0);
-      chakra.passiveRegen = Number(chakra.passiveRegen ?? 0);
-      chakra.activeRegen = Number(chakra.activeRegen ?? 0);
+      const passiveRegenPercent = 1 + Number(chakraBonuses.passiveRegenPercent ?? 0);
       chakra.passiveRegenPercent = passiveRegenPercent;
       chakra.passiveRegen = chakra.max > 0
         ? Math.max(1, Math.floor(chakra.max * passiveRegenPercent / 100))
         : 0;
+
+      chakra.activeRegen = Number(chakra.activeRegen ?? 0);
       chakra.sonneThreshold = Number(chakra.sonneThreshold ?? 50);
 
       const formulaMode = game.settings?.get("naruto-25e", "chakraFormulaMode") ?? "standard";

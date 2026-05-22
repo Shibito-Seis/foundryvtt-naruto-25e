@@ -584,3 +584,23 @@
 .naruto-25e-shinobi-sheet .chakra-spec-controls input {
   text-align: center;
 }
+
+.naruto-25e-shinobi-sheet .readonly-value {
+  min-height: 28px;
+  padding: 4px 6px;
+  border: 1px solid #999;
+  background: rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.naruto-25e-shinobi-sheet .readonly-value strong {
+  font-size: 14px;
+}
+
+.naruto-25e-shinobi-sheet .readonly-value span {
+  font-size: 11px;
+  opacity: 0.75;
+}

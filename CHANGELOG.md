@@ -2,7 +2,13 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
-## [0.1.14.1] - En cours
+## [0.1.14.2] - En cours
+
+### Modifié
+- Régénération passive = 1% du Chakra max + 1% par rang d’Inépuisable.
+- Désormais Visible sur la fiche
+
+## [0.1.14.1]
 
 ### Corrigé
 - La spécialisation Inépuisable modifie désormais réellement la régénération passive.
