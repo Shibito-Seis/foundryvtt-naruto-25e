@@ -2,7 +2,17 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
-## [0.1.14] - En cours
+## [0.1.14.1] - En cours
+
+### Corrigé
+- La spécialisation Inépuisable modifie désormais réellement la régénération passive.
+- La régénération passive est maintenant calculée depuis le Chakra maximum.
+- La régénération passive n’est plus une valeur librement modifiable.
+
+### Modifié
+- Régénération passive = 1% du Chakra max + 1% par rang d’Inépuisable.
+
+## [0.1.14]
 
 ### Ajouté
 - Ajout de l’onglet Chakra.
