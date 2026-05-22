@@ -2,12 +2,42 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.18]
+
+### Ajouté
+
+- Ajout d’un état de création Brouillon / Validé pour les Shinobi.
+- Ajout d’un bouton MJ pour valider la création.
+- Ajout d’un bouton MJ pour déverrouiller la création.
+- Ajout des Charges de Nindō, limitées à 5.
+- Ajout d’une permission MJ permettant d’autoriser temporairement un joueur à modifier ses Ryō.
+- Ajout de boutons Ajouter / Retirer pour gérer les Ryō.
+- Préparation des champs d’affinités de chakra dans l’héritage.
+
+### Modifié
+
+- Les choix fondateurs de création sont verrouillés après validation.
+- Le Village, le Statut, le Clan, la Voie et l’Hybridation deviennent verrouillés pour les joueurs après validation.
+- Le Nindō narratif devient verrouillé après validation, sauf autorisation MJ.
+- Les points de Nindō deviennent modifiables par le MJ uniquement.
+- Les Missions deviennent modifiables par le MJ uniquement.
+- Les Ryō deviennent modifiables par le MJ uniquement par défaut.
+- Les joueurs ne peuvent plus réduire les Bases ou Compétences après validation.
+- Les fiches Item / Technique deviennent modifiables par le MJ uniquement.
+
+### Préparé
+
+- Préparation du verrouillage futur des Affinités de Chakra.
+- Préparation du futur Charactomancer.
+
 ## [0.1.17.2]
 
 ### Corrigé
 
 - Correction du prérequis strict de Maîtrise pour les techniques.
-- Le prérequis de Maîtrise utilise désormais le rang naturel de compétence au lieu d’une clé inexistante.
+- Le prérequis de Maîtrise utilise désormais le rang naturel de compétence.
+- Une technique avec Maîtrise requise 5 bloque si la compétence naturelle est inférieure à 5.
+- Une technique avec Maîtrise requise 5 fonctionne si la compétence naturelle est égale ou supérieure à 5.
 
 ## [0.1.17.1]
 

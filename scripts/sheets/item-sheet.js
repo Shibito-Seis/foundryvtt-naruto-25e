@@ -17,6 +17,10 @@ export class Naruto25eItemSheet extends ItemSheet {
         });
     }
 
+    get isEditable() {
+        return Boolean(game.user.isGM) && super.isEditable;
+    }
+
     getData(options = {}) {
         const context = super.getData(options);
 

@@ -25,9 +25,21 @@
             "allowHybridClan": false,
             "allowHybridVoie": false
           },
+          "affinities": {
+            "primary": "",
+            "secondary": "",
+            "forced": [],
+            "extra": []
+          },
           "notes": ""
         },
         "progression": {
+          "creation": {
+            "locked": false,
+            "validatedAt": "",
+            "validatedBy": "",
+            "notes": ""
+          },
           "rank": {
             "current": "aspirant",
             "lastPromotion": "",
@@ -177,10 +189,19 @@
         },
         "nindo": {
           "value": 0,
-          "max": 10
+          "max": 10,
+          "charges": {
+            "value": 0,
+            "max": 5
+          },
+          "unlockedByGM": false
         },
         "inventory": {
           "ryo": 0,
+          "permissions": {
+            "allowPlayerRyoEdit": false
+          },
+          "ryoDelta": 0,
           "newItem": {
             "name": "",
             "type": "misc",

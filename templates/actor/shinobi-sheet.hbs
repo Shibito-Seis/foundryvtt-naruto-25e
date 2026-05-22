@@ -61,6 +61,41 @@
     <div class="tab" data-group="primary" data-tab="summary">
       <div class="summary-grid">
 
+        <section class="panel creation-panel {{#if creationState.locked}}is-locked{{else}}is-draft{{/if}}">
+          <h2>Création</h2>
+
+          <div class="creation-status">
+            <strong>État :</strong>
+            <span>{{creationState.label}}</span>
+          </div>
+
+          {{#if creationState.locked}}
+            <p>
+              Création validée
+              {{#if creationState.validatedBy}}par {{creationState.validatedBy}}{{/if}}.
+            </p>
+          {{else}}
+            <p>
+              Cette fiche est encore en brouillon. Les choix fondateurs peuvent être ajustés avant validation.
+            </p>
+          {{/if}}
+
+          {{#if isGM}}
+            <div class="button-row">
+              {{#if creationState.canValidate}}
+                <button type="button" class="creation-validate">
+                  Valider la création
+                </button>
+              {{/if}}
+
+              {{#if creationState.canUnlock}}
+                <button type="button" class="creation-unlock">
+                  MJ : Déverrouiller la création
+                </button>
+              {{/if}}
+            </div>
+          {{/if}}
+        </section>
       <section class="panel">
          <h2>Ressources</h2>
 
@@ -157,16 +192,33 @@
         <section class="panel">
           <h2>Nindō</h2>
 
-          <div class="resource-row">
-            <input name="system.nindo.value" type="number" value="{{system.nindo.value}}" min="0" max="{{system.nindo.max}}" />
-            <span>/</span>
-            <input name="system.nindo.max" type="number" value="{{system.nindo.max}}" readonly />
-          </div>
+          <label>
+            Points de Nindō
+            <div class="resource-line">
+              <input name="system.nindo.value" type="number" value="{{system.nindo.value}}" min="0" max="{{system.nindo.max}}" {{#unless isGM}}disabled{{/unless}} />
+              <span>/ {{system.nindo.max}}</span>
+            </div>
+          </label>
+
+          <label>
+            Charges de Nindō
+            <div class="resource-line">
+              <input name="system.nindo.charges.value" type="number" value="{{system.nindo.charges.value}}" min="0" max="{{system.nindo.charges.max}}" {{#unless isGM}}disabled{{/unless}} />
+              <span>/ {{system.nindo.charges.max}}</span>
+            </div>
+          </label>
 
           <label>
             Texte du Nindō
-            <textarea name="system.identity.nindoText">{{system.identity.nindoText}}</textarea>
+            <textarea name="system.identity.nindoText" {{#unless permissionsState.canEditNindo}}disabled{{/unless}}>{{system.identity.nindoText}}</textarea>
           </label>
+
+          {{#if isGM}}
+            <label class="checkbox-line">
+              <input class="nindo-unlock-toggle" type="checkbox" {{#if permissionsState.nindoUnlockedByGM}}checked{{/if}} />
+              MJ : autoriser temporairement le joueur à modifier son Nindō
+            </label>
+          {{/if}}
         </section>
 
         <section class="panel">
@@ -819,7 +871,7 @@
       <div class="identity-grid">
         <label>
           Village d’origine
-          <select name="system.heritage.village">
+          <select name="system.heritage.village" {{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}>
             {{#each villages as |village|}}
               <option value="{{village.key}}" {{#if village.selected}}selected{{/if}} {{#unless village.selectable}}disabled{{/unless}}>
                 {{village.label}}{{#unless village.selectable}} — indisponible{{/unless}}
@@ -830,7 +882,7 @@
 
         <label>
           Statut
-          <select name="system.heritage.villageStatus">
+          <select name="system.heritage.villageStatus" {{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}>
             {{#each villageStatuses as |status|}}
               <option value="{{status.key}}" {{#if status.selected}}selected{{/if}}>
                 {{status.label}}
@@ -841,7 +893,7 @@
 
         <label>
           Type d’héritage
-          <select class="heritage-mode-select" name="system.heritage.mode">
+          <select class="heritage-mode-select" name="system.heritage.mode" {{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}>
             {{#each heritageModes as |mode|}}
               <option value="{{mode.key}}" {{#if mode.selected}}selected{{/if}} {{#if mode.disabled}}disabled{{/if}}>
                 {{mode.label}}{{#if mode.disabled}} — option MJ requise{{/if}}
@@ -852,7 +904,7 @@
 
         <label>
           Clan principal
-          <select name="system.heritage.clan" {{#if heritageState.clanDisabled}}disabled{{/if}}>
+          <select name="system.heritage.clan" {{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}>
             <option value="">Aucun clan sélectionné</option>
             {{#each clans as |clan|}}
               <option value="{{clan.key}}" {{#if clan.selected}}selected{{/if}}>
@@ -864,7 +916,7 @@
 
         <label>
           Voie
-          <select name="system.heritage.voie" {{#if heritageState.voieDisabled}}disabled{{/if}}>
+          <select name="system.heritage.voie" {{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}>
             <option value="">Aucune voie sélectionnée</option>
             {{#each voies as |voie|}}
               <option value="{{voie.key}}" {{#if voie.selected}}selected{{/if}} {{#unless voie.selectable}}disabled{{/unless}}>
@@ -876,7 +928,7 @@
 
         <label>
           Clan secondaire / hybridation
-          <select name="system.heritage.hybrid.secondaryClan" {{#if heritageState.hybridDisabled}}disabled{{/if}}>
+          <select name="system.heritage.hybrid.secondaryClan" {{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}>
             <option value="">Aucun</option>
             {{#each secondaryClans as |clan|}}
               <option value="{{clan.key}}" {{#if clan.selected}}selected{{/if}}>
@@ -889,7 +941,7 @@
 
         <label>
           Raison / origine de l’hybridation
-          <textarea name="system.heritage.hybrid.reason" {{#if heritageState.hybridDisabled}}disabled{{/if}}>{{system.heritage.hybrid.reason}}</textarea>
+          <textarea name="system.heritage.hybrid.reason" {{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}>{{system.heritage.hybrid.reason}}</textarea>
         </label>
 
       <label>
@@ -950,11 +1002,38 @@
       <section class="panel">
         <h2>Inventaire</h2>
 
-        <section class="inventory-money">
-          <label>
-            Ryō 両
-            <input name="system.inventory.ryo" type="number" value="{{system.inventory.ryo}}" min="0" />
-          </label>
+        <section class="panel">
+          <h2>Ryō</h2>
+
+          <div class="ryo-display">
+            <strong>Fortune actuelle :</strong>
+            <span>{{system.inventory.ryo}} 両</span>
+          </div>
+
+          {{#if permissionsState.canEditRyo}}
+            <div class="ryo-controls">
+              <input name="system.inventory.ryoDelta" type="number" value="{{system.inventory.ryoDelta}}" min="0" placeholder="Montant" />
+
+              <button type="button" class="ryo-adjust" data-mode="add">
+                Ajouter
+              </button>
+
+              <button type="button" class="ryo-adjust" data-mode="remove">
+                Retirer
+              </button>
+            </div>
+          {{else}}
+            <p class="hint">
+              Les Ryō sont gérés par le MJ.
+            </p>
+          {{/if}}
+
+          {{#if isGM}}
+            <label class="checkbox-line">
+              <input class="ryo-permission-toggle" type="checkbox" {{#if permissionsState.allowPlayerRyoEdit}}checked{{/if}} />
+              MJ : autoriser ce joueur à modifier ses Ryō
+            </label>
+          {{/if}}
         </section>
 
         <section class="inventory-add-panel">
@@ -1097,10 +1176,10 @@
              <tr>
               <td>{{mission.label}}</td>
               <td>
-               <input name="system.missions.{{mission.key}}.completed" type="number" value="{{mission.data.completed}}" min="0" />
+               <input name="system.missions.{{mission.key}}.completed" type="number" value="{{mission.data.completed}}" min="0" {{#unless isGM}}disabled{{/unless}} />
               </td>
               <td>
-               <input name="system.missions.{{mission.key}}.failed" type="number" value="{{mission.data.failed}}" min="0" />
+               <input name="system.missions.{{mission.key}}.failed" type="number" value="{{mission.data.failed}}" min="0" {{#unless isGM}}disabled{{/unless}} />
               </td>
              </tr>
             {{/each}}

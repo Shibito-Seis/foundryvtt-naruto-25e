@@ -8,6 +8,7 @@ export class Naruto25eActor extends Actor {
 
     const system = this.system;
 
+    this._prepareCreation(system);
     this._prepareBases(system);
     this._prepareSkills(system);
     this._prepareHeritage(system);
@@ -30,6 +31,110 @@ export class Naruto25eActor extends Actor {
 
     return value + bonus;
   }
+
+  _prepareCreation(system) {
+    if (!system.progression) system.progression = {};
+
+    if (!system.progression.creation) {
+      system.progression.creation = {
+        locked: false,
+        validatedAt: "",
+        validatedBy: "",
+        notes: ""
+      };
+    }
+
+    const creation = system.progression.creation;
+
+    creation.locked = Boolean(creation.locked);
+    creation.validatedAt = creation.validatedAt ?? "";
+    creation.validatedBy = creation.validatedBy ?? "";
+    creation.notes = creation.notes ?? "";
+  }
+
+    isCreationLocked() {
+      return Boolean(this.system.progression?.creation?.locked);
+    }
+
+    canUserEditLockedCreationFields(user = game.user) {
+      return Boolean(user?.isGM) || !this.isCreationLocked();
+    }
+
+    canUserEditRyo(user = game.user) {
+      if (user?.isGM) return true;
+
+      return Boolean(this.system.inventory?.permissions?.allowPlayerRyoEdit);
+    }
+
+    canUserEditNindo(user = game.user) {
+      if (user?.isGM) return true;
+
+      return Boolean(this.system.nindo?.unlockedByGM);
+    }
+
+    async validateCreation() {
+      if (this.type !== "shinobi") return;
+
+      if (!game.user.isGM) {
+        ui.notifications.warn("Seul le MJ peut valider définitivement la création.");
+        return;
+      }
+
+      const confirmed = await Dialog.confirm({
+        title: "Valider la création",
+        content: `
+          <p>Valider la création de <strong>${this.name}</strong> ?</p>
+          <p>Les choix fondateurs seront verrouillés pour les joueurs :</p>
+          <ul>
+            <li>Village, statut, clan, voie, hybridation</li>
+            <li>Nindō narratif</li>
+            <li>Compétences initiales</li>
+            <li>Affinités de chakra futures</li>
+          </ul>
+        `,
+        yes: () => true,
+        no: () => false,
+        defaultYes: false
+      });
+
+      if (!confirmed) return;
+
+      await this.update({
+        "system.progression.creation.locked": true,
+        "system.progression.creation.validatedAt": new Date().toISOString(),
+        "system.progression.creation.validatedBy": game.user.name
+      });
+
+      ui.notifications.info(`Création validée pour ${this.name}.`);
+    }
+
+    async unlockCreation() {
+      if (this.type !== "shinobi") return;
+
+      if (!game.user.isGM) {
+        ui.notifications.warn("Seul le MJ peut déverrouiller la création.");
+        return;
+      }
+
+      const confirmed = await Dialog.confirm({
+        title: "Déverrouiller la création",
+        content: `
+          <p>Déverrouiller la création de <strong>${this.name}</strong> ?</p>
+          <p>Les joueurs pourront à nouveau modifier les choix fondateurs.</p>
+        `,
+        yes: () => true,
+        no: () => false,
+        defaultYes: false
+      });
+
+      if (!confirmed) return;
+
+      await this.update({
+        "system.progression.creation.locked": false
+      });
+
+      ui.notifications.info(`Création déverrouillée pour ${this.name}.`);
+    }
 
   _prepareBases(system) {
     for (const base of Object.values(system.bases ?? {})) {
@@ -143,13 +248,25 @@ _prepareExperience(system) {
     missions.totalFailed = totalFailed;
   }
 
-  _prepareNindo(system) {
-    const nindo = system.nindo;
-    if (!nindo) return;
+    _prepareNindo(system) {
+      const nindo = system.nindo;
+      if (!nindo) return;
 
-    nindo.max = Number(nindo.max ?? 10);
-    nindo.value = this._clampNumber(nindo.value, 0, nindo.max);
-  }
+      nindo.max = Number(nindo.max ?? 10);
+      nindo.value = this._clampNumber(nindo.value, 0, nindo.max);
+
+      if (!nindo.charges) {
+        nindo.charges = {
+          value: 0,
+          max: 5
+        };
+      }
+
+      nindo.charges.max = Number(nindo.charges.max ?? 5);
+      nindo.charges.value = this._clampNumber(nindo.charges.value, 0, nindo.charges.max);
+
+      nindo.unlockedByGM = Boolean(nindo.unlockedByGM);
+    }
 
   _clampNumber(value, min, max) {
     const number = Number(value ?? 0);
@@ -207,6 +324,10 @@ async increaseBase(baseKey) {
 
 async decreaseBase(baseKey) {
   if (this.type !== "shinobi") return;
+  if (this.isCreationLocked() && !game.user.isGM) {
+    ui.notifications.warn("La création est validée : seul le MJ peut réduire une Base.");
+    return;
+  }
 
   const base = this.system.bases?.[baseKey];
   if (!base) return;
@@ -335,6 +456,10 @@ async decreaseBase(baseKey) {
 
   async decreaseSkill(skillKey) {
     if (this.type !== "shinobi") return;
+    if (this.isCreationLocked() && !game.user.isGM) {
+      ui.notifications.warn("La création est validée : seul le MJ peut réduire une Compétence.");
+      return;
+    }
 
     const skill = this.system.skills?.[skillKey];
     const definition = NARUTO25E.skillDefinitions[skillKey];
@@ -845,6 +970,132 @@ async decreaseBase(baseKey) {
     return Number(this.getCurrentRank().baseCap ?? 3);
   }
 
+  async adjustRyo(delta) {
+    if (this.type !== "shinobi") return;
+
+    if (!this.canUserEditRyo(game.user)) {
+      ui.notifications.warn("Seul le MJ peut modifier les Ryō de cette fiche.");
+      return;
+    }
+
+    const amount = Number(delta ?? 0);
+
+    if (!Number.isFinite(amount) || amount === 0) {
+      ui.notifications.warn("Montant de Ryō invalide.");
+      return;
+    }
+
+    const current = Number(this.system.inventory?.ryo ?? 0);
+    const next = Math.max(0, current + amount);
+
+    await this.update({
+      "system.inventory.ryo": next,
+      "system.inventory.ryoDelta": 0
+    });
+
+    const sign = amount > 0 ? "+" : "";
+    ui.notifications.info(`Ryō : ${current} → ${next} (${sign}${amount}).`);
+  }
+
+  async setPlayerRyoPermission(allowed) {
+    if (this.type !== "shinobi") return;
+
+    if (!game.user.isGM) {
+      ui.notifications.warn("Seul le MJ peut modifier cette permission.");
+      return;
+    }
+
+    await this.update({
+      "system.inventory.permissions.allowPlayerRyoEdit": Boolean(allowed)
+    });
+  }
+
+  async setNindoUnlockedByGM(allowed) {
+    if (this.type !== "shinobi") return;
+
+    if (!game.user.isGM) {
+      ui.notifications.warn("Seul le MJ peut modifier cette permission.");
+      return;
+    }
+
+    await this.update({
+      "system.nindo.unlockedByGM": Boolean(allowed)
+    });
+  }
+
+  async _preUpdate(changed, options, user) {
+    const allowed = await super._preUpdate(changed, options, user);
+    if (allowed === false) return false;
+
+    if (this.type !== "shinobi") return allowed;
+
+    const updatingUser = game.users?.get(user);
+    const isGM = Boolean(updatingUser?.isGM);
+
+    if (isGM) return allowed;
+
+    const creationLocked = this.isCreationLocked();
+
+    const flat = foundry.utils.flattenObject(changed);
+
+    const deletePath = (path) => {
+      if (foundry.utils.hasProperty(changed, path)) {
+        foundry.utils.deleteProperty(changed, path);
+      }
+    };
+
+    for (const path of Object.keys(flat)) {
+      if (creationLocked) {
+        const lockedPrefixes = [
+          "system.heritage.",
+          "system.identity.nindoText"
+        ];
+
+        if (lockedPrefixes.some((prefix) => path.startsWith(prefix))) {
+          deletePath(path);
+        }
+
+        if (path.match(/^system\.skills\.[^.]+\.owned$/)) {
+          deletePath(path);
+        }
+
+        if (path.startsWith("system.heritage.affinities.")) {
+          deletePath(path);
+        }
+      }
+
+      if (path.startsWith("system.missions.")) {
+        deletePath(path);
+      }
+
+      if (path === "system.nindo.value" || path === "system.nindo.max") {
+        deletePath(path);
+      }
+
+      if (path === "system.nindo.charges.value" || path === "system.nindo.charges.max") {
+        deletePath(path);
+      }
+
+      if (path === "system.identity.nindoText" && !this.canUserEditNindo(updatingUser)) {
+        deletePath(path);
+      }
+
+      if (path === "system.inventory.ryo" && !this.canUserEditRyo(updatingUser)) {
+        deletePath(path);
+      }
+
+      if (path.startsWith("system.inventory.permissions.")) {
+        deletePath(path);
+      }
+
+      if (path === "system.progression.creation.locked") {
+        deletePath(path);
+      }
+    }
+
+    return allowed;
+  }
+
   async promoteToNextRank() {
     if (this.type !== "shinobi") return;
 
@@ -1186,12 +1437,16 @@ async decreaseBase(baseKey) {
     }
   }
 
-    _prepareInventory(system) {
+  _prepareInventory(system) {
     if (!system.inventory) system.inventory = {};
 
     const inventory = system.inventory;
 
     inventory.ryo = Math.max(0, Number(inventory.ryo ?? 0));
+    inventory.ryoDelta = Math.max(0, Number(inventory.ryoDelta ?? 0));
+
+    inventory.permissions = inventory.permissions ?? {};
+    inventory.permissions.allowPlayerRyoEdit = Boolean(inventory.permissions.allowPlayerRyoEdit);
 
     inventory.newItem = inventory.newItem ?? {};
     inventory.newItem.name = inventory.newItem.name ?? "";

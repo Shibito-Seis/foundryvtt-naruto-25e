@@ -196,6 +196,24 @@ context.skillGroups = categoryOrder.map((category) => {
   };
 
   context.isGM = game.user.isGM;
+  const creation = this.actor.system.progression?.creation ?? {};
+
+  context.creationState = {
+    locked: Boolean(creation.locked),
+    label: creation.locked ? "Validée" : "Brouillon",
+    validatedAt: creation.validatedAt ?? "",
+    validatedBy: creation.validatedBy ?? "",
+    canValidate: game.user.isGM && !creation.locked,
+    canUnlock: game.user.isGM && creation.locked
+  };
+
+  context.permissionsState = {
+    canEditLockedCreationFields: this.actor.canUserEditLockedCreationFields(game.user),
+    canEditRyo: this.actor.canUserEditRyo(game.user),
+    canEditNindo: this.actor.canUserEditNindo(game.user),
+    allowPlayerRyoEdit: Boolean(this.actor.system.inventory?.permissions?.allowPlayerRyoEdit),
+    nindoUnlockedByGM: Boolean(this.actor.system.nindo?.unlockedByGM)
+  };
 
   const mode = heritage.mode ?? "clan";
   const gmOptions = heritage.gmOptions ?? {};
@@ -606,6 +624,45 @@ context.skillGroups = categoryOrder.map((category) => {
     await this.actor.updateInventoryItem(itemId, {
       [field]: value
     });
+  });
+
+  html.find(".creation-validate").on("click", async (event) => {
+    event.preventDefault();
+    await this.actor.validateCreation();
+  });
+
+  html.find(".creation-unlock").on("click", async (event) => {
+    event.preventDefault();
+    await this.actor.unlockCreation();
+  });
+
+  html.find(".ryo-adjust").on("click", async (event) => {
+    event.preventDefault();
+
+    const mode = event.currentTarget.dataset.mode;
+    const rawAmount = html.find('[name="system.inventory.ryoDelta"]').val();
+    const amount = Math.abs(Number(rawAmount ?? 0));
+
+    if (!Number.isFinite(amount) || amount <= 0) {
+      ui.notifications.warn("Entre une valeur de Ryō positive.");
+      return;
+    }
+
+    const delta = mode === "remove" ? -amount : amount;
+
+    await this.actor.adjustRyo(delta);
+  });
+
+  html.find(".ryo-permission-toggle").on("change", async (event) => {
+    event.preventDefault();
+
+    await this.actor.setPlayerRyoPermission(event.currentTarget.checked);
+  });
+
+  html.find(".nindo-unlock-toggle").on("change", async (event) => {
+    event.preventDefault();
+
+    await this.actor.setNindoUnlockedByGM(event.currentTarget.checked);
   });
   }
 }

@@ -836,3 +836,64 @@
   border: 0;
   border-top: 1px solid rgba(0, 0, 0, 0.25);
 }
+
+.creation-panel {
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  padding: 10px;
+  margin-bottom: 12px;
+}
+
+.creation-panel.is-draft {
+  background: rgba(255, 220, 80, 0.12);
+}
+
+.creation-panel.is-locked {
+  background: rgba(80, 180, 120, 0.12);
+}
+
+.creation-status {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.button-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.resource-line {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.checkbox-line {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.ryo-display {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+  font-size: 1.05em;
+}
+
+.ryo-controls {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.hint {
+  opacity: 0.75;
+  font-style: italic;
+}

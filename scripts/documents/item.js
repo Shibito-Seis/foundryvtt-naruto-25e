@@ -198,4 +198,18 @@ export class Naruto25eItem extends Item {
 
         return roll;
     }
+
+    async _preUpdate(changed, options, user) {
+        const allowed = await super._preUpdate(changed, options, user);
+        if (allowed === false) return false;
+
+        const updatingUser = game.users?.get(user);
+
+        if (!updatingUser?.isGM) {
+            ui.notifications.warn("Seul le MJ peut modifier les données d’un item Naruto 2.5e.");
+            return false;
+        }
+
+        return allowed;
+    }
 }
