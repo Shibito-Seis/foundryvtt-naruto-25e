@@ -625,3 +625,82 @@
   border: 0;
   border-top: 1px solid rgba(0, 0, 0, 0.25);
 }
+
+.naruto-roll-card {
+  border: 1px solid #777;
+  padding: 10px;
+  background: rgba(20, 20, 20, 0.06);
+}
+
+.naruto-roll-card .naruto-roll-header h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+  padding-bottom: 4px;
+}
+
+.naruto-roll-result {
+  text-align: center;
+  font-size: 32px;
+  font-weight: bold;
+  line-height: 1.2;
+  margin: 8px 0;
+  padding: 8px;
+  border: 1px solid #999;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.naruto-roll-card.is-exploded {
+  border-color: #007f5f;
+  box-shadow: 0 0 0 1px rgba(0, 127, 95, 0.35);
+}
+
+.naruto-roll-result.exploded {
+  color: #007f5f;
+  border-color: #007f5f;
+  background: rgba(0, 127, 95, 0.12);
+}
+
+.naruto-roll-details {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+  opacity: 0.85;
+}
+
+.naruto-roll-explosion {
+  margin-top: 8px;
+  padding: 6px 8px;
+  text-align: center;
+  font-weight: bold;
+  color: #007f5f;
+  border: 1px solid #007f5f;
+  background: rgba(0, 127, 95, 0.12);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.naruto-roll-card.is-failure {
+  border-color: #8b1e1e;
+}
+
+.naruto-roll-card.is-success {
+  border-color: #2f7d32;
+}
+
+.naruto-roll-card.is-high-success {
+  border-color: #a77c00;
+}
+
+.naruto-roll-result.failure {
+  color: #8b1e1e;
+}
+
+.naruto-roll-result.success {
+  color: #2f7d32;
+}
+
+.naruto-roll-result.high-success {
+  color: #a77c00;
+}

@@ -999,11 +999,52 @@ async decreaseBase(baseKey) {
     const roll = new Roll(formula);
     await roll.evaluate();
 
+    const dice = roll.dice?.[0];
+    const dieResults = dice?.results ?? [];
+
+    const naturalResults = dieResults.map((result) => Number(result.result ?? 0));
+    const exploded = naturalResults.some((value) => value === 10) && naturalResults.length > 1;
+
+    const diceText = naturalResults.length
+      ? naturalResults.join(" + ")
+      : "—";
+
+    const modifierText = safeModifier >= 0
+      ? `+ ${safeModifier}`
+      : `- ${Math.abs(safeModifier)}`;
+
+    const resultClass = exploded ? "naruto-roll-result exploded" : "naruto-roll-result";
+
     const flavor = options.flavor ?? label;
 
-    await roll.toMessage({
+    const content = `
+      <div class="naruto-roll-card ${exploded ? "is-exploded" : ""}">
+        <header class="naruto-roll-header">
+          <h3>${flavor}</h3>
+        </header>
+
+        <div class="${resultClass}">
+          ${roll.total}
+        </div>
+
+        <div class="naruto-roll-details">
+          <span>D10 : ${diceText}</span>
+          <span>Modificateur : ${modifierText}</span>
+        </div>
+
+        ${exploded ? `
+          <div class="naruto-roll-explosion">
+            Explosion du dé !
+          </div>
+        ` : ""}
+      </div>
+    `;
+
+    await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: this }),
-      flavor: `<strong>${flavor}</strong>`
+      flavor: label,
+      content,
+      rolls: [roll]
     });
 
     return roll;

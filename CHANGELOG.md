@@ -2,21 +2,32 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
-## [0.1.15] - En cours
+## [0.1.15.1] - En cours
 
 ### Ajouté
-- Ajout du bouton de jet d’initiative.
-- Ajout des boutons d’attaque ARM et TAI basiques.
-- Ajout d’un jet de compétence rapide depuis l’onglet Combat / Actions.
-- Ajout des boutons d’interception ARM et TAI.
-- Ajout des compteurs d’interceptions par round.
-- Ajout d’un reset de round réservé au MJ.
-- Ajout d’un compteur de pouvoirs de lignée.
-- Ajout d’un reset de session réservé au MJ.
-- Ajout de la dépense manuelle d’une utilisation de pouvoir de lignée.
-- Prise en compte du bonus Héréditaire dans le compteur de pouvoirs de lignée.
+- Ajout d’une carte de chat personnalisée pour les jets du système.
+- Ajout de la détection des jets explosifs au d10.
+- Ajout d’une mise en valeur visuelle des explosions de dé.
+- Préparation des styles futurs pour les réussites, échecs et réussites supérieures.
 
 ---
+
+## [0.1.15]
+
+### Ajouté
+- Ajout des jets cliquables d’initiative, d’attaque ARM, d’attaque TAI et de compétence rapide.
+- Ajout des interceptions ARM / TAI avec compteur par round.
+- Ajout du reset de round réservé au MJ.
+- Ajout d’un compteur provisoire de pouvoirs de lignée.
+- Ajout du reset de session réservé au MJ.
+- Prise en compte du bonus Héréditaire dans les utilisations de pouvoir de lignée.
+
+### Validé
+- Les jets utilisent bien le d10 explosif.
+- Les interceptions consomment correctement leurs compteurs.
+- Les boutons sont bloqués lorsque les compteurs sont à 0.
+- Le reset round restaure les interceptions.
+- Le reset session restaure les utilisations de lignée.
 
 ## [0.1.14.2]
 
