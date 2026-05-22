@@ -2,7 +2,28 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
-## [0.1.17] - En cours
+## [0.1.17.1] - En cours
+
+### Ajouté
+
+- Ajout des types de dégâts tagués pour les techniques.
+- Ajout des champs de prérequis des techniques.
+- Ajout du mode de prérequis strict.
+- Ajout de la distinction entre compétence possédée et compétence non possédée lors du lancement d’une technique.
+
+### Modifié
+
+- Les dégâts des techniques utilisent désormais une formule texte au lieu d’une valeur numérique fixe.
+- Une technique élémentaire simple peut être lancée même si la compétence liée n’est pas possédée.
+- Si la compétence liée n’est pas possédée, le jet utilise uniquement la Base associée.
+- Si la compétence liée est possédée, le jet utilise le total de compétence.
+- Les champs Description et Effet utilisent temporairement des zones de texte simples pour garantir leur édition.
+
+### Préparé
+
+- Préparation des prérequis de type affinité, maîtrise, clan, lignée, Kekkei Genkai, Kekkei Tōta, Kinjutsu et validation MJ.
+
+## [0.1.17]
 
 ### Ajouté
 

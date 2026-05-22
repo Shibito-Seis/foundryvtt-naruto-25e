@@ -27,8 +27,8 @@ export class Naruto25eItem extends Item {
         system.actionType = system.actionType ?? "complex";
 
         system.damage = system.damage ?? {};
-        system.damage.value = Number(system.damage.value ?? 0);
-        system.damage.type = system.damage.type ?? "";
+        system.damage.formula = system.damage.formula ?? String(system.damage.value ?? "");
+        system.damage.type = system.damage.type ?? "none";
         system.damage.scaling = system.damage.scaling ?? "";
 
         system.chakra = system.chakra ?? {};
@@ -40,6 +40,12 @@ export class Naruto25eItem extends Item {
         system.roll.enabled = system.roll.enabled !== false;
         system.roll.defaultDifficulty = Number(system.roll.defaultDifficulty ?? 6);
         system.roll.opposed = Boolean(system.roll.opposed);
+
+        system.prerequisites = system.prerequisites ?? {};
+        system.prerequisites.strict = Boolean(system.prerequisites.strict);
+        system.prerequisites.type = system.prerequisites.type ?? "none";
+        system.prerequisites.text = system.prerequisites.text ?? "";
+        system.prerequisites.masteryRank = Number(system.prerequisites.masteryRank ?? 5);
     }
 
     getTechniqueRollActor() {
@@ -80,17 +86,43 @@ export class Naruto25eItem extends Item {
         const skill = rollActor.system.skills?.[skillKey];
         const definition = NARUTO25E.skillDefinitions?.[skillKey];
 
-        if (!skill || !definition) {
-            ui.notifications.warn("Compétence liée introuvable sur le Shinobi.");
+        if (!definition) {
+            ui.notifications.warn("Compétence liée introuvable dans la configuration du système.");
             return null;
         }
 
-        if (!skill.owned && !definition.ownedByDefault) {
-            ui.notifications.warn(`${rollActor.name} ne possède pas la compétence ${definition.label}.`);
+        const prerequisites = system.prerequisites ?? {};
+        const prerequisiteType = prerequisites.type ?? "none";
+        const strictPrerequisite = Boolean(prerequisites.strict);
+
+        const skillOwned = Boolean(skill?.owned || definition.ownedByDefault);
+        const masteryRank = Number(prerequisites.masteryRank ?? 5);
+        const skillValue = Number(skill?.value ?? 0);
+
+        if (strictPrerequisite && prerequisiteType === "skill" && !skillOwned) {
+            ui.notifications.warn(`${rollActor.name} ne possède pas la compétence requise : ${definition.label}.`);
             return null;
         }
 
-        const modifier = Number(skill.total ?? 0);
+        if (strictPrerequisite && prerequisiteType === "mastery" && skillValue < masteryRank) {
+            ui.notifications.warn(`${rollActor.name} ne maîtrise pas suffisamment ${definition.label} (${skillValue}/${masteryRank}).`);
+            return null;
+        }
+
+        const baseKey = definition.base ?? system.base;
+        const baseTotal = Number(
+            rollActor.system.bases?.[baseKey]?.total ??
+            rollActor.system.bases?.[baseKey]?.value ??
+            0
+        );
+
+        const modifier = skillOwned
+        ? Number(skill?.total ?? baseTotal)
+        : baseTotal;
+
+        const rollModeLabel = skillOwned
+        ? `${definition.label}`
+        : `${definition.label} non possédée — Base ${(baseKey ?? "").toUpperCase()}`;
         const formula = `1d10x + ${modifier}`;
 
         const roll = new Roll(formula);
@@ -107,7 +139,7 @@ export class Naruto25eItem extends Item {
         const familyLabel = NARUTO25E.techniqueFamilies?.[system.family] ?? system.family ?? "—";
         const rankLabel = NARUTO25E.techniqueRanks?.[system.rank] ?? system.rank ?? "—";
         const actionLabel = NARUTO25E.techniqueActionTypes?.[system.actionType] ?? system.actionType ?? "—";
-        const skillLabel = definition.label ?? skillKey;
+        const skillLabel = rollModeLabel;
 
         const content = `
             <div class="naruto-roll-card naruto-technique-card ${exploded ? "is-exploded" : ""}">
@@ -144,7 +176,8 @@ export class Naruto25eItem extends Item {
                 <div><strong>Cible :</strong> ${system.target || "—"}</div>
                 <div><strong>Durée :</strong> ${system.duration || "—"}</div>
                 <div><strong>Zone :</strong> ${system.area || "—"}</div>
-                <div><strong>Dégâts :</strong> ${system.damage?.value ?? 0} ${system.damage?.type ?? ""}</div>
+                <div><strong>Dégâts :</strong> ${system.damage?.formula || "—"} ${NARUTO25E.damageTypes?.[system.damage?.type] ?? system.damage?.type ?? ""}</div>
+                <div><strong>Prérequis :</strong> ${strictPrerequisite ? (NARUTO25E.techniquePrerequisiteTypes?.[prerequisiteType] ?? prerequisiteType) : "Non strict"}</div>
             </div>
 
             ${system.effect ? `

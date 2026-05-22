@@ -910,3 +910,38 @@ NARUTO25E.techniqueActionTypes = {
   delayed: "Action retardée",
   passive: "Passive"
 };
+
+NARUTO25E.techniquePrerequisiteTypes = {
+  none: "Aucun",
+  skill: "Compétence possédée",
+  mastery: "Maîtrise de compétence",
+  affinity: "Affinité naturelle",
+  clan: "Clan",
+  lineage: "Lignée",
+  kekkeiGenkai: "Kekkei Genkai",
+  kekkeiTota: "Kekkei Tōta",
+  kinjutsu: "Kinjutsu / Technique interdite",
+  gm: "Validation MJ"
+};
+
+NARUTO25E.damageTypes = {
+  none: "—",
+  physical: "Physique",
+  chakra: "Chakra",
+  fire: "Feu",
+  water: "Eau",
+  lightning: "Foudre",
+  wind: "Vent",
+  earth: "Terre",
+  shadow: "Ombre",
+  magnet: "Magnétisme",
+  medical: "Médical",
+  mental: "Mental",
+  poison: "Poison",
+  slashing: "Tranchant",
+  piercing: "Perforant",
+  bludgeoning: "Contondant",
+  sound: "Son",
+  dust: "Poussière",
+  other: "Autre"
+};

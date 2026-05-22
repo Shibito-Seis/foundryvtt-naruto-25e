@@ -131,13 +131,19 @@
             </label>
 
             <label>
-              Dégâts
-              <input name="system.damage.value" type="number" value="{{system.damage.value}}" min="0" />
+                Formule de dégâts
+                <input name="system.damage.formula" type="text" value="{{system.damage.formula}}" placeholder="Ex : 1d6, 2d6 + NIN, TAI + 2..." />
             </label>
 
             <label>
-              Type de dégâts
-              <input name="system.damage.type" type="text" value="{{system.damage.type}}" />
+                Type de dégâts
+                <select name="system.damage.type">
+                    {{#each damageTypes as |type|}}
+                        <option value="{{type.key}}" {{#if type.selected}}selected{{/if}}>
+                            {{type.label}}
+                        </option>
+                    {{/each}}
+                </select>
             </label>
 
             <label class="wide">
@@ -172,6 +178,38 @@
             </label>
           </div>
 
+            <hr />
+
+            <h3>Prérequis</h3>
+
+            <div class="item-grid two-columns">
+                <label>
+                    Prérequis strict
+                    <input name="system.prerequisites.strict" type="checkbox" {{#if system.prerequisites.strict}}checked{{/if}} />
+                </label>
+
+                <label>
+                    Type de prérequis
+                    <select name="system.prerequisites.type">
+                        {{#each techniquePrerequisiteTypes as |type|}}
+                            <option value="{{type.key}}" {{#if type.selected}}selected{{/if}}>
+                                {{type.label}}
+                            </option>
+                        {{/each}}
+                    </select>
+                </label>
+
+                <label>
+                    Rang de maîtrise requis
+                    <input name="system.prerequisites.masteryRank" type="number" value="{{system.prerequisites.masteryRank}}" min="0" />
+                </label>
+
+                <label class="wide">
+                    Texte de prérequis
+                    <input name="system.prerequisites.text" type="text" value="{{system.prerequisites.text}}" placeholder="Ex : Clan Uchiha, Sharingan actif, Suiton + Fūton maîtrisés..." />
+                </label>
+            </div>
+
           <button type="button" class="technique-roll" {{#unless system.roll.enabled}}disabled{{/unless}}>
             Lancer la technique
           </button>
@@ -191,17 +229,17 @@
     </div>
 
     <div class="tab" data-group="primary" data-tab="description">
-      <section class="panel">
-        <h2>Description</h2>
-        {{editor system.description target="system.description" button=true owner=owner editable=editable}}
-      </section>
-
-      {{#if isTechnique}}
         <section class="panel">
-          <h2>Effet</h2>
-          {{editor system.effect target="system.effect" button=true owner=owner editable=editable}}
+            <h2>Description</h2>
+            <textarea name="system.description">{{system.description}}</textarea>
         </section>
-      {{/if}}
+
+        {{#if isTechnique}}
+            <section class="panel">
+                <h2>Effet</h2>
+                <textarea name="system.effect">{{system.effect}}</textarea>
+            </section>
+        {{/if}}
     </div>
   </section>
 </form>

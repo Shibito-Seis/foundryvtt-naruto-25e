@@ -41,6 +41,21 @@ export class Naruto25eItemSheet extends ItemSheet {
             selected: context.system.actionType === key
         }));
 
+        context.techniquePrerequisiteTypes = Object.entries(NARUTO25E.techniquePrerequisiteTypes ?? {}).map(([key, label]) => ({
+            key,
+            label,
+            selected: context.system.prerequisites?.type === key
+        }));
+
+        context.damageTypes = Object.entries(NARUTO25E.damageTypes ?? {}).map(([key, label]) => ({
+            key,
+            label,
+            selected: context.system.damage?.type === key
+        }));
+
+        context.owner = this.item.isOwner;
+        context.editable = this.isEditable;
+
         context.baseOptions = Object.entries(NARUTO25E.baseLabels ?? {}).map(([key, label]) => ({
             key,
             label,
