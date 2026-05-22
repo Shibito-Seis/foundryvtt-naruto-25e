@@ -1029,7 +1029,10 @@ async decreaseBase(baseKey) {
 
     if (this.type !== "shinobi") return allowed;
 
-    const updatingUser = game.users?.get(user);
+    const updatingUser = typeof user === "string"
+      ? game.users?.get(user)
+      : (user ?? game.user);
+
     const isGM = Boolean(updatingUser?.isGM);
 
     if (isGM) return allowed;

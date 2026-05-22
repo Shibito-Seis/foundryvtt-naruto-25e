@@ -203,11 +203,13 @@ export class Naruto25eItem extends Item {
         const allowed = await super._preUpdate(changed, options, user);
         if (allowed === false) return false;
 
-        const updatingUser = game.users?.get(user);
+        const updatingUser = typeof user === "string"
+            ? game.users?.get(user)
+            : (user ?? game.user);
 
         if (!updatingUser?.isGM) {
-            ui.notifications.warn("Seul le MJ peut modifier les données d’un item Naruto 2.5e.");
-            return false;
+                ui.notifications.warn("Seul le MJ peut modifier les données d’un item Naruto 2.5e.");
+                return false;
         }
 
         return allowed;

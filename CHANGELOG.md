@@ -2,6 +2,15 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.18.1]
+
+### Corrigé
+
+- Correction de la détection du MJ dans les hooks `_preUpdate`.
+- La validation de création est désormais correctement enregistrée.
+- Le MJ peut à nouveau modifier les fiches Technique.
+- Les champs MJ-only ne sont plus bloqués par erreur pour le MJ.
+
 ## [0.1.18]
 
 ### Ajouté
