@@ -2,7 +2,7 @@
   "id": "naruto-25e",
   "title": "Naruto 2.5e",
   "description": "Système maison Naruto 2.5e pour Foundry VTT v13.",
-  "version": "0.1.15.1",
+  "version": "0.1.16",
   "compatibility": {
     "minimum": "13",
     "verified": "13.351"

@@ -390,8 +390,25 @@ context.skillGroups = categoryOrder.map((category) => {
     .sort((a, b) => a.label.localeCompare(b.label, "fr"));
 
   context.combatCounters = this.actor.system.combat?.counters ?? {};
-  return context;
-}
+
+  context.inventoryTypes = Object.entries(NARUTO25E.inventoryTypes).map(([key, label]) => ({
+    key,
+    label,
+    selected: this.actor.system.inventory?.newItem?.type === key
+  }));
+
+  const inventoryItems = this.actor.system.inventory?.items ?? [];
+
+  context.inventoryByType = NARUTO25E.inventoryTypeOrder.map((type) => ({
+    type,
+    label: NARUTO25E.inventoryTypes[type],
+    items: inventoryItems.filter((item) => item.type === type)
+  }));
+
+  context.equippedWeapons = inventoryItems.filter((item) => item.type === "weapon" && item.equipped);
+  context.equippedArmors = inventoryItems.filter((item) => item.type === "armor" && item.equipped);
+    return context;
+  }
 
   activateListeners(html) {
   super.activateListeners(html);
@@ -548,6 +565,47 @@ context.skillGroups = categoryOrder.map((category) => {
     event.preventDefault();
 
     await this.actor.spendLineagePowerUse();
+  });
+
+  html.find(".inventory-add-item").on("click", async (event) => {
+    event.preventDefault();
+    await this.actor.addInventoryItemFromDraft();
+  });
+
+  html.find(".inventory-delete-item").on("click", async (event) => {
+    event.preventDefault();
+    const itemId = event.currentTarget.dataset.itemId;
+    await this.actor.deleteInventoryItem(itemId);
+  });
+
+  html.find(".inventory-toggle-equipped").on("click", async (event) => {
+    event.preventDefault();
+    const itemId = event.currentTarget.dataset.itemId;
+    await this.actor.toggleInventoryItemEquipped(itemId);
+  });
+
+  html.find(".inventory-item-field").on("change", async (event) => {
+    event.preventDefault();
+
+    const input = event.currentTarget;
+    const itemId = input.dataset.itemId;
+    const field = input.dataset.field;
+
+    if (!itemId || !field) return;
+
+    let value;
+
+    if (input.type === "checkbox") {
+      value = input.checked;
+    } else if (input.type === "number") {
+      value = Number(input.value ?? 0);
+    } else {
+      value = input.value;
+    }
+
+    await this.actor.updateInventoryItem(itemId, {
+      [field]: value
+    });
   });
   }
 }

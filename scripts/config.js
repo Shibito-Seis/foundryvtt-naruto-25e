@@ -867,3 +867,17 @@ NARUTO25E.getChakraSpecializationSlotsForRank = function (rankKey) {
 
   return 1;
 };
+
+NARUTO25E.inventoryTypes = {
+  weapon: "Arme",
+  armor: "Protection",
+  consumable: "Consommable",
+  misc: "Objet"
+};
+
+NARUTO25E.inventoryTypeOrder = [
+  "weapon",
+  "armor",
+  "consumable",
+  "misc"
+];

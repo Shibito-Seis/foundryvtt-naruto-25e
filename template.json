@@ -179,6 +179,15 @@
           "value": 0,
           "max": 10
         },
+        "inventory": {
+          "ryo": 0,
+          "newItem": {
+            "name": "",
+            "type": "misc",
+            "quantity": 1
+          },
+          "items": []
+        },
         "missions": {
           "d": { "completed": 0, "failed": 0 },
           "c": { "completed": 0, "failed": 0 },

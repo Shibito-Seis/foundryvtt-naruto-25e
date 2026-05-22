@@ -14,6 +14,7 @@ export class Naruto25eActor extends Actor {
     this._prepareChakraSpecializations(system);
     this._prepareResources(system);
     this._prepareCombat(system);
+    this._prepareInventory(system);
     this._prepareExperience(system);
     this._prepareMissions(system);
     this._prepareNindo(system);
@@ -1183,5 +1184,157 @@ async decreaseBase(baseKey) {
     if (scope === "session") {
       ui.notifications.info("Compteurs de session réinitialisés.");
     }
+  }
+
+    _prepareInventory(system) {
+    if (!system.inventory) system.inventory = {};
+
+    const inventory = system.inventory;
+
+    inventory.ryo = Math.max(0, Number(inventory.ryo ?? 0));
+
+    inventory.newItem = inventory.newItem ?? {};
+    inventory.newItem.name = inventory.newItem.name ?? "";
+    inventory.newItem.type = inventory.newItem.type ?? "misc";
+    inventory.newItem.quantity = Math.max(1, Number(inventory.newItem.quantity ?? 1));
+
+    if (!Array.isArray(inventory.items)) {
+      inventory.items = [];
+    }
+
+    inventory.items = inventory.items.map((item, index) => {
+      const type = NARUTO25E.inventoryTypes[item.type] ? item.type : "misc";
+
+      return {
+        id: item.id ?? foundry.utils.randomID(16),
+        name: item.name ?? "Objet sans nom",
+        type,
+        quantity: Math.max(1, Number(item.quantity ?? 1)),
+        equipped: Boolean(item.equipped),
+        notes: item.notes ?? "",
+        value: Math.max(0, Number(item.value ?? 0)),
+        weight: Math.max(0, Number(item.weight ?? 0)),
+        sort: Number(item.sort ?? index)
+      };
+    }).sort((a, b) => {
+      const typeA = NARUTO25E.inventoryTypeOrder.indexOf(a.type);
+      const typeB = NARUTO25E.inventoryTypeOrder.indexOf(b.type);
+
+      if (typeA !== typeB) return typeA - typeB;
+      return Number(a.sort ?? 0) - Number(b.sort ?? 0);
+    });
+  }
+
+    async addInventoryItemFromDraft() {
+    if (this.type !== "shinobi") return;
+
+    const draft = this.system.inventory?.newItem ?? {};
+    const name = String(draft.name ?? "").trim();
+
+    if (!name) {
+      ui.notifications.warn("Nom d’objet requis.");
+      return;
+    }
+
+    const type = NARUTO25E.inventoryTypes[draft.type] ? draft.type : "misc";
+    const quantity = Math.max(1, Number(draft.quantity ?? 1));
+
+    const items = foundry.utils.deepClone(this.system.inventory?.items ?? []);
+
+    items.push({
+      id: foundry.utils.randomID(16),
+      name,
+      type,
+      quantity,
+      equipped: false,
+      notes: "",
+      value: 0,
+      weight: 0,
+      sort: items.length
+    });
+
+    await this.update({
+      "system.inventory.items": items,
+      "system.inventory.newItem.name": "",
+      "system.inventory.newItem.quantity": 1
+    });
+
+    ui.notifications.info(`${name} ajouté à l’inventaire.`);
+  }
+
+  async deleteInventoryItem(itemId) {
+    if (this.type !== "shinobi") return;
+
+    const items = foundry.utils.deepClone(this.system.inventory?.items ?? []);
+    const item = items.find((entry) => entry.id === itemId);
+
+    if (!item) {
+      ui.notifications.warn("Objet introuvable.");
+      return;
+    }
+
+    const confirmed = await Dialog.confirm({
+      title: "Supprimer l’objet",
+      content: `<p>Supprimer <strong>${item.name}</strong> de l’inventaire ?</p>`,
+      yes: () => true,
+      no: () => false,
+      defaultYes: false
+    });
+
+    if (!confirmed) return;
+
+    await this.update({
+      "system.inventory.items": items.filter((entry) => entry.id !== itemId)
+    });
+
+    ui.notifications.info(`${item.name} supprimé.`);
+  }
+
+  async updateInventoryItem(itemId, changes = {}) {
+    if (this.type !== "shinobi") return;
+
+    const items = foundry.utils.deepClone(this.system.inventory?.items ?? []);
+    const item = items.find((entry) => entry.id === itemId);
+
+    if (!item) {
+      ui.notifications.warn("Objet introuvable.");
+      return;
+    }
+
+    Object.assign(item, changes);
+
+    item.quantity = Math.max(1, Number(item.quantity ?? 1));
+    item.value = Math.max(0, Number(item.value ?? 0));
+    item.weight = Math.max(0, Number(item.weight ?? 0));
+    item.equipped = Boolean(item.equipped);
+
+    await this.update({
+      "system.inventory.items": items
+    });
+  }
+
+  async toggleInventoryItemEquipped(itemId) {
+    if (this.type !== "shinobi") return;
+
+    const items = foundry.utils.deepClone(this.system.inventory?.items ?? []);
+    const item = items.find((entry) => entry.id === itemId);
+
+    if (!item) {
+      ui.notifications.warn("Objet introuvable.");
+      return;
+    }
+
+    if (!["weapon", "armor"].includes(item.type)) {
+      ui.notifications.warn("Seules les armes et protections peuvent être équipées.");
+      return;
+    }
+
+    item.equipped = !Boolean(item.equipped);
+
+    await this.update({
+      "system.inventory.items": items
+    });
+
+    ui.notifications.info(`${item.name} ${item.equipped ? "équipé" : "déséquipé"}.`);
   }
 }

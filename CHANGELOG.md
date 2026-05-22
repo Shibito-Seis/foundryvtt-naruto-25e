@@ -2,7 +2,22 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
-## [0.1.15.1] - En cours
+## [0.1.16] - En cours
+
+### Ajouté
+- Ajout de l’onglet Inventaire.
+- Ajout de la monnaie Ryō 両.
+- Ajout d’un inventaire minimal intégré à la fiche.
+- Ajout des catégories Arme, Protection, Consommable et Objet.
+- Ajout d’un formulaire rapide pour ajouter un objet.
+- Ajout de la modification de quantité, valeur, poids et notes.
+- Ajout de l’équipement/déséquipement pour les armes et protections.
+- Ajout de la suppression d’un objet d’inventaire.
+- Ajout d’un résumé des armes et protections équipées dans l’onglet Résumé.
+
+---
+
+## [0.1.15.1]
 
 ### Ajouté
 - Ajout d’une carte de chat personnalisée pour les jets du système.

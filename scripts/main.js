@@ -46,6 +46,10 @@ Hooks.once("init", async function () {
     return a === b;
   });
 
+  Handlebars.registerHelper("or", function (...args) {
+    return args.slice(0, -1).some(Boolean);
+  });
+
   Actors.unregisterSheet("core", ActorSheet);
   Actors.registerSheet("naruto-25e", Naruto25eShinobiSheet, {
     types: ["shinobi"],

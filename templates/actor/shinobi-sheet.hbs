@@ -48,6 +48,7 @@
   <a class="item" data-tab="summary">Résumé</a>
   <a class="item" data-tab="combat">Combat / Actions</a>
   <a class="item" data-tab="chakra">Chakra</a>
+  <a class="item" data-tab="inventory">Inventaire</a>
   <a class="item" data-tab="bases">Bases</a>
   <a class="item" data-tab="skills">Compétences</a>
   <a class="item" data-tab="heritage">Lignée</a>
@@ -222,6 +223,41 @@
             XP disponible
             <input name="system.progression.experience.available" type="number" value="{{system.progression.experience.available}}" readonly />
           </label>
+        </section>
+
+        <section class="panel">
+          <h2>Inventaire</h2>
+
+          <div class="combat-resource-line">
+            <strong>Ryō</strong>
+            <span>{{system.inventory.ryo}} 両</span>
+          </div>
+
+          <div class="combat-resource-line">
+            <strong>Armes équipées</strong>
+            <span>
+              {{#if equippedWeapons.length}}
+                {{#each equippedWeapons as |weapon|}}
+                  {{weapon.name}}{{#unless @last}}, {{/unless}}
+                {{/each}}
+              {{else}}
+                Aucune
+              {{/if}}
+            </span>
+          </div>
+
+          <div class="combat-resource-line">
+            <strong>Protections équipées</strong>
+            <span>
+              {{#if equippedArmors.length}}
+                {{#each equippedArmors as |armor|}}
+                  {{armor.name}}{{#unless @last}}, {{/unless}}
+                {{/each}}
+              {{else}}
+                Aucune
+              {{/if}}
+            </span>
+          </div>
         </section>
 
       </div>
@@ -908,6 +944,140 @@
           {{/if}}
       </section>
     </section>
+    </div>
+
+    <div class="tab" data-group="primary" data-tab="inventory">
+      <section class="panel">
+        <h2>Inventaire</h2>
+
+        <section class="inventory-money">
+          <label>
+            Ryō 両
+            <input name="system.inventory.ryo" type="number" value="{{system.inventory.ryo}}" min="0" />
+          </label>
+        </section>
+
+        <section class="inventory-add-panel">
+          <h3>Ajouter un objet</h3>
+
+          <div class="inventory-add-grid">
+            <label>
+              Nom
+              <input name="system.inventory.newItem.name" type="text" value="{{system.inventory.newItem.name}}" />
+            </label>
+
+            <label>
+              Type
+              <select name="system.inventory.newItem.type">
+                {{#each inventoryTypes as |type|}}
+                  <option value="{{type.key}}" {{#if type.selected}}selected{{/if}}>
+                    {{type.label}}
+                  </option>
+                {{/each}}
+              </select>
+            </label>
+
+            <label>
+              Quantité
+              <input name="system.inventory.newItem.quantity" type="number" value="{{system.inventory.newItem.quantity}}" min="1" />
+            </label>
+
+            <button type="button" class="inventory-add-item">
+              Ajouter
+            </button>
+          </div>
+        </section>
+
+        {{#each inventoryByType as |group|}}
+          <section class="inventory-group">
+            <h3>{{group.label}}</h3>
+
+            {{#if group.items.length}}
+              <div class="inventory-table">
+                <div class="inventory-row inventory-header-row">
+                  <span>Nom</span>
+                  <span>Qté</span>
+                  <span>Valeur</span>
+                  <span>Poids</span>
+                  <span>Équipé</span>
+                  <span>Notes</span>
+                  <span></span>
+                </div>
+
+                {{#each group.items as |item|}}
+                  <div class="inventory-row">
+                    <input
+                      class="inventory-item-field"
+                      data-item-id="{{item.id}}"
+                      data-field="name"
+                      type="text"
+                      value="{{item.name}}"
+                    />
+
+                    <input
+                      class="inventory-item-field"
+                      data-item-id="{{item.id}}"
+                      data-field="quantity"
+                      type="number"
+                      value="{{item.quantity}}"
+                      min="1"
+                    />
+
+                    <input
+                      class="inventory-item-field"
+                      data-item-id="{{item.id}}"
+                      data-field="value"
+                      type="number"
+                      value="{{item.value}}"
+                      min="0"
+                    />
+
+                    <input
+                      class="inventory-item-field"
+                      data-item-id="{{item.id}}"
+                      data-field="weight"
+                      type="number"
+                      value="{{item.weight}}"
+                      min="0"
+                    />
+
+                    {{#if (or (eq item.type "weapon") (eq item.type "armor"))}}
+                      <button
+                        type="button"
+                        class="inventory-toggle-equipped"
+                        data-item-id="{{item.id}}"
+                        >
+                        {{#if item.equipped}}Oui{{else}}Non{{/if}}
+                      </button>
+                    {{else}}
+                      <span class="muted">—</span>
+                    {{/if}}
+
+                    <input
+                      class="inventory-item-field"
+                      data-item-id="{{item.id}}"
+                      data-field="notes"
+                      type="text"
+                      value="{{item.notes}}"
+                    />
+
+                    <button
+                      type="button"
+                      class="inventory-delete-item"
+                      data-item-id="{{item.id}}"
+                      title="Supprimer"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                {{/each}}
+              </div>
+            {{else}}
+              <p class="muted">Aucun élément.</p>
+            {{/if}}
+          </section>
+        {{/each}}
+      </section>
     </div>
 
     <div class="tab" data-group="primary" data-tab="missions">

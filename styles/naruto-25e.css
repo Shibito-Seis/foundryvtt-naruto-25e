@@ -704,3 +704,60 @@
 .naruto-roll-result.high-success {
   color: #a77c00;
 }
+
+.naruto-25e-shinobi-sheet .inventory-money {
+  max-width: 240px;
+  margin-bottom: 12px;
+}
+
+.naruto-25e-shinobi-sheet .inventory-add-panel {
+  border: 1px solid #777;
+  padding: 10px;
+  margin-bottom: 12px;
+  background: rgba(0, 0, 0, 0.035);
+}
+
+.naruto-25e-shinobi-sheet .inventory-add-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 100px 100px;
+  gap: 8px;
+  align-items: end;
+}
+
+.naruto-25e-shinobi-sheet .inventory-group {
+  margin-top: 12px;
+  border-top: 1px solid rgba(0, 0, 0, 0.35);
+  padding-top: 8px;
+}
+
+.naruto-25e-shinobi-sheet .inventory-table {
+  display: grid;
+  gap: 4px;
+}
+
+.naruto-25e-shinobi-sheet .inventory-row {
+  display: grid;
+  grid-template-columns: 2fr 70px 80px 80px 80px 2fr 34px;
+  gap: 4px;
+  align-items: center;
+}
+
+.naruto-25e-shinobi-sheet .inventory-header-row {
+  font-weight: bold;
+  font-size: 12px;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.naruto-25e-shinobi-sheet .inventory-row input {
+  min-width: 0;
+}
+
+.naruto-25e-shinobi-sheet .inventory-delete-item {
+  color: #8b1e1e;
+  font-weight: bold;
+}
+
+.naruto-25e-shinobi-sheet .inventory-toggle-equipped {
+  text-align: center;
+}
