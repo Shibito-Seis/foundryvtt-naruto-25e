@@ -87,6 +87,17 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     const nextCost = this.actor.getSkillUpgradeCost(key);
     const cap = this.actor.getSkillCap(key);
 
+    const sources = Array.isArray(skill.creationSources)
+      ? skill.creationSources
+      : [];
+
+    const sourceLabels = sources.map((source) => ({
+      key: source,
+      label: skillSourceLabels[source] ?? source
+    }));
+
+    const countsForCreationLimit = sources.some((source) => countableCreationSources.has(source));
+
     return {
       key,
       label: definition.label,
@@ -98,6 +109,12 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
       bonus: Number(skill.bonus ?? 0),
       total: Number(skill.total ?? 0),
       owned: Boolean(skill.owned),
+      manualOwned: Boolean(skill.manualOwned),
+      grantedByHeritage: Boolean(skill.grantedByHeritage),
+      grantedByAffinity: Boolean(skill.grantedByAffinity),
+      creationSources: sources,
+      sourceLabels,
+      countsForCreationLimit,
       masteryLabel: skill.masteryLabel ?? "",
       xpSpent: Number(skill.xpSpent ?? 0),
       nextCost,
