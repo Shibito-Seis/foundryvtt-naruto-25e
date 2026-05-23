@@ -2,6 +2,24 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.19.6]
+
+### Ajouté
+
+- Ajout des Nindō prédéfinis.
+- Ajout du mode Nindō prédéfini ou personnalisé.
+- Ajout des actions Nindō universelles.
+- Ajout d’un bouton d’utilisation pour les actions Nindō.
+- Ajout de la dépense automatique des points de Nindō.
+- Ajout des charges de Nindō via Dépassement.
+- Ajout d’un bouton pour dépenser une charge de Nindō.
+- Ajout de cartes de chat pour les actions Nindō.
+
+### Modifié
+
+- Le Nindō peut désormais devenir négatif afin de préparer la règle de renégat.
+- Le bloc Nindō du Résumé devient une vraie section fonctionnelle.
+
 ## [0.1.19.5.1]
 
 ### Corrigé

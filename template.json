@@ -199,9 +199,30 @@
         "nindo": {
           "value": 0,
           "max": 10,
+          "choiceMode": "preset",
+          "preset": "",
+          "custom": {
+            "name": "",
+            "description": ""
+          },
           "charges": {
             "value": 0,
             "max": 5
+          },
+          "activeEffects": {
+            "chakraBoost": {
+              "active": false,
+              "remainingTurns": 0,
+              "amount": 0
+            },
+            "awakening": {
+              "active": false,
+              "actionsRemaining": 0,
+              "bonus": 0
+            },
+            "opportunity": {
+              "available": false
+            }
           },
           "unlockedByGM": false
         },

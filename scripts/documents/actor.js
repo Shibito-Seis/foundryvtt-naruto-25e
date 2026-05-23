@@ -375,6 +375,168 @@ export class Naruto25eActor extends Actor {
       ui.notifications.info(`Création déverrouillée pour ${this.name}.`);
     }
 
+    async useNindoAction(actionKey) {
+      if (this.type !== "shinobi") return;
+
+      const action = NARUTO25E.nindoActions?.[actionKey];
+
+      if (!action) {
+        ui.notifications.warn("Action Nindō inconnue.");
+        return;
+      }
+
+      let cost = Number(action.cost ?? 0);
+
+      if (action.variableCost) {
+        const input = await Dialog.prompt({
+          title: action.label,
+          content: `
+            <p>Combien de points de Nindō investir ?</p>
+            <p>Maximum : ${action.maxCost ?? cost}</p>
+            <input type="number" name="cost" value="${cost}" min="1" max="${action.maxCost ?? cost}" />
+          `,
+          label: "Valider",
+          callback: (html) => {
+            return Number(html.find('input[name="cost"]').val() ?? cost);
+          },
+          rejectClose: false
+        });
+
+        if (!input) return;
+
+        cost = Math.clamp(
+          Number(input),
+          1,
+          Number(action.maxCost ?? cost)
+        );
+      }
+
+      const currentNindo = Number(this.system.nindo?.value ?? 0);
+      const nextNindo = currentNindo - cost;
+
+      if (nextNindo < 0) {
+        const confirmed = await Dialog.confirm({
+          title: "Nindō négatif",
+          content: `
+            <p><strong>${this.name}</strong> n’a pas assez de points de Nindō.</p>
+            <p>Utiliser cette action fera passer son Nindō à <strong>${nextNindo}</strong>.</p>
+            <p>Selon les règles, cela peut mener vers la voie du renégat.</p>
+          `,
+          yes: () => true,
+          no: () => false,
+          defaultYes: false
+        });
+
+        if (!confirmed) return;
+      }
+
+      const updateData = {
+        "system.nindo.value": nextNindo
+      };
+
+      if (action.type === "charges") {
+        const currentCharges = Number(this.system.nindo?.charges?.value ?? 0);
+        const maxCharges = Number(this.system.nindo?.charges?.max ?? 5);
+
+        updateData["system.nindo.charges.value"] = Math.min(
+          maxCharges,
+          currentCharges + 5
+        );
+      }
+
+      if (action.type === "chakraBoost") {
+        updateData["system.nindo.activeEffects.chakraBoost"] = {
+          active: true,
+          remainingTurns: 5,
+          amount: 500
+        };
+      }
+
+      if (action.type === "awakening") {
+        updateData["system.nindo.activeEffects.awakening"] = {
+          active: true,
+          actionsRemaining: 3,
+          bonus: 10
+        };
+      }
+
+      if (action.type === "opportunity") {
+        updateData["system.nindo.activeEffects.opportunity.available"] = true;
+      }
+
+      await this.update(updateData);
+
+      const warning = nextNindo < 0
+        ? `<p class="nindo-warning"><strong>Attention :</strong> le Nindō devient négatif. Le personnage s’éloigne de sa voie.</p>`
+        : "";
+
+      await ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor: this }),
+        content: `
+          <div class="naruto-roll-card nindo-card">
+            <h2>${action.label}</h2>
+            <p><strong>Coût :</strong> ${cost} point(s) de Nindō</p>
+            <p><strong>Temporalité :</strong> ${action.temporalite}</p>
+            <p>${action.description}</p>
+            <p><strong>Nindō restant :</strong> ${nextNindo}</p>
+            ${warning}
+          </div>
+        `
+      });
+    }
+
+    async spendNindoCharge(chargeType = "") {
+      if (this.type !== "shinobi") return;
+
+      const charges = this.system.nindo?.charges ?? {};
+      const current = Number(charges.value ?? 0);
+
+      if (current <= 0) {
+        ui.notifications.warn("Aucune charge de Nindō disponible.");
+        return;
+      }
+
+      let selectedType = chargeType;
+
+      if (!selectedType) {
+        selectedType = await Dialog.prompt({
+          title: "Dépenser une charge de Nindō",
+          content: `
+            <p>Choisir l’usage de la charge :</p>
+            <select name="chargeType">
+              ${Object.entries(NARUTO25E.nindoChargeUses).map(([key, label]) => {
+                return `<option value="${key}">${label}</option>`;
+              }).join("")}
+            </select>
+          `,
+          label: "Dépenser",
+          callback: (html) => {
+            return html.find('select[name="chargeType"]').val();
+          },
+          rejectClose: false
+        });
+      }
+
+      if (!selectedType) return;
+
+      const label = NARUTO25E.nindoChargeUses?.[selectedType] ?? selectedType;
+
+      await this.update({
+        "system.nindo.charges.value": Math.max(0, current - 1)
+      });
+
+      await ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor: this }),
+        content: `
+          <div class="naruto-roll-card nindo-card">
+            <h2>Charge de Nindō dépensée</h2>
+            <p><strong>Usage :</strong> ${label}</p>
+            <p><strong>Charges restantes :</strong> ${Math.max(0, current - 1)}</p>
+          </div>
+        `
+      });
+    }
+
   _prepareBases(system) {
     for (const base of Object.values(system.bases ?? {})) {
       base.value = Number(base.value ?? 0);
@@ -488,21 +650,60 @@ _prepareExperience(system) {
   }
 
     _prepareNindo(system) {
+      if (!system.nindo) system.nindo = {};
+
       const nindo = system.nindo;
-      if (!nindo) return;
 
-      nindo.max = Number(nindo.max ?? 10);
-      nindo.value = this._clampNumber(nindo.value, 0, nindo.max);
+      nindo.max = 10;
 
-      if (!nindo.charges) {
-        nindo.charges = {
-          value: 0,
-          max: 5
+      /*
+        Important :
+        Le Nindō peut devenir négatif selon les règles de renégat.
+        On limite donc seulement le maximum à 10.
+      */
+      nindo.value = Math.min(
+        Number(nindo.max ?? 10),
+        Number(nindo.value ?? 0)
+      );
+
+      nindo.choiceMode = nindo.choiceMode ?? "preset";
+      nindo.preset = nindo.preset ?? "";
+
+      if (!nindo.custom) nindo.custom = {};
+      nindo.custom.name = nindo.custom.name ?? "";
+      nindo.custom.description = nindo.custom.description ?? "";
+
+      if (!nindo.charges) nindo.charges = {};
+      nindo.charges.max = 5;
+      nindo.charges.value = Math.clamp(
+        Number(nindo.charges.value ?? 0),
+        0,
+        Number(nindo.charges.max ?? 5)
+      );
+
+      if (!nindo.activeEffects) nindo.activeEffects = {};
+
+      if (!nindo.activeEffects.chakraBoost) {
+        nindo.activeEffects.chakraBoost = {
+          active: false,
+          remainingTurns: 0,
+          amount: 0
         };
       }
 
-      nindo.charges.max = Number(nindo.charges.max ?? 5);
-      nindo.charges.value = this._clampNumber(nindo.charges.value, 0, nindo.charges.max);
+      if (!nindo.activeEffects.awakening) {
+        nindo.activeEffects.awakening = {
+          active: false,
+          actionsRemaining: 0,
+          bonus: 0
+        };
+      }
+
+      if (!nindo.activeEffects.opportunity) {
+        nindo.activeEffects.opportunity = {
+          available: false
+        };
+      }
 
       nindo.unlockedByGM = Boolean(nindo.unlockedByGM);
     }

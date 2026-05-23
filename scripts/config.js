@@ -1086,3 +1086,129 @@ NARUTO25E.damageTypes = {
   dust: "Poussière",
   other: "Autre"
 };
+
+NARUTO25E.nindoChoiceModes = {
+  preset: "Nindō prédéfini",
+  custom: "Nindō personnalisé"
+};
+
+NARUTO25E.nindoPresets = {
+  autorite: {
+    label: "Autorité",
+    description: "L’ordre et la loi sont un devoir dans ce monde si instable."
+  },
+  coeurSansLimite: {
+    label: "Cœur sans limite",
+    description: "Personne dans le besoin ne sera laissé pour compte."
+  },
+  desirBrulant: {
+    label: "Désir brûlant",
+    description: "Pourquoi vivre si on ne peut pas faire des choses intéressantes ?"
+  },
+  doctrine: {
+    label: "Doctrine",
+    description: "Vivre pour le code, mourir pour le code."
+  },
+  evolution: {
+    label: "Évolution",
+    description: "S’adapter, plutôt que rester prisonnier du passé."
+  },
+  harmonie: {
+    label: "Harmonie",
+    description: "Paix et frugalité, c’est la devise du sage."
+  },
+  heroisme: {
+    label: "Héroïsme",
+    description: "Le courage fleurit en bravant l’inconnu."
+  },
+  indomptable: {
+    label: "Indomptable",
+    description: "Un cœur pur ne connaît ni peur ni défaite."
+  },
+  konoha: {
+    label: "Konoha",
+    description: "Le village nous protège, nous le protégeons à notre tour."
+  },
+  ordreDuMonde: {
+    label: "L’ordre du monde",
+    description: "La logique et l’efficacité, au-dessus de tout."
+  },
+  marionnette: {
+    label: "Marionnette",
+    description: "Vivre et mourir pour une personne."
+  },
+  promesse: {
+    label: "Promesse",
+    description: "Envers moi-même ou d’autres, rien n’arrêtera sa réalisation."
+  },
+  puissance: {
+    label: "Puissance",
+    description: "Seuls les puissants sont maîtres de leur destinée."
+  },
+  revolution: {
+    label: "Révolution",
+    description: "Réduire en cendres le statu quo et changer le monde."
+  },
+  lameKunai: {
+    label: "Sur la lame d’un kunaï",
+    description: "Entre la lumière et les ténèbres, se trouve la vérité."
+  },
+  tresorGenetique: {
+    label: "Trésor génétique",
+    description: "Les traditions et la génétique séculaire du clan sont inestimables."
+  },
+  voieDuSacrifice: {
+    label: "Voie du sacrifice",
+    description: "Obéir aux ordres même si le chemin est celui du carnage."
+  },
+  volonteDuFeu: {
+    label: "Volonté du feu",
+    description: "La vie est précieuse et nous devons l’aider à grandir."
+  }
+};
+
+NARUTO25E.nindoActions = {
+  accroissementChakra: {
+    label: "Accroissement du Chakra",
+    cost: 1,
+    temporalite: "Momentané — 5 tours",
+    type: "chakraBoost",
+    description: "Augmente temporairement le potentiel de Chakra de 500 points pendant 5 tours."
+  },
+  depassement: {
+    label: "Dépassement",
+    cost: 1,
+    temporalite: "5 charges",
+    type: "charges",
+    description: "Gagne 5 charges pouvant servir de Bonus Critique, Interception ou Relance."
+  },
+  eveil: {
+    label: "Éveil",
+    cost: 5,
+    temporalite: "Instantané",
+    type: "awakening",
+    description: "Gagne 3 actions retardées et/ou de lignée pour le tour, avec accès temporaire à l’ensemble des pouvoirs de lignée."
+  },
+  lierDestinees: {
+    label: "Lier nos destinées",
+    cost: 1,
+    variableCost: true,
+    maxCost: 3,
+    temporalite: "Permanent",
+    type: "bond",
+    description: "Crée ou renforce un Lien avec un PNJ, de 1 à 3 paliers."
+  },
+  unison: {
+    label: "Unison",
+    cost: 1,
+    temporalite: "Instantané",
+    type: "opportunity",
+    description: "Gagne une Opportunité à jouer à l’initiative actuelle ou suivante."
+  }
+};
+
+NARUTO25E.nindoChargeUses = {
+  criticalBonus: "Bonus Critique (+5 au jet)",
+  interception: "Déluge de kunaï / Interception",
+  reroll: "Relance"
+};

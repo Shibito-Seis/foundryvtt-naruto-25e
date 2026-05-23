@@ -554,6 +554,48 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
 
   context.equippedWeapons = inventoryItems.filter((item) => item.type === "weapon" && item.equipped);
   context.equippedArmors = inventoryItems.filter((item) => item.type === "armor" && item.equipped);
+
+  const nindo = this.actor.system.nindo ?? {};
+  const presetKey = nindo.preset ?? "";
+  const preset = NARUTO25E.nindoPresets?.[presetKey];
+
+  context.nindoChoiceModes = Object.entries(NARUTO25E.nindoChoiceModes ?? {}).map(([key, label]) => ({
+    key,
+    label,
+    selected: key === (nindo.choiceMode ?? "preset")
+  }));
+
+  context.nindoPresets = Object.entries(NARUTO25E.nindoPresets ?? {}).map(([key, data]) => ({
+    key,
+    label: data.label,
+    description: data.description,
+    selected: key === presetKey
+  }));
+
+  context.nindoDisplay = {
+    mode: nindo.choiceMode ?? "preset",
+    name: nindo.choiceMode === "custom"
+      ? (nindo.custom?.name || "Nindō personnalisé")
+      : (preset?.label || "Aucun Nindō choisi"),
+    description: nindo.choiceMode === "custom"
+      ? (nindo.custom?.description || "")
+      : (preset?.description || "")
+  };
+
+  context.nindoActions = Object.entries(NARUTO25E.nindoActions ?? {}).map(([key, action]) => ({
+    key,
+    label: action.label,
+    cost: action.cost,
+    variableCost: Boolean(action.variableCost),
+    temporalite: action.temporalite,
+    description: action.description,
+    canUse: true
+  }));
+
+  context.nindoChargeUses = Object.entries(NARUTO25E.nindoChargeUses ?? {}).map(([key, label]) => ({
+    key,
+    label
+  }));
     return context;
   }
 
@@ -792,6 +834,19 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     event.preventDefault();
 
     await this.actor.setNindoUnlockedByGM(event.currentTarget.checked);
+  });
+
+  html.find(".nindo-action-use").on("click", async (event) => {
+    event.preventDefault();
+
+    const actionKey = event.currentTarget.dataset.action;
+    await this.actor.useNindoAction(actionKey);
+  });
+
+  html.find(".nindo-charge-spend").on("click", async (event) => {
+    event.preventDefault();
+
+    await this.actor.spendNindoCharge();
   });
   }
 }

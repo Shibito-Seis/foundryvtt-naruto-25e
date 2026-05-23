@@ -1082,3 +1082,95 @@
 .xp-reminder span {
   opacity: 0.85;
 }
+
+.nindo-panel {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid rgba(120, 120, 120, 0.35);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.nindo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.nindo-grid label,
+.nindo-custom label {
+  display: block;
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  opacity: 0.8;
+  margin-bottom: 0.2rem;
+}
+
+.nindo-current {
+  margin-top: 0.75rem;
+  padding: 0.5rem;
+  border-left: 3px solid rgba(167, 124, 0, 0.85);
+  background: rgba(167, 124, 0, 0.08);
+}
+
+.nindo-current h3 {
+  margin: 0 0 0.25rem 0;
+}
+
+.nindo-current p {
+  margin: 0;
+}
+
+.nindo-custom {
+  margin-top: 0.75rem;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.nindo-custom textarea {
+  min-height: 4rem;
+  resize: vertical;
+}
+
+.nindo-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin-top: 0.5rem;
+}
+
+.nindo-action-card {
+  padding: 0.6rem;
+  border: 1px solid rgba(120, 120, 120, 0.35);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.nindo-action-card h4 {
+  margin: 0 0 0.35rem 0;
+}
+
+.nindo-action-card p {
+  margin: 0.25rem 0;
+}
+
+.nindo-active-effect {
+  margin-top: 0.5rem;
+  padding: 0.45rem;
+  border-radius: 6px;
+  background: rgba(47, 125, 50, 0.1);
+  border: 1px solid rgba(47, 125, 50, 0.35);
+}
+
+.nindo-warning {
+  color: #8b1e1e;
+  font-weight: 700;
+}
+
+.checkbox-line {
+  display: flex;
+  gap: 0.35rem;
+  align-items: center;
+  margin-top: 0.5rem;
+}

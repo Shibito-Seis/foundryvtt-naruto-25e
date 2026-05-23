@@ -257,34 +257,126 @@
         <section class="panel">
           <h2>Nindō</h2>
 
-          <label>
-            Points de Nindō
-            <div class="resource-line">
-              <input name="system.nindo.value" type="number" value="{{system.nindo.value}}" min="0" max="{{system.nindo.max}}" {{#unless isGM}}disabled{{/unless}} />
-              <span>/ {{system.nindo.max}}</span>
+          <section class="nindo-panel">
+            <div class="nindo-grid">
+              <div>
+                <label>Type de Nindō</label>
+                <select name="system.nindo.choiceMode" {{#unless permissionsState.canEditNindo}}disabled{{/unless}}>
+                  {{#each nindoChoiceModes as |mode|}}
+                    <option value="{{mode.key}}" {{#if mode.selected}}selected{{/if}}>
+                      {{mode.label}}
+                    </option>
+                  {{/each}}
+                </select>
+              </div>
+
+              <div>
+                <label>Nindō prédéfini</label>
+                <select name="system.nindo.preset" {{#unless permissionsState.canEditNindo}}disabled{{/unless}}>
+                <option value="">— Aucun —</option>
+                  {{#each nindoPresets as |preset|}}
+                    <option value="{{preset.key}}" {{#if preset.selected}}selected{{/if}}>
+                      {{preset.label}}
+                    </option>
+                  {{/each}}
+                </select>
+              </div>
+
+              <div>
+                <label>Points de Nindō</label>
+                <input type="number" name="system.nindo.value" value="{{system.nindo.value}}" {{#unless isGM}}disabled{{/unless}} />
+                <span>/ {{system.nindo.max}}</span>
+              </div>
+
+              <div>
+                <label>Charges de Nindō</label>
+                <input type="number" name="system.nindo.charges.value" value="{{system.nindo.charges.value}}" {{#unless isGM}}disabled{{/unless}} />
+                <span>/ {{system.nindo.charges.max}}</span>
+              </div>
             </div>
-          </label>
 
-          <label>
-            Charges de Nindō
-            <div class="resource-line">
-              <input name="system.nindo.charges.value" type="number" value="{{system.nindo.charges.value}}" min="0" max="{{system.nindo.charges.max}}" {{#unless isGM}}disabled{{/unless}} />
-              <span>/ {{system.nindo.charges.max}}</span>
+            <div class="nindo-current">
+              <h3>{{nindoDisplay.name}}</h3>
+              <p>{{nindoDisplay.description}}</p>
             </div>
-          </label>
 
-          <label>
-            Texte du Nindō
-            <textarea name="system.identity.nindoText" {{#unless permissionsState.canEditNindo}}disabled{{/unless}}>{{system.identity.nindoText}}</textarea>
-          </label>
+            <div class="nindo-custom">
+              <label>Nom du Nindō personnalisé</label>
+              <input
+                type="text"
+                name="system.nindo.custom.name"
+                value="{{system.nindo.custom.name}}"
+                {{#unless permissionsState.canEditNindo}}disabled{{/unless}}
+              />
 
-          {{#if isGM}}
-            <label class="checkbox-line">
-              <input class="nindo-unlock-toggle" type="checkbox" {{#if permissionsState.nindoUnlockedByGM}}checked{{/if}} />
-              MJ : autoriser temporairement le joueur à modifier son Nindō
-            </label>
-          {{/if}}
-        </section>
+              <label>Description personnalisée</label>
+              <textarea
+                name="system.nindo.custom.description"
+                {{#unless permissionsState.canEditNindo}}disabled{{/unless}}
+              >{{system.nindo.custom.description}}</textarea>
+            </div>
+
+            {{#if isGM}}
+              <label class="checkbox-line">
+                <input
+                type="checkbox"
+                name="system.nindo.unlockedByGM"
+                {{#if system.nindo.unlockedByGM}}checked{{/if}}
+                />
+                MJ : autoriser temporairement le joueur à modifier son Nindō
+              </label>
+            {{/if}}
+
+            <h3>Actions Nindō</h3>
+
+            <div class="nindo-actions">
+              {{#each nindoActions as |action|}}
+                <div class="nindo-action-card">
+                  <h4>{{action.label}}</h4>
+                  <p><strong>Coût :</strong> {{action.cost}}{{#if action.variableCost}} à 3{{/if}} point(s)</p>
+                  <p><strong>Temporalité :</strong> {{action.temporalite}}</p>
+                  <p>{{action.description}}</p>
+
+                  <button type="button" class="nindo-action-use" data-action="{{action.key}}">
+                    Utiliser
+                  </button>
+                </div>
+              {{/each}}
+            </div>
+
+            <h3>Charges de Dépassement</h3>
+
+            <p>
+              Charges disponibles :
+              <strong>{{system.nindo.charges.value}} / {{system.nindo.charges.max}}</strong>
+            </p>
+
+            <button type="button" class="nindo-charge-spend" {{#unless system.nindo.charges.value}}disabled{{/unless}}>
+              Dépenser une charge
+            </button>
+
+            {{#if system.nindo.activeEffects.chakraBoost.active}}
+              <p class="nindo-active-effect">
+                Accroissement du Chakra actif :
+                +{{system.nindo.activeEffects.chakraBoost.amount}} Chakra,
+                {{system.nindo.activeEffects.chakraBoost.remainingTurns}} tour(s) restant(s).
+              </p>
+            {{/if}}
+
+            {{#if system.nindo.activeEffects.awakening.active}}
+              <p class="nindo-active-effect">
+                Éveil actif :
+                {{system.nindo.activeEffects.awakening.actionsRemaining}} action(s) spéciale(s),
+                bonus +{{system.nindo.activeEffects.awakening.bonus}}.
+              </p>
+            {{/if}}
+
+            {{#if system.nindo.activeEffects.opportunity.available}}
+              <p class="nindo-active-effect">
+                Opportunité disponible grâce à Unison.
+              </p>
+            {{/if}}
+          </section>
 
         <section class="panel">
           <h2>Spécialisations de Chakra</h2>
