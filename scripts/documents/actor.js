@@ -1215,12 +1215,40 @@ async decreaseBase(baseKey) {
         if (!match) continue;
 
         const skillKey = match[1];
+        const currentSkill = this.system.skills?.[skillKey] ?? {};
 
-        foundry.utils.setProperty(
-          changed,
-          `system.skills.${skillKey}.manualOwned`,
-          Boolean(value)
-        );
+        const sources = Array.isArray(currentSkill.creationSources)
+          ? currentSkill.creationSources
+          : [];
+
+        const hasManualSource = sources.includes("manual") || Boolean(currentSkill.manualOwned);
+
+        const hasAutomaticCreationSource = sources.some((source) => {
+          return source !== "common" && source !== "manual";
+        });
+
+        const checked = Boolean(value);
+
+        /*
+          Si la compétence est cochée uniquement parce qu'elle vient d'un clan,
+          d'une voie ou d'une affinité, on ne la transforme PAS en choix initial.
+          Sinon, changer Katon -> Suiton laisse Katon en "Choix initial", ce qu'on ne veut pas.
+        */
+        if (checked) {
+          if (!hasAutomaticCreationSource || hasManualSource) {
+            foundry.utils.setProperty(
+              changed,
+              `system.skills.${skillKey}.manualOwned`,
+              true
+            );
+          }
+        } else {
+          foundry.utils.setProperty(
+            changed,
+            `system.skills.${skillKey}.manualOwned`,
+            false
+          );
+        }
 
         foundry.utils.deleteProperty(
           changed,
@@ -1229,6 +1257,7 @@ async decreaseBase(baseKey) {
       }
     }
 
+    
     const deletePath = (path) => {
       if (foundry.utils.hasProperty(changed, path)) {
         foundry.utils.deleteProperty(changed, path);

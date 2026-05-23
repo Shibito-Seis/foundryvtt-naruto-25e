@@ -2,11 +2,13 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
-## [0.1.19.2]
+## [0.1.19.2] - En cours
 
 ### Corrigé
 
-- Correction d’une erreur de rendu de la fiche Shinobi causée par la reconstruction incorrecte des groupes de compétences.
+- Correction d’un cas où une compétence accordée par affinité devenait automatiquement un choix initial lors d’un changement d’affinité.
+- Correction du nettoyage des compétences accordées par affinité lorsque l’affinité principale ou secondaire est remplacée.
+- Correction du rendu des groupes de compétences après l’ajout des sources de création.
 
 ## [0.1.19.1]
 
