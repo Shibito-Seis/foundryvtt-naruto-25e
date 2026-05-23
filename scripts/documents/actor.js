@@ -1257,7 +1257,107 @@ async decreaseBase(baseKey) {
       }
     }
 
-    
+        /*
+          Nettoyage des compétences données par affinité.
+
+          Cas corrigé :
+          - Katon est donné par affinité principale.
+          - Le joueur remplace Katon par Suiton.
+          - La fiche renvoie encore Katon comme "owned" pendant l'update.
+          - Sans ce nettoyage, Katon devient à tort un "Choix initial".
+
+          On retire donc le statut manuel uniquement si :
+          - la compétence venait d'une affinité,
+          - elle n'est plus dans les affinités sélectionnées,
+          - elle n'avait pas été choisie manuellement avant.
+        */
+        const affinityPaths = [
+          "system.chakra.affinities.primary",
+          "system.chakra.affinities.secondary",
+          "system.chakra.affinities.extra"
+        ];
+
+        const hasAffinityChange = affinityPaths.some((path) => {
+          return foundry.utils.hasProperty(changed, path);
+        });
+
+        if (!creationLocked && hasAffinityChange) {
+          const getAffinitySkillKey = (affinityKey) => {
+            if (!affinityKey) return null;
+            return NARUTO25E.getAffinitySkillKey?.(affinityKey) ?? null;
+          };
+
+          const oldAffinities = this.system.chakra?.affinities ?? {};
+
+          const oldAffinityKeys = new Set([
+            oldAffinities.primary,
+            oldAffinities.secondary,
+            ...(Array.isArray(oldAffinities.extra) ? oldAffinities.extra : [])
+          ].filter(Boolean));
+
+          const newPrimary = foundry.utils.hasProperty(changed, "system.chakra.affinities.primary")
+            ? foundry.utils.getProperty(changed, "system.chakra.affinities.primary")
+            : oldAffinities.primary;
+
+          const newSecondary = foundry.utils.hasProperty(changed, "system.chakra.affinities.secondary")
+            ? foundry.utils.getProperty(changed, "system.chakra.affinities.secondary")
+            : oldAffinities.secondary;
+
+          const newExtraRaw = foundry.utils.hasProperty(changed, "system.chakra.affinities.extra")
+            ? foundry.utils.getProperty(changed, "system.chakra.affinities.extra")
+            : oldAffinities.extra;
+
+          const newExtra = Array.isArray(newExtraRaw) ? newExtraRaw : [];
+
+          const newAffinityKeys = new Set([
+            newPrimary,
+            newSecondary,
+            ...newExtra
+          ].filter(Boolean));
+
+          const oldAffinitySkillKeys = new Set(
+            Array.from(oldAffinityKeys)
+              .map(getAffinitySkillKey)
+              .filter(Boolean)
+          );
+
+          const newAffinitySkillKeys = new Set(
+            Array.from(newAffinityKeys)
+              .map(getAffinitySkillKey)
+              .filter(Boolean)
+          );
+
+          for (const skillKey of oldAffinitySkillKeys) {
+            if (newAffinitySkillKeys.has(skillKey)) continue;
+
+            const currentSkill = this.system.skills?.[skillKey];
+            if (!currentSkill) continue;
+
+            const sources = Array.isArray(currentSkill.creationSources)
+              ? currentSkill.creationSources
+              : [];
+
+            const hadAffinitySource = sources.some((source) => {
+              return String(source).startsWith("affinity");
+            });
+
+            const wasManualChoice = Boolean(currentSkill.manualOwned) || sources.includes("manual");
+
+            if (hadAffinitySource && !wasManualChoice) {
+              foundry.utils.setProperty(
+                changed,
+                `system.skills.${skillKey}.manualOwned`,
+                false
+              );
+
+              foundry.utils.deleteProperty(
+                changed,
+                `system.skills.${skillKey}.owned`
+              );
+            }
+          }
+        }
+
     const deletePath = (path) => {
       if (foundry.utils.hasProperty(changed, path)) {
         foundry.utils.deleteProperty(changed, path);

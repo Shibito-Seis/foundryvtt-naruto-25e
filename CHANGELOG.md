@@ -2,9 +2,17 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
-## [0.1.19.2] - En cours
+## [0.1.19.3] - En cours
 
-### Corrigé
+### En correction
+
+- Correction d’un cas où une compétence accordée par affinité devenait automatiquement un choix initial lors d’un changement d’affinité.
+- Correction du nettoyage des compétences accordées par affinité lorsque l’affinité principale ou secondaire est remplacée.
+- Correction du rendu des groupes de compétences après l’ajout des sources de création.
+
+## [0.1.19.2]
+
+### Non Corrigé totalement
 
 - Correction d’un cas où une compétence accordée par affinité devenait automatiquement un choix initial lors d’un changement d’affinité.
 - Correction du nettoyage des compétences accordées par affinité lorsque l’affinité principale ou secondaire est remplacée.

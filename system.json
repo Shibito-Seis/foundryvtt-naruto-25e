@@ -2,7 +2,7 @@
   "id": "naruto-25e",
   "title": "Naruto 2.5e",
   "description": "Système maison Naruto 2.5e pour Foundry VTT v13.",
-  "version": "0.1.19.2",
+  "version": "0.1.19.3",
   "compatibility": {
     "minimum": "13",
     "verified": "13.351"
@@ -12,7 +12,7 @@
     "name": "Shibito Seis"
     },
     {
-    "name": "Paps_",
+    "name": "Paps",
     "notes": "Original author of the Naruto 2.5 paper system"
     }
   ],
