@@ -993,7 +993,12 @@
                   </td>
                   <td>{{skill.masteryLabel}}</td>
                   <td>
-                    <input name="system.skills.{{skill.key}}.owned" type="checkbox" {{#if skill.owned}}checked{{/if}} />
+                    <input
+                      name="system.skills.{{skill.key}}.owned"
+                      type="checkbox"
+                      {{#if skill.owned}}checked{{/if}}
+                      {{#unless skill.canToggleOwned}}disabled{{/unless}}
+                    />
                   </td>
                   <td>
                     {{#if skill.sourceLabels.length}}

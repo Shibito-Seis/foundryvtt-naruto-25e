@@ -141,7 +141,10 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
       nextCost,
       cap,
       canIncrease: Boolean(skill.owned) && next <= cap,
-      canDecrease: current > 1
+      canDecrease: current > 1,
+      canToggleOwned:
+        !definition.ownedByDefault
+        && definition.category !== "clan",
     };
   });
 

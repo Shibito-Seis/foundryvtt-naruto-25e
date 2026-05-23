@@ -2,6 +2,15 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.19.5.1]
+
+### Corrigé
+
+- Correction d’un bug côté joueur où les compétences communes devenaient des choix initiaux.
+- Correction du compteur de compétences initiales explosant après modification d’une affinité ou d’une compétence côté joueur.
+- Les compétences communes ne peuvent plus être converties en choix initial.
+- Les compétences de clan ne peuvent plus être sélectionnées manuellement.
+
 ## [0.1.19.5]
 
 ### Ajouté

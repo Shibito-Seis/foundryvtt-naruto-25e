@@ -661,6 +661,9 @@ async decreaseBase(baseKey) {
         }
 
       const skill = system.skills[key];
+      if (definition.ownedByDefault) {
+        skill.manualOwned = false;
+      }
       const baseKey = definition.base;
       const baseValue = this._getBaseEffective(system, baseKey);
       const naturalBaseValue = Number(system.bases?.[baseKey]?.value ?? 1);
@@ -1468,7 +1471,48 @@ async decreaseBase(baseKey) {
         if (!match) continue;
 
         const skillKey = match[1];
+        const definition = NARUTO25E.skillDefinitions?.[skillKey];
         const currentSkill = this.system.skills?.[skillKey] ?? {};
+
+        const checked = Boolean(value);
+
+        /*
+          Les compétences communes sont toujours possédées par défaut.
+          Elles ne doivent jamais devenir des "Choix initial".
+        */
+        if (definition?.ownedByDefault) {
+          foundry.utils.setProperty(
+            changed,
+            `system.skills.${skillKey}.manualOwned`,
+            false
+          );
+
+          foundry.utils.deleteProperty(
+            changed,
+            `system.skills.${skillKey}.owned`
+          );
+
+          continue;
+        }
+
+        /*
+          Les compétences de clan ne sont pas choisies manuellement.
+          Elles doivent venir du clan / de la voie / de l’hybridation.
+        */
+        if (definition?.category === "clan") {
+          foundry.utils.setProperty(
+            changed,
+            `system.skills.${skillKey}.manualOwned`,
+            false
+          );
+
+          foundry.utils.deleteProperty(
+            changed,
+            `system.skills.${skillKey}.owned`
+          );
+
+          continue;
+        }
 
         const sources = Array.isArray(currentSkill.creationSources)
           ? currentSkill.creationSources
@@ -1476,19 +1520,16 @@ async decreaseBase(baseKey) {
 
         const hasManualSource = sources.includes("manual") || Boolean(currentSkill.manualOwned);
 
-        const hasAutomaticCreationSource = sources.some((source) => {
-          return source !== "common" && source !== "manual";
-        });
-
-        const checked = Boolean(value);
-
         /*
-          Si la compétence est cochée uniquement parce qu'elle vient d'un clan,
-          d'une voie ou d'une affinité, on ne la transforme PAS en choix initial.
-          Sinon, changer Katon -> Suiton laisse Katon en "Choix initial", ce qu'on ne veut pas.
+          Logique importante :
+          - Si la compétence était déjà possédée par affinité/clan, une checkbox cochée
+            ne doit PAS la transformer en choix initial.
+          - Si elle n’était pas possédée avant et qu’elle arrive cochée, là oui :
+            c’est un vrai choix manuel.
+          - Si elle est décochée, on retire le choix manuel.
         */
         if (checked) {
-          if (!hasAutomaticCreationSource || hasManualSource) {
+          if (!currentSkill.owned || hasManualSource) {
             foundry.utils.setProperty(
               changed,
               `system.skills.${skillKey}.manualOwned`,
@@ -1505,8 +1546,7 @@ async decreaseBase(baseKey) {
 
         foundry.utils.deleteProperty(
           changed,
-          `system.skills.${skillKey}.owned`
-        );
+          `system.skills.${skillKey}.owned`);
       }
     }
 
