@@ -2,6 +2,27 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.19.5]
+
+### Ajouté
+
+- Ajout d’un rappel d’XP disponible dans l’onglet Bases.
+- Ajout d’un rappel d’XP disponible dans l’onglet Compétences.
+- Ajout d’un ordre de priorité pour l’affichage des sources de compétences.
+
+### Modifié
+
+- Le résumé de création utilise désormais l’XP disponible réelle.
+- Les sources de compétences sont affichées dans un ordre plus lisible.
+- Le compteur de compétences initiales compte les compétences uniques, pas les sources empilées.
+
+### Corrigé
+
+- Correction de l’XP disponible affichée à 0 dans le résumé de création.
+- Correction de l’affichage prioritaire de “Choix initial” sur les compétences aussi accordées par affinité ou clan.
+- Les joueurs ne peuvent plus modifier directement l’XP totale.
+- Les joueurs ne peuvent plus modifier directement les utilisations de lignée de base.
+
 ## [0.1.19.4]
 
 ### Ajouté

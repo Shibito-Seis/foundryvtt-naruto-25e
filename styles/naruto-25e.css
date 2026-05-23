@@ -1061,3 +1061,24 @@
   opacity: 0.45;
   cursor: not-allowed;
 }
+
+.xp-reminder {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin: 0.5rem 0 0.75rem 0;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid rgba(120, 120, 120, 0.35);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.08);
+  font-size: 0.9rem;
+}
+
+.xp-reminder strong {
+  font-weight: 700;
+}
+
+.xp-reminder span {
+  opacity: 0.85;
+}

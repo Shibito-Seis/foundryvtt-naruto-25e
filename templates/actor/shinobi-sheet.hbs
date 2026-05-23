@@ -872,6 +872,12 @@
       Plafond actuel des Bases : <strong>{{baseCap}}</strong>
     </div>
 
+    <section class="xp-reminder">
+      <strong>XP disponible :</strong> {{experienceSummary.available}}
+      <span>— Total : {{experienceSummary.total}}</span>
+      <span>— Dépensée Bases : {{experienceSummary.baseSpent}}</span>
+    </section>
+
     <div class="bases-grid">
       {{#each bases as |base|}}
         <div class="base-card">
@@ -912,6 +918,12 @@
     <div class="tab" data-group="primary" data-tab="skills">
     <section class="panel">
     <h2>Compétences</h2>
+
+    <section class="xp-reminder">
+      <strong>XP disponible :</strong> {{experienceSummary.available}}
+      <span>— Total : {{experienceSummary.total}}</span>
+      <span>— Dépensée Compétences : {{experienceSummary.skillSpent}}</span>
+    </section>
 
     <section class="creation-skill-summary {{#if creationSkillSummary.overLimit}}is-invalid{{/if}}">
       <strong>Compétences initiales :</strong>

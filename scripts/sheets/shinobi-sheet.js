@@ -71,6 +71,17 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     affinityExtra: "Affinité spéciale"
   };
 
+  const skillSourcePriority = {
+    heritage: 10,
+    affinityForced: 20,
+    affinityPrimary: 30,
+    affinityPrimaryFree: 35,
+    affinitySecondary: 40,
+    affinityExtra: 45,
+    manual: 60,
+    common: 90
+  };
+
   const countableCreationSources = new Set([
     "manual",
     "heritage",
@@ -91,12 +102,22 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
       ? skill.creationSources
       : [];
 
-    const sourceLabels = sources.map((source) => ({
-      key: source,
-      label: skillSourceLabels[source] ?? source
-    }));
+    const sourceLabels = sources
+      .map((source) => ({
+        key: source,
+        label: skillSourceLabels[source] ?? source,
+        priority: skillSourcePriority[source] ?? 999
+      }))
+      .sort((a, b) => a.priority - b.priority);
 
-    const countsForCreationLimit = sources.some((source) => countableCreationSources.has(source));
+    const hasCountingCreationSource = sources.some((source) => countableCreationSources.has(source));
+    const hasFreePrimaryAffinity = sources.includes("affinityPrimaryFree");
+
+    const countsForCreationLimit =
+      hasCountingCreationSource
+      && !(hasFreePrimaryAffinity && sources.every((source) => {
+        return source === "manual" || source === "affinityPrimaryFree";
+      }));
 
     return {
       key,
@@ -141,6 +162,16 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     remaining: Math.max(0, maxInitialSkills - usedInitialSkills),
     overLimit: usedInitialSkills > maxInitialSkills
   };
+
+  const progressionExperience = this.actor.system.progression?.experience ?? {};
+
+    context.experienceSummary = {
+      total: Number(progressionExperience.total ?? 0),
+      spent: Number(progressionExperience.spent ?? 0),
+      baseSpent: Number(progressionExperience.baseSpent ?? 0),
+      skillSpent: Number(progressionExperience.skillSpent ?? 0),
+      available: Number(progressionExperience.available ?? 0)
+    };
 
   context.villages = Object.entries(NARUTO25E.villages).map(([key, village]) => ({
     key,

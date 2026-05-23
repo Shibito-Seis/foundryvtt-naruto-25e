@@ -89,7 +89,7 @@ export class Naruto25eActor extends Actor {
       const chakra = system.chakra ?? {};
       const affinities = chakra.affinities ?? {};
       const skills = system.skills ?? {};
-      const experience = system.experience ?? {};
+      const experience = system.progression?.experience ?? {};
 
       const errors = [];
       const warnings = [];
@@ -117,6 +117,11 @@ export class Naruto25eActor extends Actor {
         "affinityExtra"
       ]);
 
+      const nonCountableSources = new Set([
+        "common",
+        "affinityPrimaryFree"
+      ]);
+
       let initialSkillsUsed = 0;
 
       for (const skill of Object.values(skills)) {
@@ -124,7 +129,21 @@ export class Naruto25eActor extends Actor {
           ? skill.creationSources
           : [];
 
-        const counts = sources.some((source) => countableSources.has(source));
+          const hasCountingSource = sources.some((source) => countableSources.has(source));
+          const hasFreePrimaryAffinity = sources.includes("affinityPrimaryFree");
+
+          /*
+          Une compétence ne compte qu'une seule fois.
+          Si elle est seulement possédée via affinité principale offerte, elle ne compte pas.
+          Si elle a une source payante/obligatoire, elle compte.
+          Si elle a "manual" + "affinityPrimaryFree", on ne la compte pas deux fois,
+          et on privilégie l'idée qu'elle est surtout accordée par l'affinité offerte.
+          */
+          const counts =
+            hasCountingSource
+            && !(hasFreePrimaryAffinity && sources.every((source) => {
+            return source === "manual" || source === "affinityPrimaryFree";
+          }));
 
         if (counts) initialSkillsUsed += 1;
       }
@@ -1426,6 +1445,22 @@ async decreaseBase(baseKey) {
     const creationLocked = this.isCreationLocked();
 
     const flat = foundry.utils.flattenObject(changed);
+
+    if (!game.user.isGM) {
+      const playerForbiddenPaths = [
+        "system.progression.experience.total",
+        "system.progression.experience.spent",
+        "system.progression.experience.available",
+        "system.combat.counters.lineagePowers.base",
+        "system.combat.counters.lineagePowers.max"
+      ];
+
+      for (const path of playerForbiddenPaths) {
+        if (foundry.utils.hasProperty(changed, path)) {
+          foundry.utils.deleteProperty(changed, path);
+        }
+      }
+    }
 
     if (!creationLocked) {
       for (const [path, value] of Object.entries(flat)) {
