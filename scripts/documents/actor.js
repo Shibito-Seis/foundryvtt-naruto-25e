@@ -464,7 +464,11 @@ export class Naruto25eActor extends Actor {
         updateData["system.nindo.activeEffects.opportunity.available"] = true;
       }
 
-      await this.update(updateData);
+      await this.update(updateData, {
+        naruto25e: {
+        allowNindoActionUpdate: true
+        }
+      });
 
       const warning = nextNindo < 0
         ? `<p class="nindo-warning"><strong>Attention :</strong> le Nindō devient négatif. Le personnage s’éloigne de sa voie.</p>`
@@ -523,6 +527,10 @@ export class Naruto25eActor extends Actor {
 
       await this.update({
         "system.nindo.charges.value": Math.max(0, current - 1)
+      }, {
+        naruto25e: {
+        allowNindoActionUpdate: true
+        }
       });
 
       await ChatMessage.create({
@@ -1643,6 +1651,7 @@ async decreaseBase(baseKey) {
       : (user ?? game.user);
 
     const isGM = Boolean(updatingUser?.isGM);
+    const allowNindoActionUpdate = Boolean(options?.naruto25e?.allowNindoActionUpdate);
 
     if (isGM) return allowed;
 
@@ -1886,11 +1895,15 @@ async decreaseBase(baseKey) {
       }
 
       if (path === "system.nindo.value" || path === "system.nindo.max") {
-        deletePath(path);
+        if (!allowNindoActionUpdate || path === "system.nindo.max") {
+          deletePath(path);
+        }
       }
 
       if (path === "system.nindo.charges.value" || path === "system.nindo.charges.max") {
-        deletePath(path);
+        if (!allowNindoActionUpdate || path === "system.nindo.charges.max") {
+          deletePath(path);
+        }
       }
 
       if (path === "system.identity.nindoText" && !this.canUserEditNindo(updatingUser)) {

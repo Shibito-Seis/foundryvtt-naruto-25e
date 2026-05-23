@@ -2,6 +2,16 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.19.6.1]
+
+### Corrigé
+
+- Correction des actions Nindō côté joueur.
+- Les boutons Nindō peuvent désormais dépenser les points de Nindō d’un joueur.
+- Dépassement ajoute désormais correctement les charges côté joueur.
+- Dépenser une charge réduit désormais correctement le compteur côté joueur.
+- Les modifications manuelles des points, charges et maximums restent protégées pour les joueurs.
+
 ## [0.1.19.6]
 
 ### Ajouté
