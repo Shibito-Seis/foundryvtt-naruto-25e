@@ -534,6 +534,147 @@ NARUTO25E.voies = {
   }
 };
 
+NARUTO25E.chakraAffinityOrder = [
+  "katon",
+  "suiton",
+  "raiton",
+  "futon",
+  "doton",
+  "iryo"
+];
+
+NARUTO25E.chakraAffinities = {
+  katon: {
+    label: "Katon",
+    type: "elemental",
+    skillKey: "katon",
+    description: "Nature du Feu."
+  },
+  suiton: {
+    label: "Suiton",
+    type: "elemental",
+    skillKey: "suiton",
+    description: "Nature de l’Eau."
+  },
+  raiton: {
+    label: "Raïton",
+    type: "elemental",
+    skillKey: "raiton",
+    description: "Nature de la Foudre."
+  },
+  futon: {
+    label: "Fūton",
+    type: "elemental",
+    skillKey: "futon",
+    description: "Nature du Vent."
+  },
+  doton: {
+    label: "Doton",
+    type: "elemental",
+    skillKey: "doton",
+    description: "Nature de la Terre."
+  },
+  iryo: {
+    label: "Iryō",
+    type: "special",
+    skillKey: "iryo",
+    description: "Nature médicale / usage médical du Chakra."
+  }
+};
+
+NARUTO25E.affinityCostModes = {
+  freePrimary: "Affinité principale offerte",
+  countPrimary: "Affinité principale déduite des 5 compétences initiales"
+};
+
+NARUTO25E.clanCreationData = {
+  nara: {
+    summary: "Clan spécialisé dans la manipulation des ombres. Le Kage est une compétence propre au clan Nara.",
+    mandatorySkills: ["kage"],
+    mandatoryAffinities: [],
+    startingFeatures: []
+  },
+
+  uchiha: {
+    summary: "Clan célèbre pour son affinité naturelle avec le Katon et l’éveil du Sharingan.",
+    mandatorySkills: [],
+    mandatoryAffinities: ["katon"],
+    startingFeatures: ["Sharingan — premier tomoe"]
+  },
+
+  hyuga: {
+    summary: "Clan détenteur du Byakugan et maître du Jūken.",
+    mandatorySkills: ["juken"],
+    mandatoryAffinities: [],
+    startingFeatures: ["Byakugan"]
+  },
+
+  aburame: {
+    summary: "Clan utilisant les Kikaichū comme partenaires et armes vivantes.",
+    mandatorySkills: ["kikaichu"],
+    mandatoryAffinities: [],
+    startingFeatures: []
+  },
+
+  senju: {
+    summary: "Clan réputé pour sa vitalité exceptionnelle et ses héritages puissants.",
+    mandatorySkills: ["mokuton"],
+    mandatoryAffinities: [],
+    startingFeatures: []
+  },
+
+  munefuda: {
+    summary: "Clan lié au Jiton et aux arts magnétiques.",
+    mandatorySkills: ["jiton"],
+    mandatoryAffinities: [],
+    startingFeatures: []
+  },
+
+  yamanaka: {
+    summary: "Clan spécialisé dans l’esprit, les émotions et la transmission mentale.",
+    mandatorySkills: ["resistancesEmotionnelles"],
+    mandatoryAffinities: [],
+    startingFeatures: []
+  },
+
+  aniki: {
+    summary: "Clan lié au Sumi et aux techniques d’encre.",
+    mandatorySkills: ["sumi"],
+    mandatoryAffinities: [],
+    startingFeatures: []
+  }
+};
+
+NARUTO25E.getClanCreationData = function (clanKey) {
+  return NARUTO25E.clanCreationData?.[clanKey] ?? {
+    summary: "",
+    mandatorySkills: [],
+    mandatoryAffinities: [],
+    startingFeatures: []
+  };
+};
+
+NARUTO25E.getClanMandatorySkills = function (clanKey) {
+  const clan = NARUTO25E.clans?.[clanKey];
+  const data = NARUTO25E.getClanCreationData(clanKey);
+
+  const skills = [
+    ...(data.mandatorySkills ?? []),
+    clan?.skillKey || ""
+  ].filter(Boolean);
+
+  return Array.from(new Set(skills));
+};
+
+NARUTO25E.getClanMandatoryAffinities = function (clanKey) {
+  const data = NARUTO25E.getClanCreationData(clanKey);
+  return Array.from(new Set(data.mandatoryAffinities ?? []));
+};
+
+NARUTO25E.getAffinitySkillKey = function (affinityKey) {
+  return NARUTO25E.chakraAffinities?.[affinityKey]?.skillKey ?? "";
+};
+
 NARUTO25E.clanLineageCaps = {
   aburame: 5,
   akaba: 5,

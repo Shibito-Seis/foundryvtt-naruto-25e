@@ -897,3 +897,28 @@
   opacity: 0.75;
   font-style: italic;
 }
+
+.chakra-affinities-panel {
+  border: 1px solid rgba(120, 120, 120, 0.35);
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 12px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.chakra-affinity-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.chakra-affinity-summary {
+  margin-top: 10px;
+  padding: 8px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.chakra-affinity-summary ul {
+  margin: 4px 0 8px 18px;
+}

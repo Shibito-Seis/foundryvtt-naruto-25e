@@ -75,6 +75,14 @@
           }
         },
         "chakra": {
+          "affinities": {
+            "primary": "",
+            "secondary": "",
+            "forced": [],
+            "extra": [],
+            "unlockedByGM": false,
+            "notes": ""
+          },
           "specializations": {
             "acered": 0,
             "colossal": 0,

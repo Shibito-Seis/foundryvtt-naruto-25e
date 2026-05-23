@@ -27,6 +27,7 @@ export class Naruto25eShinobiSheet extends ActorSheet {
   context.actor = this.actor;
   context.items = this.actor.items;
   context.chakraFormulaMode = game.settings.get("naruto-25e", "chakraFormulaMode");
+  context.affinityCostMode = game.settings.get("naruto-25e", "affinityCostMode");
 
   context.missionRanks = [
     { key: "d", label: "D", data: this.actor.system.missions.d },
@@ -193,6 +194,52 @@ context.skillGroups = categoryOrder.map((category) => {
     status: statusLabel,
     mode: modeLabel,
     main: heritageMainLabel
+  };
+
+  const chakraAffinities = this.actor.system.chakra?.affinities ?? {};
+  const forcedAffinities = Array.isArray(chakraAffinities.forced) ? chakraAffinities.forced : [];
+  const ownedAffinities = Array.isArray(chakraAffinities.owned) ? chakraAffinities.owned : [];
+
+  context.chakraAffinityOptions = NARUTO25E.chakraAffinityOrder.map((key) => {
+    const affinity = NARUTO25E.chakraAffinities[key];
+
+    return {
+      key,
+      label: affinity.label,
+      type: affinity.type,
+      description: affinity.description,
+      primarySelected: chakraAffinities.primary === key,
+      secondarySelected: chakraAffinities.secondary === key,
+      forced: forcedAffinities.includes(key),
+      owned: ownedAffinities.includes(key),
+      skillKey: affinity.skillKey,
+      skillLabel: NARUTO25E.skillDefinitions?.[affinity.skillKey]?.label ?? affinity.skillKey
+    };
+  });
+
+  context.chakraAffinitySummary = {
+    primary:
+      NARUTO25E.chakraAffinities?.[chakraAffinities.primary]?.label
+      ?? "Aucune",
+    secondary:
+      NARUTO25E.chakraAffinities?.[chakraAffinities.secondary]?.label
+      ?? "Aucune",
+    forced: forcedAffinities.map((key) => ({
+      key,
+      label: NARUTO25E.chakraAffinities?.[key]?.label ?? key,
+      skillLabel:
+        NARUTO25E.skillDefinitions?.[NARUTO25E.getAffinitySkillKey?.(key)]?.label
+        ?? NARUTO25E.getAffinitySkillKey?.(key)
+        ?? key
+    })),
+    owned: ownedAffinities.map((key) => ({
+      key,
+      label: NARUTO25E.chakraAffinities?.[key]?.label ?? key,
+      skillLabel:
+        NARUTO25E.skillDefinitions?.[NARUTO25E.getAffinitySkillKey?.(key)]?.label
+        ?? NARUTO25E.getAffinitySkillKey?.(key)
+        ?? key
+    }))
   };
 
   context.isGM = game.user.isGM;

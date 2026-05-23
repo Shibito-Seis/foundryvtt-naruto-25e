@@ -2,12 +2,43 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
-## [0.1.18.2]
+## [0.1.19.0]
 
-### Corrigé
+### Ajouté
 
-- Correction de l’affichage MJ-only des champs de missions.
-- Les champs de missions utilisent désormais correctement le contexte parent dans l’onglet Missions.
+- Ajout de la structure des Affinités de Chakra.
+- Ajout des affinités Katon, Suiton, Raïton, Fūton, Doton et Iryō.
+- Ajout d’un paramètre mondial pour déterminer si l’affinité principale est offerte ou déduite des compétences initiales.
+- Les affinités possédées accordent automatiquement la compétence liée.
+- Préparation des données de création de clan.
+- Ajout des premières données de création pour Nara, Uchiha, Hyūga, Aburame, Senju, Munefuda, Yamanaka et Aniki.
+
+### Préparé
+
+- Préparation du futur contrôle des 5 compétences initiales.
+- Préparation du futur résumé de création.
+- Préparation des futures erreurs bloquantes avant validation.
+
+## [0.1.18.2] - Validée côté MJ
+
+### Validé
+
+- Validation et déverrouillage de création fonctionnels.
+- Verrouillage logique de création opérationnel côté MJ.
+- Village, statut, clan, voie et hybridation modifiables par le MJ.
+- Missions modifiables par le MJ et totaux recalculés.
+- Nindō et Charges de Nindō fonctionnels.
+- Permissions temporaires de modification du Nindō fonctionnelles.
+- Ryō visibles, ajoutables et retirables par le MJ.
+- Permission temporaire de modification des Ryō fonctionnelle.
+- Bases et compétences modifiables par le MJ même après validation.
+- Fiches Techniques modifiables et sauvegardables par le MJ.
+
+### À tester plus tard
+
+- Permissions côté joueur.
+- Verrouillage joueur après validation.
+- Consultation mais non-modification des Techniques côté joueur.
 
 ## [0.1.18.1]
 

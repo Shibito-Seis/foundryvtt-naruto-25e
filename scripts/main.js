@@ -45,6 +45,26 @@ Hooks.once("init", async function () {
   default: "aspirant100"
   });
 
+  game.settings.register("naruto-25e", "affinityCostMode", {
+    name: "Coût des affinités naturelles",
+    hint: "Détermine si l’affinité principale est offerte ou déduite des 5 compétences initiales.",
+    scope: "world",
+    config: true,
+    restricted: true,
+    type: String,
+    choices: {
+      freePrimary: "Affinité principale offerte",
+      countPrimary: "Affinité principale déduite des 5 compétences initiales"
+    },
+    default: "freePrimary",
+    onChange: () => {
+      for (const actor of game.actors ?? []) {
+        actor.prepareData();
+        actor.sheet?.render(false);
+      }
+    }
+  });
+
   Handlebars.registerHelper("eq", function (a, b) {
     return a === b;
   });

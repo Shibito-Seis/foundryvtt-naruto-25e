@@ -12,6 +12,7 @@ export class Naruto25eActor extends Actor {
     this._prepareBases(system);
     this._prepareSkills(system);
     this._prepareHeritage(system);
+    this._prepareChakraAffinities(system);
     this._prepareChakraSpecializations(system);
     this._prepareResources(system);
     this._prepareCombat(system);
@@ -493,10 +494,13 @@ async decreaseBase(baseKey) {
     const addClanMandatorySkill = (clanKey) => {
       if (!clanKey) return;
 
-      const skillKey = NARUTO25E.getClanMandatorySkill(clanKey);
-      if (!skillKey) return;
+      const skillKeys = NARUTO25E.getClanMandatorySkills
+        ? NARUTO25E.getClanMandatorySkills(clanKey)
+        : [NARUTO25E.getClanMandatorySkill(clanKey)].filter(Boolean);
 
-      grantedSkillKeys.add(skillKey);
+      for (const skillKey of skillKeys) {
+        grantedSkillKeys.add(skillKey);
+      }
     };
 
     if (mode === "clan" || mode === "hybridClan") {
@@ -572,6 +576,89 @@ async decreaseBase(baseKey) {
       const secondaryTrack = buildClanTrack(heritage.hybrid?.secondaryClan, "Hybridation de voie");
 
       if (secondaryTrack) heritage.tracks.push(secondaryTrack);
+    }
+  }
+
+  _prepareChakraAffinities(system) {
+    if (!system.chakra) system.chakra = {};
+
+    if (!system.chakra.affinities) {
+      system.chakra.affinities = {
+        primary: "",
+        secondary: "",
+        forced: [],
+        extra: [],
+        unlockedByGM: false,
+        notes: ""
+      };
+    }
+
+    const affinities = system.chakra.affinities;
+    const heritage = system.heritage ?? {};
+    const mode = heritage.mode ?? "clan";
+
+    affinities.primary = affinities.primary ?? "";
+    affinities.secondary = affinities.secondary ?? "";
+    affinities.extra = Array.isArray(affinities.extra) ? affinities.extra : [];
+    affinities.notes = affinities.notes ?? "";
+    affinities.unlockedByGM = Boolean(affinities.unlockedByGM);
+
+    const forcedAffinities = new Set();
+
+    const addClanAffinities = (clanKey) => {
+      if (!clanKey || !NARUTO25E.getClanMandatoryAffinities) return;
+
+      for (const affinityKey of NARUTO25E.getClanMandatoryAffinities(clanKey)) {
+        forcedAffinities.add(affinityKey);
+      }
+    };
+
+    if (mode === "clan" || mode === "hybridClan") {
+      addClanAffinities(heritage.clan);
+    }
+
+    if (mode === "hybridClan" || mode === "hybridVoie") {
+      addClanAffinities(heritage.hybrid?.secondaryClan);
+    }
+
+    affinities.forced = Array.from(forcedAffinities);
+
+    const ownedAffinityKeys = new Set([
+      ...affinities.forced,
+      affinities.primary,
+      affinities.secondary,
+      ...affinities.extra
+    ].filter(Boolean));
+
+    affinities.owned = Array.from(ownedAffinityKeys);
+
+    for (const affinityKey of ownedAffinityKeys) {
+      const skillKey = NARUTO25E.getAffinitySkillKey?.(affinityKey);
+      if (!skillKey) continue;
+
+      const definition = NARUTO25E.skillDefinitions?.[skillKey];
+      if (!definition) continue;
+
+      if (!system.skills[skillKey]) {
+        system.skills[skillKey] = {
+          natural: 1,
+          bonus: 0,
+          owned: true
+        };
+      }
+
+      const skill = system.skills[skillKey];
+
+      skill.owned = true;
+      skill.grantedByAffinity = true;
+
+      if (!Array.isArray(skill.creationSources)) {
+        skill.creationSources = [];
+      }
+
+      if (!skill.creationSources.includes("affinity")) {
+        skill.creationSources.push("affinity");
+      }
     }
   }
     _getMissionSuccessCount(system, rank) {
