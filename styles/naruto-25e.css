@@ -974,3 +974,90 @@
 .skill-source-badge.source-affinityPrimaryFree {
   opacity: 0.85;
 }
+
+.creation-validation-summary {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid rgba(80, 80, 80, 0.6);
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.creation-validation-summary h3 {
+  margin: 0 0 0.5rem 0;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+.creation-validation-summary.is-valid {
+  border-color: rgba(47, 125, 50, 0.75);
+}
+
+.creation-validation-summary.is-invalid {
+  border-color: rgba(139, 30, 30, 0.85);
+}
+
+.creation-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.creation-summary-grid div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.creation-summary-grid strong,
+.creation-affinity-summary strong {
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+.creation-affinity-summary {
+  margin-top: 0.75rem;
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.45rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(80, 80, 80, 0.55);
+  font-size: 0.8rem;
+}
+
+.creation-ok {
+  margin: 0.75rem 0 0 0;
+  color: #2f7d32;
+  font-weight: 700;
+}
+
+.creation-errors {
+  margin-top: 0.75rem;
+  color: #8b1e1e;
+  font-weight: 700;
+}
+
+.creation-errors ul {
+  margin: 0.35rem 0 0 1.25rem;
+  padding: 0;
+}
+
+.creation-errors li {
+  margin-bottom: 0.25rem;
+}
+
+.creation-validate:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}

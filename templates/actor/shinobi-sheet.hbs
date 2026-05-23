@@ -80,10 +80,75 @@
             </p>
           {{/if}}
 
+          <div class="creation-validation-summary {{#if creationValidation.valid}}is-valid{{else}}is-invalid{{/if}}">
+            <h3>Résumé de création</h3>
+
+            <div class="creation-summary-grid">
+              <div>
+                <strong>Village</strong>
+                <span>{{creationValidation.summary.village}}</span>
+              </div>
+
+              <div>
+                <strong>Statut</strong>
+                <span>{{creationValidation.summary.status}}</span>
+              </div>
+
+              <div>
+                <strong>Héritage</strong>
+                <span>{{creationValidation.summary.heritage}}</span>
+              </div>
+
+              <div>
+                <strong>Type</strong>
+                <span>{{creationValidation.summary.heritageMode}}</span>
+              </div>
+
+              <div>
+                <strong>Compétences initiales</strong>
+                <span>
+                  {{creationValidation.summary.initialSkillsUsed}} / {{creationValidation.summary.maxInitialSkills}}
+                  — restantes : {{creationValidation.summary.initialSkillsRemaining}}
+                </span>
+              </div>
+
+              <div>
+                <strong>XP disponible</strong>
+                <span>{{creationValidation.summary.xpAvailable}}</span>
+              </div>
+            </div>
+
+            <div class="creation-affinity-summary">
+              <strong>Affinités</strong>
+              <div class="tag-list">
+                {{#each creationValidation.summary.affinities as |affinity|}}
+                  <span class="tag">{{affinity}}</span>
+                {{/each}}
+              </div>
+            </div>
+
+            {{#if creationValidation.valid}}
+              <p class="creation-ok">Création conforme.</p>
+            {{else}}
+              <div class="creation-errors">
+                <strong>Erreurs à corriger</strong>
+                <ul>
+                  {{#each creationValidation.errors as |error|}}
+                    <li>{{error}}</li>
+                  {{/each}}
+                </ul>
+              </div>
+            {{/if}}
+          </div>
+
           {{#if isGM}}
             <div class="button-row">
               {{#if creationState.canValidate}}
-                <button type="button" class="creation-validate">
+                <button
+                  type="button"
+                  class="creation-validate"
+                  {{#unless creationState.validationValid}}disabled{{/unless}}
+                  >
                   Valider la création
                 </button>
               {{/if}}

@@ -74,6 +74,208 @@ export class Naruto25eActor extends Actor {
       return Boolean(this.system.nindo?.unlockedByGM);
     }
 
+    getCreationValidationSummary() {
+      if (this.type !== "shinobi") {
+        return {
+          valid: true,
+          errors: [],
+          warnings: [],
+          summary: {}
+        };
+      }
+
+      const system = this.system;
+      const heritage = system.heritage ?? {};
+      const chakra = system.chakra ?? {};
+      const affinities = chakra.affinities ?? {};
+      const skills = system.skills ?? {};
+      const experience = system.experience ?? {};
+
+      const errors = [];
+      const warnings = [];
+
+      const villageKey = heritage.village ?? "";
+      const village = NARUTO25E.villages?.[villageKey];
+
+      const mode = heritage.mode ?? "clan";
+      const clanKey = heritage.clan ?? "";
+      const voieKey = heritage.voie ?? "";
+      const secondaryClanKey = heritage.hybrid?.secondaryClan ?? "";
+
+      const clan = NARUTO25E.clans?.[clanKey];
+      const voie = NARUTO25E.voies?.[voieKey];
+      const secondaryClan = NARUTO25E.clans?.[secondaryClanKey];
+
+      const gmOptions = heritage.gmOptions ?? {};
+
+      const countableSources = new Set([
+        "manual",
+        "heritage",
+        "affinityForced",
+        "affinityPrimary",
+        "affinitySecondary",
+        "affinityExtra"
+      ]);
+
+      let initialSkillsUsed = 0;
+
+      for (const skill of Object.values(skills)) {
+        const sources = Array.isArray(skill.creationSources)
+          ? skill.creationSources
+          : [];
+
+        const counts = sources.some((source) => countableSources.has(source));
+
+        if (counts) initialSkillsUsed += 1;
+      }
+
+      const maxInitialSkills = 5;
+
+      if (!villageKey || !village) {
+        errors.push("Aucun village d’origine valide n’est sélectionné.");
+      } else if (!village.selectable) {
+        errors.push(`Le village ${village.label} est visible mais pas encore sélectionnable.`);
+      }
+
+      if (mode === "clan") {
+        if (!clanKey || !clan) {
+          errors.push("Aucun clan principal n’est sélectionné.");
+        } else if (clan.village !== villageKey) {
+          errors.push(`Le clan ${clan.label} n’est pas compatible avec le village sélectionné.`);
+        }
+      }
+
+      if (mode === "voie") {
+        if (!voieKey || !voie) {
+          errors.push("Aucune voie n’est sélectionnée.");
+        } else {
+          const voieAllowed = voie.village === "any" || voie.village === villageKey;
+
+          if (!voie.selectable || !voieAllowed) {
+            errors.push(`La voie ${voie.label} n’est pas compatible avec le village sélectionné.`);
+          }
+        }
+      }
+
+      if (mode === "hybridClan") {
+        if (!gmOptions.allowHybridClan) {
+          errors.push("Le clan hybride n’est pas autorisé par le MJ pour cette fiche.");
+        }
+
+        if (!clanKey || !clan) {
+          errors.push("Aucun clan principal n’est sélectionné pour l’hybridation.");
+        } else if (clan.village !== villageKey) {
+          errors.push(`Le clan principal ${clan.label} n’est pas compatible avec le village sélectionné.`);
+        }
+
+        if (!secondaryClanKey || !secondaryClan) {
+          errors.push("Aucun clan secondaire n’est sélectionné pour l’hybridation.");
+        } else if (secondaryClan.village !== villageKey) {
+          errors.push(`Le clan secondaire ${secondaryClan.label} n’est pas compatible avec le village sélectionné.`);
+        }
+
+        if (clanKey && secondaryClanKey && clanKey === secondaryClanKey) {
+          errors.push("Le clan secondaire doit être différent du clan principal.");
+        }
+      }
+
+      if (mode === "hybridVoie") {
+        if (!gmOptions.allowHybridVoie) {
+          errors.push("La voie hybridée n’est pas autorisée par le MJ pour cette fiche.");
+        }
+
+        if (!voieKey || !voie) {
+          errors.push("Aucune voie principale n’est sélectionnée pour la voie hybridée.");
+        } else {
+          const voieAllowed = voie.village === "any" || voie.village === villageKey;
+
+          if (!voie.selectable || !voieAllowed) {
+            errors.push(`La voie ${voie.label} n’est pas compatible avec le village sélectionné.`);
+          }
+        }
+
+        if (!secondaryClanKey || !secondaryClan) {
+          errors.push("Aucun clan secondaire n’est sélectionné pour la voie hybridée.");
+        } else if (secondaryClan.village !== villageKey) {
+          errors.push(`Le clan secondaire ${secondaryClan.label} n’est pas compatible avec le village sélectionné.`);
+        }
+      }
+
+      const forcedAffinities = Array.isArray(affinities.forced) ? affinities.forced : [];
+      const primaryAffinity = affinities.primary ?? "";
+      const secondaryAffinity = affinities.secondary ?? "";
+
+      const hasAnyAffinity =
+        Boolean(primaryAffinity)
+        || Boolean(secondaryAffinity)
+        || forcedAffinities.length > 0;
+
+      if (!hasAnyAffinity) {
+        errors.push("Aucune affinité de Chakra n’est sélectionnée.");
+      }
+
+      if (primaryAffinity && secondaryAffinity && primaryAffinity === secondaryAffinity) {
+        errors.push("L’affinité secondaire doit être différente de l’affinité principale.");
+      }
+
+      if (initialSkillsUsed > maxInitialSkills) {
+        errors.push(`Trop de compétences initiales : ${initialSkillsUsed} / ${maxInitialSkills}.`);
+      }
+
+      const xpAvailable = Number(experience.available ?? 0);
+
+      if (xpAvailable < 0) {
+        errors.push(`XP disponible négative : ${xpAvailable}.`);
+      }
+
+      const heritageLabel = (() => {
+        if (mode === "clan") return clan?.label ? `Clan ${clan.label}` : "Clan non sélectionné";
+        if (mode === "voie") return voie?.label ?? "Voie non sélectionnée";
+        if (mode === "hybridClan") {
+          return `${clan?.label ?? "Clan ?"} / ${secondaryClan?.label ?? "Clan secondaire ?"}`;
+        }
+        if (mode === "hybridVoie") {
+          return `${voie?.label ?? "Voie ?"} / ${secondaryClan?.label ?? "Clan secondaire ?"}`;
+        }
+
+        return "Héritage non défini";
+      })();
+
+      const affinityLabels = [];
+
+      for (const key of forcedAffinities) {
+        const label = NARUTO25E.chakraAffinities?.[key]?.label ?? key;
+        affinityLabels.push(`${label} imposée`);
+      }
+
+      if (primaryAffinity) {
+        const label = NARUTO25E.chakraAffinities?.[primaryAffinity]?.label ?? primaryAffinity;
+        affinityLabels.push(`${label} principale`);
+      }
+
+      if (secondaryAffinity) {
+        const label = NARUTO25E.chakraAffinities?.[secondaryAffinity]?.label ?? secondaryAffinity;
+        affinityLabels.push(`${label} secondaire`);
+      }
+
+      return {
+        valid: errors.length === 0,
+        errors,
+        warnings,
+        summary: {
+          village: village?.label ?? "—",
+          status: NARUTO25E.villageStatuses?.[heritage.villageStatus ?? "loyal"] ?? "—",
+          heritage: heritageLabel,
+          heritageMode: NARUTO25E.heritageModes?.[mode] ?? mode,
+          affinities: affinityLabels.length > 0 ? affinityLabels : ["—"],
+          initialSkillsUsed,
+          maxInitialSkills,
+          initialSkillsRemaining: Math.max(0, maxInitialSkills - initialSkillsUsed),
+          xpAvailable
+        }
+      };
+    }
+
     async validateCreation() {
       if (this.type !== "shinobi") return;
 
@@ -81,6 +283,22 @@ export class Naruto25eActor extends Actor {
         ui.notifications.warn("Seul le MJ peut valider définitivement la création.");
         return;
       }
+
+    const validation = this.getCreationValidationSummary();
+
+    if (!validation.valid) {
+      const errorList = validation.errors.map((error) => `<li>${error}</li>`).join("");
+
+      await Dialog.alert({
+        title: "Création invalide",
+        content: `
+          <p>La création de <strong>${this.name}</strong> ne peut pas encore être validée.</p>
+          <ul>${errorList}</ul>
+        `
+      });
+
+      return;
+    }
 
       const confirmed = await Dialog.confirm({
         title: "Valider la création",

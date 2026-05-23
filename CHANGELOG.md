@@ -2,11 +2,24 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
-## [0.1.19.3] - En cours
+## [0.1.19.4]
+
+### Ajouté
+
+- Ajout d’un résumé de création dans l’onglet Résumé.
+- Ajout d’un affichage des affinités, de l’héritage, des compétences initiales et de l’XP disponible.
+- Ajout d’une liste d’erreurs bloquantes pour la validation de création.
+- Blocage du bouton de validation si la création n’est pas conforme.
+
+### Corrigé
+
+- La validation MJ refuse désormais une fiche dont les conditions de création ne sont pas remplies.
+
+## [0.1.19.3]
 
 ### En correction
 
-- Correction d’un cas où une compétence accordée par affinité devenait automatiquement un choix initial lors d’un changement d’affinité.
+- Non-Correction d’un cas où une compétence accordée par affinité devenait automatiquement un choix initial lors d’un changement d’affinité.
 - Correction du nettoyage des compétences accordées par affinité lorsque l’affinité principale ou secondaire est remplacée.
 - Correction du rendu des groupes de compétences après l’ajout des sources de création.
 

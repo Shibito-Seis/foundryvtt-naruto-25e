@@ -287,6 +287,8 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     }))
   };
 
+  context.creationValidation = this.actor.getCreationValidationSummary();
+
   context.isGM = game.user.isGM;
   const creation = this.actor.system.progression?.creation ?? {};
 
@@ -296,6 +298,7 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     validatedAt: creation.validatedAt ?? "",
     validatedBy: creation.validatedBy ?? "",
     canValidate: game.user.isGM && !creation.locked,
+    validationValid: Boolean(context.creationValidation?.valid),
     canUnlock: game.user.isGM && creation.locked
   };
 
