@@ -126,43 +126,11 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
 
   const categoryOrder = ["common", "combat", "terrain", "clan"];
 
-context.skillGroups = categoryOrder.map((category) => {
-  const sources = Array.isArray(skill.creationSources)
-    ? skill.creationSources
-    : [];
-
-  const sourceLabels = sources.map((source) => ({
-    key: source,
-    label: skillSourceLabels[source] ?? source
+  context.skillGroups = categoryOrder.map((category) => ({
+    key: category,
+    label: NARUTO25E.skillCategories?.[category] ?? category,
+    skills: context.skills.filter((skill) => skill.category === category)
   }));
-
-  const countsForCreationLimit = sources.some((source) => countableCreationSources.has(source));
-
-  return {
-    key,
-    label: definition.label,
-    base: definition.base,
-    baseLabel: NARUTO25E.baseLabels[definition.base] ?? definition.base,
-    category: definition.category,
-    tags: definition.tags ?? [],
-    natural: current,
-    bonus: Number(skill.bonus ?? 0),
-    total: Number(skill.total ?? 0),
-    owned: Boolean(skill.owned),
-    manualOwned: Boolean(skill.manualOwned),
-    grantedByHeritage: Boolean(skill.grantedByHeritage),
-    grantedByAffinity: Boolean(skill.grantedByAffinity),
-    creationSources: sources,
-    sourceLabels,
-    countsForCreationLimit,
-    masteryLabel: skill.masteryLabel ?? "",
-    xpSpent: Number(skill.xpSpent ?? 0),
-    nextCost,
-    cap,
-    canIncrease: Boolean(skill.owned) && next <= cap,
-    canDecrease: current > 1
-  };
-  });
 
   const usedInitialSkills = context.skills.filter((skill) => skill.countsForCreationLimit).length;
   const maxInitialSkills = 5;

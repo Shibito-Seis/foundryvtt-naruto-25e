@@ -2,6 +2,12 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.19.2]
+
+### Corrigé
+
+- Correction d’une erreur de rendu de la fiche Shinobi causée par la reconstruction incorrecte des groupes de compétences.
+
 ## [0.1.19.1]
 
 ### Ajouté
