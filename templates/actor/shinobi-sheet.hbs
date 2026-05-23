@@ -848,6 +848,21 @@
     <section class="panel">
     <h2>Compétences</h2>
 
+    <section class="creation-skill-summary {{#if creationSkillSummary.overLimit}}is-invalid{{/if}}">
+      <strong>Compétences initiales :</strong>
+      {{creationSkillSummary.used}} / {{creationSkillSummary.max}}
+
+      {{#if creationSkillSummary.overLimit}}
+        <span class="creation-error">
+          — Limite dépassée.
+        </span>
+      {{else}}
+        <span>
+          — Restantes : {{creationSkillSummary.remaining}}
+        </span>
+      {{/if}}
+    </section>
+
       {{#each skillGroups as |group|}}
         <section class="skill-group">
           <h3>{{group.label}}</h3>
@@ -864,6 +879,7 @@
                 <th>Prochain</th>
                 <th>Maîtrise</th>
                 <th>Possédée</th>
+                <th>Source</th>
               </tr>
             </thead>
             <tbody>
@@ -901,6 +917,19 @@
                   <td>{{skill.masteryLabel}}</td>
                   <td>
                     <input name="system.skills.{{skill.key}}.owned" type="checkbox" {{#if skill.owned}}checked{{/if}} />
+                  </td>
+                  <td>
+                    {{#if skill.sourceLabels.length}}
+                      <div class="skill-source-list">
+                        {{#each skill.sourceLabels as |source|}}
+                          <span class="skill-source-badge source-{{source.key}}">
+                            {{source.label}}
+                          </span>
+                        {{/each}}
+                      </div>
+                    {{else}}
+                    —
+                    {{/if}}
                   </td>
                 </tr>
               {{/each}}

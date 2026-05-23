@@ -60,6 +60,26 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
   };
 });
 
+  const skillSourceLabels = {
+    common: "Commune",
+    manual: "Choix initial",
+    heritage: "Clan / Voie",
+    affinityForced: "Affinité imposée",
+    affinityPrimary: "Affinité principale",
+    affinityPrimaryFree: "Affinité principale offerte",
+    affinitySecondary: "Affinité secondaire",
+    affinityExtra: "Affinité spéciale"
+  };
+
+  const countableCreationSources = new Set([
+    "manual",
+    "heritage",
+    "affinityForced",
+    "affinityPrimary",
+    "affinitySecondary",
+    "affinityExtra"
+  ]);
+
   context.skills = Object.entries(NARUTO25E.skillDefinitions).map(([key, definition]) => {
     const skill = this.actor.system.skills?.[key] ?? {};
     const current = Number(skill.natural ?? 1);
@@ -90,12 +110,52 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
   const categoryOrder = ["common", "combat", "terrain", "clan"];
 
 context.skillGroups = categoryOrder.map((category) => {
+  const sources = Array.isArray(skill.creationSources)
+    ? skill.creationSources
+    : [];
+
+  const sourceLabels = sources.map((source) => ({
+    key: source,
+    label: skillSourceLabels[source] ?? source
+  }));
+
+  const countsForCreationLimit = sources.some((source) => countableCreationSources.has(source));
+
   return {
-    key: category,
-    label: NARUTO25E.skillCategoryLabels[category] ?? category,
-    skills: context.skills.filter((skill) => skill.category === category)
-    };
+    key,
+    label: definition.label,
+    base: definition.base,
+    baseLabel: NARUTO25E.baseLabels[definition.base] ?? definition.base,
+    category: definition.category,
+    tags: definition.tags ?? [],
+    natural: current,
+    bonus: Number(skill.bonus ?? 0),
+    total: Number(skill.total ?? 0),
+    owned: Boolean(skill.owned),
+    manualOwned: Boolean(skill.manualOwned),
+    grantedByHeritage: Boolean(skill.grantedByHeritage),
+    grantedByAffinity: Boolean(skill.grantedByAffinity),
+    creationSources: sources,
+    sourceLabels,
+    countsForCreationLimit,
+    masteryLabel: skill.masteryLabel ?? "",
+    xpSpent: Number(skill.xpSpent ?? 0),
+    nextCost,
+    cap,
+    canIncrease: Boolean(skill.owned) && next <= cap,
+    canDecrease: current > 1
+  };
   });
+
+  const usedInitialSkills = context.skills.filter((skill) => skill.countsForCreationLimit).length;
+  const maxInitialSkills = 5;
+
+  context.creationSkillSummary = {
+    used: usedInitialSkills,
+    max: maxInitialSkills,
+    remaining: Math.max(0, maxInitialSkills - usedInitialSkills),
+    overLimit: usedInitialSkills > maxInitialSkills
+  };
 
   context.villages = Object.entries(NARUTO25E.villages).map(([key, village]) => ({
     key,

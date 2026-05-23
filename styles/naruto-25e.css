@@ -922,3 +922,55 @@
 .chakra-affinity-summary ul {
   margin: 4px 0 8px 18px;
 }
+
+.creation-skill-summary {
+  margin: 0 0 10px 0;
+  padding: 8px 10px;
+  border: 1px solid rgba(120, 120, 120, 0.35);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.creation-skill-summary.is-invalid {
+  border-color: #8b1e1e;
+  background: rgba(139, 30, 30, 0.12);
+}
+
+.creation-error {
+  color: #8b1e1e;
+  font-weight: 700;
+}
+
+.skill-source-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.skill-source-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 999px;
+  font-size: 11px;
+  line-height: 1.3;
+  border: 1px solid rgba(120, 120, 120, 0.35);
+  background: rgba(255, 255, 255, 0.06);
+  white-space: nowrap;
+}
+
+.skill-source-badge.source-common {
+  opacity: 0.8;
+}
+
+.skill-source-badge.source-manual {
+  font-weight: 700;
+}
+
+.skill-source-badge.source-heritage,
+.skill-source-badge.source-affinityForced {
+  font-weight: 700;
+}
+
+.skill-source-badge.source-affinityPrimaryFree {
+  opacity: 0.85;
+}

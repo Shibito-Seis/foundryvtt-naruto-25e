@@ -2,6 +2,26 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.19.1]
+
+### Ajouté
+
+- Ajout des sources de possession des compétences.
+- Ajout de l’affichage des sources de compétence sur la fiche Shinobi.
+- Ajout du résumé des compétences initiales utilisées et restantes.
+- Ajout de la distinction entre compétences communes, choix initial, clan/voie et affinité.
+
+### Modifié
+
+- Les compétences accordées par affinité sont désormais recalculées proprement.
+- Changer d’affinité retire l’ancienne compétence uniquement si elle n’est pas possédée par une autre source.
+- Les compétences imposées par clan/voie et affinité ne peuvent plus être perdues par simple décochage.
+
+### Corrigé
+
+- Correction du cas où plusieurs affinités testées successivement laissaient toutes les compétences possédées.
+- Correction du numéro de version système après la 0.1.19.0.
+
 ## [0.1.19.0]
 
 ### Ajouté

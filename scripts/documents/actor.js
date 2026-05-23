@@ -13,6 +13,7 @@ export class Naruto25eActor extends Actor {
     this._prepareSkills(system);
     this._prepareHeritage(system);
     this._prepareChakraAffinities(system);
+    this._finalizeSkillOwnership(system);
     this._prepareChakraSpecializations(system);
     this._prepareResources(system);
     this._prepareCombat(system);
@@ -347,22 +348,104 @@ async decreaseBase(baseKey) {
 
   ui.notifications.info(`${base.label ?? baseKey} réduit à ${previous}.`);
   }
-    _prepareSkills(system) {
+
+  _addSkillCreationSource(system, skillKey, source) {
+    if (!skillKey || !source) return;
+
+    const definition = NARUTO25E.skillDefinitions?.[skillKey];
+    if (!definition) return;
+
     if (!system.skills) system.skills = {};
 
-    for (const [key, definition] of Object.entries(NARUTO25E.skillDefinitions)) {
-      if (!system.skills[key]) {
-        system.skills[key] = {
-          natural: 1,
-          bonus: 0,
-          owned: Boolean(definition.ownedByDefault)
-        };
+    if (!system.skills[skillKey]) {
+      system.skills[skillKey] = {
+        natural: 1,
+        bonus: 0,
+        owned: false,
+        manualOwned: false,
+        creationSources: []
+      };
+    }
+
+    const skill = system.skills[skillKey];
+
+    if (!Array.isArray(skill.creationSources)) {
+      skill.creationSources = [];
+    }
+
+    if (!skill.creationSources.includes(source)) {
+      skill.creationSources.push(source);
+    }
+
+    if (source === "heritage") {
+      skill.grantedByHeritage = true;
+    }
+
+    if (source.startsWith("affinity")) {
+      skill.grantedByAffinity = true;
+    }
+  }
+
+  _finalizeSkillOwnership(system) {
+    if (!system.skills) return;
+
+    for (const [skillKey, definition] of Object.entries(NARUTO25E.skillDefinitions)) {
+      const skill = system.skills[skillKey];
+      if (!skill) continue;
+
+      const sources = Array.isArray(skill.creationSources)
+        ? skill.creationSources
+        : [];
+
+      const ownedByDefault = Boolean(definition.ownedByDefault);
+      const manualOwned = Boolean(skill.manualOwned);
+
+      skill.owned = ownedByDefault || manualOwned || sources.some((source) => source !== "common");
+
+      if (ownedByDefault && !sources.includes("common")) {
+        sources.unshift("common");
       }
+
+      skill.creationSources = Array.from(new Set(sources));
+    }
+  }
+    _prepareSkills(system) {
+      if (!system.skills) system.skills = {};
+
+      for (const [key, definition] of Object.entries(NARUTO25E.skillDefinitions)) {
+        if (!system.skills[key]) {
+          system.skills[key] = {
+            natural: 1,
+            bonus: 0,
+            owned: Boolean(definition.ownedByDefault),
+            manualOwned: false,
+            creationSources: []
+          };
+        }
 
       const skill = system.skills[key];
       const baseKey = definition.base;
       const baseValue = this._getBaseEffective(system, baseKey);
       const naturalBaseValue = Number(system.bases?.[baseKey]?.value ?? 1);
+
+      const previousSources = Array.isArray(skill.creationSources)
+        ? skill.creationSources
+        : [];
+
+      if (typeof skill.manualOwned !== "boolean") {
+        const wasOwnedManually =
+          Boolean(skill.owned)
+          && !definition.ownedByDefault
+          && !previousSources.includes("affinity")
+          && !previousSources.includes("affinityForced")
+          && !previousSources.includes("affinityPrimary")
+          && !previousSources.includes("affinityPrimaryFree")
+          && !previousSources.includes("affinitySecondary")
+          && !previousSources.includes("affinityExtra")
+          && !previousSources.includes("heritage");
+
+        skill.manualOwned = wasOwnedManually;
+      }
 
       skill.label = definition.label;
       skill.base = baseKey;
@@ -376,14 +459,26 @@ async decreaseBase(baseKey) {
 
       skill.max = naturalBaseValue + 2;
 
-      if (typeof skill.owned !== "boolean") {
-        skill.owned = Boolean(definition.ownedByDefault);
+      skill.grantedByHeritage = false;
+      skill.grantedByAffinity = false;
+
+      skill.creationSources = [];
+
+      if (definition.ownedByDefault) {
+        skill.creationSources.push("common");
       }
+
+      if (skill.manualOwned) {
+        skill.creationSources.push("manual");
+      }
+
+      skill.owned = Boolean(definition.ownedByDefault) || Boolean(skill.manualOwned);
 
       let xpSpent = 0;
       for (let rank = 2; rank <= skill.natural; rank++) {
         xpSpent += NARUTO25E.getSkillXpCost(rank);
       }
+
       skill.xpSpent = xpSpent;
 
       if (skill.natural >= 7) {
@@ -512,20 +607,8 @@ async decreaseBase(baseKey) {
     }
 
     for (const skillKey of grantedSkillKeys) {
-      const definition = NARUTO25E.skillDefinitions?.[skillKey];
-      if (!definition) continue;
-
-      if (!system.skills[skillKey]) {
-        system.skills[skillKey] = {
-          natural: 1,
-          bonus: 0,
-          owned: true
-        };
-      }
-
-      system.skills[skillKey].owned = true;
-      system.skills[skillKey].grantedByHeritage = true;
-    }
+    this._addSkillCreationSource(system, skillKey, "heritage");
+  }
 
     const lineageValue = Number(system.bases?.lign?.value ?? 1);
     heritage.lineageValue = lineageValue;
@@ -623,43 +706,41 @@ async decreaseBase(baseKey) {
 
     affinities.forced = Array.from(forcedAffinities);
 
-    const ownedAffinityKeys = new Set([
-      ...affinities.forced,
-      affinities.primary,
-      affinities.secondary,
-      ...affinities.extra
-    ].filter(Boolean));
+    const ownedAffinityKeys = new Set();
+
+    const addAffinitySkill = (affinityKey, source) => {
+      if (!affinityKey) return;
+
+      ownedAffinityKeys.add(affinityKey);
+
+      const skillKey = NARUTO25E.getAffinitySkillKey?.(affinityKey);
+      if (!skillKey) return;
+
+      this._addSkillCreationSource(system, skillKey, source);
+    };
+
+    for (const affinityKey of affinities.forced) {
+      addAffinitySkill(affinityKey, "affinityForced");
+    }
+
+    const affinityCostMode = game.settings?.get("naruto-25e", "affinityCostMode") ?? "freePrimary";
+
+    if (affinities.primary) {
+      addAffinitySkill(
+        affinities.primary,
+        affinityCostMode === "freePrimary" ? "affinityPrimaryFree" : "affinityPrimary"
+      );
+    }
+
+    if (affinities.secondary) {
+      addAffinitySkill(affinities.secondary, "affinitySecondary");
+    }
+
+    for (const affinityKey of affinities.extra) {
+      addAffinitySkill(affinityKey, "affinityExtra");
+    }
 
     affinities.owned = Array.from(ownedAffinityKeys);
-
-    for (const affinityKey of ownedAffinityKeys) {
-      const skillKey = NARUTO25E.getAffinitySkillKey?.(affinityKey);
-      if (!skillKey) continue;
-
-      const definition = NARUTO25E.skillDefinitions?.[skillKey];
-      if (!definition) continue;
-
-      if (!system.skills[skillKey]) {
-        system.skills[skillKey] = {
-          natural: 1,
-          bonus: 0,
-          owned: true
-        };
-      }
-
-      const skill = system.skills[skillKey];
-
-      skill.owned = true;
-      skill.grantedByAffinity = true;
-
-      if (!Array.isArray(skill.creationSources)) {
-        skill.creationSources = [];
-      }
-
-      if (!skill.creationSources.includes("affinity")) {
-        skill.creationSources.push("affinity");
-      }
-    }
   }
     _getMissionSuccessCount(system, rank) {
     const missions = system.missions ?? {};
@@ -1128,6 +1209,26 @@ async decreaseBase(baseKey) {
 
     const flat = foundry.utils.flattenObject(changed);
 
+    if (!creationLocked) {
+      for (const [path, value] of Object.entries(flat)) {
+        const match = path.match(/^system\.skills\.([^.]+)\.owned$/);
+        if (!match) continue;
+
+        const skillKey = match[1];
+
+        foundry.utils.setProperty(
+          changed,
+          `system.skills.${skillKey}.manualOwned`,
+          Boolean(value)
+        );
+
+        foundry.utils.deleteProperty(
+          changed,
+          `system.skills.${skillKey}.owned`
+        );
+      }
+    }
+
     const deletePath = (path) => {
       if (foundry.utils.hasProperty(changed, path)) {
         foundry.utils.deleteProperty(changed, path);
@@ -1145,8 +1246,11 @@ async decreaseBase(baseKey) {
           deletePath(path);
         }
 
-        if (path.match(/^system\.skills\.[^.]+\.owned$/)) {
-          deletePath(path);
+        if (
+          path.match(/^system\.skills\.[^.]+\.owned$/)
+          || path.match(/^system\.skills\.[^.]+\.manualOwned$/)
+        ) {
+        deletePath(path);
         }
 
         if (path.startsWith("system.heritage.affinities.")) {
