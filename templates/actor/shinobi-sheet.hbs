@@ -232,6 +232,46 @@
         </div>
       </section>
 
+      <section class="naruto-panel naruto-kikaichu-reserve">
+        <header class="naruto-panel-header">
+          <h3>Réserve Kikaichū</h3>
+        </header>
+
+        {{#if system.resources.kikaichu.enabled}}
+          <div class="naruto-resource-line">
+            <label>Chakra général</label>
+            <span>
+              {{system.resources.chakra.value}} / {{system.resources.chakra.max}}
+              <small>
+                brut : {{system.resources.chakra.rawMax}}
+              </small>
+            </span>
+          </div>
+
+          <div class="naruto-resource-line">
+            <label>Réserve Kikaichū</label>
+            <span>
+              {{system.resources.kikaichu.value}} / {{system.resources.kikaichu.allocated}}
+            </span>
+          </div>
+
+          <div class="naruto-button-row">
+            <button type="button" class="kikaichu-allocate" data-amount="-10">-10</button>
+            <button type="button" class="kikaichu-allocate" data-amount="-5">-5</button>
+            <button type="button" class="kikaichu-allocate" data-amount="5">+5</button>
+            <button type="button" class="kikaichu-allocate" data-amount="10">+10</button>
+          </div>
+
+          <p class="hint">
+            Le chakra alloué aux Kikaichū est retiré du chakra général utilisable.
+          </p>
+        {{else}}
+          <p class="hint">
+            Réserve inactive. Elle sera disponible pour les membres du clan Aburame.
+          </p>
+        {{/if}}
+      </section>
+
   <section class="panel">
     <h2>État de combat</h2>
 

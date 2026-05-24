@@ -599,6 +599,82 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     return context;
   }
 
+  async _onKikaichuAllocate(event) {
+    event.preventDefault();
+
+    const button = event.currentTarget;
+    const amount = Number(button.dataset.amount ?? 0);
+
+    if (!amount) return;
+
+    const actor = this.actor;
+    const system = actor.system;
+
+    const reserve = system.resources?.kikaichu;
+    const chakra = system.resources?.chakra;
+
+    if (!reserve?.enabled) {
+      ui.notifications.warn("Ce personnage ne possède pas de réserve Kikaichū.");
+      return;
+    }
+
+    const currentAllocated = Number(reserve.allocated ?? 0);
+    const currentReserveValue = Number(reserve.value ?? 0);
+    const reserveMax = Number(reserve.max ?? 0);
+
+    const currentChakra = Number(chakra?.value ?? 0);
+    const chakraMax = Number(chakra?.max ?? 0);
+
+    let newAllocated = currentAllocated;
+    let newReserveValue = currentReserveValue;
+    let newChakraValue = currentChakra;
+
+    if (amount > 0) {
+      const realAmount = Math.min(
+        amount,
+        reserveMax - currentAllocated,
+        currentChakra
+      );
+
+      if (realAmount <= 0) {
+        ui.notifications.warn("Pas assez de chakra disponible à transférer vers la réserve Kikaichū.");
+        return;
+      }
+
+      newAllocated += realAmount;
+      newReserveValue += realAmount;
+      newChakraValue -= realAmount;
+    }
+
+    if (amount < 0) {
+      const realAmount = Math.min(
+        Math.abs(amount),
+        currentAllocated
+      );
+
+      if (realAmount <= 0) {
+        ui.notifications.warn("La réserve Kikaichū est déjà vide.");
+        return;
+      }
+
+      newAllocated -= realAmount;
+      newReserveValue = Math.max(0, newReserveValue - realAmount);
+
+      // On rend le chakra au pool principal.
+      // Le max sera recalculé après diminution de la réserve.
+      newChakraValue = Math.min(
+        chakraMax + realAmount,
+        currentChakra + realAmount
+      );
+    }
+
+    await actor.update({
+      "system.resources.kikaichu.allocated": newAllocated,
+      "system.resources.kikaichu.value": newReserveValue,
+      "system.resources.chakra.value": newChakraValue
+    });
+  }
+
   activateListeners(html) {
   super.activateListeners(html);
 
@@ -848,5 +924,7 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
 
     await this.actor.spendNindoCharge();
   });
+
+  html.find(".kikaichu-allocate").on("click", this._onKikaichuAllocate.bind(this));
   }
 }

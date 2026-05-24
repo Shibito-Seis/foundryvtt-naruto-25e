@@ -1174,3 +1174,31 @@
   align-items: center;
   margin-top: 0.5rem;
 }
+
+.naruto-kikaichu-reserve {
+  margin-top: 12px;
+}
+
+.naruto-resource-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: 6px 0;
+}
+
+.naruto-resource-line small {
+  opacity: 0.75;
+  margin-left: 6px;
+}
+
+.naruto-button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.naruto-button-row button {
+  min-width: 48px;
+}

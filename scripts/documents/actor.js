@@ -597,8 +597,76 @@ export class Naruto25eActor extends Actor {
         chakra.max = Math.max(0, cor * 30 + esp * 30 + 50 + chakra.bonus + specializationChakraBonus);
       }
 
+      const chakra = system.resources.chakra;
+
+      const chakraRawMax = Math.max(0, Number(chakra.max ?? 0));
+
+      chakra.rawMax = chakraRawMax;
+
+      const kikaichuAllocated = this._prepareKikaichuReserve(system, chakraRawMax);
+
+      chakra.max = Math.max(0, chakraRawMax - kikaichuAllocated);
+
+      chakra.value = Math.clamp(
+        Number(chakra.value ?? chakra.max),
+        0,
+        chakra.max
+      );
+
       chakra.value = this._clampNumber(chakra.value, 0, chakra.max);
     }
+  }
+
+  _prepareKikaichuReserve(system, chakraRawMax) {
+    if (!system.resources) system.resources = {};
+    if (!system.resources.kikaichu) {
+      system.resources.kikaichu = {
+        enabled: false,
+        value: 0,
+        max: 0,
+        allocated: 0,
+        notes: ""
+      };
+    }
+
+    const reserve = system.resources.kikaichu;
+
+    const heritage = system.heritage ?? {};
+    const clan = heritage.clan ?? "";
+    const secondaryClan = heritage.hybrid?.secondaryClan ?? "";
+
+    const isAburame =
+      clan === "aburame" ||
+      secondaryClan === "aburame";
+
+    reserve.enabled = isAburame;
+
+    if (!isAburame) {
+      reserve.value = 0;
+      reserve.max = 0;
+      reserve.allocated = 0;
+      return 0;
+    }
+
+    const rawMax = Math.max(0, Number(chakraRawMax ?? 0));
+
+    // Limite provisoire : la réserve ne peut pas dépasser le chakra brut total.
+    // Si on retrouve une règle plus stricte dans les textes Aburame, on la changera ici.
+    reserve.max = rawMax;
+
+    reserve.allocated = Math.clamp(
+      Number(reserve.allocated ?? 0),
+      0,
+      reserve.max
+    );
+
+    reserve.value = Math.clamp(
+      Number(reserve.value ?? reserve.allocated ?? 0),
+      0,
+      reserve.allocated
+    );
+
+    return reserve.allocated;
   }
 
 _prepareExperience(system) {

@@ -66,12 +66,20 @@
           "chakra": {
             "value": 0,
             "max": 0,
+            "rawMax": 0,
             "bonus": 0,
             "formulaMode": "standard",
             "passiveRegen": 0,
             "passiveRegenPercent": 1,
             "activeRegen": 0,
             "sonneThreshold": 50
+          },
+          "kikaichu": {
+            "enabled": false,
+            "value": 0,
+            "max": 0,
+            "allocated": 0,
+            "notes": ""
           }
         },
         "chakra": {

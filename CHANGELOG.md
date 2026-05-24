@@ -2,6 +2,19 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.19.7
+
+### Ajouté
+- Ajout de la réserve Kikaichū pour les personnages Aburame.
+- Ajout d’un chakra brut avant déduction de réserve.
+- Ajout de boutons ±5 / ±10 pour allouer ou retirer du chakra vers la réserve Kikaichū.
+
+### Modifié
+- Le chakra maximum utilisable est réduit par le chakra alloué à la réserve Kikaichū.
+
+### Corrigé
+- Préparation de la gestion des réserves de chakra séparées pour les futurs clans et pouvoirs spéciaux.
+
 ## [0.1.19.6.1]
 
 ### Corrigé
