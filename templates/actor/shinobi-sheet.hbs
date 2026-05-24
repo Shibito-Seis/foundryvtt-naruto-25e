@@ -250,8 +250,18 @@
 
           <div class="naruto-resource-line">
             <label>Réserve Kikaichū</label>
-            <span>
-              {{system.resources.kikaichu.value}} / {{system.resources.kikaichu.allocated}}
+            <span class="naruto-inline-resource">
+              <input
+              type="number"
+              name="system.resources.kikaichu.value"
+              value="{{system.resources.kikaichu.value}}"
+              min="0"
+              max="{{system.resources.kikaichu.allocated}}"
+              step="1"
+              data-dtype="Number"
+              {{#unless system.resources.kikaichu.enabled}}disabled{{/unless}}
+              />
+              <span>/ {{system.resources.kikaichu.allocated}}</span>
             </span>
           </div>
 

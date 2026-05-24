@@ -738,83 +738,17 @@ NARUTO25E.clanLineageFeatures = {
   hyuga: [
     {
       rank: 1,
-      label: "Jūken — Poing Souple",
-      type: "Compétence obligatoire",
-      summary: "Le personnage obtient la compétence Jūken, cœur martial du clan Hyūga.",
-      mechanical: "Compétence de combat imposée par le clan Hyūga.",
-      tags: ["clan", "hyuga", "juken", "taijutsu"]
-    },
-    {
-      rank: 2,
-      label: "Byakugan — Œil blanc",
+      title: "Byakugan",
       type: "Dōjutsu",
-      summary: "Le personnage éveille ou stabilise l’usage du Byakugan, perception emblématique du clan Hyūga.",
-      mechanical: "Prépare l’activation future du Byakugan, la lecture du chakra et les interactions avec Jūken.",
-      tags: ["clan", "hyuga", "byakugan", "dojutsu"]
-    },
-    {
-      rank: 3,
-      label: "Tenketsu — Frappe des méridiens",
-      type: "Technique de lignée",
-      summary: "Le personnage apprend à frapper les points de circulation du chakra.",
-      mechanical: "Prépare les futurs effets de blocage ou perturbation du chakra.",
-      tags: ["clan", "hyuga", "juken", "chakra-control"]
-    },
-    {
-      rank: 4,
-      label: "Vision panoramique",
-      type: "Dōjutsu",
-      summary: "Le Byakugan améliore la perception spatiale et la lecture des mouvements.",
-      mechanical: "Effet détaillé à préciser lors de l’automatisation du Byakugan.",
-      tags: ["clan", "hyuga", "byakugan", "perception"]
-    },
-    {
-      rank: 5,
-      label: "Hakke — Domaine du Poing Souple",
-      type: "Technique de lignée",
-      summary: "Le personnage étend son contrôle du Jūken à une zone de combat plus large.",
-      mechanical: "Effet détaillé à préciser.",
-      tags: ["clan", "hyuga", "juken", "zone"]
-    },
-    {
-      rank: 6,
-      label: "Défense absolue",
-      type: "Technique de lignée",
-      summary: "Le personnage peut employer son contrôle du chakra pour renforcer ses défenses.",
-      mechanical: "Prépare les futures interceptions ou défenses spéciales Hyūga.",
-      tags: ["clan", "hyuga", "defense"]
-    },
-    {
-      rank: 7,
-      label: "Lecture parfaite du chakra",
-      type: "Dōjutsu",
-      summary: "Le Byakugan révèle plus finement les flux, blocages et signatures de chakra.",
-      mechanical: "Effet détaillé à préciser.",
-      tags: ["clan", "hyuga", "byakugan", "chakra-sense"]
-    },
-    {
-      rank: 8,
-      label: "Maîtrise supérieure du Jūken",
-      type: "Technique de lignée",
-      summary: "Le personnage atteint un degré supérieur de précision et de dangerosité au Poing Souple.",
-      mechanical: "Effet détaillé à préciser.",
-      tags: ["clan", "hyuga", "juken"]
-    },
-    {
-      rank: 9,
-      label: "Hakke avancé",
-      type: "Technique de lignée",
-      summary: "Le personnage déploie les formes les plus avancées du style Hyūga.",
-      mechanical: "Effet détaillé à préciser.",
-      tags: ["clan", "hyuga", "juken", "advanced"]
+      summary: "Œil blanc héréditaire du clan Hyūga.",
+      description: "Débloque le Byakugan, perception du chakra et base des techniques propres au clan Hyūga."
     },
     {
       rank: 10,
-      label: "Tenseigan",
-      type: "Dōjutsu supérieur",
-      summary: "Éveil ultime et rarissime de la lignée Hyūga.",
-      mechanical: "Capacité mythique / exceptionnelle. À verrouiller derrière validation MJ.",
-      tags: ["clan", "hyuga", "tenseigan", "mythic", "mj-only"]
+      title: "Tenseigan",
+      type: "Éveil supérieur",
+      summary: "Évolution mythique du dōjutsu Hyūga.",
+      description: "Éveil supérieur extrêmement rare du Byakugan, réservé aux sommets de la lignée."
     }
   ],
 
@@ -997,13 +931,13 @@ NARUTO25E.clanLineageFeatures = {
   ]
 };
 
+NARUTO25E.getClanLineageFeatures = function (clanKey, rank) {
+  const features = NARUTO25E.clanLineageFeatures?.[clanKey] ?? [];
+  return features.filter((feature) => Number(feature.rank) === Number(rank));
+};
+
 NARUTO25E.getClanLineageFeature = function (clanKey, rank) {
-  if (!clanKey || !rank) return null;
-
-  const clanFeatures = NARUTO25E.clanLineageFeatures?.[clanKey];
-  if (!clanFeatures) return null;
-
-  return clanFeatures[rank] ?? clanFeatures[String(rank)] ?? null;
+  return NARUTO25E.getClanLineageFeatures(clanKey, rank)[0] ?? null;
 };
 
 NARUTO25E.getClanMandatorySkill = function (clanKey) {

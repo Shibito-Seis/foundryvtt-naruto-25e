@@ -2,6 +2,18 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.19.8.3
+
+### Corrigé
+
+- Correction de l’affichage des capacités de lignée dans l’onglet Lignée.
+- Correction de la lecture des capacités par rang réel au lieu de l’index de tableau.
+- Correction de Hyūga : Byakugan est désormais affiché au rang 1.
+- Tenseigan est préparé au rang 10.
+- Jūken reste géré comme compétence obligatoire de clan, et non comme capacité de rang.
+- Correction de l’affichage des capacités pour les clans hybrides et voies hybridées.
+- La réserve Kikaichū actuelle peut désormais être modifiée manuellement.
+
 ## 0.1.19.8
 
 ### Ajouté

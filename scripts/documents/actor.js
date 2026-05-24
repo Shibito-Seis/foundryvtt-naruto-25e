@@ -1136,18 +1136,18 @@ async decreaseBase(baseKey) {
       const ranks = [];
 
       for (let rank = 1; rank <= maxRank; rank++) {
-        const feature = NARUTO25E.getClanLineageFeature
-          ? NARUTO25E.getClanLineageFeature(clanKey, rank)
-          : null;
+        const features = NARUTO25E.getClanLineageFeatures
+          ? NARUTO25E.getClanLineageFeatures(clanKey, rank)
+          : [NARUTO25E.getClanLineageFeature?.(clanKey, rank)].filter(Boolean);
 
         ranks.push({
           rank,
           unlocked: lineageValue >= rank,
           current: lineageValue === rank,
-          label: feature?.label ?? `Rang ${rank}`,
-          type: feature?.type ?? "",
-          description: feature?.description ?? "",
-          hasFeature: Boolean(feature)
+          label: `Rang ${rank}`,
+          features,
+          hasFeatures: features.length > 0,
+          placeholder: "Capacité de lignée à définir"
         });
       }
 
