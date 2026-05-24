@@ -998,8 +998,12 @@ NARUTO25E.clanLineageFeatures = {
 };
 
 NARUTO25E.getClanLineageFeature = function (clanKey, rank) {
-  const features = NARUTO25E.clanLineageFeatures?.[clanKey] ?? [];
-  return features.find((feature) => Number(feature.rank) === Number(rank)) ?? null;
+  if (!clanKey || !rank) return null;
+
+  const clanFeatures = NARUTO25E.clanLineageFeatures?.[clanKey];
+  if (!clanFeatures) return null;
+
+  return clanFeatures[rank] ?? clanFeatures[String(rank)] ?? null;
 };
 
 NARUTO25E.getClanMandatorySkill = function (clanKey) {
