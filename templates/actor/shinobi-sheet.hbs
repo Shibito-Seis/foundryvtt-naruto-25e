@@ -1293,16 +1293,35 @@
               <div class="lineage-track">
                 <h4>{{track.role}} — {{track.label}}</h4>
 
-                <div class="lineage-ranks">
-                  {{#each track.ranks as |rank|}}
-                    <div class="lineage-rank {{#if rank.unlocked}}unlocked{{else}}locked{{/if}}">
-                      <span class="lineage-rank-number">{{rank.rank}}</span>
-                      <span class="lineage-rank-label">{{rank.label}}</span>
-                      <span class="lineage-rank-status">
-                      {{#if rank.unlocked}}Débloqué{{else}}Verrouillé{{/if}}
-                      </span>
-                    </div>
-                  {{/each}}
+                <div class="naruto-lineage-rank {{#if rank.unlocked}}is-unlocked{{else}}is-locked{{/if}} {{#if rank.current}}is-current{{/if}}">
+                  <div class="naruto-lineage-rank-header">
+                    <strong>Rang {{rank.rank}}</strong>
+                    <span>{{rank.label}}</span>
+                  </div>
+
+                  <div class="naruto-lineage-rank-meta">
+                    <span>{{rank.type}}</span>
+
+                    {{#if rank.unlocked}}
+                      <span class="naruto-tag unlocked">Déverrouillé</span>
+                    {{else}}
+                      <span class="naruto-tag locked">Verrouillé</span>
+                    {{/if}}
+
+                    {{#if rank.current}}
+                      <span class="naruto-tag current">Rang actuel</span>
+                    {{/if}}
+                  </div>
+
+                  <p class="naruto-lineage-rank-summary">
+                    {{rank.summary}}
+                  </p>
+
+                  {{#if rank.mechanical}}
+                    <p class="naruto-lineage-rank-mechanical">
+                      <strong>Effet :</strong> {{rank.mechanical}}
+                    </p>
+                  {{/if}}
                 </div>
               </div>
             {{/each}}

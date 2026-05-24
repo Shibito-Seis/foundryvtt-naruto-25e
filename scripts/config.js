@@ -707,6 +707,301 @@ NARUTO25E.getClanLineageCap = function (clanKey) {
   return Number(NARUTO25E.clanLineageCaps[clanKey] ?? 10);
 };
 
+NARUTO25E.clanLineageFeatures = {
+  aburame: [
+    {
+      rank: 1,
+      label: "Kikaichū — Insectes destructeurs",
+      type: "Compétence de clan",
+      summary: "Le personnage obtient la compétence Kikaichū et peut allouer une partie de son chakra général à sa réserve d’insectes.",
+      mechanical: "Active la réserve Kikaichū. Minimum : Lignée × 15. Maximum : Lignée × 25.",
+      tags: ["clan", "kikaichu", "chakra-reserve"]
+    },
+    {
+      rank: 2,
+      label: "Essaim défensif",
+      type: "Capacité de lignée",
+      summary: "Les insectes peuvent être employés pour gêner, protéger ou intercepter selon la situation.",
+      mechanical: "Effet détaillé à préciser depuis la lignée Aburame.",
+      tags: ["clan", "kikaichu", "defense"]
+    },
+    {
+      rank: 3,
+      label: "Dévoration de chakra",
+      type: "Capacité de lignée",
+      summary: "Les Kikaichū peuvent drainer ou perturber le chakra adverse.",
+      mechanical: "Effet détaillé à préciser depuis la lignée Aburame.",
+      tags: ["clan", "kikaichu", "chakra-drain"]
+    }
+  ],
+
+  hyuga: [
+    {
+      rank: 1,
+      label: "Jūken — Poing Souple",
+      type: "Compétence obligatoire",
+      summary: "Le personnage obtient la compétence Jūken, cœur martial du clan Hyūga.",
+      mechanical: "Compétence de combat imposée par le clan Hyūga.",
+      tags: ["clan", "hyuga", "juken", "taijutsu"]
+    },
+    {
+      rank: 2,
+      label: "Byakugan — Œil blanc",
+      type: "Dōjutsu",
+      summary: "Le personnage éveille ou stabilise l’usage du Byakugan, perception emblématique du clan Hyūga.",
+      mechanical: "Prépare l’activation future du Byakugan, la lecture du chakra et les interactions avec Jūken.",
+      tags: ["clan", "hyuga", "byakugan", "dojutsu"]
+    },
+    {
+      rank: 3,
+      label: "Tenketsu — Frappe des méridiens",
+      type: "Technique de lignée",
+      summary: "Le personnage apprend à frapper les points de circulation du chakra.",
+      mechanical: "Prépare les futurs effets de blocage ou perturbation du chakra.",
+      tags: ["clan", "hyuga", "juken", "chakra-control"]
+    },
+    {
+      rank: 4,
+      label: "Vision panoramique",
+      type: "Dōjutsu",
+      summary: "Le Byakugan améliore la perception spatiale et la lecture des mouvements.",
+      mechanical: "Effet détaillé à préciser lors de l’automatisation du Byakugan.",
+      tags: ["clan", "hyuga", "byakugan", "perception"]
+    },
+    {
+      rank: 5,
+      label: "Hakke — Domaine du Poing Souple",
+      type: "Technique de lignée",
+      summary: "Le personnage étend son contrôle du Jūken à une zone de combat plus large.",
+      mechanical: "Effet détaillé à préciser.",
+      tags: ["clan", "hyuga", "juken", "zone"]
+    },
+    {
+      rank: 6,
+      label: "Défense absolue",
+      type: "Technique de lignée",
+      summary: "Le personnage peut employer son contrôle du chakra pour renforcer ses défenses.",
+      mechanical: "Prépare les futures interceptions ou défenses spéciales Hyūga.",
+      tags: ["clan", "hyuga", "defense"]
+    },
+    {
+      rank: 7,
+      label: "Lecture parfaite du chakra",
+      type: "Dōjutsu",
+      summary: "Le Byakugan révèle plus finement les flux, blocages et signatures de chakra.",
+      mechanical: "Effet détaillé à préciser.",
+      tags: ["clan", "hyuga", "byakugan", "chakra-sense"]
+    },
+    {
+      rank: 8,
+      label: "Maîtrise supérieure du Jūken",
+      type: "Technique de lignée",
+      summary: "Le personnage atteint un degré supérieur de précision et de dangerosité au Poing Souple.",
+      mechanical: "Effet détaillé à préciser.",
+      tags: ["clan", "hyuga", "juken"]
+    },
+    {
+      rank: 9,
+      label: "Hakke avancé",
+      type: "Technique de lignée",
+      summary: "Le personnage déploie les formes les plus avancées du style Hyūga.",
+      mechanical: "Effet détaillé à préciser.",
+      tags: ["clan", "hyuga", "juken", "advanced"]
+    },
+    {
+      rank: 10,
+      label: "Tenseigan",
+      type: "Dōjutsu supérieur",
+      summary: "Éveil ultime et rarissime de la lignée Hyūga.",
+      mechanical: "Capacité mythique / exceptionnelle. À verrouiller derrière validation MJ.",
+      tags: ["clan", "hyuga", "tenseigan", "mythic", "mj-only"]
+    }
+  ],
+
+  nara: [
+    {
+      rank: 1,
+      label: "Pouvoir des Ombres",
+      type: "Compétence de clan",
+      summary: "Le personnage obtient la compétence Kage.",
+      mechanical: "Compétence de clan imposée par le clan Nara.",
+      tags: ["clan", "nara", "kage"]
+    },
+    {
+      rank: 2,
+      label: "Stratège",
+      type: "Bonus de lignée",
+      summary: "Le personnage renforce ses capacités tactiques et mentales.",
+      mechanical: "Bonus Lignée sur Mental.",
+      tags: ["clan", "nara", "mental"]
+    },
+    {
+      rank: 3,
+      label: "Kagemane — Manipulation des Ombres",
+      type: "Technique de lignée",
+      summary: "Le personnage peut immobiliser ou contrôler une cible par son ombre.",
+      mechanical: "Sur jet de Kage réussi. Effet détaillé à automatiser plus tard.",
+      tags: ["clan", "nara", "kage", "control"]
+    },
+    {
+      rank: 4,
+      label: "Profondeur mentale",
+      type: "Bonus de lignée",
+      summary: "Le personnage gagne une stabilité mentale supérieure.",
+      mechanical: "+3 Caractère.",
+      tags: ["clan", "nara", "caractere"]
+    },
+    {
+      rank: 5,
+      label: "Kage Nui — Entrelacement des Ombres",
+      type: "Technique de lignée",
+      summary: "Le personnage transforme son ombre en arme offensive.",
+      mechanical: "Sur jet de Kage réussi. Dégâts et zone à automatiser plus tard.",
+      tags: ["clan", "nara", "kage", "damage"]
+    }
+  ],
+
+  senju: [
+    {
+      rank: 1,
+      label: "Nature Supérieure — Mokuton",
+      type: "Compétence de clan",
+      summary: "Le personnage obtient Mokuton, héritage rarissime du clan Senju.",
+      mechanical: "Compétence de clan imposée. Suiton et Doton sont nécessaires dans la logique de création avancée.",
+      tags: ["clan", "senju", "mokuton"]
+    },
+    {
+      rank: 2,
+      label: "Force Naturelle",
+      type: "Bonus de lignée",
+      summary: "Le corps du personnage bénéficie de la vitalité du Mokuton.",
+      mechanical: "+2 Vigueur, +50 Chakra.",
+      tags: ["clan", "senju", "vigueur", "chakra"]
+    },
+    {
+      rank: 3,
+      label: "Jukai Shirei — Domination Végétale",
+      type: "Technique de lignée",
+      summary: "Le personnage manipule le bois et les structures végétales.",
+      mechanical: "Effet détaillé à automatiser plus tard.",
+      tags: ["clan", "senju", "mokuton", "control"]
+    },
+    {
+      rank: 10,
+      label: "Jukai Kōtan — Nativité Végétale",
+      type: "Technique de lignée",
+      summary: "Expression mythique du Mokuton à grande échelle.",
+      mechanical: "LIGN × 6 dégâts, zone et durée à automatiser plus tard.",
+      tags: ["clan", "senju", "mokuton", "mythic"]
+    }
+  ],
+
+  munefuda: [
+    {
+      rank: 1,
+      label: "Nature Supérieure — Jiton",
+      type: "Compétence de clan",
+      summary: "Le personnage obtient Jiton, la manipulation du magnétisme.",
+      mechanical: "Compétence de clan imposée. Prépare les interactions avec armes métalliques et interceptions ARM.",
+      tags: ["clan", "munefuda", "jiton", "magnetism"]
+    },
+    {
+      rank: 2,
+      label: "Fort comme la Foudre",
+      type: "Bonus de lignée",
+      summary: "Le corps et l’esprit sont renforcés par l’héritage magnétique.",
+      mechanical: "+1 Vigueur, +1 Caractère.",
+      tags: ["clan", "munefuda", "vigueur", "caractere"]
+    },
+    {
+      rank: 3,
+      label: "Raichikyū",
+      type: "Technique de lignée",
+      summary: "Le personnage perturbe les courants et magnétise les objets non organiques.",
+      mechanical: "Effet EMP / magnétisation à automatiser plus tard.",
+      tags: ["clan", "munefuda", "jiton", "emp"]
+    }
+  ],
+
+  uchiha: [
+    {
+      rank: 1,
+      label: "Sharingan — Premier tomoe",
+      type: "Dōjutsu",
+      summary: "Le personnage possède le Sharingan à son premier stade.",
+      mechanical: "Prépare l’activation future du Sharingan et les interactions avec copie, perception et Genjutsu.",
+      tags: ["clan", "uchiha", "sharingan", "dojutsu"]
+    },
+    {
+      rank: 2,
+      label: "Héritage du Katon",
+      type: "Affinité imposée",
+      summary: "Le clan Uchiha impose l’affinité Katon.",
+      mechanical: "Katon est accordé via affinité imposée.",
+      tags: ["clan", "uchiha", "katon"]
+    },
+    {
+      rank: 3,
+      label: "Sharingan — Deuxième tomoe",
+      type: "Dōjutsu",
+      summary: "Le Sharingan progresse et affine la lecture du mouvement et du chakra.",
+      mechanical: "Effet détaillé à automatiser plus tard.",
+      tags: ["clan", "uchiha", "sharingan", "dojutsu"]
+    },
+    {
+      rank: 5,
+      label: "Sharingan — Troisième tomoe",
+      type: "Dōjutsu",
+      summary: "Le Sharingan atteint sa forme classique complète.",
+      mechanical: "Prépare la copie de techniques et la lecture avancée.",
+      tags: ["clan", "uchiha", "sharingan", "copy"]
+    },
+    {
+      rank: 10,
+      label: "Mangekyō Sharingan",
+      type: "Dōjutsu supérieur",
+      summary: "Éveil rare et dramatique du Sharingan.",
+      mechanical: "À verrouiller derrière validation MJ et conditions narratives.",
+      tags: ["clan", "uchiha", "mangekyo", "mj-only"]
+    }
+  ],
+
+  yamanaka: [
+    {
+      rank: 1,
+      label: "Stabilité émotionnelle",
+      type: "Compétence de clan",
+      summary: "Le personnage obtient Résistances Émotionnelles.",
+      mechanical: "Compétence de clan imposée.",
+      tags: ["clan", "yamanaka", "resistance", "emotion"]
+    },
+    {
+      rank: 3,
+      label: "Shintenshin",
+      type: "Technique de lignée",
+      summary: "Le personnage projette son esprit dans un autre corps.",
+      mechanical: "Effet détaillé à automatiser plus tard.",
+      tags: ["clan", "yamanaka", "mind-transfer"]
+    }
+  ],
+
+  aniki: [
+    {
+      rank: 1,
+      label: "Maître de l’Encre Vivante",
+      type: "Compétence de clan",
+      summary: "Le personnage obtient Sumi.",
+      mechanical: "Compétence de clan imposée.",
+      tags: ["clan", "aniki", "sumi"]
+    }
+  ]
+};
+
+NARUTO25E.getClanLineageFeature = function (clanKey, rank) {
+  const features = NARUTO25E.clanLineageFeatures?.[clanKey] ?? [];
+  return features.find((feature) => Number(feature.rank) === Number(rank)) ?? null;
+};
+
 NARUTO25E.getClanMandatorySkill = function (clanKey) {
   const clan = NARUTO25E.clans?.[clanKey];
   return clan?.skillKey || "";

@@ -2,9 +2,24 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.19.8
+
+### Ajouté
+
+- Ajout d’une structure de données pour les capacités de lignée par clan.
+- Ajout des premières capacités structurées pour Hyūga, Aburame, Nara, Senju, Munefuda, Uchiha, Yamanaka et Aniki.
+- Affichage enrichi des rangs de lignée dans l’onglet Lignée.
+- Les rangs de lignée affichent désormais leur nom, type, résumé, effet et état de déverrouillage.
+
+### Modifié
+
+- Les pistes de lignée n’affichent plus seulement un placeholder générique.
+- Le rang actuel de Lignée est mis en évidence visuellement.
+
 ## 0.1.19.7.1
 
 ### Corrigé
+
 - Correction du calcul du Chakra max après ajout de la réserve Kikaichū.
 - Correction de l’activation de la réserve Kikaichū pour le clan Aburame et l’hybridation Aburame.
 - Application de la règle stricte : réserve Kikaichū minimum Lignée × 15, maximum Lignée × 25.
@@ -13,14 +28,17 @@ Toutes les modifications notables de ce système seront listées ici.
 ## 0.1.19.7
 
 ### Ajouté
+
 - Ajout de la réserve Kikaichū pour les personnages Aburame.
 - Ajout d’un chakra brut avant déduction de réserve.
 - Ajout de boutons ±5 / ±10 pour allouer ou retirer du chakra vers la réserve Kikaichū.
 
 ### Modifié
+
 - Le chakra maximum utilisable est réduit par le chakra alloué à la réserve Kikaichū.
 
 ### Corrigé
+
 - Préparation de la gestion des réserves de chakra séparées pour les futurs clans et pouvoirs spéciaux.
 
 ## [0.1.19.6.1]
