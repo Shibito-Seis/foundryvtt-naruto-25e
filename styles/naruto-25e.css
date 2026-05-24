@@ -1267,3 +1267,51 @@
 .naruto-tag.current {
   border-color: rgba(170, 125, 20, 0.85);
 }
+
+.naruto-lineage-track {
+  margin-top: 0.75rem;
+}
+
+.naruto-lineage-track h4 {
+  margin: 0 0 0.5rem;
+  border-bottom: 1px solid rgba(60, 45, 30, 0.45);
+  padding-bottom: 0.25rem;
+}
+
+.naruto-lineage-ranks {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.naruto-lineage-rank {
+  border: 1px solid rgba(60, 45, 30, 0.35);
+  border-radius: 8px;
+  padding: 0.6rem;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.naruto-lineage-rank.is-locked {
+  opacity: 0.55;
+}
+
+.naruto-lineage-rank.is-current {
+  border-color: #a77c00;
+  box-shadow: 0 0 0 1px rgba(167, 124, 0, 0.35);
+}
+
+.naruto-lineage-rank-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.naruto-lineage-rank-type {
+  margin-top: 0.25rem;
+  font-style: italic;
+  opacity: 0.8;
+}
+
+.naruto-pill.is-current {
+  border-color: #a77c00;
+}
