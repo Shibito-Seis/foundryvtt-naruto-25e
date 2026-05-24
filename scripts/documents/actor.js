@@ -557,6 +557,8 @@ export class Naruto25eActor extends Actor {
   _prepareResources(system) {
     const cor = this._getBaseEffective(system, "cor");
     const esp = this._getBaseEffective(system, "esp");
+    const lign = this._getBaseEffective(system, "lign");
+
     const chakraBonuses = system.chakra?.specializationBonuses ?? {};
 
     const vigueur = system.resources?.vigueur;
@@ -577,91 +579,85 @@ export class Naruto25eActor extends Actor {
     if (chakra) {
       const specializationChakraBonus = Number(chakraBonuses.chakraMax ?? 0);
       const passiveRegenPercent = 1 + Number(chakraBonuses.passiveRegenPercent ?? 0);
-      chakra.passiveRegenPercent = passiveRegenPercent;
-      chakra.passiveRegen = chakra.max > 0
-        ? Math.max(1, Math.floor(chakra.max * passiveRegenPercent / 100))
-        : 0;
 
+      chakra.bonus = Number(chakra.bonus ?? 0);
       chakra.activeRegen = Number(chakra.activeRegen ?? 0);
       chakra.sonneThreshold = Number(chakra.sonneThreshold ?? 50);
 
       const formulaMode = game.settings?.get("naruto-25e", "chakraFormulaMode") ?? "standard";
 
+      let rawMax = 0;
+
       if (formulaMode === "manual") {
-        chakra.max = Math.max(0, Number(chakra.max ?? 0));
+        rawMax = Math.max(0, Number(chakra.max ?? 0));
       } else if (formulaMode === "harsh") {
-        chakra.max = Math.max(0, cor * 30 + esp * 30 + chakra.bonus + specializationChakraBonus);
+        rawMax = Math.max(0, cor * 30 + esp * 30 + chakra.bonus + specializationChakraBonus);
       } else if (formulaMode === "heroic") {
-        chakra.max = Math.max(0, cor * 50 + esp * 50 + chakra.bonus + specializationChakraBonus);
+        rawMax = Math.max(0, cor * 50 + esp * 50 + chakra.bonus + specializationChakraBonus);
       } else {
-        chakra.max = Math.max(0, cor * 30 + esp * 30 + 50 + chakra.bonus + specializationChakraBonus);
+        rawMax = Math.max(0, cor * 30 + esp * 30 + 50 + chakra.bonus + specializationChakraBonus);
       }
 
-      const chakra = system.resources.chakra;
+      chakra.rawMax = rawMax;
 
-      const chakraRawMax = Math.max(0, Number(chakra.max ?? 0));
+      const kikaichuAllocated = this._prepareKikaichuReserve(system, rawMax, lign);
 
-      chakra.rawMax = chakraRawMax;
-
-      const kikaichuAllocated = this._prepareKikaichuReserve(system, chakraRawMax);
-
-      chakra.max = Math.max(0, chakraRawMax - kikaichuAllocated);
-
-      chakra.value = Math.clamp(
-        Number(chakra.value ?? chakra.max),
-        0,
-        chakra.max
-      );
-
+      chakra.max = Math.max(0, rawMax - kikaichuAllocated);
       chakra.value = this._clampNumber(chakra.value, 0, chakra.max);
+
+      chakra.passiveRegenPercent = passiveRegenPercent;
+      chakra.passiveRegen = chakra.max > 0
+        ? Math.max(1, Math.floor(chakra.max * passiveRegenPercent / 100))
+        : 0;
     }
   }
 
-  _prepareKikaichuReserve(system, chakraRawMax) {
+  _prepareKikaichuReserve(system, chakraRawMax, lineageValue = 1) {
     if (!system.resources) system.resources = {};
+
     if (!system.resources.kikaichu) {
       system.resources.kikaichu = {
         enabled: false,
         value: 0,
         max: 0,
+        min: 0,
         allocated: 0,
         notes: ""
       };
     }
 
     const reserve = system.resources.kikaichu;
-
     const heritage = system.heritage ?? {};
+
     const clan = heritage.clan ?? "";
     const secondaryClan = heritage.hybrid?.secondaryClan ?? "";
 
-    const isAburame =
-      clan === "aburame" ||
-      secondaryClan === "aburame";
+    const isAburame = clan === "aburame" || secondaryClan === "aburame";
 
     reserve.enabled = isAburame;
 
     if (!isAburame) {
       reserve.value = 0;
       reserve.max = 0;
+      reserve.min = 0;
       reserve.allocated = 0;
       return 0;
     }
 
+    const lign = Math.max(1, Number(lineageValue ?? 1));
     const rawMax = Math.max(0, Number(chakraRawMax ?? 0));
 
-    // Limite provisoire : la réserve ne peut pas dépasser le chakra brut total.
-    // Si on retrouve une règle plus stricte dans les textes Aburame, on la changera ici.
-    reserve.max = rawMax;
+    reserve.min = Math.min(rawMax, lign * 15);
+    reserve.max = Math.min(rawMax, lign * 25);
 
     reserve.allocated = Math.clamp(
-      Number(reserve.allocated ?? 0),
-      0,
+      Number(reserve.allocated ?? reserve.min),
+      reserve.min,
       reserve.max
     );
 
     reserve.value = Math.clamp(
-      Number(reserve.value ?? reserve.allocated ?? 0),
+      Number(reserve.value ?? reserve.allocated),
       0,
       reserve.allocated
     );

@@ -2,6 +2,14 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.19.7.1
+
+### Corrigé
+- Correction du calcul du Chakra max après ajout de la réserve Kikaichū.
+- Correction de l’activation de la réserve Kikaichū pour le clan Aburame et l’hybridation Aburame.
+- Application de la règle stricte : réserve Kikaichū minimum Lignée × 15, maximum Lignée × 25.
+- La réserve Kikaichū est désormais correctement déduite du Chakra général utilisable.
+
 ## 0.1.19.7
 
 ### Ajouté
