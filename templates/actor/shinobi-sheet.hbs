@@ -1295,72 +1295,64 @@
 
         <p class="lineage-help">
         Base Lignée actuelle : <strong>{{lineageInfo.value}}</strong>.
-        Les capacités détaillées seront ajoutées progressivement ; pour l’instant, cette piste sert à visualiser les rangs potentiellement accessibles.
+        Les capacités ci-dessous sont affichées selon les rangs réels de lignée.
         </p>
 
-          {{#if lineageInfo.hasTracks}}
-            {{#each lineageTracks as |track|}}
-              <div class="naruto-lineage-track">
-                <h4>{{track.role}} — {{track.label}}</h4>
+        {{#if lineageInfo.hasTracks}}
+          {{#each lineageTracks as |track|}}
+            <div class="naruto-lineage-track">
+              <h4>{{track.role}} — {{track.label}}</h4>
 
-                <div class="naruto-lineage-ranks">
-                  {{#each track.ranks as |rank|}}
-                    <div class="naruto-lineage-rank {{#unless rank.unlocked}}is-locked{{/unless}} {{#if rank.current}}is-current{{/if}}">
-                      <div class="naruto-lineage-rank-header">
-                        <strong>
-                          <div class="naruto-lineage-rank {{#if rank.unlocked}}is-unlocked{{else}}is-locked{{/if}} {{#if rank.current}}is-current{{/if}}">
-                            <div class="naruto-lineage-rank-header">
-                              <strong>Rang {{rank.rank}} — {{rank.label}}</strong>
+              <div class="naruto-lineage-ranks">
+                {{#each track.ranks as |rank|}}
+                  <div class="naruto-lineage-rank {{#if rank.unlocked}}is-unlocked{{else}}is-locked{{/if}} {{#if rank.current}}is-current{{/if}}">
+                    <div class="naruto-lineage-rank-header">
+                      <strong>Rang {{rank.rank}}</strong>
 
-                              {{#if rank.unlocked}}
-                                <span>Déverrouillé</span>
-                              {{else}}
-                                <span>Verrouillé</span>
-                              {{/if}}
-                            </div>
+                      <span class="naruto-tag {{#if rank.unlocked}}unlocked{{else}}locked{{/if}}">
+                        {{#if rank.unlocked}}Déverrouillé{{else}}Verrouillé{{/if}}
+                      </span>
 
-                            {{#if rank.type}}
-                              <div class="naruto-lineage-rank-type">
-                                {{rank.type}}
-                              </div>
-                            {{/if}}
-
-                            {{#if rank.description}}
-                              <div class="naruto-lineage-rank-description">
-                                {{rank.description}}
-                              </div>
-                            {{/if}}
-                          </div>
-                        </strong>
-
-                        <span class="naruto-pill">
-                          {{#if rank.unlocked}}Déverrouillé{{else}}Verrouillé{{/if}}
-                        </span>
-
-                        {{#if rank.current}}
-                          <span class="naruto-pill is-current">Rang actuel</span>
-                        {{/if}}
-                      </div>
-
-                      {{#if rank.type}}
-                        <div class="naruto-lineage-rank-type">{{rank.type}}</div>
-                      {{/if}}
-
-                      {{#if rank.summary}}
-                        <p>{{rank.summary}}</p>
-                      {{/if}}
-
-                      {{#if rank.mechanical}}
-                        <p><strong>Effet :</strong> {{rank.mechanical}}</p>
+                      {{#if rank.current}}
+                        <span class="naruto-tag current">Rang actuel</span>
                       {{/if}}
                     </div>
-                  {{/each}}
-                </div>
+
+                    {{#if rank.hasFeatures}}
+                      {{#each rank.features as |feature|}}
+                        <div class="naruto-lineage-feature">
+                          <h5>{{feature.label}}{{#unless feature.label}}{{feature.title}}{{/unless}}</h5>
+
+                          {{#if feature.type}}
+                            <div class="naruto-lineage-rank-type">{{feature.type}}</div>
+                          {{/if}}
+
+                          {{#if feature.summary}}
+                            <p class="naruto-lineage-rank-summary">{{feature.summary}}</p>
+                          {{/if}}
+
+                          {{#if feature.description}}
+                            <p class="naruto-lineage-rank-summary">{{feature.description}}</p>
+                          {{/if}}
+
+                          {{#if feature.mechanical}}
+                            <p class="naruto-lineage-rank-mechanical">
+                              <strong>Effet :</strong> {{feature.mechanical}}
+                            </p>
+                          {{/if}}
+                        </div>
+                      {{/each}}
+                    {{else}}
+                      <p class="muted">{{rank.placeholder}}</p>
+                    {{/if}}
+                  </div>
+                {{/each}}
               </div>
-            {{/each}}
+            </div>
+          {{/each}}
           {{else}}
             <p class="muted">Aucune piste de lignée à afficher pour ce mode d’héritage.</p>
-          {{/if}}
+        {{/if}}
       </section>
     </section>
     </div>

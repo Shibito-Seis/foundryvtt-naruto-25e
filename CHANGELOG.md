@@ -2,6 +2,22 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.19.8.4
+
+### Corrigé
+
+- Correction de l’affichage des capacités de lignée dans l’onglet Lignée : suppression d’une structure HTML imbriquée en double.
+- Les rangs de lignée affichent désormais correctement leurs capacités via la liste `features`.
+- Correction de l’affichage des compétences obligatoires de lignée : la fiche utilise désormais la lecture plurielle des compétences obligatoires de clan.
+- Uchiha affiche correctement Katon comme compétence obligatoire de lignée via `skillKey`.
+
+### Modifié
+
+- Réorganisation de la progression de lignée Uchiha du rang 1 au rang 10.
+- Suppression de “Héritage du Katon” comme capacité de rang Uchiha.
+- Katon reste géré comme compétence obligatoire et affinité imposée, mais n’est plus une capacité de lignée.
+- Préparation narrative future de l’EMS et du Rinnegan comme options MJ séparées des rangs automatiques.
+
 ## 0.1.19.8.3
 
 ### Corrigé

@@ -496,7 +496,7 @@ NARUTO25E.clans = {
   shimadoku: { label: "Shimadoku", village: "konoha", skillKey: "" },
   shimura: { label: "Shimura", village: "konoha", skillKey: "" },
   takeda: { label: "Takeda", village: "konoha", skillKey: "" },
-  uchiha: { label: "Uchiha", village: "konoha", skillKey: "" },
+  uchiha: { label: "Uchiha", village: "konoha", skillKey: "katon" },
   utatane: { label: "Utatane", village: "konoha", skillKey: "" },
   yamanaka: { label: "Yamanaka", village: "konoha", skillKey: "resistancesEmotionnelles" }
 };
@@ -858,47 +858,87 @@ NARUTO25E.clanLineageFeatures = {
   ],
 
   uchiha: [
-    {
-      rank: 1,
-      label: "Sharingan — Premier tomoe",
-      type: "Dōjutsu",
-      summary: "Le personnage possède le Sharingan à son premier stade.",
-      mechanical: "Prépare l’activation future du Sharingan et les interactions avec copie, perception et Genjutsu.",
-      tags: ["clan", "uchiha", "sharingan", "dojutsu"]
-    },
-    {
-      rank: 2,
-      label: "Héritage du Katon",
-      type: "Affinité imposée",
-      summary: "Le clan Uchiha impose l’affinité Katon.",
-      mechanical: "Katon est accordé via affinité imposée.",
-      tags: ["clan", "uchiha", "katon"]
-    },
-    {
-      rank: 3,
-      label: "Sharingan — Deuxième tomoe",
-      type: "Dōjutsu",
-      summary: "Le Sharingan progresse et affine la lecture du mouvement et du chakra.",
-      mechanical: "Effet détaillé à automatiser plus tard.",
-      tags: ["clan", "uchiha", "sharingan", "dojutsu"]
-    },
-    {
-      rank: 5,
-      label: "Sharingan — Troisième tomoe",
-      type: "Dōjutsu",
-      summary: "Le Sharingan atteint sa forme classique complète.",
-      mechanical: "Prépare la copie de techniques et la lecture avancée.",
-      tags: ["clan", "uchiha", "sharingan", "copy"]
-    },
-    {
-      rank: 10,
-      label: "Mangekyō Sharingan",
-      type: "Dōjutsu supérieur",
-      summary: "Éveil rare et dramatique du Sharingan.",
-      mechanical: "À verrouiller derrière validation MJ et conditions narratives.",
-      tags: ["clan", "uchiha", "mangekyo", "mj-only"]
-    }
-  ],
+  {
+    rank: 1,
+    label: "Sharingan — Premier tomoe",
+    type: "Dōjutsu",
+    summary: "Le personnage possède le Sharingan à son premier stade.",
+    mechanical: "Prépare l’activation future du Sharingan et les interactions avec perception, lecture du mouvement et Genjutsu.",
+    tags: ["clan", "uchiha", "sharingan", "dojutsu"]
+  },
+  {
+    rank: 2,
+    label: "Dōsatsugan — Sharingan Deuxième tomoe",
+    type: "Dōjutsu",
+    summary: "Le Sharingan développe une lecture plus fine du chakra, des gestes et des intentions adverses.",
+    mechanical: "Effet détaillé à automatiser plus tard.",
+    tags: ["clan", "uchiha", "sharingan", "dojutsu", "perception"]
+  },
+  {
+    rank: 3,
+    label: "Mitsudomoe — Sharingan Troisième tomoe",
+    type: "Dōjutsu",
+    summary: "Le Sharingan atteint sa forme classique complète à trois tomoe.",
+    mechanical: "Prépare les effets avancés de lecture, anticipation, copie et pression mentale.",
+    tags: ["clan", "uchiha", "sharingan", "dojutsu", "copy"]
+  },
+  {
+    rank: 4,
+    label: "Magen — Illusion démoniaque",
+    type: "Genjutsu de lignée",
+    summary: "Le Sharingan permet d’imposer des illusions mentales brutales et précises.",
+    mechanical: "Effet détaillé à automatiser plus tard.",
+    tags: ["clan", "uchiha", "sharingan", "genjutsu", "magen"]
+  },
+  {
+    rank: 5,
+    label: "Mangekyō Sharingan",
+    type: "Dōjutsu supérieur",
+    summary: "Éveil rare et dramatique du Sharingan, lié à un choc émotionnel majeur.",
+    mechanical: "À verrouiller derrière validation MJ et conditions narratives.",
+    tags: ["clan", "uchiha", "mangekyo", "dojutsu", "mj-only"]
+  },
+  {
+    rank: 6,
+    label: "Tsukuyomi — Monde spirituel des ténèbres",
+    type: "Technique de lignée",
+    summary: "Le Mangekyō impose une illusion mentale d’une intensité exceptionnelle.",
+    mechanical: "Effet détaillé à automatiser plus tard.",
+    tags: ["clan", "uchiha", "mangekyo", "genjutsu", "tsukuyomi"]
+  },
+  {
+    rank: 7,
+    label: "Amaterasu",
+    type: "Technique de lignée",
+    summary: "Le Mangekyō manifeste des flammes noires capables de consumer presque toute matière.",
+    mechanical: "Effet détaillé à automatiser plus tard.",
+    tags: ["clan", "uchiha", "mangekyo", "katon", "amaterasu"]
+  },
+  {
+    rank: 8,
+    label: "Allégeance",
+    type: "Dōjutsu supérieur",
+    summary: "Le pouvoir oculaire impose une domination ou une influence d’une puissance exceptionnelle.",
+    mechanical: "Effet détaillé à automatiser plus tard selon les règles de contrôle mental et validation MJ.",
+    tags: ["clan", "uchiha", "mangekyo", "control", "mj-only"]
+  },
+  {
+    rank: 9,
+    label: "Izanagi / Izanami",
+    type: "Kinjutsu de lignée",
+    summary: "Techniques interdites du Sharingan, capables de déformer le destin ou d’enfermer une cible dans une boucle spirituelle.",
+    mechanical: "À verrouiller derrière validation MJ, coût narratif et conséquences lourdes.",
+    tags: ["clan", "uchiha", "sharingan", "kinjutsu", "izanagi", "izanami", "mj-only"]
+  },
+  {
+    rank: 10,
+    label: "Susanō — le Guerrier des Six Mondes",
+    type: "Dōjutsu mythique",
+    summary: "Manifestation ultime du pouvoir protecteur et destructeur du Mangekyō Sharingan.",
+    mechanical: "Effet détaillé à automatiser plus tard. Nécessite validation MJ et conditions narratives.",
+    tags: ["clan", "uchiha", "mangekyo", "susanoo", "mythic", "mj-only"]
+  }
+],
 
   yamanaka: [
     {

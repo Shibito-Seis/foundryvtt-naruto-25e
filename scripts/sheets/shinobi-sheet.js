@@ -429,19 +429,30 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     const clan = NARUTO25E.clans?.[clanKey];
     if (!clan) return;
 
-    const skillKey = NARUTO25E.getClanMandatorySkill(clanKey);
-    if (!skillKey) return;
+    const skillKeys = NARUTO25E.getClanMandatorySkills
+      ? NARUTO25E.getClanMandatorySkills(clanKey)
+      : [NARUTO25E.getClanMandatorySkill?.(clanKey)].filter(Boolean);
 
-    const skillDefinition = NARUTO25E.skillDefinitions?.[skillKey];
-    if (!skillDefinition) return;
+    for (const skillKey of skillKeys) {
+      if (!skillKey) continue;
 
-    context.heritageMandatorySkills.push({
-      clanKey,
-      clanLabel: clan.label,
-      skillKey,
-      skillLabel: skillDefinition.label,
-      sourceLabel
-    });
+      const skillDefinition = NARUTO25E.skillDefinitions?.[skillKey];
+      if (!skillDefinition) continue;
+
+      const alreadyDisplayed = context.heritageMandatorySkills.some((entry) => {
+        return entry.clanKey === clanKey && entry.skillKey === skillKey && entry.sourceLabel === sourceLabel;
+      });
+
+      if (alreadyDisplayed) continue;
+
+      context.heritageMandatorySkills.push({
+        clanKey,
+        clanLabel: clan.label,
+        skillKey,
+        skillLabel: skillDefinition.label,
+        sourceLabel
+      });
+    }
   };
 
   if (heritage.mode === "clan" || heritage.mode === "hybridClan") {
