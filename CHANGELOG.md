@@ -2,6 +2,13 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.19.9.1
+
+### Corrigé
+
+- Correction d’un doublon d’affichage du bloc Options MJ de l’onglet Lignée.
+- Les options MJ de lignée, clan hybride, voie hybridée, Mangekyō Sharingan, EMS, cellules Senju, Rinnegan et Tenseigan ne s’affichent désormais qu’une seule fois.
+
 ## 0.1.19.9
 
 ### Ajouté
