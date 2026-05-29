@@ -344,25 +344,68 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     nindoUnlockedByGM: Boolean(this.actor.system.nindo?.unlockedByGM)
   };
 
-  const mode = heritage.mode ?? "clan";
-  const gmOptions = heritage.gmOptions ?? {};
+    const mode = heritage.mode ?? "clan";
+    const gmOptions = heritage.gmOptions ?? {};
 
-  context.heritageState = {
-    mode,
-    isClanMode: mode === "clan",
-    isVoieMode: mode === "voie",
-    isHybridClanMode: mode === "hybridClan",
-    isHybridVoieMode: mode === "hybridVoie",
-    allowHybridClan: Boolean(gmOptions.allowHybridClan),
-    allowHybridVoie: Boolean(gmOptions.allowHybridVoie),
-    clanDisabled: mode === "voie" || mode === "hybridVoie",
-    voieDisabled: mode === "clan" || mode === "hybridClan",
-    hybridDisabled:
-      (mode === "clan") ||
-      (mode === "voie") ||
-      (mode === "hybridClan" && !gmOptions.allowHybridClan) ||
-      (mode === "hybridVoie" && !gmOptions.allowHybridVoie)
-  };
+    const heritageClanKeys = [
+      heritage.clan,
+      heritage.hybrid?.secondaryClan
+    ].filter(Boolean);
+
+    const hasUchihaLineage = heritageClanKeys.includes("uchiha");
+    const hasHyugaLineage = heritageClanKeys.includes("hyuga");
+    const hasSenjuLineage = heritageClanKeys.includes("senju");
+
+    const hasMangekyoSharingan = Boolean(gmOptions.hasMangekyoSharingan);
+    const hasEternalMangekyoSharingan =
+      hasUchihaLineage
+      && hasMangekyoSharingan
+      && Boolean(gmOptions.hasEternalMangekyoSharingan);
+
+    const hasSenjuCells =
+      hasSenjuLineage
+      || Boolean(gmOptions.hasSenjuCells);
+
+    const canAwakenRinnegan =
+      hasUchihaLineage
+      && (hasMangekyoSharingan || hasEternalMangekyoSharingan)
+      && hasSenjuCells;
+
+    const hasRinnegan =
+      canAwakenRinnegan
+      && Boolean(gmOptions.hasRinnegan);
+
+    const hasTenseigan =
+      hasHyugaLineage
+      && Boolean(gmOptions.hasTenseigan);
+
+    context.heritageState = {
+      mode,
+      isClanMode: mode === "clan",
+      isVoieMode: mode === "voie",
+      isHybridClanMode: mode === "hybridClan",
+      isHybridVoieMode: mode === "hybridVoie",
+      allowHybridClan: Boolean(gmOptions.allowHybridClan),
+      allowHybridVoie: Boolean(gmOptions.allowHybridVoie),
+      hasUchihaLineage,
+      hasHyugaLineage,
+      hasSenjuLineage,
+      hasMangekyoSharingan,
+      hasEternalMangekyoSharingan,
+      hasSenjuCells,
+      hasSenjuCellsByLineage: hasSenjuLineage,
+      hasSenjuCellsByImplant: Boolean(gmOptions.hasSenjuCells),
+      canAwakenRinnegan,
+      hasRinnegan,
+      hasTenseigan,
+      clanDisabled: mode === "voie" || mode === "hybridVoie",
+      voieDisabled: mode === "clan" || mode === "hybridClan",
+      hybridDisabled:
+        (mode === "clan") ||
+        (mode === "voie") ||
+        (mode === "hybridClan" && !gmOptions.allowHybridClan) ||
+        (mode === "hybridVoie" && !gmOptions.allowHybridVoie)
+    };
 
   const lineageValue = Number(this.actor.system.bases?.lign?.value ?? 1);
 
@@ -380,9 +423,22 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
         ? NARUTO25E.getClanLineageFeatures(clanKey, rank)
         : [NARUTO25E.getClanLineageFeature?.(clanKey, rank)].filter(Boolean);
 
+      const rankUnlockedByLineage = lineageValue >= rank;
+      const requiresMangekyo =
+        clanKey === "uchiha"
+        && rank >= 5;
+
+      const narrativeLocked =
+        rankUnlockedByLineage
+        && requiresMangekyo
+        && !hasMangekyoSharingan;
+
       ranks.push({
         rank,
-        unlocked: lineageValue >= rank,
+        unlocked: rankUnlockedByLineage && !narrativeLocked,
+        unlockedByLineage: rankUnlockedByLineage,
+        narrativeLocked,
+        requiresMangekyo,
         current: lineageValue === rank,
         label: `Rang ${rank}`,
         features,
@@ -774,12 +830,74 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
 
     const field = event.currentTarget.dataset.field;
     const checked = event.currentTarget.checked;
+    const heritage = this.actor.system.heritage ?? {};
+    const gmOptions = heritage.gmOptions ?? {};
+
+    const clanKeys = [
+      heritage.clan,
+      heritage.hybrid?.secondaryClan
+    ].filter(Boolean);
+
+    const hasUchihaLineage = clanKeys.includes("uchiha");
+    const hasHyugaLineage = clanKeys.includes("hyuga");
+    const hasSenjuLineage = clanKeys.includes("senju");
+
+    const effectiveMangekyo =
+      field === "hasMangekyoSharingan"
+        ? checked
+        : Boolean(gmOptions.hasMangekyoSharingan);
+
+    const effectiveEternalMangekyo =
+      field === "hasEternalMangekyoSharingan"
+        ? checked
+        : Boolean(gmOptions.hasEternalMangekyoSharingan);
+
+    const effectiveSenjuCells =
+      hasSenjuLineage
+      || (
+        field === "hasSenjuCells"
+          ? checked
+          : Boolean(gmOptions.hasSenjuCells)
+      );
+
+    const canAwakenRinnegan =
+      hasUchihaLineage
+      && (effectiveMangekyo || effectiveEternalMangekyo)
+      && effectiveSenjuCells;
+
+    if (
+      checked
+      && ["hasMangekyoSharingan", "hasEternalMangekyoSharingan", "hasRinnegan"].includes(field)
+      && !hasUchihaLineage
+    ) {
+      ui.notifications.warn("Cette option est réservée aux personnages ayant une lignée Uchiha.");
+      event.currentTarget.checked = false;
+      return;
+    }
+
+    if (checked && field === "hasTenseigan" && !hasHyugaLineage) {
+      ui.notifications.warn("Le Tenseigan est réservé aux personnages ayant une lignée Hyūga.");
+      event.currentTarget.checked = false;
+      return;
+    }
+
+    if (checked && field === "hasEternalMangekyoSharingan" && !effectiveMangekyo) {
+      ui.notifications.warn("Le Mangekyō Sharingan Éternel nécessite d’abord le Mangekyō Sharingan.");
+      event.currentTarget.checked = false;
+      return;
+    }
+
+    if (checked && field === "hasRinnegan" && !canAwakenRinnegan) {
+      ui.notifications.warn("Le Rinnegan nécessite une lignée Uchiha, le Mangekyō Sharingan ou EMS, et des cellules Senju.");
+      event.currentTarget.checked = false;
+      return;
+    }
 
     const updateData = {
       [`system.heritage.gmOptions.${field}`]: checked
     };
 
-    const currentMode = this.actor.system.heritage?.mode;
+    const currentMode = heritage.mode;
 
     if (field === "allowHybridClan" && !checked && currentMode === "hybridClan") {
       updateData["system.heritage.mode"] = "clan";
@@ -791,6 +909,19 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
       updateData["system.heritage.mode"] = "voie";
       updateData["system.heritage.hybrid.secondaryClan"] = "";
       updateData["system.heritage.hybrid.reason"] = "";
+    }
+
+    if (field === "hasMangekyoSharingan" && !checked) {
+      updateData["system.heritage.gmOptions.hasEternalMangekyoSharingan"] = false;
+      updateData["system.heritage.gmOptions.hasRinnegan"] = false;
+    }
+
+    if (field === "hasEternalMangekyoSharingan" && !checked && !effectiveMangekyo) {
+      updateData["system.heritage.gmOptions.hasRinnegan"] = false;
+    }
+
+    if (field === "hasSenjuCells" && !checked && !hasSenjuLineage) {
+      updateData["system.heritage.gmOptions.hasRinnegan"] = false;
     }
 
     await this.actor.update(updateData);

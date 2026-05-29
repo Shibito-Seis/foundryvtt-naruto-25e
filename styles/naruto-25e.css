@@ -1326,3 +1326,30 @@
   width: 5rem;
   text-align: center;
 }
+
+.naruto-25e-shinobi-sheet .gm-heritage-options h4 {
+  margin: 0.75rem 0 0.35rem;
+}
+
+.naruto-25e-shinobi-sheet .gm-heritage-options .hint {
+  margin: 0.2rem 0 0.55rem;
+  font-size: 0.88em;
+  opacity: 0.78;
+}
+
+.naruto-lineage-rank.is-narrative-locked {
+  opacity: 0.72;
+  border-style: dashed;
+}
+
+.naruto-tag.narrative-locked {
+  border-color: rgba(150, 40, 40, 0.85);
+}
+
+.naruto-lineage-lock-warning {
+  margin: 0.45rem 0;
+  padding: 0.4rem 0.55rem;
+  border-left: 3px solid rgba(150, 40, 40, 0.85);
+  background: rgba(150, 40, 40, 0.08);
+  font-size: 0.9em;
+}

@@ -1190,6 +1190,210 @@
               />
               Autoriser la Voie hybridée
             </label>
+
+            {{#if heritageState.hasUchihaLineage}}
+              <hr />
+
+              <h4>Éveils Uchiha</h4>
+
+              <label class="checkbox-row">
+                <input
+                  type="checkbox"
+                  class="heritage-gm-option"
+                  data-field="hasMangekyoSharingan"
+                  {{#if heritageState.hasMangekyoSharingan}}checked{{/if}}
+                />
+                Mangekyō Sharingan éveillé
+              </label>
+
+              <p class="hint">
+                Validation MJ : traumatisme narratif majeur. Les rangs Uchiha 5+ restent verrouillés tant que cette option n’est pas cochée.
+              </p>
+
+              <label class="checkbox-row">
+                <input
+                  type="checkbox"
+                  class="heritage-gm-option"
+                  data-field="hasEternalMangekyoSharingan"
+                  {{#if heritageState.hasEternalMangekyoSharingan}}checked{{/if}}
+                  {{#unless heritageState.hasMangekyoSharingan}}disabled{{/unless}}
+                />
+                Mangekyō Sharingan Éternel
+              </label>
+
+              <p class="hint">
+                Nécessite le Mangekyō Sharingan et l’implantation des yeux d’un membre d’une même fratrie.
+              </p>
+
+              {{#unless heritageState.hasSenjuLineage}}
+                <label class="checkbox-row">
+                  <input
+                    type="checkbox"
+                    class="heritage-gm-option"
+                    data-field="hasSenjuCells"
+                    {{#if heritageState.hasSenjuCellsByImplant}}checked{{/if}}
+                  />
+                  Cellules Senju implantées
+                </label>
+
+                <p class="hint">
+                  Validation MJ : implantation réussie, avec conséquences narratives ou médicales possibles.
+                </p>
+              {{else}}
+                <p class="hint">
+                  Cellules Senju : présentes naturellement via lignée / hybridation Senju.
+                </p>
+              {{/unless}}
+
+              <label class="checkbox-row">
+                <input
+                  type="checkbox"
+                  class="heritage-gm-option"
+                  data-field="hasRinnegan"
+                  {{#if heritageState.hasRinnegan}}checked{{/if}}
+                  {{#unless heritageState.canAwakenRinnegan}}disabled{{/unless}}
+                />
+                Rinnegan éveillé / validé
+              </label>
+
+              <p class="hint">
+                Nécessite Uchiha, Mangekyō Sharingan ou EMS, et cellules Senju.
+              </p>
+            {{/if}}
+
+            {{#if heritageState.hasHyugaLineage}}
+              <hr />
+
+              <h4>Éveil Hyūga</h4>
+
+              <label class="checkbox-row">
+                <input
+                  type="checkbox"
+                  class="heritage-gm-option"
+                  data-field="hasTenseigan"
+                  {{#if heritageState.hasTenseigan}}checked{{/if}}
+                />
+                Tenseigan éveillé / validé
+              </label>
+
+              <p class="hint">
+                Validation MJ : éveil rare du Byakugan supérieur, réservé aux lignées Hyūga.
+              </p>
+            {{/if}}
+          </section>
+        {{/if}}        {{#if isGM}}
+          <section class="gm-heritage-options">
+          <h3>Options MJ de cette fiche</h3>
+
+            <label class="checkbox-row">
+              <input
+                type="checkbox"
+                class="heritage-gm-option"
+                data-field="allowHybridClan"
+                {{#if heritageState.allowHybridClan}}checked{{/if}}
+              />
+              Autoriser le Clan hybride
+            </label>
+
+            <label class="checkbox-row">
+              <input
+                type="checkbox"
+                class="heritage-gm-option"
+                data-field="allowHybridVoie"
+                {{#if heritageState.allowHybridVoie}}checked{{/if}}
+              />
+              Autoriser la Voie hybridée
+            </label>
+
+            {{#if heritageState.hasUchihaLineage}}
+              <hr />
+
+              <h4>Éveils Uchiha</h4>
+
+              <label class="checkbox-row">
+                <input
+                  type="checkbox"
+                  class="heritage-gm-option"
+                  data-field="hasMangekyoSharingan"
+                  {{#if heritageState.hasMangekyoSharingan}}checked{{/if}}
+                />
+                Mangekyō Sharingan éveillé
+              </label>
+
+              <p class="hint">
+                Validation MJ : traumatisme narratif majeur. Les rangs Uchiha 5+ restent verrouillés tant que cette option n’est pas cochée.
+              </p>
+
+              <label class="checkbox-row">
+                <input
+                  type="checkbox"
+                  class="heritage-gm-option"
+                  data-field="hasEternalMangekyoSharingan"
+                  {{#if heritageState.hasEternalMangekyoSharingan}}checked{{/if}}
+                  {{#unless heritageState.hasMangekyoSharingan}}disabled{{/unless}}
+                />
+                Mangekyō Sharingan Éternel
+              </label>
+
+              <p class="hint">
+                Nécessite le Mangekyō Sharingan et l’implantation des yeux d’un membre d’une même fratrie.
+              </p>
+
+              {{#unless heritageState.hasSenjuLineage}}
+                <label class="checkbox-row">
+                  <input
+                    type="checkbox"
+                    class="heritage-gm-option"
+                    data-field="hasSenjuCells"
+                    {{#if heritageState.hasSenjuCellsByImplant}}checked{{/if}}
+                  />
+                  Cellules Senju implantées
+                </label>
+
+                <p class="hint">
+                  Validation MJ : implantation réussie, avec conséquences narratives ou médicales possibles.
+                </p>
+              {{else}}
+                <p class="hint">
+                  Cellules Senju : présentes naturellement via lignée / hybridation Senju.
+                </p>
+              {{/unless}}
+
+              <label class="checkbox-row">
+                <input
+                  type="checkbox"
+                  class="heritage-gm-option"
+                  data-field="hasRinnegan"
+                  {{#if heritageState.hasRinnegan}}checked{{/if}}
+                  {{#unless heritageState.canAwakenRinnegan}}disabled{{/unless}}
+                />
+                Rinnegan éveillé / validé
+              </label>
+
+              <p class="hint">
+                Nécessite Uchiha, Mangekyō Sharingan ou EMS, et cellules Senju.
+              </p>
+            {{/if}}
+
+            {{#if heritageState.hasHyugaLineage}}
+              <hr />
+
+              <h4>Éveil Hyūga</h4>
+
+              <label class="checkbox-row">
+                <input
+                  type="checkbox"
+                  class="heritage-gm-option"
+                  data-field="hasTenseigan"
+                  {{#if heritageState.hasTenseigan}}checked{{/if}}
+                />
+                Tenseigan éveillé / validé
+              </label>
+
+              <p class="hint">
+                Validation MJ : éveil rare du Byakugan supérieur, réservé aux lignées Hyūga.
+              </p>
+            {{/if}}
           </section>
         {{/if}}
 
@@ -1305,7 +1509,7 @@
 
               <div class="naruto-lineage-ranks">
                 {{#each track.ranks as |rank|}}
-                  <div class="naruto-lineage-rank {{#if rank.unlocked}}is-unlocked{{else}}is-locked{{/if}} {{#if rank.current}}is-current{{/if}}">
+                    <div class="naruto-lineage-rank {{#if rank.unlocked}}is-unlocked{{else}}is-locked{{/if}} {{#if rank.narrativeLocked}}is-narrative-locked{{/if}} {{#if rank.current}}is-current{{/if}} {{#if rank.narrativeLocked}}<span class="naruto-tag narrative-locked">Validation MJ requise</span>{{/if}}">
                     <div class="naruto-lineage-rank-header">
                       <strong>Rang {{rank.rank}}</strong>
 
@@ -1317,6 +1521,12 @@
                         <span class="naruto-tag current">Rang actuel</span>
                       {{/if}}
                     </div>
+
+                    {{#if rank.narrativeLocked}}
+                      <p class="naruto-lineage-lock-warning">
+                        Rang atteint par la Base Lignée, mais capacité verrouillée tant que le Mangekyō Sharingan n’est pas validé par le MJ.
+                      </p>
+                    {{/if}}
 
                     {{#if rank.hasFeatures}}
                       {{#each rank.features as |feature|}}

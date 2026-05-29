@@ -23,7 +23,12 @@
           },
           "gmOptions": {
             "allowHybridClan": false,
-            "allowHybridVoie": false
+            "allowHybridVoie": false,
+            "hasMangekyoSharingan": false,
+            "hasEternalMangekyoSharingan": false,
+            "hasSenjuCells": false,
+            "hasRinnegan": false,
+            "hasTenseigan": false
           },
           "affinities": {
             "primary": "",

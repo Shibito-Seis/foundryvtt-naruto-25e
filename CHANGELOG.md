@@ -2,6 +2,27 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.19.9
+
+### Ajouté
+
+- Ajout des options MJ conditionnelles de lignée dans l’onglet Lignée.
+- Ajout de la validation MJ du Mangekyō Sharingan pour les personnages Uchiha.
+- Ajout de la validation MJ du Mangekyō Sharingan Éternel pour les personnages Uchiha.
+- Ajout de la validation MJ des cellules Senju implantées pour les personnages Uchiha non-Senju.
+- Ajout de la validation MJ du Rinnegan pour les personnages Uchiha remplissant les conditions.
+- Ajout de la validation MJ du Tenseigan pour les personnages Hyūga.
+
+### Modifié
+
+- Les rangs Uchiha 5 et plus sont désormais considérés comme verrouillés narrativement tant que le Mangekyō Sharingan n’est pas validé par le MJ.
+- Le Rinnegan nécessite désormais une lignée Uchiha, le Mangekyō Sharingan ou EMS, et des cellules Senju naturelles ou implantées.
+- Les personnages hybrides Uchiha/Senju ou Senju/Uchiha remplissent automatiquement la condition des cellules Senju.
+
+### Préparé
+
+- Préparation de la future page Implantation pour gérer les greffes d’yeux, cellules spéciales, compatibilités, malus et validations MJ.
+
 ## 0.1.19.8.5
 
 ### Modifié
