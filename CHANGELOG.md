@@ -2,6 +2,22 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.21
+
+### Ajouté
+
+- Déclaration des premiers compendiums système vides.
+- Ajout du compendium `Techniques communes`.
+- Ajout du compendium `Techniques élémentaires`.
+- Ajout du compendium `Techniques de lignées`.
+- Ajout du compendium `Pouvoirs de lignée`.
+
+### Préparé
+
+- Préparation du remplissage des compendiums de Techniques en 0.1.21.1.
+- Préparation des futurs contenus de clan, de lignée et de pouvoirs héréditaires.
+- Les techniques de clan et les pouvoirs liés aux lignées seront rangés dans des compendiums dédiés.
+
 ## 0.1.20
 
 ### Ajouté

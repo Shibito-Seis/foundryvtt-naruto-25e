@@ -2,7 +2,7 @@
   "id": "naruto-25e",
   "title": "Naruto 2.5e",
   "description": "Système maison Naruto 2.5e pour Foundry VTT v13.",
-  "version": "0.1.20",
+  "version": "0.1.21",
   "compatibility": {
     "minimum": "13",
     "verified": "13.351"
@@ -68,5 +68,51 @@
         "htmlFields": ["description", "effect"]
       }
     }
-  }
+  },
+  "packs": [
+    {
+      "name": "techniques-communes",
+      "label": "Techniques communes",
+      "path": "packs/techniques-communes",
+      "type": "Item",
+      "system": "naruto-25e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "techniques-elementaires",
+      "label": "Techniques élémentaires",
+      "path": "packs/techniques-elementaires",
+      "type": "Item",
+      "system": "naruto-25e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "techniques-lignees",
+      "label": "Techniques de lignées",
+      "path": "packs/techniques-lignees",
+      "type": "Item",
+      "system": "naruto-25e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "pouvoirs-lignee",
+      "label": "Pouvoirs de lignée",
+      "path": "packs/pouvoirs-lignee",
+      "type": "Item",
+      "system": "naruto-25e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    }
+  ]
 }
