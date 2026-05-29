@@ -6,6 +6,10 @@ const TECHNIQUE_SOURCES = [
   {
     pack: "naruto-25e.techniques-elementaires",
     path: "systems/naruto-25e/data/techniques/techniques-elementaires.json"
+  },
+  {
+    pack: "naruto-25e.techniques-lignees",
+    path: "systems/naruto-25e/data/techniques/techniques-lignees.json"
   }
 ];
 
@@ -155,4 +159,34 @@ export async function importNaruto25eTechniquePacks(options = {}) {
   console.table(results);
 
   return results;
+}
+
+export class Naruto25eTechniqueImportApplication extends FormApplication {
+  static get defaultOptions() {
+    return foundry.utils.mergeObject(super.defaultOptions, {
+      id: "naruto-25e-technique-importer",
+      title: "Importer les techniques Naruto 2.5e",
+      template: "systems/naruto-25e/templates/apps/technique-importer.hbs",
+      width: 560,
+      height: "auto",
+      closeOnSubmit: true
+    });
+  }
+
+  async getData(options = {}) {
+    const context = await super.getData(options);
+
+    context.sources = TECHNIQUE_SOURCES.map((source) => ({
+      pack: source.pack,
+      path: source.path
+    }));
+
+    return context;
+  }
+
+  async _updateObject(event, formData) {
+    await importNaruto25eTechniquePacks({
+      clear: Boolean(formData.clear)
+    });
+  }
 }

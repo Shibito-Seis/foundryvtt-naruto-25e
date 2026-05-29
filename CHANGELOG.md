@@ -2,6 +2,31 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.21.2
+
+### Ajouté
+
+- Ajout d’une interface MJ d’import des techniques accessible depuis les paramètres du système.
+- Ajout d’une commande d’ouverture rapide `game.naruto25e.openTechniqueImporter()`.
+- Ajout du fichier source `techniques-lignees.json`.
+- Ajout du compendium `Techniques de lignées` à la procédure d’import automatique.
+
+### Contenu
+
+- Ajout des premières techniques Mokuton importables :
+  - `Mokuton: Jukai Heki`
+  - `Mokuton: Shichūrō`
+  - `Mokuton: Mokusatsu Shibari`
+  - `Mokuton: Sōshinki`
+  - `Mokuton: Bunshin`
+  - `Mokuton: Kajukai Kōrin`
+  - `Mokuton: Jukai Kōtan`
+
+### Préparé
+
+- Préparation du remplissage progressif des techniques de lignées et techniques de clans.
+- Préparation d’un workflow d’import utilisable sans passer par la console développeur.
+
 ## 0.1.21.1
 
 ### Ajouté

@@ -1,0 +1,39 @@
+<form class="naruto-technique-importer">
+  <section class="naruto-importer-section">
+    <h2>Import des techniques Naruto 2.5e</h2>
+
+    <p class="muted">
+      Cet outil importe les fichiers JSON déclarés dans le système vers les compendiums correspondants.
+    </p>
+
+    <div class="form-group">
+      <label>
+        <input type="checkbox" name="clear" checked>
+        Vider les compendiums ciblés avant import
+      </label>
+      <p class="notes">
+        Recommandé pendant le développement : cela évite les doublons après modification des fichiers JSON.
+      </p>
+    </div>
+
+    <hr>
+
+    <h3>Sources déclarées</h3>
+
+    <ul>
+      {{#each sources as |source|}}
+        <li>
+          <strong>{{source.pack}}</strong><br>
+          <span class="muted">{{source.path}}</span>
+        </li>
+      {{/each}}
+    </ul>
+  </section>
+
+  <footer class="sheet-footer flexrow">
+    <button type="submit">
+      <i class="fas fa-file-import"></i>
+      Importer les techniques
+    </button>
+  </footer>
+</form>

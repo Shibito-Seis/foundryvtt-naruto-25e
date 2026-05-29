@@ -2,7 +2,10 @@ import { Naruto25eActor } from "./documents/actor.js";
 import { Naruto25eItem } from "./documents/item.js";
 import { Naruto25eShinobiSheet } from "./sheets/shinobi-sheet.js";
 import { Naruto25eItemSheet } from "./sheets/item-sheet.js";
-import { importNaruto25eTechniquePacks } from "./importers/technique-pack-importer.js";
+import {
+  importNaruto25eTechniquePacks,
+  Naruto25eTechniqueImportApplication
+} from "./importers/technique-pack-importer.js";
 
 Hooks.once("init", async function () {
   console.log("Naruto 2.5e | Initialisation du système");
@@ -66,6 +69,15 @@ Hooks.once("init", async function () {
     }
   });
 
+    game.settings.registerMenu("naruto-25e", "techniqueImporter", {
+    name: "Importer les techniques",
+    label: "Ouvrir l’importeur",
+    hint: "Ouvre l’outil MJ d’import des techniques depuis les fichiers JSON du système.",
+    icon: "fas fa-file-import",
+    type: Naruto25eTechniqueImportApplication,
+    restricted: true
+  });
+
   Handlebars.registerHelper("eq", function (a, b) {
     return a === b;
   });
@@ -98,7 +110,8 @@ Hooks.once("init", async function () {
   });
 
   game.naruto25e = foundry.utils.mergeObject(game.naruto25e ?? {}, {
-    importTechniquePacks: importNaruto25eTechniquePacks
+    importTechniquePacks: importNaruto25eTechniquePacks,
+    openTechniqueImporter: () => new Naruto25eTechniqueImportApplication().render(true)
   }, {
     inplace: false
   });
