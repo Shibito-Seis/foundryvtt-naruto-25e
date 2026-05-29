@@ -2,6 +2,22 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.19.8.5
+
+### Modifié
+
+- Harmonisation des capacités de lignée existantes.
+- Les rangs de lignée ne décrivent plus l’obtention directe des compétences obligatoires déjà accordées par `skillKey` ou `mandatorySkills`.
+- Les rangs Aburame, Nara, Senju, Munefuda, Yamanaka et Aniki ont été reformulés pour distinguer clairement capacité de lignée et compétence obligatoire.
+- Les capacités Hyūga utilisent désormais `label` comme les autres lignées, au lieu de `title`.
+- Le rang 10 Hyūga prépare désormais la voie du Tenseigan comme prédisposition d’éveil, en attente d’une future option MJ.
+
+### Préparé
+
+- Préparation de la version 0.1.19.9 pour les options MJ de lignée conditionnelles :
+  - EMS et Rinnegan réservés aux Uchiha.
+  - Tenseigan réservé aux Hyūga.
+
 ## 0.1.19.8.4
 
 ### Corrigé

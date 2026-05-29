@@ -712,10 +712,10 @@ NARUTO25E.clanLineageFeatures = {
     {
       rank: 1,
       label: "Kikaichū — Insectes destructeurs",
-      type: "Compétence de clan",
-      summary: "Le personnage obtient la compétence Kikaichū et peut allouer une partie de son chakra général à sa réserve d’insectes.",
+      type: "Capacité de lignée",
+      summary: "Le personnage abrite une colonie de Kikaichū et peut allouer une partie de son chakra général à sa réserve d’insectes.",
       mechanical: "Active la réserve Kikaichū. Minimum : Lignée × 15. Maximum : Lignée × 25.",
-      tags: ["clan", "kikaichu", "chakra-reserve"]
+      tags: ["clan", "aburame", "kikaichu", "chakra-reserve"]
     },
     {
       rank: 2,
@@ -723,7 +723,7 @@ NARUTO25E.clanLineageFeatures = {
       type: "Capacité de lignée",
       summary: "Les insectes peuvent être employés pour gêner, protéger ou intercepter selon la situation.",
       mechanical: "Effet détaillé à préciser depuis la lignée Aburame.",
-      tags: ["clan", "kikaichu", "defense"]
+      tags: ["clan", "aburame", "kikaichu", "defense"]
     },
     {
       rank: 3,
@@ -731,35 +731,37 @@ NARUTO25E.clanLineageFeatures = {
       type: "Capacité de lignée",
       summary: "Les Kikaichū peuvent drainer ou perturber le chakra adverse.",
       mechanical: "Effet détaillé à préciser depuis la lignée Aburame.",
-      tags: ["clan", "kikaichu", "chakra-drain"]
+      tags: ["clan", "aburame", "kikaichu", "chakra-drain"]
     }
   ],
 
   hyuga: [
     {
       rank: 1,
-      title: "Byakugan",
+      label: "Byakugan",
       type: "Dōjutsu",
       summary: "Œil blanc héréditaire du clan Hyūga.",
-      description: "Débloque le Byakugan, perception du chakra et base des techniques propres au clan Hyūga."
+      mechanical: "Débloque le Byakugan, la perception du chakra et la base des techniques propres au clan Hyūga.",
+      tags: ["clan", "hyuga", "byakugan", "dojutsu"]
     },
     {
       rank: 10,
-      title: "Tenseigan",
-      type: "Éveil supérieur",
-      summary: "Évolution mythique du dōjutsu Hyūga.",
-      description: "Éveil supérieur extrêmement rare du Byakugan, réservé aux sommets de la lignée."
+      label: "Voie du Tenseigan",
+      type: "Prédisposition d’éveil",
+      summary: "Le personnage atteint le sommet de la lignée Hyūga et peut prétendre à un éveil supérieur.",
+      mechanical: "Prépare l’option MJ Tenseigan. L’éveil réel restera conditionné par validation MJ et conditions narratives.",
+      tags: ["clan", "hyuga", "tenseigan", "dojutsu", "mj-only"]
     }
   ],
 
   nara: [
     {
       rank: 1,
-      label: "Pouvoir des Ombres",
-      type: "Compétence de clan",
-      summary: "Le personnage obtient la compétence Kage.",
-      mechanical: "Compétence de clan imposée par le clan Nara.",
-      tags: ["clan", "nara", "kage"]
+      label: "Sens des Ombres",
+      type: "Capacité de lignée",
+      summary: "Le personnage développe une affinité instinctive avec les ombres, leur position, leur portée et leur potentiel tactique.",
+      mechanical: "Prépare les techniques utilisant la compétence Kage, déjà accordée comme compétence obligatoire de clan.",
+      tags: ["clan", "nara", "kage", "shadow"]
     },
     {
       rank: 2,
@@ -798,11 +800,11 @@ NARUTO25E.clanLineageFeatures = {
   senju: [
     {
       rank: 1,
-      label: "Nature Supérieure — Mokuton",
-      type: "Compétence de clan",
-      summary: "Le personnage obtient Mokuton, héritage rarissime du clan Senju.",
-      mechanical: "Compétence de clan imposée. Suiton et Doton sont nécessaires dans la logique de création avancée.",
-      tags: ["clan", "senju", "mokuton"]
+      label: "Sève des Mille Mains",
+      type: "Capacité de lignée",
+      summary: "Le personnage manifeste la vitalité exceptionnelle du sang Senju et une connexion profonde aux forces naturelles.",
+      mechanical: "Prépare les interactions avec Mokuton, déjà accordé comme compétence obligatoire de clan.",
+      tags: ["clan", "senju", "mokuton", "vitality"]
     },
     {
       rank: 2,
@@ -833,10 +835,10 @@ NARUTO25E.clanLineageFeatures = {
   munefuda: [
     {
       rank: 1,
-      label: "Nature Supérieure — Jiton",
-      type: "Compétence de clan",
-      summary: "Le personnage obtient Jiton, la manipulation du magnétisme.",
-      mechanical: "Compétence de clan imposée. Prépare les interactions avec armes métalliques et interceptions ARM.",
+      label: "Champ Magnétique Héréditaire",
+      type: "Capacité de lignée",
+      summary: "Le personnage perçoit instinctivement les métaux, les charges et les tensions magnétiques autour de lui.",
+      mechanical: "Prépare les interactions avec Jiton, déjà accordé comme compétence obligatoire de clan.",
       tags: ["clan", "munefuda", "jiton", "magnetism"]
     },
     {
@@ -858,96 +860,96 @@ NARUTO25E.clanLineageFeatures = {
   ],
 
   uchiha: [
-  {
-    rank: 1,
-    label: "Sharingan — Premier tomoe",
-    type: "Dōjutsu",
-    summary: "Le personnage possède le Sharingan à son premier stade.",
-    mechanical: "Prépare l’activation future du Sharingan et les interactions avec perception, lecture du mouvement et Genjutsu.",
-    tags: ["clan", "uchiha", "sharingan", "dojutsu"]
-  },
-  {
-    rank: 2,
-    label: "Dōsatsugan — Sharingan Deuxième tomoe",
-    type: "Dōjutsu",
-    summary: "Le Sharingan développe une lecture plus fine du chakra, des gestes et des intentions adverses.",
-    mechanical: "Effet détaillé à automatiser plus tard.",
-    tags: ["clan", "uchiha", "sharingan", "dojutsu", "perception"]
-  },
-  {
-    rank: 3,
-    label: "Mitsudomoe — Sharingan Troisième tomoe",
-    type: "Dōjutsu",
-    summary: "Le Sharingan atteint sa forme classique complète à trois tomoe.",
-    mechanical: "Prépare les effets avancés de lecture, anticipation, copie et pression mentale.",
-    tags: ["clan", "uchiha", "sharingan", "dojutsu", "copy"]
-  },
-  {
-    rank: 4,
-    label: "Magen — Illusion démoniaque",
-    type: "Genjutsu de lignée",
-    summary: "Le Sharingan permet d’imposer des illusions mentales brutales et précises.",
-    mechanical: "Effet détaillé à automatiser plus tard.",
-    tags: ["clan", "uchiha", "sharingan", "genjutsu", "magen"]
-  },
-  {
-    rank: 5,
-    label: "Mangekyō Sharingan",
-    type: "Dōjutsu supérieur",
-    summary: "Éveil rare et dramatique du Sharingan, lié à un choc émotionnel majeur.",
-    mechanical: "À verrouiller derrière validation MJ et conditions narratives.",
-    tags: ["clan", "uchiha", "mangekyo", "dojutsu", "mj-only"]
-  },
-  {
-    rank: 6,
-    label: "Tsukuyomi — Monde spirituel des ténèbres",
-    type: "Technique de lignée",
-    summary: "Le Mangekyō impose une illusion mentale d’une intensité exceptionnelle.",
-    mechanical: "Effet détaillé à automatiser plus tard.",
-    tags: ["clan", "uchiha", "mangekyo", "genjutsu", "tsukuyomi"]
-  },
-  {
-    rank: 7,
-    label: "Amaterasu",
-    type: "Technique de lignée",
-    summary: "Le Mangekyō manifeste des flammes noires capables de consumer presque toute matière.",
-    mechanical: "Effet détaillé à automatiser plus tard.",
-    tags: ["clan", "uchiha", "mangekyo", "katon", "amaterasu"]
-  },
-  {
-    rank: 8,
-    label: "Allégeance",
-    type: "Dōjutsu supérieur",
-    summary: "Le pouvoir oculaire impose une domination ou une influence d’une puissance exceptionnelle.",
-    mechanical: "Effet détaillé à automatiser plus tard selon les règles de contrôle mental et validation MJ.",
-    tags: ["clan", "uchiha", "mangekyo", "control", "mj-only"]
-  },
-  {
-    rank: 9,
-    label: "Izanagi / Izanami",
-    type: "Kinjutsu de lignée",
-    summary: "Techniques interdites du Sharingan, capables de déformer le destin ou d’enfermer une cible dans une boucle spirituelle.",
-    mechanical: "À verrouiller derrière validation MJ, coût narratif et conséquences lourdes.",
-    tags: ["clan", "uchiha", "sharingan", "kinjutsu", "izanagi", "izanami", "mj-only"]
-  },
-  {
-    rank: 10,
-    label: "Susanō — le Guerrier des Six Mondes",
-    type: "Dōjutsu mythique",
-    summary: "Manifestation ultime du pouvoir protecteur et destructeur du Mangekyō Sharingan.",
-    mechanical: "Effet détaillé à automatiser plus tard. Nécessite validation MJ et conditions narratives.",
-    tags: ["clan", "uchiha", "mangekyo", "susanoo", "mythic", "mj-only"]
-  }
-],
+    {
+      rank: 1,
+      label: "Sharingan — Premier tomoe",
+      type: "Dōjutsu",
+      summary: "Le personnage possède le Sharingan à son premier stade.",
+      mechanical: "Prépare l’activation future du Sharingan et les interactions avec perception, lecture du mouvement et Genjutsu.",
+      tags: ["clan", "uchiha", "sharingan", "dojutsu"]
+    },
+    {
+      rank: 2,
+      label: "Dōsatsugan — Sharingan Deuxième tomoe",
+      type: "Dōjutsu",
+      summary: "Le Sharingan développe une lecture plus fine du chakra, des gestes et des intentions adverses.",
+      mechanical: "Effet détaillé à automatiser plus tard.",
+      tags: ["clan", "uchiha", "sharingan", "dojutsu", "perception"]
+    },
+    {
+      rank: 3,
+      label: "Mitsudomoe — Sharingan Troisième tomoe",
+      type: "Dōjutsu",
+      summary: "Le Sharingan atteint sa forme classique complète à trois tomoe.",
+      mechanical: "Prépare les effets avancés de lecture, anticipation, copie et pression mentale.",
+      tags: ["clan", "uchiha", "sharingan", "dojutsu", "copy"]
+    },
+    {
+      rank: 4,
+      label: "Magen — Illusion démoniaque",
+      type: "Genjutsu de lignée",
+      summary: "Le Sharingan permet d’imposer des illusions mentales brutales et précises.",
+      mechanical: "Effet détaillé à automatiser plus tard.",
+      tags: ["clan", "uchiha", "sharingan", "genjutsu", "magen"]
+    },
+    {
+      rank: 5,
+      label: "Mangekyō Sharingan",
+      type: "Dōjutsu supérieur",
+      summary: "Éveil rare et dramatique du Sharingan, lié à un choc émotionnel majeur.",
+      mechanical: "À verrouiller derrière validation MJ et conditions narratives.",
+      tags: ["clan", "uchiha", "mangekyo", "dojutsu", "mj-only"]
+    },
+    {
+      rank: 6,
+      label: "Tsukuyomi — Monde spirituel des ténèbres",
+      type: "Technique de lignée",
+      summary: "Le Mangekyō impose une illusion mentale d’une intensité exceptionnelle.",
+      mechanical: "Effet détaillé à automatiser plus tard.",
+      tags: ["clan", "uchiha", "mangekyo", "genjutsu", "tsukuyomi"]
+    },
+    {
+      rank: 7,
+      label: "Amaterasu",
+      type: "Technique de lignée",
+      summary: "Le Mangekyō manifeste des flammes noires capables de consumer presque toute matière.",
+      mechanical: "Effet détaillé à automatiser plus tard.",
+      tags: ["clan", "uchiha", "mangekyo", "katon", "amaterasu"]
+    },
+    {
+      rank: 8,
+      label: "Allégeance",
+      type: "Dōjutsu supérieur",
+      summary: "Le pouvoir oculaire impose une domination ou une influence d’une puissance exceptionnelle.",
+      mechanical: "Effet détaillé à automatiser plus tard selon les règles de contrôle mental et validation MJ.",
+      tags: ["clan", "uchiha", "mangekyo", "control", "mj-only"]
+    },
+    {
+      rank: 9,
+      label: "Izanagi / Izanami",
+      type: "Kinjutsu de lignée",
+      summary: "Techniques interdites du Sharingan, capables de déformer le destin ou d’enfermer une cible dans une boucle spirituelle.",
+      mechanical: "À verrouiller derrière validation MJ, coût narratif et conséquences lourdes.",
+      tags: ["clan", "uchiha", "sharingan", "kinjutsu", "izanagi", "izanami", "mj-only"]
+    },
+    {
+      rank: 10,
+      label: "Susanō — le Guerrier des Six Mondes",
+      type: "Dōjutsu mythique",
+      summary: "Manifestation ultime du pouvoir protecteur et destructeur du Mangekyō Sharingan.",
+      mechanical: "Effet détaillé à automatiser plus tard. Nécessite validation MJ et conditions narratives.",
+      tags: ["clan", "uchiha", "mangekyo", "susanoo", "mythic", "mj-only"]
+    }
+  ],
 
   yamanaka: [
     {
       rank: 1,
-      label: "Stabilité émotionnelle",
-      type: "Compétence de clan",
-      summary: "Le personnage obtient Résistances Émotionnelles.",
-      mechanical: "Compétence de clan imposée.",
-      tags: ["clan", "yamanaka", "resistance", "emotion"]
+      label: "Ancrage émotionnel",
+      type: "Capacité de lignée",
+      summary: "Le personnage possède un contrôle émotionnel renforcé, essentiel aux techniques mentales du clan Yamanaka.",
+      mechanical: "Prépare les techniques mentales du clan. Résistances Émotionnelles reste accordée comme compétence obligatoire de clan.",
+      tags: ["clan", "yamanaka", "emotion", "mind"]
     },
     {
       rank: 3,
@@ -962,11 +964,11 @@ NARUTO25E.clanLineageFeatures = {
   aniki: [
     {
       rank: 1,
-      label: "Maître de l’Encre Vivante",
-      type: "Compétence de clan",
-      summary: "Le personnage obtient Sumi.",
-      mechanical: "Compétence de clan imposée.",
-      tags: ["clan", "aniki", "sumi"]
+      label: "Encre Vivante",
+      type: "Capacité de lignée",
+      summary: "Le personnage peut insuffler son chakra dans l’encre et préparer les futures techniques Sumi.",
+      mechanical: "Prépare les techniques d’encre du clan. Sumi reste accordée comme compétence obligatoire de clan.",
+      tags: ["clan", "aniki", "sumi", "ink"]
     }
   ]
 };
