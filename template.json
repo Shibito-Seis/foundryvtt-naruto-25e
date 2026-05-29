@@ -328,6 +328,14 @@
         "defaultDifficulty": 6,
         "opposed": false
       },
+      "prerequisites": {
+        "strict": false,
+        "type": "none",
+        "value": "",
+        "masteryRank": 5,
+        "validated": false,
+        "text": ""
+      },
       "effect": ""
     },
     "nindoAction": {

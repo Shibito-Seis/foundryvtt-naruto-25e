@@ -44,8 +44,10 @@ export class Naruto25eItem extends Item {
         system.prerequisites = system.prerequisites ?? {};
         system.prerequisites.strict = Boolean(system.prerequisites.strict);
         system.prerequisites.type = system.prerequisites.type ?? "none";
+        system.prerequisites.value = system.prerequisites.value ?? "";
         system.prerequisites.text = system.prerequisites.text ?? "";
         system.prerequisites.masteryRank = Number(system.prerequisites.masteryRank ?? 5);
+        system.prerequisites.validated = Boolean(system.prerequisites.validated);
     }
 
     getTechniqueRollActor() {
@@ -55,6 +57,240 @@ export class Naruto25eItem extends Item {
         if (controlled.length === 1) return controlled[0].actor;
 
         return null;
+    }
+
+        _getActorClanKeys(actor) {
+        const heritage = actor?.system?.heritage ?? {};
+        const clanKeys = [
+            heritage.clan,
+            heritage.hybrid?.secondaryClan
+        ].filter(Boolean);
+
+        return Array.from(new Set(clanKeys));
+    }
+
+    _getActorVoieKeys(actor) {
+        const heritage = actor?.system?.heritage ?? {};
+        const voieKeys = [
+            heritage.voie
+        ];
+
+        if (heritage.mode === "hybridVoie") {
+            voieKeys.push(heritage.hybrid?.secondaryClan);
+        }
+
+        return Array.from(new Set(voieKeys.filter(Boolean)));
+    }
+
+    _getActorAffinityKeys(actor) {
+        const chakraAffinities = actor?.system?.chakra?.affinities ?? {};
+        const heritageAffinities = actor?.system?.heritage?.affinities ?? {};
+        const keys = new Set();
+
+        const addValue = (value) => {
+            if (!value) return;
+
+            if (Array.isArray(value)) {
+                for (const entry of value) addValue(entry);
+                return;
+            }
+
+            if (typeof value === "object") {
+                if (value.key) keys.add(value.key);
+                if (value.id) keys.add(value.id);
+                if (value.value) keys.add(value.value);
+                return;
+            }
+
+            keys.add(String(value));
+        };
+
+        addValue(chakraAffinities.primary);
+        addValue(chakraAffinities.secondary);
+        addValue(chakraAffinities.forced);
+        addValue(chakraAffinities.extra);
+        addValue(chakraAffinities.owned);
+
+        addValue(heritageAffinities.primary);
+        addValue(heritageAffinities.secondary);
+        addValue(heritageAffinities.forced);
+        addValue(heritageAffinities.extra);
+
+        return Array.from(keys);
+    }
+
+    _getGmOptionLabel(optionKey) {
+        const labels = {
+            hasMangekyoSharingan: "Mangekyō Sharingan",
+            hasEternalMangekyoSharingan: "Mangekyō Sharingan Éternel",
+            hasSenjuCells: "Cellules Senju",
+            hasRinnegan: "Rinnegan",
+            hasTenseigan: "Tenseigan"
+        };
+
+        return labels[optionKey] ?? optionKey;
+    }
+
+    _normalizeGmOptionKey(value) {
+        const aliases = {
+            mangekyo: "hasMangekyoSharingan",
+            ms: "hasMangekyoSharingan",
+            eternalMangekyo: "hasEternalMangekyoSharingan",
+            ems: "hasEternalMangekyoSharingan",
+            senjuCells: "hasSenjuCells",
+            cellulesSenju: "hasSenjuCells",
+            rinnegan: "hasRinnegan",
+            tenseigan: "hasTenseigan"
+        };
+
+        return aliases[value] ?? value;
+    }
+
+    _checkTechniquePrerequisite(actor, system, skill, definition) {
+        const prerequisites = system.prerequisites ?? {};
+        const prerequisiteType = prerequisites.type ?? "none";
+        const strictPrerequisite = Boolean(prerequisites.strict);
+        const typeLabel = NARUTO25E.techniquePrerequisiteTypes?.[prerequisiteType] ?? prerequisiteType;
+
+        if (!strictPrerequisite || prerequisiteType === "none") {
+            return {
+                ok: true,
+                label: strictPrerequisite ? typeLabel : "Non strict"
+            };
+        }
+
+        const requiredValue = String(prerequisites.value ?? "").trim();
+        const masteryRank = Number(prerequisites.masteryRank ?? 5);
+        const skillOwned = Boolean(skill?.owned || definition.ownedByDefault);
+        const skillValue = Number(skill?.natural ?? 0);
+
+        const fail = (message) => ({
+            ok: false,
+            label: typeLabel,
+            message
+        });
+
+        if (prerequisiteType === "skill" && !skillOwned) {
+            return fail(`${actor.name} ne possède pas la compétence requise : ${definition.label}.`);
+        }
+
+        if (prerequisiteType === "mastery" && skillValue < masteryRank) {
+            return fail(`${actor.name} ne maîtrise pas suffisamment ${definition.label} (${skillValue}/${masteryRank}).`);
+        }
+
+        if (prerequisiteType === "affinity") {
+            const affinityKey = requiredValue || system.skill;
+            const affinityKeys = this._getActorAffinityKeys(actor);
+
+            if (!affinityKey) {
+                return fail("Cette technique demande une affinité, mais aucune valeur de prérequis n’est renseignée.");
+            }
+
+            if (!affinityKeys.includes(affinityKey)) {
+                const affinityLabel = NARUTO25E.chakraAffinities?.[affinityKey]?.label ?? affinityKey;
+                return fail(`${actor.name} ne possède pas l’affinité requise : ${affinityLabel}.`);
+            }
+
+            return {
+                ok: true,
+                label: `${typeLabel} : ${NARUTO25E.chakraAffinities?.[affinityKey]?.label ?? affinityKey}`
+            };
+        }
+
+        if (prerequisiteType === "clan") {
+            const clanKeys = this._getActorClanKeys(actor);
+
+            if (!requiredValue) {
+                return fail("Cette technique demande un clan, mais aucune valeur de prérequis n’est renseignée.");
+            }
+
+            if (!clanKeys.includes(requiredValue)) {
+                const clanLabel = NARUTO25E.clans?.[requiredValue]?.label ?? requiredValue;
+                return fail(`${actor.name} n’appartient pas au clan requis : ${clanLabel}.`);
+            }
+
+            return {
+                ok: true,
+                label: `${typeLabel} : ${NARUTO25E.clans?.[requiredValue]?.label ?? requiredValue}`
+            };
+        }
+
+        if (prerequisiteType === "voie") {
+            const voieKeys = this._getActorVoieKeys(actor);
+
+            if (!requiredValue) {
+                return fail("Cette technique demande une voie, mais aucune valeur de prérequis n’est renseignée.");
+            }
+
+            if (!voieKeys.includes(requiredValue)) {
+                const voieLabel = NARUTO25E.voies?.[requiredValue]?.label ?? requiredValue;
+                return fail(`${actor.name} ne possède pas la voie requise : ${voieLabel}.`);
+            }
+
+            return {
+                ok: true,
+                label: `${typeLabel} : ${NARUTO25E.voies?.[requiredValue]?.label ?? requiredValue}`
+            };
+        }
+
+        if (prerequisiteType === "lineage") {
+            const requiredLineage = Number(requiredValue || masteryRank || 0);
+            const actorLineage = Number(
+                actor.system.bases?.lign?.total ??
+                actor.system.bases?.lign?.value ??
+                0
+            );
+
+            if (actorLineage < requiredLineage) {
+                return fail(`${actor.name} n’a pas assez en Lignée (${actorLineage}/${requiredLineage}).`);
+            }
+
+            return {
+                ok: true,
+                label: `${typeLabel} : ${requiredLineage}`
+            };
+        }
+
+        if (prerequisiteType === "gmOption") {
+            const clanKeys = this._getActorClanKeys(actor);
+            const gmOptions = actor.system.heritage?.gmOptions ?? {};
+            const optionKey = this._normalizeGmOptionKey(requiredValue);
+
+            if (!optionKey) {
+                return fail("Cette technique demande une option MJ de lignée, mais aucune valeur n’est renseignée.");
+            }
+
+            let enabled = Boolean(gmOptions[optionKey]);
+
+            if (optionKey === "hasSenjuCells") {
+                enabled = enabled || clanKeys.includes("senju");
+            }
+
+            if (!enabled) {
+                return fail(`${actor.name} ne possède pas l’option MJ requise : ${this._getGmOptionLabel(optionKey)}.`);
+            }
+
+            return {
+                ok: true,
+                label: `${typeLabel} : ${this._getGmOptionLabel(optionKey)}`
+            };
+        }
+
+        if (["gm", "kekkeiGenkai", "kekkeiTota", "kinjutsu"].includes(prerequisiteType)) {
+            if (!prerequisites.validated) {
+                return fail(`${actor.name} n’a pas encore la validation MJ requise pour cette technique.`);
+            }
+
+            return {
+                ok: true,
+                label: `${typeLabel} : validé`
+            };
+        }
+
+        return {
+            ok: true,
+            label: typeLabel
+        };
     }
 
     async rollTechnique(actor = null) {
@@ -95,19 +331,19 @@ export class Naruto25eItem extends Item {
         const prerequisiteType = prerequisites.type ?? "none";
         const strictPrerequisite = Boolean(prerequisites.strict);
 
+        const prerequisiteResult = this._checkTechniquePrerequisite(
+            rollActor,
+            system,
+            skill,
+            definition
+        );
+
+        if (!prerequisiteResult.ok) {
+            ui.notifications.warn(prerequisiteResult.message);
+            return null;
+        }
+
         const skillOwned = Boolean(skill?.owned || definition.ownedByDefault);
-        const masteryRank = Number(prerequisites.masteryRank ?? 5);
-        const skillValue = Number(skill?.natural ?? 0);
-
-        if (strictPrerequisite && prerequisiteType === "skill" && !skillOwned) {
-            ui.notifications.warn(`${rollActor.name} ne possède pas la compétence requise : ${definition.label}.`);
-            return null;
-        }
-
-        if (strictPrerequisite && prerequisiteType === "mastery" && skillValue < masteryRank) {
-            ui.notifications.warn(`${rollActor.name} ne maîtrise pas suffisamment ${definition.label} (${skillValue}/${masteryRank}).`);
-            return null;
-        }
 
         const baseKey = definition.base ?? system.base;
         const baseTotal = Number(
@@ -177,7 +413,7 @@ export class Naruto25eItem extends Item {
                 <div><strong>Durée :</strong> ${system.duration || "—"}</div>
                 <div><strong>Zone :</strong> ${system.area || "—"}</div>
                 <div><strong>Dégâts :</strong> ${system.damage?.formula || "—"} ${NARUTO25E.damageTypes?.[system.damage?.type] ?? system.damage?.type ?? ""}</div>
-                <div><strong>Prérequis :</strong> ${strictPrerequisite ? (NARUTO25E.techniquePrerequisiteTypes?.[prerequisiteType] ?? prerequisiteType) : "Non strict"}</div>
+                <div><strong>Prérequis :</strong> ${prerequisiteResult.label}</div>
             </div>
 
             ${system.effect ? `

@@ -1332,12 +1332,14 @@ NARUTO25E.techniquePrerequisiteTypes = {
   skill: "Compétence possédée",
   mastery: "Maîtrise de compétence",
   affinity: "Affinité naturelle",
-  clan: "Clan",
-  lineage: "Lignée",
+  clan: "Clan requis",
+  voie: "Voie requise",
+  lineage: "Lignée minimale",
   kekkeiGenkai: "Kekkei Genkai",
   kekkeiTota: "Kekkei Tōta",
   kinjutsu: "Kinjutsu / Technique interdite",
-  gm: "Validation MJ"
+  gmOption: "Option MJ de lignée",
+  gm: "Validation MJ manuelle"
 };
 
 NARUTO25E.damageTypes = {

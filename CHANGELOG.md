@@ -2,6 +2,35 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.20
+
+### Ajouté
+
+- Ajout des prérequis avancés pour les Techniques.
+- Ajout du champ `system.prerequisites.value` pour définir la valeur attendue du prérequis.
+- Ajout du champ `system.prerequisites.validated` pour les prérequis nécessitant une validation MJ manuelle.
+- Ajout du type de prérequis `voie`.
+- Ajout du type de prérequis `gmOption` pour lire les options MJ de lignée.
+- Les Techniques peuvent désormais vérifier automatiquement :
+  - une compétence possédée ;
+  - une maîtrise minimale de compétence ;
+  - une affinité naturelle ;
+  - un clan requis ;
+  - une voie requise ;
+  - une valeur minimale de Lignée ;
+  - une option MJ de lignée comme Mangekyō Sharingan, EMS, cellules Senju, Rinnegan ou Tenseigan.
+
+### Modifié
+
+- La vérification des prérequis de Technique est centralisée dans `item.js`.
+- La carte de chat affiche désormais le prérequis réellement vérifié plutôt qu’un simple type générique.
+- Les prérequis Kekkei Genkai, Kekkei Tōta, Kinjutsu et Validation MJ utilisent la case de validation MJ manuelle.
+
+### Préparé
+
+- Préparation des futurs compendiums de Techniques avec prérequis structurés.
+- Préparation des futures Techniques liées au Mangekyō Sharingan, au Rinnegan et au Tenseigan.
+
 ## 0.1.19.9.1
 
 ### Corrigé

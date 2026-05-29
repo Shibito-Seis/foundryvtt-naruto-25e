@@ -200,14 +200,33 @@
                 </label>
 
                 <label>
-                    Rang de maîtrise requis
+                    Valeur du prérequis
+                    <input
+                        name="system.prerequisites.value"
+                        type="text"
+                        value="{{system.prerequisites.value}}"
+                        placeholder="Ex : uchiha, hachimon, katon, hasMangekyoSharingan..."
+                    />
+                </label>
+
+                <label>
+                    Rang / seuil requis
                     <input name="system.prerequisites.masteryRank" type="number" value="{{system.prerequisites.masteryRank}}" min="0" />
+                </label>
+
+                <label>
+                    Validation MJ du prérequis
+                    <input name="system.prerequisites.validated" type="checkbox" {{#if system.prerequisites.validated}}checked{{/if}} />
                 </label>
 
                 <label class="wide">
                     Texte de prérequis
-                    <input name="system.prerequisites.text" type="text" value="{{system.prerequisites.text}}" placeholder="Ex : Clan Uchiha, Sharingan actif, Suiton + Fūton maîtrisés..." />
+                    <input name="system.prerequisites.text" type="text" value="{{system.prerequisites.text}}" placeholder="Ex : Clan Uchiha, Mangekyō Sharingan éveillé, Lignée 5..." />
                 </label>
+
+                <p class="wide formula-hint">
+                    Valeurs utiles : clan <code>uchiha</code>, <code>hyuga</code>, <code>senju</code> ; affinité <code>katon</code>, <code>suiton</code> ; option MJ <code>hasMangekyoSharingan</code>, <code>hasEternalMangekyoSharingan</code>, <code>hasSenjuCells</code>, <code>hasRinnegan</code>, <code>hasTenseigan</code>.
+                </p>
             </div>
 
           <button type="button" class="technique-roll" {{#unless system.roll.enabled}}disabled{{/unless}}>
