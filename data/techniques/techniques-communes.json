@@ -1,0 +1,170 @@
+[
+  {
+    "name": "Henge : Bunshin",
+    "type": "technique",
+    "img": "icons/magic/control/silhouette-aura-energy.webp",
+    "system": {
+      "description": "Clone physique.",
+      "family": "ninjutsu",
+      "domain": "Henge — Simulacre",
+      "rank": "d",
+      "level": 1,
+      "skill": "henge",
+      "base": "nin",
+      "range": "Personnelle",
+      "duration": "Momentané",
+      "target": "Individuelle",
+      "area": "",
+      "damage": {
+        "formula": "",
+        "type": "none",
+        "scaling": ""
+      },
+      "chakra": {
+        "initial": 10,
+        "maintenance": 4,
+        "text": "10/4 pts"
+      },
+      "roll": {
+        "enabled": true,
+        "defaultDifficulty": 6,
+        "opposed": false
+      },
+      "prerequisites": {
+        "strict": true,
+        "type": "skill",
+        "value": "",
+        "masteryRank": 5,
+        "validated": false,
+        "text": "Compétence Henge possédée."
+      },
+      "effect": "Clone tangible henge : +1 solidité, +1 durée. Fatigue 1, Vigueur 2."
+    }
+  },
+  {
+    "name": "Henge : Henshin",
+    "type": "technique",
+    "img": "icons/magic/control/debuff-chains-shackles-movement-blue.webp",
+    "system": {
+      "description": "Métamorphose humaine.",
+      "family": "ninjutsu",
+      "domain": "Henge — Métamorphose",
+      "rank": "d",
+      "level": 1,
+      "skill": "henge",
+      "base": "nin",
+      "range": "Personnelle",
+      "duration": "Momentané",
+      "target": "Individuelle",
+      "area": "",
+      "damage": {
+        "formula": "",
+        "type": "none",
+        "scaling": ""
+      },
+      "chakra": {
+        "initial": 10,
+        "maintenance": 2,
+        "text": "10/2 pts"
+      },
+      "roll": {
+        "enabled": true,
+        "defaultDifficulty": 6,
+        "opposed": false
+      },
+      "prerequisites": {
+        "strict": true,
+        "type": "skill",
+        "value": "",
+        "masteryRank": 5,
+        "validated": false,
+        "text": "Compétence Henge possédée."
+      },
+      "effect": "Métamorphose humaine : visage. +1 durée, +1 taille."
+    }
+  },
+  {
+    "name": "Gensou : Kaï",
+    "type": "technique",
+    "img": "icons/magic/control/hypnosis-mesmerism-eye.webp",
+    "system": {
+      "description": "Dissipation psychique.",
+      "family": "genjutsu",
+      "domain": "Gensou — Hypnose",
+      "rank": "d",
+      "level": 1,
+      "skill": "gensou",
+      "base": "gen",
+      "range": "Personnelle",
+      "duration": "Instantané",
+      "target": "Individuelle",
+      "area": "",
+      "damage": {
+        "formula": "",
+        "type": "mental",
+        "scaling": ""
+      },
+      "chakra": {
+        "initial": 12,
+        "maintenance": 0,
+        "text": "12 pts"
+      },
+      "roll": {
+        "enabled": true,
+        "defaultDifficulty": 6,
+        "opposed": false
+      },
+      "prerequisites": {
+        "strict": true,
+        "type": "skill",
+        "value": "",
+        "masteryRank": 5,
+        "validated": false,
+        "text": "Compétence Gensou possédée."
+      },
+      "effect": "Sous les effets d’un genjutsu de domination, de contrôle ou de monde illusoire, génère un jet immédiat de Contrôle de l’Esprit augmenté de +2."
+    }
+  },
+  {
+    "name": "Gensou : Bunshin",
+    "type": "technique",
+    "img": "icons/magic/control/silhouette-hold-change-blue.webp",
+    "system": {
+      "description": "Clone illusoire.",
+      "family": "genjutsu",
+      "domain": "Gensou — Mirage",
+      "rank": "d",
+      "level": 1,
+      "skill": "gensou",
+      "base": "gen",
+      "range": "Personnelle",
+      "duration": "Momentané",
+      "target": "Individuelle",
+      "area": "",
+      "damage": {
+        "formula": "",
+        "type": "mental",
+        "scaling": ""
+      },
+      "chakra": {
+        "initial": 8,
+        "maintenance": 2,
+        "text": "8/2 pts"
+      },
+      "roll": {
+        "enabled": true,
+        "defaultDifficulty": 6,
+        "opposed": false
+      },
+      "prerequisites": {
+        "strict": true,
+        "type": "skill",
+        "value": "",
+        "masteryRank": 5,
+        "validated": false,
+        "text": "Compétence Gensou possédée."
+      },
+      "effect": "Clone intangible gensou. Entretien standard."
+    }
+  }
+]

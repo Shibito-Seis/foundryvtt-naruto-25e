@@ -1,0 +1,254 @@
+[
+  {
+    "name": "Fūton : Shinkūgyoku",
+    "type": "technique",
+    "img": "icons/magic/air/wind-vortex-swirl-blue.webp",
+    "system": {
+      "description": "Vents acérés.",
+      "family": "ninjutsu",
+      "domain": "Fūton — Projection",
+      "rank": "d",
+      "level": 1,
+      "skill": "futon",
+      "base": "nin",
+      "range": "D1 — 5 m",
+      "duration": "Instantané",
+      "target": "Individuelle",
+      "area": "Z2 — rayon 2 m",
+      "damage": {
+        "formula": "NIN + 2",
+        "type": "wind",
+        "scaling": ""
+      },
+      "chakra": {
+        "initial": 5,
+        "maintenance": 0,
+        "text": "5 pts"
+      },
+      "roll": {
+        "enabled": true,
+        "defaultDifficulty": 6,
+        "opposed": false
+      },
+      "prerequisites": {
+        "strict": true,
+        "type": "skill",
+        "value": "",
+        "masteryRank": 5,
+        "validated": false,
+        "text": "Compétence Fūton possédée."
+      },
+      "effect": "NIN + 2 dégâts, Z2 impact, portée D1."
+    }
+  },
+  {
+    "name": "Fūton : Kaze no Yaiba",
+    "type": "technique",
+    "img": "icons/magic/air/air-wave-gust-smoke-yellow.webp",
+    "system": {
+      "description": "Lame de vent.",
+      "family": "ninjutsu",
+      "domain": "Fūton — Manipulation",
+      "rank": "d",
+      "level": 1,
+      "skill": "futon",
+      "base": "nin",
+      "range": "Personnelle",
+      "duration": "Momentané",
+      "target": "Individuelle",
+      "area": "Z2",
+      "damage": {
+        "formula": "+2 dégâts arme",
+        "type": "wind",
+        "scaling": ""
+      },
+      "chakra": {
+        "initial": 20,
+        "maintenance": 3,
+        "text": "20/3 pts"
+      },
+      "roll": {
+        "enabled": true,
+        "defaultDifficulty": 6,
+        "opposed": false
+      },
+      "prerequisites": {
+        "strict": true,
+        "type": "skill",
+        "value": "",
+        "masteryRank": 5,
+        "validated": false,
+        "text": "Compétence Fūton possédée."
+      },
+      "effect": "Crée une enveloppe de vent acéré autour d’une arme et ajoute +2 dégâts aux dégâts standard de l’arme."
+    }
+  },
+  {
+    "name": "Doton : Kōka",
+    "type": "technique",
+    "img": "icons/magic/earth/armor-stone-skin.webp",
+    "system": {
+      "description": "Technique du Renforcement Physique Terrestre.",
+      "family": "ninjutsu",
+      "domain": "Doton — Manipulation",
+      "rank": "d",
+      "level": 1,
+      "skill": "doton",
+      "base": "nin",
+      "range": "Personnelle",
+      "duration": "Momentané",
+      "target": "Individuelle",
+      "area": "",
+      "damage": {
+        "formula": "",
+        "type": "earth",
+        "scaling": ""
+      },
+      "chakra": {
+        "initial": 12,
+        "maintenance": 5,
+        "text": "12/5 pts"
+      },
+      "roll": {
+        "enabled": true,
+        "defaultDifficulty": 6,
+        "opposed": false
+      },
+      "prerequisites": {
+        "strict": true,
+        "type": "skill",
+        "value": "",
+        "masteryRank": 5,
+        "validated": false,
+        "text": "Compétence Doton possédée."
+      },
+      "effect": "+2 Vigueur."
+    }
+  },
+  {
+    "name": "Doton : Doryūheki",
+    "type": "technique",
+    "img": "icons/magic/earth/barrier-stone-explosion-debris.webp",
+    "system": {
+      "description": "Barrière inamovible.",
+      "family": "ninjutsu",
+      "domain": "Doton — Construction",
+      "rank": "d",
+      "level": 1,
+      "skill": "doton",
+      "base": "nin",
+      "range": "D0 ou D1 — 5 m",
+      "duration": "Momentané",
+      "target": "Zone d’effet : ligne",
+      "area": "Z2 — rayon 2 m",
+      "damage": {
+        "formula": "1",
+        "type": "earth",
+        "scaling": "Solidité NIN + 2"
+      },
+      "chakra": {
+        "initial": 8,
+        "maintenance": 3,
+        "text": "8/3 pts"
+      },
+      "roll": {
+        "enabled": true,
+        "defaultDifficulty": 6,
+        "opposed": false
+      },
+      "prerequisites": {
+        "strict": true,
+        "type": "skill",
+        "value": "",
+        "masteryRank": 5,
+        "validated": false,
+        "text": "Compétence Doton possédée."
+      },
+      "effect": "Barrière de pierre NIN + 2 solidité sur Z2, portée D0 ou D1."
+    }
+  },
+  {
+    "name": "Iryō : Shōsen",
+    "type": "technique",
+    "img": "icons/magic/life/cross-worn-green.webp",
+    "system": {
+      "description": "Technique médicale de soin.",
+      "family": "ninjutsu",
+      "domain": "Iryō — Chakra pur",
+      "rank": "d",
+      "level": 1,
+      "skill": "iryo",
+      "base": "nin",
+      "range": "Touché",
+      "duration": "Momentané",
+      "target": "Individuelle",
+      "area": "",
+      "damage": {
+        "formula": "",
+        "type": "medical",
+        "scaling": ""
+      },
+      "chakra": {
+        "initial": 17,
+        "maintenance": 3,
+        "text": "17/3 pts"
+      },
+      "roll": {
+        "enabled": true,
+        "defaultDifficulty": 6,
+        "opposed": false
+      },
+      "prerequisites": {
+        "strict": true,
+        "type": "skill",
+        "value": "",
+        "masteryRank": 5,
+        "validated": false,
+        "text": "Compétence Iryō possédée."
+      },
+      "effect": "Génère un jet de Régénération - Santé augmenté de +3."
+    }
+  },
+  {
+    "name": "Fūin : Keiyaku Fūin",
+    "type": "technique",
+    "img": "icons/magic/symbols/runes-star-pentagon-orange.webp",
+    "system": {
+      "description": "Sceau de contrat.",
+      "family": "ninjutsu",
+      "domain": "Fūin — Sceaux dynamiques",
+      "rank": "d",
+      "level": 1,
+      "skill": "fuin",
+      "base": "nin",
+      "range": "Touché",
+      "duration": "Rituel",
+      "target": "Individuelle",
+      "area": "",
+      "damage": {
+        "formula": "",
+        "type": "chakra",
+        "scaling": ""
+      },
+      "chakra": {
+        "initial": 29,
+        "maintenance": 0,
+        "text": "29 pts"
+      },
+      "roll": {
+        "enabled": true,
+        "defaultDifficulty": 6,
+        "opposed": false
+      },
+      "prerequisites": {
+        "strict": true,
+        "type": "skill",
+        "value": "",
+        "masteryRank": 5,
+        "validated": false,
+        "text": "Compétence Fūin possédée."
+      },
+      "effect": "Renvoie un contractant Kuchiyose. Déverrouillage de Sceau Corporel +11."
+    }
+  }
+]

@@ -2,6 +2,28 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.21.1
+
+### Ajouté
+
+- Ajout d’un importeur MJ pour générer les premiers compendiums de Techniques depuis des fichiers JSON.
+- Ajout de la commande système `game.naruto25e.importTechniquePacks({ clear: true })`.
+- Ajout du dossier `data/techniques/` pour stocker les sources JSON des techniques.
+- Ajout des premiers fichiers sources :
+  - `techniques-communes.json`
+  - `techniques-elementaires.json`
+
+### Contenu
+
+- Ajout de premiers échantillons importables pour Henge, Gensou, Fūton, Doton, Iryō et Fūin.
+- Les techniques importées respectent la structure actuelle des items `technique`.
+- Les prérequis utilisent provisoirement le type `skill` afin de vérifier que la compétence correspondante est possédée.
+
+### Préparé
+
+- Préparation du remplissage progressif des compendiums depuis les documents papier/numériques.
+- Préparation de la séparation future entre Techniques communes, Techniques élémentaires, Techniques de lignées et Pouvoirs de lignée.
+
 ## 0.1.21
 
 ### Ajouté

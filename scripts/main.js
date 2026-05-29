@@ -2,6 +2,7 @@ import { Naruto25eActor } from "./documents/actor.js";
 import { Naruto25eItem } from "./documents/item.js";
 import { Naruto25eShinobiSheet } from "./sheets/shinobi-sheet.js";
 import { Naruto25eItemSheet } from "./sheets/item-sheet.js";
+import { importNaruto25eTechniquePacks } from "./importers/technique-pack-importer.js";
 
 Hooks.once("init", async function () {
   console.log("Naruto 2.5e | Initialisation du système");
@@ -94,5 +95,11 @@ Hooks.once("init", async function () {
       "nindoAction"
     ],
     makeDefault: true
+  });
+
+  game.naruto25e = foundry.utils.mergeObject(game.naruto25e ?? {}, {
+    importTechniquePacks: importNaruto25eTechniquePacks
+  }, {
+    inplace: false
   });
 });
