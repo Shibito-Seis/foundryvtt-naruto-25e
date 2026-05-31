@@ -2,6 +2,25 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.22.1
+
+### Ajouté
+
+- Ajout d’un résumé calculé de l’inventaire.
+- Ajout du nombre total d’objets portés.
+- Ajout du poids total porté.
+- Ajout du poids équipé.
+- Ajout de la valeur totale de l’inventaire.
+- Ajout de la valeur totale par catégorie : armes, protections, consommables et objets.
+- Ajout d’un système de charge basé sur le COR effectif.
+- Ajout des seuils de charge : chargé, surchargé et surcharge critique.
+- Ajout d’un affichage des malus conseillés liés à la charge.
+
+### Préparé
+
+- Préparation de l’intégration future des malus de charge dans les jets de combat.
+- Préparation de la suite `0.1.22.x` dédiée aux consommables utilisables, au typage avancé des objets et aux compendiums d’équipement.
+
 ## 0.1.21.2
 
 ### Ajouté

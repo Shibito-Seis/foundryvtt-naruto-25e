@@ -2379,6 +2379,92 @@ async decreaseBase(baseKey) {
       if (typeA !== typeB) return typeA - typeB;
       return Number(a.sort ?? 0) - Number(b.sort ?? 0);
     });
+
+    const valueByType = {};
+
+    for (const type of NARUTO25E.inventoryTypeOrder ?? []) {
+      valueByType[type] = 0;
+    }
+
+    let totalItems = 0;
+    let totalWeight = 0;
+    let equippedWeight = 0;
+    let totalValue = 0;
+
+    for (const item of inventory.items) {
+      const quantity = Math.max(1, Number(item.quantity ?? 1));
+      const itemWeight = Math.max(0, Number(item.weight ?? 0));
+      const itemValue = Math.max(0, Number(item.value ?? 0));
+
+      const stackWeight = itemWeight * quantity;
+      const stackValue = itemValue * quantity;
+
+      totalItems += quantity;
+      totalWeight += stackWeight;
+      totalValue += stackValue;
+
+      if (item.equipped) {
+        equippedWeight += stackWeight;
+      }
+
+      valueByType[item.type] = Number(valueByType[item.type] ?? 0) + stackValue;
+    }
+
+    const cor = Math.max(1, this._getBaseEffective(system, "cor"));
+
+    const lightLimit = cor * 5;
+    const heavyLimit = cor * 10;
+    const criticalLimit = cor * 15;
+
+    let loadState = "normal";
+    let loadLabel = "Normal";
+    let statusClass = "inventory-load-normal";
+    let penaltyText = "Aucun malus de charge.";
+
+    if (totalWeight > criticalLimit) {
+      loadState = "critical";
+      loadLabel = "Surcharge critique";
+      statusClass = "inventory-load-critical";
+      penaltyText = "Charge au-delà du maximum conseillé : le personnage ne devrait pas combattre ou se déplacer normalement.";
+    } else if (totalWeight > heavyLimit) {
+      loadState = "overloaded";
+      loadLabel = "Surchargé";
+      statusClass = "inventory-load-overloaded";
+      penaltyText = "Malus conseillé : -2 Esquive, -2 Camouflage, -1 Initiative, déplacement très réduit.";
+    } else if (totalWeight > lightLimit) {
+      loadState = "loaded";
+      loadLabel = "Chargé";
+      statusClass = "inventory-load-loaded";
+      penaltyText = "Malus conseillé : -1 Esquive, -1 Camouflage, déplacement réduit.";
+    }
+
+    inventory.summary = {
+      totalItems,
+      totalWeight: Number(totalWeight.toFixed(2)),
+      equippedWeight: Number(equippedWeight.toFixed(2)),
+      totalValue: Number(totalValue.toFixed(2)),
+      valueByType: {
+        weapon: Number((valueByType.weapon ?? 0).toFixed(2)),
+        armor: Number((valueByType.armor ?? 0).toFixed(2)),
+        consumable: Number((valueByType.consumable ?? 0).toFixed(2)),
+        misc: Number((valueByType.misc ?? 0).toFixed(2))
+      }
+    };
+
+    inventory.encumbrance = {
+      cor,
+      current: Number(totalWeight.toFixed(2)),
+      lightLimit,
+      heavyLimit,
+      criticalLimit,
+      state: loadState,
+      label: loadLabel,
+      statusClass,
+      penaltyText,
+      isLoaded: loadState === "loaded",
+      isOverloaded: loadState === "overloaded",
+      isCritical: loadState === "critical"
+    };
   }
 
     async addInventoryItemFromDraft() {

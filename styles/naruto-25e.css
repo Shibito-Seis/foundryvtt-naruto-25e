@@ -710,6 +710,97 @@
   margin-bottom: 12px;
 }
 
+.naruto-25e-shinobi-sheet .inventory-summary-panel {
+  border: 1px solid #777;
+  padding: 10px;
+  margin-bottom: 12px;
+  background: rgba(0, 0, 0, 0.035);
+}
+
+.naruto-25e-shinobi-sheet .inventory-summary-panel h3,
+.naruto-25e-shinobi-sheet .inventory-encumbrance h4 {
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  font-size: 13px;
+}
+
+.naruto-25e-shinobi-sheet .inventory-summary-grid,
+.naruto-25e-shinobi-sheet .inventory-value-grid,
+.naruto-25e-shinobi-sheet .inventory-encumbrance-grid {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.naruto-25e-shinobi-sheet .inventory-summary-grid {
+  grid-template-columns: repeat(4, minmax(110px, 1fr));
+}
+
+.naruto-25e-shinobi-sheet .inventory-value-grid {
+  grid-template-columns: repeat(4, minmax(110px, 1fr));
+}
+
+.naruto-25e-shinobi-sheet .inventory-encumbrance-grid {
+  grid-template-columns: repeat(6, minmax(90px, 1fr));
+}
+
+.naruto-25e-shinobi-sheet .inventory-summary-grid div,
+.naruto-25e-shinobi-sheet .inventory-value-grid div,
+.naruto-25e-shinobi-sheet .inventory-encumbrance-grid div {
+  border: 1px solid #999;
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.naruto-25e-shinobi-sheet .inventory-summary-grid strong,
+.naruto-25e-shinobi-sheet .inventory-value-grid strong,
+.naruto-25e-shinobi-sheet .inventory-encumbrance-grid strong {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.naruto-25e-shinobi-sheet .inventory-summary-grid span,
+.naruto-25e-shinobi-sheet .inventory-value-grid span,
+.naruto-25e-shinobi-sheet .inventory-encumbrance-grid span {
+  display: block;
+  margin-top: 4px;
+  font-weight: bold;
+}
+
+.naruto-25e-shinobi-sheet .inventory-encumbrance {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+.naruto-25e-shinobi-sheet .inventory-encumbrance-penalty {
+  margin: 6px 0 0;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.naruto-25e-shinobi-sheet .inventory-load-loaded {
+  border-color: #a77c00;
+  background: rgba(167, 124, 0, 0.08);
+}
+
+.naruto-25e-shinobi-sheet .inventory-load-overloaded {
+  border-color: #9b5a00;
+  background: rgba(155, 90, 0, 0.12);
+}
+
+.naruto-25e-shinobi-sheet .inventory-load-critical {
+  border-color: #8b1e1e;
+  background: rgba(139, 30, 30, 0.12);
+}
+
+.naruto-25e-shinobi-sheet .inventory-load-critical .inventory-encumbrance-penalty,
+.naruto-25e-shinobi-sheet .inventory-load-overloaded .inventory-encumbrance-penalty {
+  color: #8b1e1e;
+}
+
 .naruto-25e-shinobi-sheet .inventory-add-panel {
   border: 1px solid #777;
   padding: 10px;

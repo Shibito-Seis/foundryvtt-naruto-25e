@@ -1491,9 +1491,97 @@
           {{/if}}
         </section>
 
+        <section class="inventory-summary-panel {{system.inventory.encumbrance.statusClass}}">
+          <h3>Résumé d’inventaire</h3>
+
+          <div class="inventory-summary-grid">
+            <div>
+              <strong>Objets</strong>
+              <span>{{system.inventory.summary.totalItems}}</span>
+            </div>
+
+            <div>
+              <strong>Poids total</strong>
+              <span>{{system.inventory.summary.totalWeight}}</span>
+            </div>
+
+            <div>
+              <strong>Poids équipé</strong>
+              <span>{{system.inventory.summary.equippedWeight}}</span>
+            </div>
+
+            <div>
+              <strong>Valeur totale</strong>
+              <span>{{system.inventory.summary.totalValue}} 両</span>
+            </div>
+          </div>
+
+          <div class="inventory-value-grid">
+            <div>
+              <strong>Armes</strong>
+              <span>{{system.inventory.summary.valueByType.weapon}} 両</span>
+            </div>
+
+            <div>
+              <strong>Protections</strong>
+              <span>{{system.inventory.summary.valueByType.armor}} 両</span>
+            </div>
+
+            <div>
+              <strong>Consommables</strong>
+              <span>{{system.inventory.summary.valueByType.consumable}} 両</span>
+            </div>
+
+            <div>
+              <strong>Objets</strong>
+              <span>{{system.inventory.summary.valueByType.misc}} 両</span>
+            </div>
+          </div>
+
+          <div class="inventory-encumbrance">
+            <h4>Charge</h4>
+
+            <div class="inventory-encumbrance-grid">
+              <div>
+                <strong>COR</strong>
+                <span>{{system.inventory.encumbrance.cor}}</span>
+              </div>
+
+              <div>
+                <strong>Actuelle</strong>
+                <span>{{system.inventory.encumbrance.current}}</span>
+              </div>
+
+              <div>
+                <strong>Chargé</strong>
+                <span>&gt; {{system.inventory.encumbrance.lightLimit}}</span>
+              </div>
+
+              <div>
+                <strong>Surchargé</strong>
+                <span>&gt; {{system.inventory.encumbrance.heavyLimit}}</span>
+              </div>
+
+              <div>
+                <strong>Critique</strong>
+                <span>&gt; {{system.inventory.encumbrance.criticalLimit}}</span>
+              </div>
+
+              <div>
+                <strong>État</strong>
+                <span>{{system.inventory.encumbrance.label}}</span>
+              </div>
+            </div>
+
+            <p class="inventory-encumbrance-penalty">
+              {{system.inventory.encumbrance.penaltyText}}
+            </p>
+          </div>
+        </section>
+
         <section class="inventory-add-panel">
           <h3>Ajouter un objet</h3>
-
+          
           <div class="inventory-add-grid">
             <label>
               Nom
