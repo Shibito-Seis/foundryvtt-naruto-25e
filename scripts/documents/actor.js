@@ -2370,6 +2370,12 @@ async decreaseBase(baseKey) {
         notes: item.notes ?? "",
         value: Math.max(0, Number(item.value ?? 0)),
         weight: Math.max(0, Number(item.weight ?? 0)),
+        useEffect: {
+          type: item.useEffect?.type ?? "",
+          resource: item.useEffect?.resource ?? "",
+          amount: Math.max(0, Number(item.useEffect?.amount ?? 0)),
+          text: item.useEffect?.text ?? ""
+        },
         sort: Number(item.sort ?? index)
       };
     }).sort((a, b) => {
@@ -2492,6 +2498,7 @@ async decreaseBase(baseKey) {
       notes: "",
       value: 0,
       weight: 0,
+      useEffect: this._getDefaultInventoryUseEffect(name, type),
       sort: items.length
     });
 
@@ -2578,5 +2585,144 @@ async decreaseBase(baseKey) {
     });
 
     ui.notifications.info(`${item.name} ${item.equipped ? "équipé" : "déséquipé"}.`);
+  }
+
+  _normalizeInventoryItemName(name) {
+    return String(name ?? "")
+      .trim()
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+  }
+
+  _getDefaultInventoryUseEffect(name, type) {
+    const normalizedName = this._normalizeInventoryItemName(name);
+
+    if (type === "consumable" && normalizedName === "pilule de chakra mineure") {
+      return {
+        type: "restoreResource",
+        resource: "chakra",
+        amount: 25,
+        text: "Restaure 25 Chakra, sans dépasser le maximum."
+      };
+    }
+
+    return {
+      type: "",
+      resource: "",
+      amount: 0,
+      text: ""
+    };
+  }
+
+  _getInventoryUseEffect(item) {
+    const explicitEffect = item.useEffect ?? {};
+
+    if (explicitEffect.type) {
+      return {
+        type: explicitEffect.type,
+        resource: explicitEffect.resource ?? "",
+        amount: Math.max(0, Number(explicitEffect.amount ?? 0)),
+        text: explicitEffect.text ?? ""
+      };
+    }
+
+    return this._getDefaultInventoryUseEffect(item.name, item.type);
+  }
+
+  async useInventoryConsumable(itemId) {
+    if (this.type !== "shinobi") return;
+
+    const items = foundry.utils.deepClone(this.system.inventory?.items ?? []);
+    const item = items.find((entry) => entry.id === itemId);
+
+    if (!item) {
+      ui.notifications.warn("Objet introuvable.");
+      return;
+    }
+
+    if (item.type !== "consumable") {
+      ui.notifications.warn("Seuls les consommables peuvent être utilisés.");
+      return;
+    }
+
+    const effect = this._getInventoryUseEffect(item);
+
+    if (!effect.type) {
+      ui.notifications.warn("Ce consommable n’a pas encore d’effet utilisable.");
+      return;
+    }
+
+    if (effect.type !== "restoreResource" || effect.resource !== "chakra") {
+      ui.notifications.warn("Cet effet de consommable n’est pas encore pris en charge.");
+      return;
+    }
+
+    const currentChakra = Math.max(0, Number(this.system.resources?.chakra?.value ?? 0));
+    const maxChakra = Math.max(0, Number(this.system.resources?.chakra?.max ?? 0));
+    const amount = Math.max(0, Number(effect.amount ?? 0));
+
+    if (amount <= 0) {
+      ui.notifications.warn("La quantité restaurée par ce consommable est invalide.");
+      return;
+    }
+
+    if (maxChakra <= 0) {
+      ui.notifications.warn("Le Chakra maximum du personnage est invalide.");
+      return;
+    }
+
+    if (currentChakra >= maxChakra) {
+      ui.notifications.info(`${this.name} a déjà son Chakra au maximum.`);
+      return;
+    }
+
+    const newChakra = Math.min(maxChakra, currentChakra + amount);
+    const restored = newChakra - currentChakra;
+
+    item.quantity = Math.max(1, Number(item.quantity ?? 1)) - 1;
+
+    const updatedItems = item.quantity > 0
+      ? items
+      : items.filter((entry) => entry.id !== itemId);
+
+    await this.update({
+      "system.resources.chakra.value": newChakra,
+      "system.inventory.items": updatedItems
+    });
+
+    const safeItemName = foundry.utils.escapeHTML?.(String(item.name ?? "Consommable")) ?? String(item.name ?? "Consommable");
+    const safeActorName = foundry.utils.escapeHTML?.(this.name) ?? this.name;
+
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+      flavor: `${safeActorName} utilise ${safeItemName}`,
+      content: `
+        <div class="naruto-consumable-card">
+          <header>
+            <h3>${safeItemName}</h3>
+          </header>
+
+          <p><strong>${safeActorName}</strong> utilise un consommable.</p>
+
+          <div class="naruto-consumable-effect">
+            <strong>Effet :</strong>
+            <span>+${restored} Chakra</span>
+          </div>
+
+          <div class="naruto-consumable-resource">
+            <strong>Chakra :</strong>
+            <span>${currentChakra} → ${newChakra} / ${maxChakra}</span>
+          </div>
+
+          <div class="naruto-consumable-quantity">
+            <strong>Quantité restante :</strong>
+            <span>${Math.max(0, item.quantity)}</span>
+          </div>
+        </div>
+      `
+    });
+
+    ui.notifications.info(`${item.name} utilisé : +${restored} Chakra.`);
   }
 }

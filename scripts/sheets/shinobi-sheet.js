@@ -998,6 +998,12 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     await this.actor.toggleInventoryItemEquipped(itemId);
   });
 
+    html.find(".inventory-use-consumable").on("click", async (event) => {
+    event.preventDefault();
+    const itemId = event.currentTarget.dataset.itemId;
+    await this.actor.useInventoryConsumable(itemId);
+  });
+
   html.find(".inventory-item-field").on("change", async (event) => {
     event.preventDefault();
 

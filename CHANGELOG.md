@@ -2,6 +2,23 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.22.2
+
+### Ajouté
+
+- Ajout d’un bouton `Utiliser` pour les consommables dans l’inventaire.
+- Ajout d’une première logique fonctionnelle d’effet de consommable.
+- Ajout de la `Pilule de Chakra mineure`, reconnue par son nom dans l’inventaire.
+- La `Pilule de Chakra mineure` restaure 25 Chakra sans dépasser le maximum.
+- L’utilisation d’un consommable réduit sa quantité de 1.
+- Le consommable est retiré de l’inventaire si sa quantité tombe à 0.
+- Ajout d’une carte de chat récapitulative lors de l’utilisation d’un consommable.
+
+### Préparé
+
+- Préparation d’un futur système d’effets génériques pour les consommables.
+- Préparation d’une future application des consommables à une cible ou depuis une carte de chat.
+
 ## 0.1.22.1
 
 ### Ajouté

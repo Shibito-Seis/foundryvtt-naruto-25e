@@ -828,7 +828,7 @@
 
 .naruto-25e-shinobi-sheet .inventory-row {
   display: grid;
-  grid-template-columns: 2fr 70px 80px 80px 80px 2fr 34px;
+  grid-template-columns: 2fr 70px 80px 80px 80px 2fr 80px 34px;
   gap: 4px;
   align-items: center;
 }
@@ -851,6 +851,34 @@
 
 .naruto-25e-shinobi-sheet .inventory-toggle-equipped {
   text-align: center;
+}
+
+.naruto-25e-shinobi-sheet .inventory-use-consumable {
+  text-align: center;
+  font-size: 12px;
+}
+
+.naruto-consumable-card {
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.naruto-consumable-card header h3 {
+  margin: 0 0 6px 0;
+}
+
+.naruto-consumable-card p {
+  margin: 4px 0;
+}
+
+.naruto-consumable-effect,
+.naruto-consumable-resource,
+.naruto-consumable-quantity {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 4px;
 }
 
 .naruto-25e-item-sheet .item-header {

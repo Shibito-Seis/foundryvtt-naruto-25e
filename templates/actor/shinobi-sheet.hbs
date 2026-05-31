@@ -1581,7 +1581,7 @@
 
         <section class="inventory-add-panel">
           <h3>Ajouter un objet</h3>
-          
+
           <div class="inventory-add-grid">
             <label>
               Nom
@@ -1623,6 +1623,7 @@
                   <span>Poids</span>
                   <span>Équipé</span>
                   <span>Notes</span>
+                  <span>Action</span>
                   <span></span>
                 </div>
 
@@ -1682,6 +1683,19 @@
                       type="text"
                       value="{{item.notes}}"
                     />
+
+                    {{#if (eq item.type "consumable")}}
+                      <button
+                        type="button"
+                        class="inventory-use-consumable"
+                        data-item-id="{{item.id}}"
+                        title="Utiliser"
+                      >
+                        Utiliser
+                      </button>
+                    {{else}}
+                      <span class="muted">—</span>
+                    {{/if}}
 
                     <button
                       type="button"
