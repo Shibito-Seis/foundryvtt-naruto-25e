@@ -295,7 +295,7 @@
     }
   },
   "Item": {
-    "types": ["technique", "arme", "armure", "equipement", "clan", "pouvoirLignee", "developpement", "condition", "blessure", "nindoAction"],
+    "types": ["technique", "arme", "armure", "equipement", "consommable", "clan", "pouvoirLignee", "developpement", "condition", "blessure", "nindoAction"],
     "templates": {
       "baseItem": {
         "description": ""
@@ -337,6 +337,20 @@
         "text": ""
       },
       "effect": ""
+    },
+    "consommable": {
+      "templates": ["baseItem"],
+      "subtype": "medicine",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "useEffect": {
+        "type": "none",
+        "resource": "none",
+        "amount": 0,
+        "consumeOnUse": true,
+        "text": ""
+      }
     },
     "nindoAction": {
       "templates": ["baseItem"],

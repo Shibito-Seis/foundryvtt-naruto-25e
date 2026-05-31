@@ -2,6 +2,24 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.22.3]
+
+### Ajouté
+
+- Ajout du type d’Item Foundry `consommable`.
+- Ajout de `consommable` dans les types d’Items déclarés par le système.
+- Ajout de la fiche dédiée aux consommables.
+- Ajout des champs de consommable : sous-type, quantité par défaut, valeur et poids.
+- Ajout des champs d’effet de consommable : type d’effet, ressource ciblée, montant, consommation à l’usage et texte d’effet.
+- Préparation de la Pilule de Chakra mineure comme vrai Item structuré.
+
+### Préparé
+
+- Préparation du futur pont entre les vrais Items `consommable` et l’inventaire intégré des fiches Shinobi.
+- Préparation du futur drag & drop depuis un compendium d’équipements vers l’inventaire d’un acteur.
+
+---
+
 ## 0.1.22.2
 
 ### Ajouté

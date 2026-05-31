@@ -26,6 +26,38 @@ export class Naruto25eItemSheet extends ItemSheet {
 
         context.system = this.item.system;
         context.isTechnique = this.item.type === "technique";
+        context.isConsommable = this.item.type === "consommable";
+
+        context.consumableSubtypes = [
+            { key: "medicine", label: "Médecine" },
+            { key: "drug", label: "Drogue" },
+            { key: "poison", label: "Poison" },
+            { key: "food", label: "Nourriture" },
+            { key: "tool", label: "Outil" },
+            { key: "scroll", label: "Parchemin" },
+            { key: "other", label: "Autre" }
+        ].map((option) => ({
+            ...option,
+            selected: context.system.subtype === option.key
+        }));
+
+        context.consumableEffectTypes = [
+            { key: "none", label: "Aucun" },
+            { key: "restoreResource", label: "Restaurer une ressource" }
+        ].map((option) => ({
+            ...option,
+            selected: context.system.useEffect?.type === option.key
+        }));
+
+        context.consumableResources = [
+            { key: "none", label: "Aucune" },
+            { key: "chakra", label: "Chakra" },
+            { key: "vigueur", label: "Vigueur" },
+            { key: "caractere", label: "Caractère" }
+        ].map((option) => ({
+            ...option,
+            selected: context.system.useEffect?.resource === option.key
+        }));
 
         context.techniqueFamilies = Object.entries(NARUTO25E.techniqueFamilies ?? {}).map(([key, label]) => ({
             key,

@@ -238,12 +238,86 @@
           </p>
         </section>
       {{else}}
-        <section class="panel">
-          <h2>Item</h2>
-          <p class="muted">
-            Fiche générique provisoire. Les fiches détaillées arriveront dans une prochaine version.
-          </p>
-        </section>
+        {{#if isConsommable}}
+          <section class="panel">
+            <h2>Consommable</h2>
+
+            <div class="item-grid two-columns">
+              <label>
+                Sous-type
+                <select name="system.subtype">
+                  {{#each consumableSubtypes}}
+                    <option value="{{key}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+                  {{/each}}
+                </select>
+              </label>
+
+              <label>
+                Quantité par défaut
+                <input name="system.quantity" type="number" value="{{system.quantity}}" min="1" />
+              </label>
+
+              <label>
+                Valeur
+                <input name="system.value" type="number" value="{{system.value}}" min="0" />
+              </label>
+
+              <label>
+                Poids
+                <input name="system.weight" type="number" value="{{system.weight}}" min="0" step="0.01" />
+              </label>
+
+              <hr />
+
+              <label>
+                Type d’effet
+                <select name="system.useEffect.type">
+                  {{#each consumableEffectTypes}}
+                    <option value="{{key}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+                  {{/each}}
+                </select>
+              </label>
+
+              <label>
+                Ressource ciblée
+                <select name="system.useEffect.resource">
+                  {{#each consumableResources}}
+                    <option value="{{key}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+                  {{/each}}
+                </select>
+              </label>
+
+              <label>
+                Montant
+                <input name="system.useEffect.amount" type="number" value="{{system.useEffect.amount}}" min="0" />
+              </label>
+
+              <label>
+                Consommé à l’usage
+                <input name="system.useEffect.consumeOnUse" type="checkbox" {{#if system.useEffect.consumeOnUse}}checked{{/if}} />
+              </label>
+
+              <label class="wide">
+                Texte d’effet
+                <textarea name="system.useEffect.text">{{system.useEffect.text}}</textarea>
+              </label>
+
+              <p class="wide formula-hint">
+                Exemple : une Pilule de Chakra mineure utilise
+                <code>Restaurer une ressource</code>,
+                ressource <code>Chakra</code>,
+                montant <code>25</code>.
+              </p>
+            </div>
+          </section>
+        {{else}}
+          <section class="panel">
+            <h2>Item</h2>
+            <p class="muted">
+              Fiche générique provisoire. Les fiches détaillées arriveront dans une prochaine version.
+            </p>
+          </section>
+        {{/if}}
       {{/if}}
     </div>
 

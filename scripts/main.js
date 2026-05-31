@@ -99,6 +99,7 @@ Hooks.once("init", async function () {
       "arme",
       "armure",
       "equipement",
+      "consommable",
       "clan",
       "pouvoirLignee",
       "developpement",

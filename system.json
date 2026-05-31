@@ -2,7 +2,7 @@
   "id": "naruto-25e",
   "title": "Naruto 2.5e",
   "description": "Système maison Naruto 2.5e pour Foundry VTT v13.",
-  "version": "0.1.22.2",
+  "version": "0.1.22.3",
   "compatibility": {
     "minimum": "13",
     "verified": "13.351"
@@ -48,6 +48,9 @@
       },
       "equipement": {
         "htmlFields": ["description"]
+      },
+      "consommable": {
+        "htmlFields": ["description", "useEffect.text"]
       },
       "clan": {
         "htmlFields": ["description", "history", "ideals"]
