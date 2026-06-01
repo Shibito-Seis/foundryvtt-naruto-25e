@@ -470,8 +470,7 @@ NARUTO25E.heritageModes = {
   clan: "Clan",
   voie: "Voie",
   hybridClan: "Clan hybride",
-  hybridVoie: "Voie hybridée",
-  customClan: "Clan custom"
+  hybridVoie: "Voie hybridée"
 };
 
 NARUTO25E.clans = {
@@ -1005,6 +1004,84 @@ NARUTO25E.getAffinityCreationData = function (affinityKey) {
     associatedSkills: [],
     previewTags: []
   };
+};
+
+NARUTO25E.customClanKey = "custom";
+
+NARUTO25E.isCustomClanKey = function (clanKey) {
+  return clanKey === NARUTO25E.customClanKey;
+};
+
+NARUTO25E.getCustomClanMandatoryChoices = function (customClan = {}) {
+  const normalizeArray = (value) => {
+    if (Array.isArray(value)) return value.filter(Boolean);
+    if (value && typeof value === "object") return Object.values(value).filter(Boolean);
+    return [];
+  };
+
+  const directChoices = normalizeArray(customClan.mandatoryChoices);
+
+  if (directChoices.length > 0) {
+    return directChoices.slice(0, 2);
+  }
+
+  /*
+  Compatibilité de secours avec les fiches déjà touchées par la 0.1.24 :
+  si Foundry a stocké mandatorySkills / mandatoryAffinities, on les relit
+  sans jamais appeler .filter() sur un objet.
+  */
+  const legacySkillChoices = normalizeArray(customClan.mandatorySkills).map((skillKey) => `skill:${skillKey}`);
+  const legacyAffinityChoices = normalizeArray(customClan.mandatoryAffinities).map((affinityKey) => `affinity:${affinityKey}`);
+
+  return [...legacySkillChoices, ...legacyAffinityChoices].slice(0, 2);
+};
+
+NARUTO25E.getCustomClanChoiceData = function (choiceKey) {
+  if (!choiceKey || typeof choiceKey !== "string") return null;
+
+  const [type, key] = choiceKey.split(":");
+  if (!type || !key) return null;
+
+  if (type === "skill") {
+    const skill = NARUTO25E.skillDefinitions?.[key];
+    if (!skill) return null;
+
+    return {
+      type,
+      key,
+      label: skill.label ?? key,
+      valid: skill.category !== "clan",
+      invalidReason: skill.category === "clan"
+        ? "Les compétences de clan existantes ne peuvent pas être reprises par un clan custom."
+        : ""
+    };
+  }
+
+  if (type === "affinity") {
+    const affinity = NARUTO25E.chakraAffinities?.[key];
+    if (!affinity) return null;
+
+    return {
+      type,
+      key,
+      label: affinity.label ?? key,
+      valid: true,
+      invalidReason: ""
+    };
+  }
+
+  return null;
+};
+
+NARUTO25E.getCustomClanChoiceLabel = function (choiceKey) {
+  const choice = NARUTO25E.getCustomClanChoiceData(choiceKey);
+
+  if (!choice) return choiceKey ?? "";
+
+  if (choice.type === "skill") return `Compétence — ${choice.label}`;
+  if (choice.type === "affinity") return `Affinité — ${choice.label}`;
+
+  return choice.label;
 };
 
 NARUTO25E.uchihaPowerModes = {

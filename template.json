@@ -24,8 +24,7 @@
           "customClan": {
             "name": "",
             "summary": "",
-            "mandatorySkills": ["", ""],
-            "mandatoryAffinities": ["", ""],
+            "mandatoryChoices": ["", ""],
             "notes": ""
           },
           "uchiha": {

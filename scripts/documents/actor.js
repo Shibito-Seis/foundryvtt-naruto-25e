@@ -97,7 +97,9 @@ export class Naruto25eActor extends Actor {
       const villageKey = heritage.village ?? "";
       const village = NARUTO25E.villages?.[villageKey];
 
-      const mode = heritage.mode ?? "clan";
+      const mode = heritage.mode === "customClan"
+        ? "clan"
+        : heritage.mode ?? "clan";
       const clanKey = heritage.clan ?? "";
       const voieKey = heritage.voie ?? "";
       const secondaryClanKey = heritage.hybrid?.secondaryClan ?? "";
@@ -156,8 +158,47 @@ export class Naruto25eActor extends Actor {
         errors.push(`Le village ${village.label} est visible mais pas encore sélectionnable.`);
       }
 
+      const validateCustomClan = (roleLabel = "clan custom") => {
+        const customClan = heritage.customClan ?? {};
+        const customName = String(customClan.name ?? "").trim();
+        const choices = NARUTO25E.getCustomClanMandatoryChoices?.(customClan) ?? [];
+
+        if (!gmOptions.allowCustomClan) {
+          errors.push(`Le ${roleLabel} n’est pas autorisé par le MJ pour cette fiche.`);
+        }
+
+        if (!customName) {
+          errors.push("Le clan custom doit avoir un nom.");
+        }
+
+        if (choices.length > 2) {
+          errors.push("Le clan custom ne peut pas imposer plus de 2 choix au total.");
+        }
+
+        const uniqueChoices = new Set(choices);
+
+        if (uniqueChoices.size !== choices.length) {
+          errors.push("Le clan custom ne peut pas imposer deux fois le même choix.");
+        }
+
+        for (const choiceKey of choices) {
+          const choice = NARUTO25E.getCustomClanChoiceData?.(choiceKey);
+
+          if (!choice) {
+            errors.push(`Choix imposé de clan custom invalide : ${choiceKey}.`);
+            continue;
+          }
+
+          if (!choice.valid) {
+            errors.push(choice.invalidReason || `Choix imposé de clan custom invalide : ${choiceKey}.`);
+          }
+        }
+      };
+
       if (mode === "clan") {
-        if (!clanKey || !clan) {
+        if (NARUTO25E.isCustomClanKey?.(clanKey)) {
+          validateCustomClan("clan custom");
+        } else if (!clanKey || !clan) {
           errors.push("Aucun clan principal n’est sélectionné.");
         } else if (clan.village !== villageKey) {
           errors.push(`Le clan ${clan.label} n’est pas compatible avec le village sélectionné.`);
@@ -181,7 +222,9 @@ export class Naruto25eActor extends Actor {
           errors.push("Le clan hybride n’est pas autorisé par le MJ pour cette fiche.");
         }
 
-        if (!clanKey || !clan) {
+        if (NARUTO25E.isCustomClanKey?.(clanKey)) {
+          validateCustomClan("clan custom principal");
+        } else if (!clanKey || !clan) {
           errors.push("Aucun clan principal n’est sélectionné pour l’hybridation.");
         } else if (clan.village !== villageKey) {
           errors.push(`Le clan principal ${clan.label} n’est pas compatible avec le village sélectionné.`);
@@ -203,62 +246,21 @@ export class Naruto25eActor extends Actor {
           errors.push("La voie hybridée n’est pas autorisée par le MJ pour cette fiche.");
         }
 
+        if (NARUTO25E.isCustomClanKey?.(clanKey)) {
+          validateCustomClan("clan custom principal");
+        } else if (!clanKey || !clan) {
+          errors.push("Aucun clan principal n’est sélectionné pour la voie hybridée.");
+        } else if (clan.village !== villageKey) {
+          errors.push(`Le clan principal ${clan.label} n’est pas compatible avec le village sélectionné.`);
+        }
+
         if (!voieKey || !voie) {
-          errors.push("Aucune voie principale n’est sélectionnée pour la voie hybridée.");
+          errors.push("Aucune voie n’est sélectionnée pour la voie hybridée.");
         } else {
           const voieAllowed = voie.village === "any" || voie.village === villageKey;
 
           if (!voie.selectable || !voieAllowed) {
             errors.push(`La voie ${voie.label} n’est pas compatible avec le village sélectionné.`);
-          }
-        }
-
-        if (!secondaryClanKey || !secondaryClan) {
-          errors.push("Aucun clan secondaire n’est sélectionné pour la voie hybridée.");
-        } else if (secondaryClan.village !== villageKey) {
-          errors.push(`Le clan secondaire ${secondaryClan.label} n’est pas compatible avec le village sélectionné.`);
-        }
-      }
-
-            if (mode === "customClan") {
-        const customClan = heritage.customClan ?? {};
-        const customName = String(customClan.name ?? "").trim();
-
-        if (!gmOptions.allowCustomClan) {
-          errors.push("Le clan custom n’est pas autorisé par le MJ pour cette fiche.");
-        }
-
-        if (!customName) {
-          errors.push("Le clan custom doit avoir un nom.");
-        }
-
-        const customSkillKeys = Array.isArray(customClan.mandatorySkills)
-          ? customClan.mandatorySkills.filter(Boolean)
-          : [];
-
-        const customAffinityKeys = Array.isArray(customClan.mandatoryAffinities)
-          ? customClan.mandatoryAffinities.filter(Boolean)
-          : [];
-
-        if (customSkillKeys.length > 2) {
-          errors.push("Le clan custom ne peut pas imposer plus de 2 compétences de clan.");
-        }
-
-        if (customAffinityKeys.length > 2) {
-          errors.push("Le clan custom ne peut pas imposer plus de 2 affinités.");
-        }
-
-        for (const skillKey of customSkillKeys) {
-          const skill = NARUTO25E.skillDefinitions?.[skillKey];
-
-          if (!skill || skill.category !== "clan") {
-            errors.push(`Compétence de clan custom invalide : ${skillKey}.`);
-          }
-        }
-
-        for (const affinityKey of customAffinityKeys) {
-          if (!NARUTO25E.chakraAffinities?.[affinityKey]) {
-            errors.push(`Affinité de clan custom invalide : ${affinityKey}.`);
           }
         }
       }
@@ -291,18 +293,29 @@ export class Naruto25eActor extends Actor {
       }
 
       const heritageLabel = (() => {
-        if (mode === "clan") return clan?.label ? `Clan ${clan.label}` : "Clan non sélectionné";
-        if (mode === "voie") return voie?.label ?? "Voie non sélectionnée";
-        if (mode === "hybridClan") {
-          return `${clan?.label ?? "Clan ?"} / ${secondaryClan?.label ?? "Clan secondaire ?"}`;
-        }
-        if (mode === "hybridVoie") {
-          return `${voie?.label ?? "Voie ?"} / ${secondaryClan?.label ?? "Clan secondaire ?"}`;
+        if (mode === "clan") {
+          if (NARUTO25E.isCustomClanKey?.(clanKey)) {
+            const customName = String(heritage.customClan?.name ?? "").trim();
+            return customName ? `Clan custom ${customName}` : "Clan custom non nommé";
+          }
+
+          return clan?.label ? `Clan ${clan.label}` : "Clan non sélectionné";
         }
 
-        if (mode === "customClan") {
-          const customName = String(heritage.customClan?.name ?? "").trim();
-          return customName ? `Clan custom ${customName}` : "Clan custom non nommé";
+        if (mode === "voie") return voie?.label ?? "Voie non sélectionnée";
+        if (mode === "hybridClan") {
+          const clanLabel = NARUTO25E.isCustomClanKey?.(clanKey)
+            ? String(heritage.customClan?.name ?? "").trim() || "Clan custom non nommé"
+            : clan?.label ?? "Clan ?";
+
+          return `${clanLabel} / ${secondaryClan?.label ?? "Clan secondaire ?"}`;
+        }
+        if (mode === "hybridVoie") {
+          const clanLabel = NARUTO25E.isCustomClanKey?.(clanKey)
+            ? String(heritage.customClan?.name ?? "").trim() || "Clan custom non nommé"
+            : clan?.label ?? "Clan ?";
+
+          return `${clanLabel} / ${voie?.label ?? "Voie ?"}`;
         }
 
         return "Héritage non défini";
@@ -1143,12 +1156,14 @@ async decreaseBase(baseKey) {
     if (!system.heritage) return;
 
     const heritage = system.heritage;
-    const mode = heritage.mode ?? "clan";
+    const mode = heritage.mode === "customClan"
+      ? "clan"
+      : heritage.mode ?? "clan";
 
     const grantedSkillKeys = new Set();
 
     const addClanMandatorySkill = (clanKey) => {
-      if (!clanKey) return;
+      if (!clanKey || NARUTO25E.isCustomClanKey?.(clanKey)) return;
 
       const skillKeys = NARUTO25E.getClanMandatorySkills
         ? NARUTO25E.getClanMandatorySkills(clanKey)
@@ -1159,24 +1174,22 @@ async decreaseBase(baseKey) {
       }
     };
 
-    if (mode === "clan" || mode === "hybridClan") {
+    if (mode === "clan" || mode === "hybridClan" || mode === "hybridVoie") {
       addClanMandatorySkill(heritage.clan);
     }
 
-    if (mode === "hybridClan" || mode === "hybridVoie") {
+    if (mode === "hybridClan") {
       addClanMandatorySkill(heritage.hybrid?.secondaryClan);
     }
 
-    if (mode === "customClan") {
-      const customSkillKeys = Array.isArray(heritage.customClan?.mandatorySkills)
-        ? heritage.customClan.mandatorySkills
-        : [];
+    if (NARUTO25E.isCustomClanKey?.(heritage.clan)) {
+      const customChoices = NARUTO25E.getCustomClanMandatoryChoices?.(heritage.customClan) ?? [];
 
-      for (const skillKey of customSkillKeys) {
-        const skill = NARUTO25E.skillDefinitions?.[skillKey];
+      for (const choiceKey of customChoices) {
+        const choice = NARUTO25E.getCustomClanChoiceData?.(choiceKey);
 
-        if (skill?.category === "clan") {
-          grantedSkillKeys.add(skillKey);
+        if (choice?.type === "skill" && choice.valid) {
+          grantedSkillKeys.add(choice.key);
         }
       }
     }
@@ -1238,9 +1251,9 @@ async decreaseBase(baseKey) {
     }
 
     if (mode === "hybridVoie") {
-      const secondaryTrack = buildClanTrack(heritage.hybrid?.secondaryClan, "Hybridation de voie");
+      const primaryTrack = buildClanTrack(heritage.clan, "Clan principal");
 
-      if (secondaryTrack) heritage.tracks.push(secondaryTrack);
+      if (primaryTrack) heritage.tracks.push(primaryTrack);
     }
   }
 
@@ -1260,7 +1273,9 @@ async decreaseBase(baseKey) {
 
     const affinities = system.chakra.affinities;
     const heritage = system.heritage ?? {};
-    const mode = heritage.mode ?? "clan";
+    const mode = heritage.mode === "customClan"
+      ? "clan"
+      : heritage.mode ?? "clan";
 
     affinities.primary = affinities.primary ?? "";
     affinities.secondary = affinities.secondary ?? "";
@@ -1278,22 +1293,24 @@ async decreaseBase(baseKey) {
       }
     };
 
-    if (mode === "clan" || mode === "hybridClan") {
-      addClanAffinities(heritage.clan);
+    if (mode === "clan" || mode === "hybridClan" || mode === "hybridVoie") {
+      if (!NARUTO25E.isCustomClanKey?.(heritage.clan)) {
+        addClanAffinities(heritage.clan);
+      }
     }
 
-    if (mode === "hybridClan" || mode === "hybridVoie") {
+    if (mode === "hybridClan") {
       addClanAffinities(heritage.hybrid?.secondaryClan);
     }
 
-    if (mode === "customClan") {
-      const customAffinityKeys = Array.isArray(heritage.customClan?.mandatoryAffinities)
-        ? heritage.customClan.mandatoryAffinities
-        : [];
+    if (NARUTO25E.isCustomClanKey?.(heritage.clan)) {
+      const customChoices = NARUTO25E.getCustomClanMandatoryChoices?.(heritage.customClan) ?? [];
 
-      for (const affinityKey of customAffinityKeys) {
-        if (NARUTO25E.chakraAffinities?.[affinityKey]) {
-          forcedAffinities.add(affinityKey);
+      for (const choiceKey of customChoices) {
+        const choice = NARUTO25E.getCustomClanChoiceData?.(choiceKey);
+
+        if (choice?.type === "affinity" && choice.valid) {
+          forcedAffinities.add(choice.key);
         }
       }
     }

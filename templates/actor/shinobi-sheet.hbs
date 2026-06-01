@@ -1432,7 +1432,7 @@
 
         <label>
           Clan principal
-          <select name="system.heritage.clan" {{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}>
+          <select name="system.heritage.clan" {{#if heritageState.clanDisabled}}disabled{{else}}{{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}{{/if}}>
             <option value="">Aucun clan sélectionné</option>
             {{#each clans as |clan|}}
               <option value="{{clan.key}}" {{#if clan.selected}}selected{{/if}}>
@@ -1444,7 +1444,7 @@
 
         <label>
           Voie
-          <select name="system.heritage.voie" {{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}>
+          <select name="system.heritage.voie" {{#if heritageState.voieDisabled}}disabled{{else}}{{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}{{/if}}>
             <option value="">Aucune voie sélectionnée</option>
             {{#each voies as |voie|}}
               <option value="{{voie.key}}" {{#if voie.selected}}selected{{/if}} {{#unless voie.selectable}}disabled{{/unless}}>
@@ -1456,7 +1456,7 @@
 
         <label>
           Clan secondaire / hybridation
-          <select name="system.heritage.hybrid.secondaryClan" {{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}>
+          <select name="system.heritage.hybrid.secondaryClan" {{#if heritageState.hybridDisabled}}disabled{{else}}{{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}{{/if}}>
             <option value="">Aucun</option>
             {{#each secondaryClans as |clan|}}
               <option value="{{clan.key}}" {{#if clan.selected}}selected{{/if}}>
@@ -1477,7 +1477,7 @@
           <h3>Clan custom</h3>
 
           <p class="hint">
-            Fondation préparatoire : le clan custom reste soumis à validation MJ. Les compétences de clan et affinités imposées sont choisies dans des listes limitées.
+            Fondation préparatoire : le clan custom est un clan principal spécial, soumis à validation MJ. Il peut imposer jusqu’à 2 choix au total : compétences normales ou affinités.
           </p>
 
           <div class="identity-grid">
@@ -1502,48 +1502,24 @@
             </label>
 
             <label>
-              Compétence de clan imposée 1
-              <select name="system.heritage.customClan.mandatorySkills.0" {{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}>
-                <option value="">Aucune</option>
-                {{#each customClanSkillOptions as |skill|}}
-                  <option value="{{skill.key}}" {{#if skill.selectedFirst}}selected{{/if}}>
-                    {{skill.label}}
+              Choix imposé 1
+              <select name="system.heritage.customClan.mandatoryChoices.0" {{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}>
+                <option value="">Aucun</option>
+                {{#each customClanChoiceOptions as |choice|}}
+                  <option value="{{choice.key}}" {{#if choice.selectedFirst}}selected{{/if}}>
+                    {{choice.label}}
                   </option>
                 {{/each}}
               </select>
             </label>
 
             <label>
-              Compétence de clan imposée 2
-              <select name="system.heritage.customClan.mandatorySkills.1" {{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}>
-                <option value="">Aucune</option>
-                {{#each customClanSkillOptions as |skill|}}
-                  <option value="{{skill.key}}" {{#if skill.selectedSecond}}selected{{/if}}>
-                    {{skill.label}}
-                  </option>
-                {{/each}}
-              </select>
-            </label>
-
-            <label>
-              Affinité imposée 1
-              <select name="system.heritage.customClan.mandatoryAffinities.0" {{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}>
-                <option value="">Aucune</option>
-                {{#each customClanAffinityOptions as |affinity|}}
-                  <option value="{{affinity.key}}" {{#if affinity.selectedFirst}}selected{{/if}}>
-                    {{affinity.label}}
-                  </option>
-                {{/each}}
-              </select>
-            </label>
-
-            <label>
-              Affinité imposée 2
-              <select name="system.heritage.customClan.mandatoryAffinities.1" {{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}>
-                <option value="">Aucune</option>
-                {{#each customClanAffinityOptions as |affinity|}}
-                  <option value="{{affinity.key}}" {{#if affinity.selectedSecond}}selected{{/if}}>
-                    {{affinity.label}}
+              Choix imposé 2
+              <select name="system.heritage.customClan.mandatoryChoices.1" {{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}>
+                <option value="">Aucun</option>
+                {{#each customClanChoiceOptions as |choice|}}
+                  <option value="{{choice.key}}" {{#if choice.selectedSecond}}selected{{/if}}>
+                    {{choice.label}}
                   </option>
                 {{/each}}
               </select>

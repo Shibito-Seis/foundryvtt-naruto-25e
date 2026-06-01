@@ -200,10 +200,6 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
       disabled = true;
     }
 
-    if (key === "customClan" && !this.actor.system.heritage?.gmOptions?.allowCustomClan) {
-      disabled = true;
-    }
-
     return {
       key,
       label,
@@ -213,6 +209,10 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
   });
 
   const selectedVillage = this.actor.system.heritage?.village ?? "konoha";
+  const heritage = this.actor.system.heritage ?? {};
+  const gmOptions = heritage.gmOptions ?? {};
+  const customClan = heritage.customClan ?? {};
+  const customClanChoices = NARUTO25E.getCustomClanMandatoryChoices?.(customClan) ?? [];
 
   context.clans = Object.entries(NARUTO25E.clans)
     .filter(([, clan]) => clan.village === selectedVillage)
@@ -220,34 +220,42 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
       key,
       label: clan.label,
       skillKey: clan.skillKey,
-      selected: this.actor.system.heritage?.clan === key
+      selected: heritage.clan === key
     }));
+
+  if (gmOptions.allowCustomClan) {
+    context.clans.push({
+      key: NARUTO25E.customClanKey,
+      label: "Clan custom",
+      skillKey: "",
+      selected: heritage.clan === NARUTO25E.customClanKey
+    });
+  }
 
   context.secondaryClans = Object.entries(NARUTO25E.clans)
     .filter(([, clan]) => clan.village === selectedVillage)
     .map(([key, clan]) => ({
       key,
       label: clan.label,
-      selected: this.actor.system.heritage?.hybrid?.secondaryClan === key
+      selected: heritage.hybrid?.secondaryClan === key
     }));
 
-  const customClan = this.actor.system.heritage?.customClan ?? {};
-
-  context.customClanSkillOptions = Object.entries(NARUTO25E.skillDefinitions)
-    .filter(([, skill]) => skill.category === "clan")
-    .map(([key, skill]) => ({
-      key,
-      label: skill.label,
-      selectedFirst: customClan.mandatorySkills?.[0] === key,
-      selectedSecond: customClan.mandatorySkills?.[1] === key
-    }));
-
-  context.customClanAffinityOptions = NARUTO25E.chakraAffinityOrder.map((key) => ({
-    key,
-    label: NARUTO25E.chakraAffinities?.[key]?.label ?? key,
-    selectedFirst: customClan.mandatoryAffinities?.[0] === key,
-    selectedSecond: customClan.mandatoryAffinities?.[1] === key
-  }));
+  context.customClanChoiceOptions = [
+    ...Object.entries(NARUTO25E.skillDefinitions)
+      .filter(([, skill]) => skill.category !== "clan" && !skill.ownedByDefault)
+      .map(([key, skill]) => ({
+        key: `skill:${key}`,
+        label: `Compétence — ${skill.label}`,
+        selectedFirst: customClanChoices[0] === `skill:${key}`,
+        selectedSecond: customClanChoices[1] === `skill:${key}`
+      })),
+    ...NARUTO25E.chakraAffinityOrder.map((key) => ({
+      key: `affinity:${key}`,
+      label: `Affinité — ${NARUTO25E.chakraAffinities?.[key]?.label ?? key}`,
+      selectedFirst: customClanChoices[0] === `affinity:${key}`,
+      selectedSecond: customClanChoices[1] === `affinity:${key}`
+    }))
+  ];
 
   context.voies = Object.entries(NARUTO25E.voies).map(([key, voie]) => {
     const allowedByVillage = voie.village === "any" || voie.village === selectedVillage;
@@ -262,7 +270,6 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     };
   });
 
-  const heritage = this.actor.system.heritage ?? {};
   const villageKey = heritage.village ?? "konoha";
   const village = NARUTO25E.villages[villageKey];
 
@@ -278,16 +285,23 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
 
   let heritageMainLabel = "Aucun héritage sélectionné";
 
-  if (modeKey === "clan" && clan) {
-    heritageMainLabel = `Clan ${clan.label}`;
+  const getPrimaryClanLabel = () => {
+    if (NARUTO25E.isCustomClanKey?.(heritage.clan)) {
+      return String(heritage.customClan?.name ?? "").trim() || "Clan custom non nommé";
+    }
+
+    return clan?.label ?? "Clan ?";
+  };
+
+  if (modeKey === "clan" && (clan || NARUTO25E.isCustomClanKey?.(heritage.clan))) {
+    heritageMainLabel = `Clan ${getPrimaryClanLabel()}`;
   } else if (modeKey === "voie" && voie) {
     heritageMainLabel = voie.label;
-  } else if (modeKey === "hybridClan" && clan) {
-    heritageMainLabel = `Clan ${clan.label}`;
+  } else if (modeKey === "hybridClan" && (clan || NARUTO25E.isCustomClanKey?.(heritage.clan))) {
+    heritageMainLabel = `Clan ${getPrimaryClanLabel()}`;
     if (secondaryClan) heritageMainLabel += ` / ${secondaryClan.label}`;
   } else if (modeKey === "hybridVoie" && voie) {
-    heritageMainLabel = voie.label;
-    if (secondaryClan) heritageMainLabel += ` / ${secondaryClan.label}`;
+    heritageMainLabel = `${getPrimaryClanLabel()} / ${voie.label}`;
   }
 
   context.heritageSummary = {
@@ -332,26 +346,43 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
   };
 
   const buildCustomClanCreationPreview = () => {
-    if (heritage.mode !== "customClan") return null;
+    if (!NARUTO25E.isCustomClanKey?.(heritage.clan)) return null;
 
     const custom = heritage.customClan ?? {};
     const name = String(custom.name ?? "").trim();
+    const choices = NARUTO25E.getCustomClanMandatoryChoices?.(custom) ?? [];
+
+    const mandatorySkills = [];
+    const mandatoryAffinities = [];
+
+    for (const choiceKey of choices) {
+      const choice = NARUTO25E.getCustomClanChoiceData?.(choiceKey);
+      if (!choice?.valid) continue;
+
+      if (choice.type === "skill") {
+        mandatorySkills.push({
+          key: choice.key,
+          label: choice.label
+        });
+      }
+
+      if (choice.type === "affinity") {
+        mandatoryAffinities.push({
+          key: choice.key,
+          label: choice.label
+        });
+      }
+    }
 
     return {
       key: "custom",
-      role: "Clan custom",
+      role: "Clan principal",
       label: name || "Clan custom non nommé",
       summary: custom.summary ?? "",
       lore: "",
-      creationAdvice: "Clan personnalisé soumis à validation MJ. Les compétences et affinités imposées doivent être choisies dans les listes prévues.",
-      mandatorySkills: (custom.mandatorySkills ?? []).filter(Boolean).map((skillKey) => ({
-        key: skillKey,
-        label: NARUTO25E.skillDefinitions?.[skillKey]?.label ?? skillKey
-      })),
-      mandatoryAffinities: (custom.mandatoryAffinities ?? []).filter(Boolean).map((affinityKey) => ({
-        key: affinityKey,
-        label: NARUTO25E.chakraAffinities?.[affinityKey]?.label ?? affinityKey
-      })),
+      creationAdvice: "Clan personnalisé soumis à validation MJ. Il peut imposer jusqu’à 2 choix au total : compétences normales ou affinités.",
+      mandatorySkills,
+      mandatoryAffinities,
       startingFeatures: [],
       futureUnlocks: ["Progression et pouvoirs à définir avec le MJ."],
       narrativeWarnings: ["Le clan custom nécessite une validation MJ avant verrouillage de la création."],
@@ -361,9 +392,12 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
   };
 
   context.clanCreationPreviews = [
-    buildClanCreationPreview(heritage.clan, "Clan principal"),
-    buildClanCreationPreview(heritage.hybrid?.secondaryClan, "Clan secondaire"),
-    buildCustomClanCreationPreview()
+    NARUTO25E.isCustomClanKey?.(heritage.clan)
+      ? buildCustomClanCreationPreview()
+      : buildClanCreationPreview(heritage.clan, "Clan principal"),
+    heritage.mode === "hybridClan"
+      ? buildClanCreationPreview(heritage.hybrid?.secondaryClan, "Clan secondaire")
+      : null
   ].filter(Boolean);
 
   const chakraAffinities = this.actor.system.chakra?.affinities ?? {};
@@ -485,7 +519,7 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
       isVoieMode: mode === "voie",
       isHybridClanMode: mode === "hybridClan",
       isHybridVoieMode: mode === "hybridVoie",
-      isCustomClanMode: mode === "customClan",
+      isCustomClanMode: NARUTO25E.isCustomClanKey?.(heritage.clan),
       allowHybridClan: Boolean(gmOptions.allowHybridClan),
       allowHybridVoie: Boolean(gmOptions.allowHybridVoie),
       allowCustomClan: Boolean(gmOptions.allowCustomClan),
@@ -512,13 +546,11 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
       canAwakenRinnegan,
       hasRinnegan,
       hasTenseigan,
-      clanDisabled: mode === "voie" || mode === "hybridVoie",
+      clanDisabled: mode === "voie",
       voieDisabled: mode === "clan" || mode === "hybridClan",
       hybridDisabled:
-        (mode === "clan") ||
-        (mode === "voie") ||
-        (mode === "hybridClan" && !gmOptions.allowHybridClan) ||
-        (mode === "hybridVoie" && !gmOptions.allowHybridVoie)
+        mode !== "hybridClan" ||
+        !gmOptions.allowHybridClan
     };
 
   const lineageValue = Number(this.actor.system.bases?.lign?.value ?? 1);
@@ -586,9 +618,9 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
   }
 
   if (heritage.mode === "hybridVoie") {
-    const secondaryTrack = buildClanTrackForSheet(heritage.hybrid?.secondaryClan, "Hybridation de voie");
+    const primaryTrack = buildClanTrackForSheet(heritage.clan, "Clan principal");
 
-    if (secondaryTrack) context.lineageTracks.push(secondaryTrack);
+    if (primaryTrack) context.lineageTracks.push(primaryTrack);
   }
 
   context.heritageMandatorySkills = [];
@@ -625,7 +657,10 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     }
   };
 
-  if (heritage.mode === "clan" || heritage.mode === "hybridClan") {
+  if (
+    (heritage.mode === "clan" || heritage.mode === "hybridClan" || heritage.mode === "hybridVoie")
+    && !NARUTO25E.isCustomClanKey?.(heritage.clan)
+  ) {
     addMandatorySkillDisplay(heritage.clan, "Clan principal");
   }
 
@@ -633,26 +668,20 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     addMandatorySkillDisplay(heritage.hybrid?.secondaryClan, "Clan secondaire");
   }
 
-  if (heritage.mode === "hybridVoie") {
-    addMandatorySkillDisplay(heritage.hybrid?.secondaryClan, "Hybridation de voie");
-  }
-
-  if (heritage.mode === "customClan") {
+  if (NARUTO25E.isCustomClanKey?.(heritage.clan)) {
     const custom = heritage.customClan ?? {};
     const customName = String(custom.name ?? "").trim() || "Clan custom";
-    const customSkillKeys = Array.isArray(custom.mandatorySkills)
-      ? custom.mandatorySkills.filter(Boolean)
-      : [];
+    const customChoices = NARUTO25E.getCustomClanMandatoryChoices?.(custom) ?? [];
 
-    for (const skillKey of customSkillKeys) {
-      const skillDefinition = NARUTO25E.skillDefinitions?.[skillKey];
-      if (!skillDefinition) continue;
+    for (const choiceKey of customChoices) {
+      const choice = NARUTO25E.getCustomClanChoiceData?.(choiceKey);
+      if (!choice?.valid || choice.type !== "skill") continue;
 
       context.heritageMandatorySkills.push({
         clanKey: "custom",
         clanLabel: customName,
-        skillKey,
-        skillLabel: skillDefinition.label,
+        skillKey: choice.key,
+        skillLabel: choice.label,
         sourceLabel: "Clan custom"
       });
     }
@@ -978,7 +1007,7 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
   }
 
   if (mode === "hybridVoie") {
-    updateData["system.heritage.clan"] = "";
+    updateData["system.heritage.hybrid.secondaryClan"] = "";
   }
 
   await this.actor.update(updateData);
@@ -1070,6 +1099,14 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
       updateData["system.heritage.mode"] = "voie";
       updateData["system.heritage.hybrid.secondaryClan"] = "";
       updateData["system.heritage.hybrid.reason"] = "";
+    }
+
+    if (field === "allowCustomClan" && !checked && heritage.clan === NARUTO25E.customClanKey) {
+      updateData["system.heritage.clan"] = "";
+      updateData["system.heritage.customClan.name"] = "";
+      updateData["system.heritage.customClan.summary"] = "";
+      updateData["system.heritage.customClan.mandatoryChoices"] = ["", ""];
+      updateData["system.heritage.customClan.notes"] = "";
     }
 
     if (field === "hasMangekyoSharingan" && !checked) {

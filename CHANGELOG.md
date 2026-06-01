@@ -2,6 +2,30 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.24.1]
+
+### Corrigé
+
+- Correction de la structure du clan custom :
+  - le clan custom n’est plus un type d’héritage ;
+  - il devient une option spéciale de `Clan principal`, visible uniquement si le MJ l’autorise.
+- Correction des champs actifs selon le type d’héritage :
+  - `Clan` : Clan principal actif, Voie et Clan secondaire bloqués ;
+  - `Voie` : Voie active, Clan principal et Clan secondaire bloqués ;
+  - `Clan hybride` : Clan principal et Clan secondaire actifs, Voie bloquée ;
+  - `Voie hybridée` : Clan principal et Voie actifs, Clan secondaire bloqué.
+- Correction de la logique de `Voie hybridée`, qui repose désormais sur `Clan principal + Voie`, et non sur `Voie + Clan secondaire`.
+- Correction des choix imposés du clan custom :
+  - remplacement des 2 compétences + 2 affinités par 2 choix imposés maximum au total ;
+  - chaque choix peut être une compétence normale ou une affinité.
+- Correction de sécurité pour les anciennes données `mandatorySkills` / `mandatoryAffinities`.
+
+### Conservé
+
+- Les corrections Uchiha de la 0.1.24 sont conservées.
+
+---
+
 ## [0.1.24]
 
 ### Ajouté
