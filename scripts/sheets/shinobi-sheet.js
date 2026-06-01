@@ -479,7 +479,6 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
   };
 
     const mode = heritage.mode ?? "clan";
-    const gmOptions = heritage.gmOptions ?? {};
 
     const heritageClanKeys = [
       heritage.clan,
