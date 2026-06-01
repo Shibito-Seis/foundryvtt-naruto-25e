@@ -1472,3 +1472,44 @@
   background: rgba(150, 40, 40, 0.08);
   font-size: 0.9em;
 }
+
+.naruto-25e-shinobi-sheet .creation-preview-section {
+  margin-top: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.035);
+}
+
+.naruto-25e-shinobi-sheet .creation-preview-section h3 {
+  margin-top: 0;
+}
+
+.naruto-25e-shinobi-sheet .creation-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 10px;
+}
+
+.naruto-25e-shinobi-sheet .creation-preview-card {
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.naruto-25e-shinobi-sheet .creation-preview-card header h4 {
+  margin: 0 0 6px 0;
+}
+
+.naruto-25e-shinobi-sheet .creation-preview-card p {
+  margin: 6px 0;
+}
+
+.naruto-25e-shinobi-sheet .creation-preview-card ul {
+  margin: 4px 0 8px 18px;
+  padding: 0;
+}
+
+.naruto-25e-shinobi-sheet .creation-warning-list {
+  border-left: 3px solid #9b5a00;
+  padding-left: 8px;
+}

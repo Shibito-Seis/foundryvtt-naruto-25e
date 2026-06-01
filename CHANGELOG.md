@@ -2,6 +2,30 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.23]
+
+### Ajouté
+
+- Ajout d’une première couche de données pédagogiques pour les affinités de Chakra.
+- Les affinités Chakra disposent désormais d’un style de jeu, de forces, de limites, de conseils de création, de compétences associées et de tags de prévisualisation.
+- Ajout de `Fūin` dans les affinités spéciales affichables.
+- Ajout d’une première couche de données pédagogiques de clan pour le futur Charactomancer.
+- Ajout des données de création pour les clans de test du Charactomancer 0.2.0 : Uchiha, Senju, Hyūga, Kato, Nara, Aburame et Inuzuka.
+- Ajout de cartes d’aide de création dans l’onglet Chakra.
+- Ajout de cartes d’aide de création dans l’onglet Lignée.
+
+### Modifié
+
+- Les affinités Chakra ne sont plus de simples descriptions courtes : elles deviennent des données de prévisualisation exploitables par le futur Charactomancer.
+- Les données de clan commencent à distinguer résumé, lore, conseil de création, départ, déblocages futurs, avertissements narratifs et archétypes conseillés.
+
+### Préparé
+
+- Préparation de la prévisualisation des choix de création avant validation.
+- Préparation du futur Charactomancer 0.2.0 sur un périmètre de 7 clans représentatifs.
+
+---
+
 ## [0.1.22.4]
 
 ### Ajouté

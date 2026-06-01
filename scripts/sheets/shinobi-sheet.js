@@ -275,6 +275,45 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     main: heritageMainLabel
   };
 
+  const buildClanCreationPreview = (clanKey, role) => {
+    if (!clanKey) return null;
+
+    const clanDefinition = NARUTO25E.clans?.[clanKey];
+    const creationData = NARUTO25E.getClanCreationData?.(clanKey);
+
+    if (!clanDefinition || !creationData) return null;
+
+    const mandatorySkillKeys = NARUTO25E.getClanMandatorySkills?.(clanKey) ?? [];
+    const mandatoryAffinityKeys = NARUTO25E.getClanMandatoryAffinities?.(clanKey) ?? [];
+
+    return {
+      key: clanKey,
+      role,
+      label: clanDefinition.label ?? clanKey,
+      summary: creationData.summary ?? "",
+      lore: creationData.lore ?? "",
+      creationAdvice: creationData.creationAdvice ?? "",
+      mandatorySkills: mandatorySkillKeys.map((skillKey) => ({
+        key: skillKey,
+        label: NARUTO25E.skillDefinitions?.[skillKey]?.label ?? skillKey
+      })),
+      mandatoryAffinities: mandatoryAffinityKeys.map((affinityKey) => ({
+        key: affinityKey,
+        label: NARUTO25E.chakraAffinities?.[affinityKey]?.label ?? affinityKey
+      })),
+      startingFeatures: creationData.startingFeatures ?? [],
+      futureUnlocks: creationData.futureUnlocks ?? [],
+      narrativeWarnings: creationData.narrativeWarnings ?? [],
+      recommendedBuilds: creationData.recommendedBuilds ?? [],
+      previewTags: creationData.previewTags ?? []
+    };
+  };
+
+  context.clanCreationPreviews = [
+    buildClanCreationPreview(heritage.clan, "Clan principal"),
+    buildClanCreationPreview(heritage.hybrid?.secondaryClan, "Clan secondaire")
+  ].filter(Boolean);
+
   const chakraAffinities = this.actor.system.chakra?.affinities ?? {};
   const forcedAffinities = Array.isArray(chakraAffinities.forced) ? chakraAffinities.forced : [];
   const ownedAffinities = Array.isArray(chakraAffinities.owned) ? chakraAffinities.owned : [];
@@ -292,7 +331,16 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
       forced: forcedAffinities.includes(key),
       owned: ownedAffinities.includes(key),
       skillKey: affinity.skillKey,
-      skillLabel: NARUTO25E.skillDefinitions?.[affinity.skillKey]?.label ?? affinity.skillKey
+      skillLabel: NARUTO25E.skillDefinitions?.[affinity.skillKey]?.label ?? affinity.skillKey,
+      playstyle: affinity.playstyle ?? "",
+      strengths: affinity.strengths ?? [],
+      weaknesses: affinity.weaknesses ?? [],
+      recommendedFor: affinity.recommendedFor ?? [],
+      associatedSkills: (affinity.associatedSkills ?? []).map((skillKey) => ({
+        key: skillKey,
+        label: NARUTO25E.skillDefinitions?.[skillKey]?.label ?? skillKey
+      })),
+      previewTags: affinity.previewTags ?? []
     };
   });
 

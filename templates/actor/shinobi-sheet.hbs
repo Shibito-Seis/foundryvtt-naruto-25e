@@ -879,6 +879,75 @@
             </label>
           </div>
 
+          <section class="creation-preview-section">
+            <h3>Aide de création — Affinités</h3>
+
+            <div class="creation-preview-grid">
+              {{#each chakraAffinityOptions as |affinity|}}
+                <article class="creation-preview-card">
+                  <header>
+                    <h4>{{affinity.label}}</h4>
+                    <div class="tag-list">
+                      {{#each affinity.previewTags as |tag|}}
+                        <span class="tag">{{tag}}</span>
+                      {{/each}}
+                    </div>
+                  </header>
+
+                  <p>{{affinity.description}}</p>
+
+                  {{#if affinity.playstyle}}
+                    <p><strong>Style :</strong> {{affinity.playstyle}}</p>
+                  {{/if}}
+
+                  {{#if affinity.strengths.length}}
+                    <div>
+                      <strong>Forces</strong>
+                      <ul>
+                        {{#each affinity.strengths as |strength|}}
+                          <li>{{strength}}</li>
+                        {{/each}}
+                      </ul>
+                    </div>
+                  {{/if}}
+
+                  {{#if affinity.weaknesses.length}}
+                    <div>
+                      <strong>Limites</strong>
+                      <ul>
+                        {{#each affinity.weaknesses as |weakness|}}
+                          <li>{{weakness}}</li>
+                        {{/each}}
+                      </ul>
+                    </div>
+                  {{/if}}
+
+                  {{#if affinity.associatedSkills.length}}
+                    <div>
+                      <strong>Compétences associées</strong>
+                      <div class="tag-list">
+                        {{#each affinity.associatedSkills as |skill|}}
+                          <span class="tag">{{skill.label}}</span>
+                        {{/each}}
+                      </div>
+                    </div>
+                  {{/if}}
+
+                  {{#if affinity.recommendedFor.length}}
+                    <div>
+                      <strong>Conseillé pour</strong>
+                      <ul>
+                        {{#each affinity.recommendedFor as |advice|}}
+                          <li>{{advice}}</li>
+                        {{/each}}
+                      </ul>
+                    </div>
+                  {{/if}}
+                </article>
+              {{/each}}
+            </div>
+          </section>
+
           <div class="chakra-affinity-summary">
             <p>
               <strong>Mode de coût :</strong>
@@ -1363,6 +1432,106 @@
         Notes de lignée
         <textarea name="system.heritage.notes">{{system.heritage.notes}}</textarea>
       </label>
+
+      {{#if clanCreationPreviews.length}}
+        <section class="creation-preview-section">
+          <h3>Aide de création — Clan</h3>
+
+          <div class="creation-preview-grid">
+            {{#each clanCreationPreviews as |clan|}}
+              <article class="creation-preview-card">
+                <header>
+                  <h4>{{clan.role}} — {{clan.label}}</h4>
+                  <div class="tag-list">
+                    {{#each clan.previewTags as |tag|}}
+                      <span class="tag">{{tag}}</span>
+                    {{/each}}
+                  </div>
+                </header>
+
+                {{#if clan.summary}}
+                  <p><strong>Résumé :</strong> {{clan.summary}}</p>
+                {{/if}}
+
+                {{#if clan.lore}}
+                  <p><strong>Lore :</strong> {{clan.lore}}</p>
+                {{/if}}
+
+                {{#if clan.creationAdvice}}
+                  <p><strong>Conseil de création :</strong> {{clan.creationAdvice}}</p>
+                {{/if}}
+
+                {{#if clan.mandatorySkills.length}}
+                  <div>
+                    <strong>Compétences obligatoires</strong>
+                    <div class="tag-list">
+                      {{#each clan.mandatorySkills as |skill|}}
+                        <span class="tag">{{skill.label}}</span>
+                      {{/each}}
+                    </div>
+                  </div>
+                {{/if}}
+
+                {{#if clan.mandatoryAffinities.length}}
+                  <div>
+                    <strong>Affinités imposées</strong>
+                    <div class="tag-list">
+                      {{#each clan.mandatoryAffinities as |affinity|}}
+                        <span class="tag">{{affinity.label}}</span>
+                      {{/each}}
+                    </div>
+                  </div>
+                {{/if}}
+
+                {{#if clan.startingFeatures.length}}
+                  <div>
+                    <strong>Départ</strong>
+                    <ul>
+                      {{#each clan.startingFeatures as |feature|}}
+                        <li>{{feature}}</li>
+                      {{/each}}
+                    </ul>
+                  </div>
+                {{/if}}
+
+                {{#if clan.futureUnlocks.length}}
+                  <div>
+                    <strong>Déblocages futurs</strong>
+                    <ul>
+                      {{#each clan.futureUnlocks as |unlock|}}
+                        <li>{{unlock}}</li>
+                      {{/each}}
+                    </ul>
+                  </div>
+                {{/if}}
+
+                {{#if clan.narrativeWarnings.length}}
+                  <div class="creation-warning-list">
+                    <strong>Attention narrative</strong>
+                    <ul>
+                      {{#each clan.narrativeWarnings as |warning|}}
+                        <li>{{warning}}</li>
+                      {{/each}}
+                    </ul>
+                  </div>
+                {{/if}}
+
+                {{#if clan.recommendedBuilds.length}}
+                  <div>
+                    <strong>Archétypes conseillés</strong>
+                    <div class="tag-list">
+                      {{#each clan.recommendedBuilds as |build|}}
+                        <span class="tag">{{build}}</span>
+                      {{/each}}
+                    </div>
+                  </div>
+                {{/if}}
+              </article>
+            {{/each}}
+          </div>
+        </section>
+      {{/if}}
+
       <section class="lineage-section">
         <h3>Compétences obligatoires de lignée</h3>
 

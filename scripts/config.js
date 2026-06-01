@@ -540,7 +540,8 @@ NARUTO25E.chakraAffinityOrder = [
   "raiton",
   "futon",
   "doton",
-  "iryo"
+  "iryo",
+  "fuin"
 ];
 
 NARUTO25E.chakraAffinities = {
@@ -548,37 +549,198 @@ NARUTO25E.chakraAffinities = {
     label: "Katon",
     type: "elemental",
     skillKey: "katon",
-    description: "Nature du Feu."
+    description: "Nature du Feu.",
+    playstyle: "Offensif, frontal et intimidant.",
+    strengths: [
+      "Dégâts directs",
+      "Pression de zone",
+      "Brûlures et dégâts sur la durée",
+      "Destruction d’obstacles",
+      "Très bon langage visuel en combat"
+    ],
+    weaknesses: [
+      "Discret seulement avec beaucoup de maîtrise",
+      "Peut être dangereux en environnement fermé",
+      "Faible contre les contre-mesures adaptées au feu"
+    ],
+    recommendedFor: [
+      "Joueurs voulant un style offensif clair",
+      "Shinobi de pression",
+      "Combattants élémentaires classiques",
+      "Uchiha ou profils agressifs"
+    ],
+    associatedSkills: ["katon"],
+    previewTags: ["Dégâts", "Zone", "Pression", "Brûlure"]
   },
+
   suiton: {
     label: "Suiton",
     type: "elemental",
     skillKey: "suiton",
-    description: "Nature de l’Eau."
+    description: "Nature de l’Eau.",
+    playstyle: "Polyvalent, fluide et adaptatif.",
+    strengths: [
+      "Contrôle de terrain",
+      "Défense souple",
+      "Entrave et déplacement",
+      "Bon support en équipe",
+      "Très utile selon l’environnement"
+    ],
+    weaknesses: [
+      "Peut dépendre du terrain ou de l’eau disponible selon les techniques",
+      "Moins explosif que Katon ou Raïton en dégâts purs",
+      "Demande souvent une bonne lecture tactique"
+    ],
+    recommendedFor: [
+      "Joueurs aimant s’adapter",
+      "Shinobi tactiques",
+      "Profils de soutien ou contrôle",
+      "Combattants opportunistes"
+    ],
+    associatedSkills: ["suiton"],
+    previewTags: ["Contrôle", "Défense", "Adaptation", "Entrave"]
   },
+
   raiton: {
     label: "Raïton",
     type: "elemental",
     skillKey: "raiton",
-    description: "Nature de la Foudre."
+    description: "Nature de la Foudre.",
+    playstyle: "Rapide, perforant et agressif.",
+    strengths: [
+      "Dégâts précis",
+      "Percée défensive",
+      "Stimulation nerveuse ou corporelle selon techniques",
+      "Très bon pour les attaques décisives",
+      "Style dynamique et dangereux"
+    ],
+    weaknesses: [
+      "Peut manquer de contrôle durable",
+      "Exige souvent un bon timing",
+      "Risqué si mal utilisé près d’alliés ou de surfaces conductrices"
+    ],
+    recommendedFor: [
+      "Joueurs aimant frapper vite et fort",
+      "Assassins",
+      "Duellistes",
+      "Shinobi mobiles"
+    ],
+    associatedSkills: ["raiton"],
+    previewTags: ["Vitesse", "Percée", "Dégâts", "Précision"]
   },
+
   futon: {
     label: "Fūton",
     type: "elemental",
     skillKey: "futon",
-    description: "Nature du Vent."
+    description: "Nature du Vent.",
+    playstyle: "Mobile, tranchant et tactique.",
+    strengths: [
+      "Dégâts tranchants",
+      "Projection",
+      "Amélioration d’armes",
+      "Contrôle léger de zone",
+      "Très bon pour garder la distance"
+    ],
+    weaknesses: [
+      "Moins défensif que Doton",
+      "Peut demander une bonne gestion de placement",
+      "Faible contre certaines pressions de feu"
+    ],
+    recommendedFor: [
+      "Joueurs aimant la mobilité",
+      "Bretteurs élémentaires",
+      "Tireurs ou combattants à distance",
+      "Shinobi qui veulent frapper sans rester exposés"
+    ],
+    associatedSkills: ["futon"],
+    previewTags: ["Mobilité", "Tranchant", "Distance", "Arme"]
   },
+
   doton: {
     label: "Doton",
     type: "elemental",
     skillKey: "doton",
-    description: "Nature de la Terre."
+    description: "Nature de la Terre.",
+    playstyle: "Défensif, robuste et orienté contrôle.",
+    strengths: [
+      "Solidité",
+      "Protection",
+      "Barrières",
+      "Contrôle de terrain",
+      "Renforcement corporel",
+      "Construction et destruction d’obstacles"
+    ],
+    weaknesses: [
+      "Souvent moins rapide ou spectaculaire",
+      "Peut être contourné par mobilité ou foudre",
+      "Demande une bonne anticipation du terrain"
+    ],
+    recommendedFor: [
+      "Joueurs aimant encaisser",
+      "Protecteurs",
+      "Contrôleurs de terrain",
+      "Shinobi méthodiques et résistants"
+    ],
+    associatedSkills: ["doton"],
+    previewTags: ["Défense", "Terrain", "Contrôle", "Endurance"]
   },
+
   iryo: {
     label: "Iryō",
     type: "special",
     skillKey: "iryo",
-    description: "Nature médicale / usage médical du Chakra."
+    description: "Usage médical du Chakra.",
+    playstyle: "Soutien, soin et maîtrise du corps.",
+    strengths: [
+      "Soins",
+      "Stabilisation",
+      "Lecture médicale",
+      "Soutien d’équipe",
+      "Synergies avec médecine, poisons ou drogues"
+    ],
+    weaknesses: [
+      "Moins offensif au départ",
+      "Demande souvent une bonne protection d’équipe",
+      "Peut dépendre fortement de la situation"
+    ],
+    recommendedFor: [
+      "Joueurs aimant sauver les autres",
+      "Médecins ninja",
+      "Soutiens tactiques",
+      "Personnages scientifiques ou expérimentaux"
+    ],
+    associatedSkills: ["iryo", "medecine", "premiersSoins"],
+    previewTags: ["Soin", "Support", "Corps", "Stabilisation"]
+  },
+
+  fuin: {
+    label: "Fūin",
+    type: "special",
+    skillKey: "fuin",
+    description: "Art des sceaux et contrats.",
+    playstyle: "Préparation, contrôle rituel et solutions techniques.",
+    strengths: [
+      "Sceaux",
+      "Contrats",
+      "Verrouillage",
+      "Préparation tactique",
+      "Effets différés ou conditionnels",
+      "Très utile hors combat"
+    ],
+    weaknesses: [
+      "Moins immédiat qu’un élément offensif",
+      "Demande préparation et créativité",
+      "Peut être dépendant du matériel ou du contexte"
+    ],
+    recommendedFor: [
+      "Joueurs méthodiques",
+      "Stratèges",
+      "Créateurs de pièges ou sceaux",
+      "Personnages érudits ou traditionnels"
+    ],
+    associatedSkills: ["fuin"],
+    previewTags: ["Sceaux", "Contrat", "Préparation", "Contrôle"]
   }
 };
 
@@ -588,39 +750,187 @@ NARUTO25E.affinityCostModes = {
 };
 
 NARUTO25E.clanCreationData = {
-  nara: {
-    summary: "Clan spécialisé dans la manipulation des ombres. Le Kage est une compétence propre au clan Nara.",
-    mandatorySkills: ["kage"],
-    mandatoryAffinities: [],
-    startingFeatures: []
-  },
-
   uchiha: {
     summary: "Clan célèbre pour son affinité naturelle avec le Katon et l’éveil du Sharingan.",
+    lore: "Les Uchiha sont une lignée prestigieuse, crainte et surveillée, dont le Sharingan fascine autant qu’il inquiète. Leur puissance naît souvent d’une tension entre discipline, héritage familial et émotions extrêmes.",
+    creationAdvice: "Très bon choix pour un joueur voulant un personnage offensif, perceptif et marqué par un dōjutsu évolutif. Le Katon donne une base élémentaire agressive, tandis que le Sharingan ouvre une progression de lignée très forte.",
     mandatorySkills: [],
     mandatoryAffinities: ["katon"],
-    startingFeatures: ["Sharingan — premier tomoe"]
+    startingFeatures: ["Sharingan — premier tomoe"],
+    futureUnlocks: [
+      "Évolution du Sharingan par rangs de Lignée",
+      "Dōsatsugan et copie limitée",
+      "Magen et genjutsu oculaire",
+      "Mangekyō Sharingan avec validation MJ",
+      "EMS et Rinnegan comme options rares et narratives"
+    ],
+    narrativeWarnings: [
+      "Le Sharingan est politiquement sensible et doit être utilisé avec discrétion.",
+      "Le Mangekyō Sharingan nécessite un traumatisme narratif majeur validé par le MJ.",
+      "EMS et Rinnegan ne sont pas des progressions automatiques."
+    ],
+    recommendedBuilds: [
+      "Ninjutsu offensif Katon",
+      "Genjutsu oculaire",
+      "Duelliste tactique",
+      "Shinobi prodige mais surveillé"
+    ],
+    previewTags: ["Katon", "Dōjutsu", "Genjutsu", "Éveil rare"]
+  },
+
+  senju: {
+    summary: "Clan réputé pour sa vitalité exceptionnelle, sa puissance de lignée et ses héritages fondateurs.",
+    lore: "Les Senju incarnent la force vitale, l’adaptation et l’héritage ancien de Konoha. Leur sang est lié à de nombreuses légendes, notamment aux compatibilités rares avec certaines évolutions de lignée.",
+    creationAdvice: "Très bon choix pour un personnage robuste, polyvalent ou destiné à porter une lignée puissante. Le clan convient bien aux profils protecteurs, meneurs ou ninjas à forte endurance.",
+    mandatorySkills: ["mokuton"],
+    mandatoryAffinities: [],
+    startingFeatures: [],
+    futureUnlocks: [
+      "Vitalité et puissance de lignée",
+      "Compatibilités spéciales avec cellules Senju",
+      "Accès narratif privilégié au Mokuton selon validation MJ",
+      "Synergies possibles avec endurance, soin et défense"
+    ],
+    narrativeWarnings: [
+      "Le Mokuton et les cellules Senju doivent rester des éléments surveillés par le MJ.",
+      "La puissance du clan peut avoir des implications politiques ou médicales."
+    ],
+    recommendedBuilds: [
+      "Protecteur robuste",
+      "Ninjutsu polyvalent",
+      "Contrôle et terrain",
+      "Héritier d’une lignée fondatrice"
+    ],
+    previewTags: ["Vitalité", "Mokuton", "Polyvalence", "Héritage"]
   },
 
   hyuga: {
     summary: "Clan détenteur du Byakugan et maître du Jūken.",
+    lore: "Les Hyūga sont une famille ancienne, hiérarchisée et redoutée pour leur vision parfaite du chakra. Leur Byakugan donne une perception exceptionnelle, mais aussi des responsabilités et des secrets de clan.",
+    creationAdvice: "Excellent choix pour un joueur voulant un combattant précis, défensif et perceptif. Le Jūken oriente naturellement vers le corps à corps technique et la lecture du chakra.",
     mandatorySkills: ["juken"],
     mandatoryAffinities: [],
-    startingFeatures: ["Byakugan"]
+    startingFeatures: ["Byakugan"],
+    futureUnlocks: [
+      "Amélioration du Byakugan par rangs de Lignée",
+      "Techniques Jūken",
+      "Détection et lecture du chakra",
+      "Tenseigan comme éveil rare réservé aux Hyūga"
+    ],
+    narrativeWarnings: [
+      "La plupart des pouvoirs Hyūga exigent l’activation du Byakugan.",
+      "Le Tenseigan est extrêmement rare et nécessite validation MJ."
+    ],
+    recommendedBuilds: [
+      "Combattant au corps à corps précis",
+      "Détecteur / éclaireur",
+      "Protecteur défensif",
+      "Duel tactique"
+    ],
+    previewTags: ["Byakugan", "Jūken", "Perception", "Défense"]
+  },
+
+  kato: {
+    summary: "Clan lié aux arts spirituels, à la projection de l’âme et aux techniques sensibles.",
+    lore: "Les Kato sont associés à des pratiques subtiles, souvent proches de la perception spirituelle, du lien entre corps et esprit, et d’approches rares du chakra.",
+    creationAdvice: "Bon choix pour un joueur voulant un personnage plus mystique, sensible ou orienté soutien/contrôle. Le clan sert bien les concepts de médium, éclaireur spirituel ou spécialiste atypique.",
+    mandatorySkills: [],
+    mandatoryAffinities: [],
+    startingFeatures: [],
+    futureUnlocks: [
+      "Pouvoirs spirituels",
+      "Projection ou perception avancée selon lignée",
+      "Synergies possibles avec Genjutsu, Iryō ou détection"
+    ],
+    narrativeWarnings: [
+      "Certaines capacités peuvent être très narratives et demander un cadrage MJ.",
+      "Le clan doit être précisé lors de la consolidation de ses pouvoirs."
+    ],
+    recommendedBuilds: [
+      "Soutien spirituel",
+      "Contrôleur subtil",
+      "Éclaireur sensoriel",
+      "Mystique de Konoha"
+    ],
+    previewTags: ["Esprit", "Soutien", "Perception", "Mystique"]
+  },
+
+  nara: {
+    summary: "Clan spécialisé dans la manipulation des ombres. Le Kage est une compétence propre au clan Nara.",
+    lore: "Les Nara sont connus pour leur intelligence froide, leur patience et leur art du contrôle par les ombres. Ils gagnent rarement par force brute : ils gagnent parce que le piège était déjà posé.",
+    creationAdvice: "Très bon choix pour un joueur tactique qui aime contrôler le terrain, immobiliser les adversaires et réfléchir avant d’agir.",
+    mandatorySkills: ["kage"],
+    mandatoryAffinities: [],
+    startingFeatures: [],
+    futureUnlocks: [
+      "Manipulation des ombres",
+      "Immobilisation et contrôle",
+      "Techniques de piège et de coordination",
+      "Progression tactique très forte en équipe"
+    ],
+    narrativeWarnings: [
+      "Le clan est moins adapté au joueur qui veut uniquement frapper fort.",
+      "Le placement et l’anticipation sont essentiels."
+    ],
+    recommendedBuilds: [
+      "Contrôleur de terrain",
+      "Stratège",
+      "Chef d’équipe discret",
+      "Support tactique"
+    ],
+    previewTags: ["Kage", "Contrôle", "Ombres", "Stratégie"]
   },
 
   aburame: {
     summary: "Clan utilisant les Kikaichū comme partenaires et armes vivantes.",
+    lore: "Les Aburame vivent en symbiose avec leurs insectes. Cette relation donne des capacités uniques, mais impose une identité très particulière et parfois inquiétante pour les autres shinobi.",
+    creationAdvice: "Très bon choix pour tester les mécaniques spéciales : réserve Kikaichū, gestion de ressource, contrôle, détection et pression indirecte.",
     mandatorySkills: ["kikaichu"],
     mandatoryAffinities: [],
-    startingFeatures: []
+    startingFeatures: ["Réserve Kikaichū"],
+    futureUnlocks: [
+      "Réserve Kikaichū",
+      "Utilisation d’insectes en combat et exploration",
+      "Détection, harcèlement et contrôle",
+      "Progression de colonie liée à la Lignée"
+    ],
+    narrativeWarnings: [
+      "Le personnage possède une relation permanente avec une colonie vivante.",
+      "La gestion de réserve Kikaichū doit rester claire pour éviter les oublis."
+    ],
+    recommendedBuilds: [
+      "Contrôleur indirect",
+      "Éclaireur",
+      "Harceleur tactique",
+      "Spécialiste de ressource"
+    ],
+    previewTags: ["Kikaichū", "Ressource", "Contrôle", "Détection"]
   },
 
-  senju: {
-    summary: "Clan réputé pour sa vitalité exceptionnelle et ses héritages puissants.",
-    mandatorySkills: ["mokuton"],
+  inuzuka: {
+    summary: "Clan combattant en duo avec un compagnon canin.",
+    lore: "Les Inuzuka forment un binôme instinctif avec leur partenaire animal. Leur style repose sur l’odorat, la traque, la vitesse et la coordination brutale.",
+    creationAdvice: "Excellent choix pour un joueur voulant un style direct, mobile et très incarné. Le compagnon devra être pris en compte par le Charactomancer à terme.",
+    mandatorySkills: [],
     mandatoryAffinities: [],
-    startingFeatures: []
+    startingFeatures: ["Compagnon canin"],
+    futureUnlocks: [
+      "Techniques de duo",
+      "Traque et odorat",
+      "Mobilité et assauts coordonnés",
+      "Progression du compagnon animal"
+    ],
+    narrativeWarnings: [
+      "Le compagnon animal doit être géré comme une partie importante du personnage.",
+      "Certaines mécaniques de duo seront consolidées plus tard."
+    ],
+    recommendedBuilds: [
+      "Traqueur",
+      "Combattant mobile",
+      "Duo offensif",
+      "Éclaireur agressif"
+    ],
+    previewTags: ["Compagnon", "Traque", "Mobilité", "Duo"]
   },
 
   munefuda: {
@@ -648,9 +958,15 @@ NARUTO25E.clanCreationData = {
 NARUTO25E.getClanCreationData = function (clanKey) {
   return NARUTO25E.clanCreationData?.[clanKey] ?? {
     summary: "",
+    lore: "",
+    creationAdvice: "",
     mandatorySkills: [],
     mandatoryAffinities: [],
-    startingFeatures: []
+    startingFeatures: [],
+    futureUnlocks: [],
+    narrativeWarnings: [],
+    recommendedBuilds: [],
+    previewTags: []
   };
 };
 
@@ -673,6 +989,21 @@ NARUTO25E.getClanMandatoryAffinities = function (clanKey) {
 
 NARUTO25E.getAffinitySkillKey = function (affinityKey) {
   return NARUTO25E.chakraAffinities?.[affinityKey]?.skillKey ?? "";
+};
+
+NARUTO25E.getAffinityCreationData = function (affinityKey) {
+  return NARUTO25E.chakraAffinities?.[affinityKey] ?? {
+    label: affinityKey ?? "",
+    type: "",
+    skillKey: "",
+    description: "",
+    playstyle: "",
+    strengths: [],
+    weaknesses: [],
+    recommendedFor: [],
+    associatedSkills: [],
+    previewTags: []
+  };
 };
 
 NARUTO25E.clanLineageCaps = {
