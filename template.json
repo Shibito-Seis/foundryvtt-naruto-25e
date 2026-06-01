@@ -21,9 +21,24 @@
             "secondaryClan": "",
             "reason": ""
           },
+          "customClan": {
+            "name": "",
+            "summary": "",
+            "mandatorySkills": ["", ""],
+            "mandatoryAffinities": ["", ""],
+            "notes": ""
+          },
+          "uchiha": {
+            "mangekyo": {
+              "rightEyePower": "",
+              "leftEyePower": "",
+              "notes": ""
+            }
+          },
           "gmOptions": {
             "allowHybridClan": false,
             "allowHybridVoie": false,
+            "allowCustomClan": false,
             "hasMangekyoSharingan": false,
             "hasEternalMangekyoSharingan": false,
             "hasSenjuCells": false,

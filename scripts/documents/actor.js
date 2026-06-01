@@ -220,6 +220,49 @@ export class Naruto25eActor extends Actor {
         }
       }
 
+            if (mode === "customClan") {
+        const customClan = heritage.customClan ?? {};
+        const customName = String(customClan.name ?? "").trim();
+
+        if (!gmOptions.allowCustomClan) {
+          errors.push("Le clan custom n’est pas autorisé par le MJ pour cette fiche.");
+        }
+
+        if (!customName) {
+          errors.push("Le clan custom doit avoir un nom.");
+        }
+
+        const customSkillKeys = Array.isArray(customClan.mandatorySkills)
+          ? customClan.mandatorySkills.filter(Boolean)
+          : [];
+
+        const customAffinityKeys = Array.isArray(customClan.mandatoryAffinities)
+          ? customClan.mandatoryAffinities.filter(Boolean)
+          : [];
+
+        if (customSkillKeys.length > 2) {
+          errors.push("Le clan custom ne peut pas imposer plus de 2 compétences de clan.");
+        }
+
+        if (customAffinityKeys.length > 2) {
+          errors.push("Le clan custom ne peut pas imposer plus de 2 affinités.");
+        }
+
+        for (const skillKey of customSkillKeys) {
+          const skill = NARUTO25E.skillDefinitions?.[skillKey];
+
+          if (!skill || skill.category !== "clan") {
+            errors.push(`Compétence de clan custom invalide : ${skillKey}.`);
+          }
+        }
+
+        for (const affinityKey of customAffinityKeys) {
+          if (!NARUTO25E.chakraAffinities?.[affinityKey]) {
+            errors.push(`Affinité de clan custom invalide : ${affinityKey}.`);
+          }
+        }
+      }
+
       const forcedAffinities = Array.isArray(affinities.forced) ? affinities.forced : [];
       const primaryAffinity = affinities.primary ?? "";
       const secondaryAffinity = affinities.secondary ?? "";
@@ -255,6 +298,11 @@ export class Naruto25eActor extends Actor {
         }
         if (mode === "hybridVoie") {
           return `${voie?.label ?? "Voie ?"} / ${secondaryClan?.label ?? "Clan secondaire ?"}`;
+        }
+
+        if (mode === "customClan") {
+          const customName = String(heritage.customClan?.name ?? "").trim();
+          return customName ? `Clan custom ${customName}` : "Clan custom non nommé";
         }
 
         return "Héritage non défini";
@@ -1119,6 +1167,20 @@ async decreaseBase(baseKey) {
       addClanMandatorySkill(heritage.hybrid?.secondaryClan);
     }
 
+    if (mode === "customClan") {
+      const customSkillKeys = Array.isArray(heritage.customClan?.mandatorySkills)
+        ? heritage.customClan.mandatorySkills
+        : [];
+
+      for (const skillKey of customSkillKeys) {
+        const skill = NARUTO25E.skillDefinitions?.[skillKey];
+
+        if (skill?.category === "clan") {
+          grantedSkillKeys.add(skillKey);
+        }
+      }
+    }
+
     for (const skillKey of grantedSkillKeys) {
     this._addSkillCreationSource(system, skillKey, "heritage");
   }
@@ -1222,6 +1284,18 @@ async decreaseBase(baseKey) {
 
     if (mode === "hybridClan" || mode === "hybridVoie") {
       addClanAffinities(heritage.hybrid?.secondaryClan);
+    }
+
+    if (mode === "customClan") {
+      const customAffinityKeys = Array.isArray(heritage.customClan?.mandatoryAffinities)
+        ? heritage.customClan.mandatoryAffinities
+        : [];
+
+      for (const affinityKey of customAffinityKeys) {
+        if (NARUTO25E.chakraAffinities?.[affinityKey]) {
+          forcedAffinities.add(affinityKey);
+        }
+      }
     }
 
     affinities.forced = Array.from(forcedAffinities);

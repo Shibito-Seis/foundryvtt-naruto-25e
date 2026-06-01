@@ -470,7 +470,8 @@ NARUTO25E.heritageModes = {
   clan: "Clan",
   voie: "Voie",
   hybridClan: "Clan hybride",
-  hybridVoie: "Voie hybridée"
+  hybridVoie: "Voie hybridée",
+  customClan: "Clan custom"
 };
 
 NARUTO25E.clans = {
@@ -1006,6 +1007,95 @@ NARUTO25E.getAffinityCreationData = function (affinityKey) {
   };
 };
 
+NARUTO25E.uchihaPowerModes = {
+  classic: {
+    label: "Pouvoirs Uchiha classiques",
+    summary: "La progression suit le databook papier : Tsukuyomi, Amaterasu, Allégeance/Kotoamatsukami, Izanagi/Izanami, Susanō.",
+    warning: "Mode simple et compatible avec le système papier, mais moins fidèle à la logique individuelle des Mangekyō."
+  },
+  original: {
+    label: "Pouvoirs Uchiha originaux",
+    summary: "À l’éveil du Mangekyō, le joueur choisit ou crée un pouvoir pour l’œil droit et un pouvoir pour l’œil gauche.",
+    warning: "Amaterasu, Tsukuyomi, Kamui et Kotoamatsukami ne sont pas obtenus automatiquement. Chaque œil doit être défini avec validation MJ."
+  }
+};
+
+NARUTO25E.uchihaEyePowers = {
+  amaterasu: {
+    label: "Amaterasu",
+    category: "Flammes noires",
+    summary: "Produit les flammes noires capables de consumer presque toute matière.",
+    requirements: ["Mangekyō Sharingan", "Validation MJ"],
+    eyeNotes: "Pouvoir personnel d’un œil. Ne donne pas automatiquement la manipulation avancée des flammes.",
+    tags: ["mangekyo", "katon", "flammes-noires", "offensif"]
+  },
+
+  enton: {
+    label: "Enton / Kagutsuchi",
+    category: "Manipulation des flammes noires",
+    summary: "Permet de modeler, contrôler ou transformer les flammes noires d’Amaterasu.",
+    requirements: ["Mangekyō Sharingan", "Amaterasu dans l’autre œil", "Validation MJ"],
+    requiresOtherEyePower: "amaterasu",
+    eyeNotes: "Ne fonctionne pleinement que si l’autre œil possède Amaterasu.",
+    tags: ["mangekyo", "enton", "flammes-noires", "synergie"]
+  },
+
+  tsukuyomi: {
+    label: "Tsukuyomi",
+    category: "Genjutsu oculaire",
+    summary: "Impose une illusion mentale d’une intensité extrême, souvent liée à la distorsion de la perception temporelle.",
+    requirements: ["Mangekyō Sharingan", "Validation MJ"],
+    eyeNotes: "Un double Tsukuyomi reste un cas ouvert à interprétation MJ, faute d’exemple canon clair.",
+    tags: ["mangekyo", "genjutsu", "mental"]
+  },
+
+  kamui: {
+    label: "Kamui",
+    category: "Espace-temps",
+    summary: "Manipule l’espace autour du porteur ou de la cible, selon l’œil concerné et la variante choisie.",
+    requirements: ["Mangekyō Sharingan", "Validation MJ"],
+    eyeNotes: "Les effets peuvent différer selon l’œil : contact/proximité, distance, transfert ou intangibilité selon cadrage MJ.",
+    tags: ["mangekyo", "espace-temps", "déplacement"]
+  },
+
+  kotoamatsukami: {
+    label: "Kotoamatsukami / Allégeance",
+    category: "Contrôle mental absolu",
+    summary: "Influence ou reprogramme subtilement la volonté d’une cible.",
+    requirements: ["Mangekyō Sharingan", "Validation MJ forte"],
+    eyeNotes: "Pouvoir extrêmement rare. Les deux yeux peuvent avoir des variantes de portée, subtilité ou intensité.",
+    tags: ["mangekyo", "contrôle", "mental", "rare"]
+  },
+
+  custom: {
+    label: "Pouvoir original",
+    category: "Création MJ-joueur",
+    summary: "Pouvoir de Mangekyō créé spécifiquement pour le personnage.",
+    requirements: ["Mangekyō Sharingan", "Validation MJ"],
+    eyeNotes: "À définir avec le MJ selon le traumatisme, la personnalité et le thème du personnage.",
+    tags: ["mangekyo", "custom", "mj"]
+  }
+};
+
+NARUTO25E.getUchihaPowerMode = function () {
+  try {
+    return game.settings?.get("naruto-25e", "uchihaPowerMode") ?? "classic";
+  } catch (_error) {
+    return "classic";
+  }
+};
+
+NARUTO25E.getUchihaPowerModeData = function () {
+  const mode = NARUTO25E.getUchihaPowerMode();
+  return NARUTO25E.uchihaPowerModes?.[mode] ?? NARUTO25E.uchihaPowerModes.classic;
+};
+
+NARUTO25E.uchihaRanksRequiringMangekyo = [5, 6, 7, 8, 10];
+
+NARUTO25E.requiresMangekyoForUchihaRank = function (rank) {
+  return NARUTO25E.uchihaRanksRequiringMangekyo.includes(Number(rank));
+};
+
 NARUTO25E.clanLineageCaps = {
   aburame: 5,
   akaba: 5,
@@ -1304,9 +1394,96 @@ NARUTO25E.clanLineageFeatures = {
   ]
 };
 
+NARUTO25E.uchihaOriginalLineageFeatures = [
+  {
+    rank: 1,
+    label: "Sharingan — Premier tomoe",
+    type: "Dōjutsu",
+    summary: "Le personnage possède le Sharingan à son premier stade.",
+    mechanical: "Prépare l’activation future du Sharingan et les interactions avec perception, lecture du mouvement et Genjutsu.",
+    tags: ["clan", "uchiha", "sharingan", "dojutsu"]
+  },
+  {
+    rank: 2,
+    label: "Dōsatsugan — Sharingan Deuxième tomoe",
+    type: "Dōjutsu",
+    summary: "Le Sharingan développe une lecture plus fine du chakra, des gestes et des intentions adverses.",
+    mechanical: "Effet détaillé à automatiser plus tard.",
+    tags: ["clan", "uchiha", "sharingan", "dojutsu", "perception"]
+  },
+  {
+    rank: 3,
+    label: "Mitsudomoe — Sharingan Troisième tomoe",
+    type: "Dōjutsu",
+    summary: "Le Sharingan atteint sa forme classique complète à trois tomoe.",
+    mechanical: "Prépare les effets avancés de lecture, anticipation, copie et pression mentale.",
+    tags: ["clan", "uchiha", "sharingan", "dojutsu", "copy"]
+  },
+  {
+    rank: 4,
+    label: "Magen — Illusion démoniaque",
+    type: "Genjutsu de lignée",
+    summary: "Le Sharingan permet d’imposer des illusions mentales brutales et précises.",
+    mechanical: "Effet détaillé à automatiser plus tard.",
+    tags: ["clan", "uchiha", "sharingan", "genjutsu", "magen"]
+  },
+  {
+    rank: 5,
+    label: "Mangekyō Sharingan",
+    type: "Dōjutsu supérieur",
+    summary: "Éveil rare et dramatique du Sharingan, lié à un choc émotionnel majeur.",
+    mechanical: "Débloque le choix d’un pouvoir personnel pour l’œil droit et d’un pouvoir personnel pour l’œil gauche. Validation MJ obligatoire.",
+    tags: ["clan", "uchiha", "mangekyo", "dojutsu", "mj-only"]
+  },
+  {
+    rank: 6,
+    label: "Pouvoir de l’œil droit",
+    type: "Pouvoir personnel du Mangekyō",
+    summary: "Le personnage définit le pouvoir propre à son œil droit : Amaterasu, Tsukuyomi, Kamui, Kotoamatsukami, Enton ou création originale.",
+    mechanical: "Choix à définir avec le MJ. Enton nécessite Amaterasu dans l’autre œil.",
+    tags: ["clan", "uchiha", "mangekyo", "right-eye", "mj-only"]
+  },
+  {
+    rank: 7,
+    label: "Pouvoir de l’œil gauche",
+    type: "Pouvoir personnel du Mangekyō",
+    summary: "Le personnage définit le pouvoir propre à son œil gauche : Amaterasu, Tsukuyomi, Kamui, Kotoamatsukami, Enton ou création originale.",
+    mechanical: "Choix à définir avec le MJ. Enton nécessite Amaterasu dans l’autre œil.",
+    tags: ["clan", "uchiha", "mangekyo", "left-eye", "mj-only"]
+  },
+  {
+    rank: 8,
+    label: "Maîtrise croisée du Mangekyō",
+    type: "Synergie oculaire",
+    summary: "Les deux pouvoirs du Mangekyō commencent à fonctionner comme une combinaison personnelle.",
+    mechanical: "Prépare les synergies entre œil droit et œil gauche. Exemple : Amaterasu + Enton.",
+    tags: ["clan", "uchiha", "mangekyo", "synergy", "mj-only"]
+  },
+  {
+    rank: 9,
+    label: "Izanagi / Izanami",
+    type: "Kinjutsu du Sharingan",
+    summary: "Techniques interdites du Sharingan, capables de déformer le destin ou d’enfermer une cible dans une boucle spirituelle.",
+    mechanical: "Ne nécessite pas le Mangekyō. Nécessite un Sharingan fonctionnel, validation MJ et sacrifice de l’œil utilisé. EMS/Rinnegan peuvent permettre une récupération ou exception limitée.",
+    tags: ["clan", "uchiha", "sharingan", "kinjutsu", "izanagi", "izanami", "mj-only"]
+  },
+  {
+    rank: 10,
+    label: "Susanō — le Guerrier des Six Mondes",
+    type: "Dōjutsu mythique",
+    summary: "Manifestation ultime du pouvoir protecteur et destructeur du Mangekyō Sharingan.",
+    mechanical: "Effet détaillé à automatiser plus tard. Le Susanō devra probablement disposer d’une fiche/progression dédiée.",
+    tags: ["clan", "uchiha", "mangekyo", "susanoo", "mythic", "mj-only"]
+  }
+];
+
 NARUTO25E.getClanLineageFeatures = function (clanKey, rank) {
-  const features = NARUTO25E.clanLineageFeatures?.[clanKey] ?? [];
-  return features.filter((feature) => Number(feature.rank) === Number(rank));
+  const sourceFeatures =
+    clanKey === "uchiha" && NARUTO25E.getUchihaPowerMode() === "original"
+      ? NARUTO25E.uchihaOriginalLineageFeatures
+      : NARUTO25E.clanLineageFeatures?.[clanKey] ?? [];
+
+  return sourceFeatures.filter((feature) => Number(feature.rank) === Number(rank));
 };
 
 NARUTO25E.getClanLineageFeature = function (clanKey, rank) {

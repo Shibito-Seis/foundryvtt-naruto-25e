@@ -2,6 +2,46 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.24]
+
+### Ajouté
+
+- Ajout du paramètre monde MJ `Pouvoirs Uchiha` :
+  - `Classique — progression papier`
+  - `Original — pouvoirs par œil`
+- Ajout des données préparatoires des pouvoirs oculaires Uchiha :
+  - Amaterasu
+  - Enton / Kagutsuchi
+  - Tsukuyomi
+  - Kamui
+  - Kotoamatsukami / Allégeance
+  - Pouvoir original
+- Ajout d’une progression Uchiha alternative en mode `Pouvoirs Uchiha originaux`.
+- Ajout d’une règle de prévisualisation : Enton / Kagutsuchi nécessite Amaterasu dans l’autre œil.
+- Ajout d’une règle de prévisualisation : Izanagi et Izanami ne nécessitent pas le Mangekyō Sharingan.
+- Ajout d’une fondation de clan custom :
+  - autorisation MJ par fiche ;
+  - nom de clan custom ;
+  - résumé court ;
+  - jusqu’à 2 compétences de clan imposées ;
+  - jusqu’à 2 affinités imposées ;
+  - notes MJ/lore.
+
+### Modifié
+
+- Les rangs Uchiha nécessitant le Mangekyō sont désormais explicitement limités aux rangs concernés.
+- Izanagi / Izanami ne sont plus traités comme des techniques nécessitant automatiquement le Mangekyō.
+- L’onglet Lignée affiche désormais des explications spécifiques au mode de pouvoirs Uchiha choisi par le MJ.
+- Le futur Charactomancer pourra distinguer le mode Uchiha classique du mode Uchiha original.
+
+### Préparé
+
+- Préparation du choix futur des pouvoirs d’œil droit et d’œil gauche du Mangekyō Sharingan.
+- Préparation d’une future fiche/progression dédiée au Susanō.
+- Préparation d’un futur vrai éditeur de clan custom, sans import massif ni texte libre incontrôlé pour les compétences/affinités.
+
+---
+
 ## [0.1.23]
 
 ### Ajouté

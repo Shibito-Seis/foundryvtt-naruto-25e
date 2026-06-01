@@ -1260,10 +1260,54 @@
               Autoriser la Voie hybridée
             </label>
 
+            <label class="checkbox-row">
+              <input
+                type="checkbox"
+                class="heritage-gm-option"
+                data-field="allowCustomClan"
+                {{#if heritageState.allowCustomClan}}checked{{/if}}
+              />
+              Autoriser le Clan custom
+            </label>
+
             {{#if heritageState.hasUchihaLineage}}
               <hr />
 
               <h4>Éveils Uchiha</h4>
+
+              <div class="creation-preview-card">
+                <h4>{{heritageState.uchihaPowerModeData.label}}</h4>
+                <p>{{heritageState.uchihaPowerModeData.summary}}</p>
+                <p class="hint">{{heritageState.uchihaPowerModeData.warning}}</p>
+
+                {{#if (eq heritageState.uchihaPowerMode "original")}}
+                  <div class="creation-warning-list">
+                    <strong>Règles importantes</strong>
+                    <ul>
+                      <li>Amaterasu, Tsukuyomi, Kamui et Kotoamatsukami ne sont pas automatiques.</li>
+                      <li>Chaque œil du Mangekyō possède son propre pouvoir.</li>
+                      <li>Enton / Kagutsuchi nécessite Amaterasu dans l’autre œil.</li>
+                      <li>Izanagi et Izanami ne nécessitent pas le Mangekyō, mais sacrifient l’œil utilisé.</li>
+                      <li>Le Susanō reste un pouvoir supérieur à part, destiné à une future fiche/progression dédiée.</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <strong>Pouvoirs oculaires disponibles</strong>
+                    <ul>
+                      {{#each heritageState.uchihaEyePowers as |power|}}
+                        <li>
+                          <strong>{{power.label}}</strong> — {{power.summary}}
+                          {{#if power.requiresOtherEyePower}}
+                            <br />
+                            <span class="hint">Condition croisée : nécessite {{power.requiresOtherEyePower}} dans l’autre œil.</span>
+                          {{/if}}
+                        </li>
+                      {{/each}}
+                    </ul>
+                  </div>
+                {{/if}}
+              </div>
 
               <label class="checkbox-row">
                 <input
@@ -1427,6 +1471,91 @@
           Raison / origine de l’hybridation
           <textarea name="system.heritage.hybrid.reason" {{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}>{{system.heritage.hybrid.reason}}</textarea>
         </label>
+
+      {{#if heritageState.isCustomClanMode}}
+        <section class="lineage-section">
+          <h3>Clan custom</h3>
+
+          <p class="hint">
+            Fondation préparatoire : le clan custom reste soumis à validation MJ. Les compétences de clan et affinités imposées sont choisies dans des listes limitées.
+          </p>
+
+          <div class="identity-grid">
+            <label>
+              Nom du clan custom
+              <input
+                type="text"
+                name="system.heritage.customClan.name"
+                value="{{system.heritage.customClan.name}}"
+                {{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}
+              />
+            </label>
+
+            <label>
+              Résumé court
+              <input
+                type="text"
+                name="system.heritage.customClan.summary"
+                value="{{system.heritage.customClan.summary}}"
+                {{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}
+              />
+            </label>
+
+            <label>
+              Compétence de clan imposée 1
+              <select name="system.heritage.customClan.mandatorySkills.0" {{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}>
+                <option value="">Aucune</option>
+                {{#each customClanSkillOptions as |skill|}}
+                  <option value="{{skill.key}}" {{#if skill.selectedFirst}}selected{{/if}}>
+                    {{skill.label}}
+                  </option>
+                {{/each}}
+              </select>
+            </label>
+
+            <label>
+              Compétence de clan imposée 2
+              <select name="system.heritage.customClan.mandatorySkills.1" {{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}>
+                <option value="">Aucune</option>
+                {{#each customClanSkillOptions as |skill|}}
+                  <option value="{{skill.key}}" {{#if skill.selectedSecond}}selected{{/if}}>
+                    {{skill.label}}
+                  </option>
+                {{/each}}
+              </select>
+            </label>
+
+            <label>
+              Affinité imposée 1
+              <select name="system.heritage.customClan.mandatoryAffinities.0" {{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}>
+                <option value="">Aucune</option>
+                {{#each customClanAffinityOptions as |affinity|}}
+                  <option value="{{affinity.key}}" {{#if affinity.selectedFirst}}selected{{/if}}>
+                    {{affinity.label}}
+                  </option>
+                {{/each}}
+              </select>
+            </label>
+
+            <label>
+              Affinité imposée 2
+              <select name="system.heritage.customClan.mandatoryAffinities.1" {{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}>
+                <option value="">Aucune</option>
+                {{#each customClanAffinityOptions as |affinity|}}
+                  <option value="{{affinity.key}}" {{#if affinity.selectedSecond}}selected{{/if}}>
+                    {{affinity.label}}
+                  </option>
+                {{/each}}
+              </select>
+            </label>
+          </div>
+
+          <label>
+            Notes MJ / lore du clan custom
+            <textarea name="system.heritage.customClan.notes" {{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}>{{system.heritage.customClan.notes}}</textarea>
+          </label>
+        </section>
+      {{/if}}
 
       <label>
         Notes de lignée

@@ -69,6 +69,26 @@ Hooks.once("init", async function () {
     }
   });
 
+    game.settings.register("naruto-25e", "uchihaPowerMode", {
+    name: "Pouvoirs Uchiha",
+    hint: "Détermine si la progression Uchiha suit le databook papier ou si les pouvoirs du Mangekyō sont choisis par œil.",
+    scope: "world",
+    config: true,
+    restricted: true,
+    type: String,
+    choices: {
+      classic: "Classique — progression papier",
+      original: "Original — pouvoirs par œil"
+    },
+    default: "classic",
+    onChange: () => {
+      for (const actor of game.actors ?? []) {
+        actor.prepareData();
+        actor.sheet?.render(false);
+      }
+    }
+  });
+
     game.settings.registerMenu("naruto-25e", "techniqueImporter", {
     name: "Importer les techniques",
     label: "Ouvrir l’importeur",
