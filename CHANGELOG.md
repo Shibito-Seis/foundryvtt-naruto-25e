@@ -2,6 +2,16 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.24.2]
+
+### Corrigé
+
+- Correction d’une erreur JavaScript bloquant le chargement du système :
+  - suppression d’une double déclaration de `gmOptions` dans `shinobi-sheet.js`.
+- Correction du problème empêchant l’enregistrement des paramètres système Naruto et le chargement de la fiche Shinobi personnalisée.
+
+---
+
 ## [0.1.24.1]
 
 ### Corrigé
