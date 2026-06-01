@@ -1167,6 +1167,144 @@ NARUTO25E.getUchihaPowerModeData = function () {
   return NARUTO25E.uchihaPowerModes?.[mode] ?? NARUTO25E.uchihaPowerModes.classic;
 };
 
+NARUTO25E.uchihaEyeStates = {
+  healthy: {
+    label: "Sain",
+    summary: "L’œil est fonctionnel et ne présente pas encore de séquelle notable."
+  },
+  strained: {
+    label: "Fatigué",
+    summary: "L’œil montre les premiers signes d’usure liés au Mangekyō."
+  },
+  damaged: {
+    label: "Abîmé",
+    summary: "La vision est sérieusement atteinte. Le personnage devrait chercher une solution durable."
+  },
+  blind: {
+    label: "Aveugle",
+    summary: "L’œil est perdu ou inutilisable pour les pouvoirs du Sharingan."
+  },
+  eternal: {
+    label: "Mangekyō Éternel",
+    summary: "L’œil bénéficie d’une stabilité supérieure et ignore normalement la dégradation du Mangekyō."
+  },
+  rinnegan: {
+    label: "Rinnegan",
+    summary: "L’œil a évolué ou été remplacé par un Rinnegan, selon validation MJ."
+  }
+};
+
+NARUTO25E.getUchihaEyeStateData = function (stateKey) {
+  return NARUTO25E.uchihaEyeStates?.[stateKey] ?? NARUTO25E.uchihaEyeStates.healthy;
+};
+
+NARUTO25E.getUchihaEyePowerData = function (powerKey) {
+  return NARUTO25E.uchihaEyePowers?.[powerKey] ?? null;
+};
+
+NARUTO25E.canSelectUchihaEyePower = function ({
+  powerKey,
+  eyeKey,
+  rightEyePower,
+  leftEyePower,
+  rightEyePlayerValidated
+} = {}) {
+  if (!powerKey) {
+    return {
+      valid: true,
+      reason: ""
+    };
+  }
+
+  const power = NARUTO25E.getUchihaEyePowerData(powerKey);
+
+  if (!power) {
+    return {
+      valid: false,
+      reason: "Pouvoir oculaire inconnu."
+    };
+  }
+
+  if (eyeKey === "left" && !rightEyePlayerValidated) {
+    return {
+      valid: false,
+      reason: "L’œil gauche ne peut être choisi qu’après confirmation PJ de l’œil droit."
+    };
+  }
+
+  if (power.requiresOtherEyePower) {
+    const otherEyePower = eyeKey === "right" ? leftEyePower : rightEyePower;
+
+    if (otherEyePower !== power.requiresOtherEyePower) {
+      const requiredPower = NARUTO25E.getUchihaEyePowerData(power.requiresOtherEyePower);
+      const requiredLabel = requiredPower?.label ?? power.requiresOtherEyePower;
+
+      return {
+        valid: false,
+        reason: `${power.label} nécessite ${requiredLabel} dans l’autre œil.`
+      };
+    }
+  }
+
+  return {
+    valid: true,
+    reason: ""
+  };
+};
+
+NARUTO25E.getMangekyoUsageState = function (uses = 0, hasEternalMangekyoSharingan = false, hasRinnegan = false) {
+  const safeUses = Math.max(0, Number(uses ?? 0));
+
+  if (hasRinnegan) {
+    return {
+      uses: safeUses,
+      vigilancePenalty: 0,
+      thresholdLabel: "Rinnegan",
+      warning: "Le Rinnegan permet d’ignorer ou de remodeler les séquelles selon validation MJ.",
+      shouldSeekEms: false,
+      blindThresholdReached: false
+    };
+  }
+
+  if (hasEternalMangekyoSharingan) {
+    return {
+      uses: safeUses,
+      vigilancePenalty: 0,
+      thresholdLabel: "Mangekyō Éternel",
+      warning: "L’EMS stabilise normalement la dégradation du Mangekyō.",
+      shouldSeekEms: false,
+      blindThresholdReached: false
+    };
+  }
+
+  const vigilancePenalty = Math.min(5, Math.floor(safeUses / 10));
+  const shouldSeekEms = safeUses >= 30;
+  const blindThresholdReached = safeUses >= 50;
+
+  let thresholdLabel = "Stable";
+  let warning = "Aucune séquelle mécanique notable pour le moment.";
+
+  if (safeUses >= 50) {
+    thresholdLabel = "Cécité";
+    warning = "Seuil de cécité atteint : les yeux devraient être considérés comme aveugles sans intervention narrative majeure.";
+  } else if (safeUses >= 30) {
+    thresholdLabel = "Dégradation critique";
+    warning = "Quête EMS fortement conseillée : la vision décline dangereusement.";
+  } else if (safeUses >= 10) {
+    thresholdLabel = "Dégradation";
+    warning = "La fatigue visuelle devient notable. Appliquer le malus conseillé si le MJ le valide.";
+  }
+
+  return {
+    uses: safeUses,
+    vigilancePenalty,
+    thresholdLabel,
+    warning,
+    shouldSeekEms,
+    blindThresholdReached
+  };
+};
+
 NARUTO25E.uchihaRanksRequiringMangekyo = [5, 6, 7, 8, 10];
 
 NARUTO25E.requiresMangekyoForUchihaRank = function (rank) {

@@ -1306,6 +1306,197 @@
                       {{/each}}
                     </ul>
                   </div>
+
+                  <section class="uchiha-mangekyo-panel">
+                    <h4>Choix du Mangekyō</h4>
+
+                    <div class="uchiha-eye-grid">
+                      <div class="uchiha-eye-card">
+                        <h5>Œil droit</h5>
+
+                        <label>
+                          Pouvoir
+                          <select
+                            class="uchiha-eye-power-choice"
+                            data-eye="right"
+                            {{#unless heritageState.mangekyo.canEditRightEye}}disabled{{/unless}}
+                          >
+                            <option value="">— Aucun —</option>
+                            {{#each heritageState.mangekyo.rightEyePowerOptions as |power|}}
+                              <option value="{{power.key}}" {{#if power.selected}}selected{{/if}} {{#if power.disabled}}disabled{{/if}}>
+                                {{power.label}}
+                              </option>
+                            {{/each}}
+                          </select>
+                        </label>
+
+                        {{#unless heritageState.mangekyo.rightEyeValidation.valid}}
+                          <p class="warning-text">{{heritageState.mangekyo.rightEyeValidation.reason}}</p>
+                        {{/unless}}
+
+                        <div class="uchiha-validation-row">
+                          <button
+                            type="button"
+                            class="uchiha-eye-player-validate"
+                            data-eye="right"
+                            {{#unless heritageState.mangekyo.rightEyePower}}disabled{{/unless}}
+                          >
+                            Confirmer PJ
+                          </button>
+
+                          <span class="tag">
+                            PJ : {{#if heritageState.mangekyo.rightEyePlayerValidated}}validé{{else}}à confirmer{{/if}}
+                          </span>
+                        </div>
+
+                        {{#if isGM}}
+                          <label class="checkbox-row">
+                            <input
+                              type="checkbox"
+                              class="uchiha-eye-gm-validate"
+                              data-eye="right"
+                              {{#if heritageState.mangekyo.rightEyeGmValidated}}checked{{/if}}
+                              {{#unless heritageState.mangekyo.rightEyePlayerValidated}}disabled{{/unless}}
+                            />
+                            Validation MJ
+                          </label>
+
+                          <button type="button" class="uchiha-eye-reset" data-eye="right">
+                            MJ : annuler validation
+                          </button>
+                        {{/if}}
+
+                        <label>
+                          État de l’œil
+                          <select class="uchiha-eye-state" data-eye="right" {{#unless isGM}}disabled{{/unless}}>
+                            {{#each heritageState.mangekyo.rightEyeStateOptions as |state|}}
+                              <option value="{{state.key}}" {{#if state.selected}}selected{{/if}}>
+                                {{state.label}}
+                              </option>
+                            {{/each}}
+                          </select>
+                        </label>
+                      </div>
+
+                      <div class="uchiha-eye-card">
+                        <h5>Œil gauche</h5>
+
+                        {{#if heritageState.mangekyo.leftEyeChoiceLocked}}
+                          <p class="hint">
+                            L’œil gauche se débloque après confirmation PJ de l’œil droit.
+                          </p>
+                        {{/if}}
+
+                        <label>
+                          Pouvoir
+                          <select
+                            class="uchiha-eye-power-choice"
+                            data-eye="left"
+                            {{#unless heritageState.mangekyo.canEditLeftEye}}disabled{{/unless}}
+                          >
+                            <option value="">— Aucun —</option>
+                            {{#each heritageState.mangekyo.leftEyePowerOptions as |power|}}
+                              <option value="{{power.key}}" {{#if power.selected}}selected{{/if}} {{#if power.disabled}}disabled{{/if}}>
+                                {{power.label}}
+                              </option>
+                            {{/each}}
+                          </select>
+                        </label>
+
+                        {{#unless heritageState.mangekyo.leftEyeValidation.valid}}
+                          <p class="warning-text">{{heritageState.mangekyo.leftEyeValidation.reason}}</p>
+                        {{/unless}}
+
+                        <div class="uchiha-validation-row">
+                          <button
+                            type="button"
+                            class="uchiha-eye-player-validate"
+                            data-eye="left"
+                            {{#unless heritageState.mangekyo.leftEyePower}}disabled{{/unless}}
+                          >
+                            Confirmer PJ
+                          </button>
+
+                          <span class="tag">
+                            PJ : {{#if heritageState.mangekyo.leftEyePlayerValidated}}validé{{else}}à confirmer{{/if}}
+                          </span>
+                        </div>
+
+                        {{#if isGM}}
+                          <label class="checkbox-row">
+                            <input
+                              type="checkbox"
+                              class="uchiha-eye-gm-validate"
+                              data-eye="left"
+                              {{#if heritageState.mangekyo.leftEyeGmValidated}}checked{{/if}}
+                              {{#unless heritageState.mangekyo.leftEyePlayerValidated}}disabled{{/unless}}
+                            />
+                            Validation MJ
+                          </label>
+
+                          <button type="button" class="uchiha-eye-reset" data-eye="left">
+                            MJ : annuler validation
+                          </button>
+                        {{/if}}
+
+                        <label>
+                          État de l’œil
+                          <select class="uchiha-eye-state" data-eye="left" {{#unless isGM}}disabled{{/unless}}>
+                            {{#each heritageState.mangekyo.leftEyeStateOptions as |state|}}
+                              <option value="{{state.key}}" {{#if state.selected}}selected{{/if}}>
+                                {{state.label}}
+                              </option>
+                            {{/each}}
+                          </select>
+                        </label>
+                      </div>
+                    </div>
+
+                    <div class="uchiha-mangekyo-usage">
+                      <h5>Santé oculaire du Mangekyō</h5>
+
+                      <div class="uchiha-usage-grid">
+                        <div>
+                          <strong>Utilisations</strong>
+                          <span>{{heritageState.mangekyo.usageState.uses}} / 50</span>
+                        </div>
+
+                        <div>
+                          <strong>État</strong>
+                          <span>{{heritageState.mangekyo.usageState.thresholdLabel}}</span>
+                        </div>
+
+                        <div>
+                          <strong>Malus Vigilance conseillé</strong>
+                          <span>-{{heritageState.mangekyo.usageState.vigilancePenalty}}</span>
+                        </div>
+                      </div>
+
+                      <div class="button-row">
+                        <button type="button" class="mangekyo-uses-adjust" data-delta="-1">-1 utilisation</button>
+                        <button type="button" class="mangekyo-uses-adjust" data-delta="1">+1 utilisation</button>
+                      </div>
+
+                      <p class="hint">{{heritageState.mangekyo.usageState.warning}}</p>
+
+                      {{#if heritageState.mangekyo.usageState.shouldSeekEms}}
+                        <p class="warning-text">
+                          Quête EMS recommandée : le personnage devrait chercher une solution narrative avant la cécité.
+                        </p>
+                      {{/if}}
+
+                      {{#if heritageState.mangekyo.usageState.blindThresholdReached}}
+                        <p class="warning-text">
+                          Seuil de cécité atteint : le MJ devrait marquer les yeux comme aveugles, sauf EMS/Rinnegan ou exception narrative.
+                        </p>
+                      {{/if}}
+
+                      <label>
+                        Notes Mangekyō
+                        <textarea name="system.heritage.uchiha.mangekyo.notes">{{system.heritage.uchiha.mangekyo.notes}}</textarea>
+                      </label>
+                    </div>
+                  </section>
                 {{/if}}
               </div>
 

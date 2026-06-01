@@ -27,13 +27,20 @@
             "mandatoryChoices": ["", ""],
             "notes": ""
           },
-          "uchiha": {
-            "mangekyo": {
-              "rightEyePower": "",
-              "leftEyePower": "",
-              "notes": ""
-            }
-          },
+"uchiha": {
+  "mangekyo": {
+    "rightEyePower": "",
+    "leftEyePower": "",
+    "rightEyePlayerValidated": false,
+    "leftEyePlayerValidated": false,
+    "rightEyeGmValidated": false,
+    "leftEyeGmValidated": false,
+    "rightEyeState": "healthy",
+    "leftEyeState": "healthy",
+    "uses": 0,
+    "notes": ""
+  }
+},
           "gmOptions": {
             "allowHybridClan": false,
             "allowHybridVoie": false,

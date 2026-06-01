@@ -2,6 +2,30 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.25]
+
+### Ajouté
+
+- Ajout du choix fonctionnel des pouvoirs du Mangekyō Sharingan en mode Uchiha original.
+- Ajout du choix séparé du pouvoir de l’œil droit et de l’œil gauche.
+- L’œil gauche est verrouillé tant que le pouvoir de l’œil droit n’a pas été confirmé côté joueur.
+- Ajout d’une validation PJ puis MJ pour chaque pouvoir oculaire.
+- Ajout du blocage d’Enton / Kagutsuchi si l’autre œil ne possède pas Amaterasu.
+- Ajout d’un suivi des utilisations du Mangekyō Sharingan.
+- Ajout d’un affichage de santé oculaire pour les deux yeux.
+- Ajout des états d’œil : sain, fatigué, abîmé, aveugle, Mangekyō Éternel et Rinnegan.
+- Ajout d’un seuil de quête EMS recommandé à partir de 30 utilisations.
+- Ajout d’un seuil de cécité à 50 utilisations.
+- Ajout d’un malus de Vigilance conseillé par tranche de 10 utilisations du Mangekyō.
+
+### Préparé
+
+- Préparation de la future page Santé / États / Blessures.
+- Préparation de la future page Implantation pour les yeux greffés, Sharingan implanté, Byakugan implanté, EMS et Rinnegan.
+- Préparation d’une automatisation future des malus de Vigilance liés à la dégradation oculaire.
+
+---
+
 ## [0.1.24.2]
 
 ### Corrigé

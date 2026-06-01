@@ -512,6 +512,74 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
       hasHyugaLineage
       && Boolean(gmOptions.hasTenseigan);
 
+    const mangekyo = heritage.uchiha?.mangekyo ?? {};
+    const rightEyePower = mangekyo.rightEyePower ?? "";
+    const leftEyePower = mangekyo.leftEyePower ?? "";
+    const rightEyePlayerValidated = Boolean(mangekyo.rightEyePlayerValidated);
+    const leftEyePlayerValidated = Boolean(mangekyo.leftEyePlayerValidated);
+    const rightEyeGmValidated = Boolean(mangekyo.rightEyeGmValidated);
+    const leftEyeGmValidated = Boolean(mangekyo.leftEyeGmValidated);
+    const rightEyeState = mangekyo.rightEyeState ?? "healthy";
+    const leftEyeState = mangekyo.leftEyeState ?? "healthy";
+    const mangekyoUses = Number(mangekyo.uses ?? 0);
+
+    const buildUchihaEyePowerOptions = (eyeKey) => {
+      return Object.entries(NARUTO25E.uchihaEyePowers ?? {}).map(([key, power]) => {
+        const validation = NARUTO25E.canSelectUchihaEyePower?.({
+          powerKey: key,
+          eyeKey,
+          rightEyePower,
+          leftEyePower,
+          rightEyePlayerValidated
+        }) ?? { valid: true, reason: "" };
+
+        return {
+          key,
+          label: power.label,
+          selected: eyeKey === "right" ? rightEyePower === key : leftEyePower === key,
+          disabled: !validation.valid,
+          reason: validation.reason
+        };
+      });
+    };
+
+    const buildUchihaEyeStateOptions = (selectedState) => {
+      return Object.entries(NARUTO25E.uchihaEyeStates ?? {}).map(([key, state]) => ({
+        key,
+        label: state.label,
+        selected: selectedState === key
+      }));
+    };
+
+    const rightEyeValidation = NARUTO25E.canSelectUchihaEyePower?.({
+      powerKey: rightEyePower,
+      eyeKey: "right",
+      rightEyePower,
+      leftEyePower,
+      rightEyePlayerValidated
+    }) ?? { valid: true, reason: "" };
+
+    const leftEyeValidation = NARUTO25E.canSelectUchihaEyePower?.({
+      powerKey: leftEyePower,
+      eyeKey: "left",
+      rightEyePower,
+      leftEyePower,
+      rightEyePlayerValidated
+    }) ?? { valid: true, reason: "" };
+
+    const mangekyoUsageState = NARUTO25E.getMangekyoUsageState?.(
+      mangekyoUses,
+      hasEternalMangekyoSharingan,
+      hasRinnegan
+    ) ?? {
+      uses: mangekyoUses,
+      vigilancePenalty: 0,
+      thresholdLabel: "—",
+      warning: "",
+      shouldSeekEms: false,
+      blindThresholdReached: false
+    };
+
     context.heritageState = {
       mode,
       isClanMode: mode === "clan",
@@ -545,6 +613,31 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
       canAwakenRinnegan,
       hasRinnegan,
       hasTenseigan,
+      mangekyo: {
+        rightEyePower,
+        leftEyePower,
+        rightEyePowerLabel: NARUTO25E.getUchihaEyePowerData?.(rightEyePower)?.label ?? "—",
+        leftEyePowerLabel: NARUTO25E.getUchihaEyePowerData?.(leftEyePower)?.label ?? "—",
+        rightEyePlayerValidated,
+        leftEyePlayerValidated,
+        rightEyeGmValidated,
+        leftEyeGmValidated,
+        rightEyeState,
+        leftEyeState,
+        rightEyeStateLabel: NARUTO25E.getUchihaEyeStateData?.(rightEyeState)?.label ?? "Sain",
+        leftEyeStateLabel: NARUTO25E.getUchihaEyeStateData?.(leftEyeState)?.label ?? "Sain",
+        rightEyePowerOptions: buildUchihaEyePowerOptions("right"),
+        leftEyePowerOptions: buildUchihaEyePowerOptions("left"),
+        rightEyeStateOptions: buildUchihaEyeStateOptions(rightEyeState),
+        leftEyeStateOptions: buildUchihaEyeStateOptions(leftEyeState),
+        rightEyeValidation,
+        leftEyeValidation,
+        leftEyeChoiceLocked: !rightEyePlayerValidated,
+        uses: mangekyoUses,
+        usageState: mangekyoUsageState,
+        canEditRightEye: !rightEyePlayerValidated || game.user.isGM,
+        canEditLeftEye: rightEyePlayerValidated && (!leftEyePlayerValidated || game.user.isGM)
+      },
       clanDisabled: mode === "voie",
       voieDisabled: mode === "clan" || mode === "hybridClan",
       hybridDisabled:
@@ -1011,6 +1104,157 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
 
   await this.actor.update(updateData);
 });
+
+  html.find(".uchiha-eye-power-choice").on("change", async (event) => {
+    event.preventDefault();
+
+    const eye = event.currentTarget.dataset.eye;
+    const powerKey = event.currentTarget.value;
+    const heritage = this.actor.system.heritage ?? {};
+    const mangekyo = heritage.uchiha?.mangekyo ?? {};
+
+    const rightEyePower = eye === "right" ? powerKey : mangekyo.rightEyePower ?? "";
+    const leftEyePower = eye === "left" ? powerKey : mangekyo.leftEyePower ?? "";
+    const rightEyePlayerValidated = Boolean(mangekyo.rightEyePlayerValidated);
+
+    const validation = NARUTO25E.canSelectUchihaEyePower?.({
+      powerKey,
+      eyeKey: eye,
+      rightEyePower,
+      leftEyePower,
+      rightEyePlayerValidated
+    }) ?? { valid: true, reason: "" };
+
+    if (!validation.valid) {
+      ui.notifications.warn(validation.reason);
+      this.render(false);
+      return;
+    }
+
+    const updateData = {
+      [`system.heritage.uchiha.mangekyo.${eye}EyePower`]: powerKey,
+      [`system.heritage.uchiha.mangekyo.${eye}EyePlayerValidated`]: false,
+      [`system.heritage.uchiha.mangekyo.${eye}EyeGmValidated`]: false
+    };
+
+    if (eye === "right") {
+      updateData["system.heritage.uchiha.mangekyo.leftEyePlayerValidated"] = false;
+      updateData["system.heritage.uchiha.mangekyo.leftEyeGmValidated"] = false;
+    }
+
+    await this.actor.update(updateData);
+  });
+
+  html.find(".uchiha-eye-player-validate").on("click", async (event) => {
+    event.preventDefault();
+
+    const eye = event.currentTarget.dataset.eye;
+    const heritage = this.actor.system.heritage ?? {};
+    const mangekyo = heritage.uchiha?.mangekyo ?? {};
+
+    const rightEyePower = mangekyo.rightEyePower ?? "";
+    const leftEyePower = mangekyo.leftEyePower ?? "";
+    const powerKey = eye === "right" ? rightEyePower : leftEyePower;
+    const rightEyePlayerValidated = Boolean(mangekyo.rightEyePlayerValidated);
+
+    if (!powerKey) {
+      ui.notifications.warn("Choisis d’abord un pouvoir pour cet œil.");
+      return;
+    }
+
+    const validation = NARUTO25E.canSelectUchihaEyePower?.({
+      powerKey,
+      eyeKey: eye,
+      rightEyePower,
+      leftEyePower,
+      rightEyePlayerValidated
+    }) ?? { valid: true, reason: "" };
+
+    if (!validation.valid) {
+      ui.notifications.warn(validation.reason);
+      return;
+    }
+
+    await this.actor.update({
+      [`system.heritage.uchiha.mangekyo.${eye}EyePlayerValidated`]: true,
+      [`system.heritage.uchiha.mangekyo.${eye}EyeGmValidated`]: false
+    });
+
+    ui.notifications.info(`Choix de l’œil ${eye === "right" ? "droit" : "gauche"} confirmé côté joueur.`);
+  });
+
+  html.find(".uchiha-eye-gm-validate").on("change", async (event) => {
+    event.preventDefault();
+
+    if (!game.user.isGM) {
+      ui.notifications.warn("Seul le MJ peut valider ce choix.");
+      event.currentTarget.checked = false;
+      return;
+    }
+
+    const eye = event.currentTarget.dataset.eye;
+    const checked = event.currentTarget.checked;
+    const heritage = this.actor.system.heritage ?? {};
+    const mangekyo = heritage.uchiha?.mangekyo ?? {};
+    const playerValidated = Boolean(mangekyo[`${eye}EyePlayerValidated`]);
+
+    if (checked && !playerValidated) {
+      ui.notifications.warn("Le joueur doit d’abord confirmer ce choix.");
+      event.currentTarget.checked = false;
+      return;
+    }
+
+    await this.actor.update({
+      [`system.heritage.uchiha.mangekyo.${eye}EyeGmValidated`]: checked
+    });
+  });
+
+  html.find(".uchiha-eye-reset").on("click", async (event) => {
+    event.preventDefault();
+
+    if (!game.user.isGM) {
+      ui.notifications.warn("Seul le MJ peut annuler une validation de pouvoir oculaire.");
+      return;
+    }
+
+    const eye = event.currentTarget.dataset.eye;
+
+    await this.actor.update({
+      [`system.heritage.uchiha.mangekyo.${eye}EyePlayerValidated`]: false,
+      [`system.heritage.uchiha.mangekyo.${eye}EyeGmValidated`]: false
+    });
+
+    ui.notifications.info(`Validation de l’œil ${eye === "right" ? "droit" : "gauche"} annulée.`);
+  });
+
+  html.find(".uchiha-eye-state").on("change", async (event) => {
+    event.preventDefault();
+
+    if (!game.user.isGM) {
+      ui.notifications.warn("Seul le MJ peut modifier l’état d’un œil.");
+      this.render(false);
+      return;
+    }
+
+    const eye = event.currentTarget.dataset.eye;
+    const state = event.currentTarget.value;
+
+    await this.actor.update({
+      [`system.heritage.uchiha.mangekyo.${eye}EyeState`]: state
+    });
+  });
+
+  html.find(".mangekyo-uses-adjust").on("click", async (event) => {
+    event.preventDefault();
+
+    const delta = Number(event.currentTarget.dataset.delta ?? 0);
+    const current = Number(this.actor.system.heritage?.uchiha?.mangekyo?.uses ?? 0);
+    const next = Math.max(0, Math.min(50, current + delta));
+
+    await this.actor.update({
+      "system.heritage.uchiha.mangekyo.uses": next
+    });
+  });
 
   html.find(".heritage-gm-option").on("change", async (event) => {
     event.preventDefault();
