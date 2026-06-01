@@ -2498,7 +2498,7 @@ async decreaseBase(baseKey) {
       notes: "",
       value: 0,
       weight: 0,
-      useEffect: this._getDefaultInventoryUseEffect(name, type),
+      useEffect: this._getBlankInventoryUseEffect(),
       sort: items.length
     });
 
@@ -2509,6 +2509,30 @@ async decreaseBase(baseKey) {
     });
 
     ui.notifications.info(`${name} ajouté à l’inventaire.`);
+  }
+
+  async addInventoryItemFromDocument(itemDocument, quantity = null) {
+    if (this.type !== "shinobi") return;
+    if (!itemDocument) return;
+
+    const allowedTypes = ["arme", "armure", "equipement", "consommable"];
+
+    if (!allowedTypes.includes(itemDocument.type)) {
+      ui.notifications.warn("Seuls les objets d’équipement peuvent être ajoutés à l’inventaire.");
+      return;
+    }
+
+    const items = foundry.utils.deepClone(this.system.inventory?.items ?? []);
+    const inventoryItem = this._getInventoryItemDataFromDocument(itemDocument, quantity);
+    inventoryItem.sort = items.length;
+
+    items.push(inventoryItem);
+
+    await this.update({
+      "system.inventory.items": items
+    });
+
+    ui.notifications.info(`${inventoryItem.name} ajouté à l’inventaire.`);
   }
 
   async deleteInventoryItem(itemId) {
@@ -2587,47 +2611,67 @@ async decreaseBase(baseKey) {
     ui.notifications.info(`${item.name} ${item.equipped ? "équipé" : "déséquipé"}.`);
   }
 
-  _normalizeInventoryItemName(name) {
-    return String(name ?? "")
-      .trim()
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "");
+  _getBlankInventoryUseEffect() {
+    return {
+      type: "none",
+      resource: "none",
+      amount: 0,
+      consumeOnUse: true,
+      text: ""
+    };
   }
 
-  _getDefaultInventoryUseEffect(name, type) {
-    const normalizedName = this._normalizeInventoryItemName(name);
+  _getInventoryTypeFromItemType(itemType) {
+    const typeMap = {
+      arme: "weapon",
+      armure: "armor",
+      equipement: "misc",
+      consommable: "consumable"
+    };
 
-    if (type === "consumable" && normalizedName === "pilule de chakra mineure") {
-      return {
-        type: "restoreResource",
-        resource: "chakra",
-        amount: 25,
-        text: "Restaure 25 Chakra, sans dépasser le maximum."
-      };
-    }
+    return typeMap[itemType] ?? "misc";
+  }
+
+  _getInventoryItemDataFromDocument(itemDocument, quantity = null) {
+    const system = itemDocument.system ?? {};
+    const inventoryType = this._getInventoryTypeFromItemType(itemDocument.type);
+
+    const baseQuantity = quantity ?? system.quantity ?? 1;
 
     return {
-      type: "",
-      resource: "",
-      amount: 0,
-      text: ""
+      id: foundry.utils.randomID(16),
+      sourceItemId: itemDocument.id ?? "",
+      sourceItemUuid: itemDocument.uuid ?? "",
+      name: itemDocument.name ?? "Objet",
+      type: inventoryType,
+      quantity: Math.max(1, Number(baseQuantity ?? 1)),
+      equipped: false,
+      notes: "",
+      value: Math.max(0, Number(system.value ?? 0)),
+      weight: Math.max(0, Number(system.weight ?? 0)),
+      useEffect: inventoryType === "consumable"
+        ? foundry.utils.deepClone(system.useEffect ?? this._getBlankInventoryUseEffect())
+        : this._getBlankInventoryUseEffect(),
+      sort: 0
     };
   }
 
   _getInventoryUseEffect(item) {
     const explicitEffect = item.useEffect ?? {};
+    const type = explicitEffect.type ?? "none";
+    const resource = explicitEffect.resource ?? "none";
 
-    if (explicitEffect.type) {
-      return {
-        type: explicitEffect.type,
-        resource: explicitEffect.resource ?? "",
-        amount: Math.max(0, Number(explicitEffect.amount ?? 0)),
-        text: explicitEffect.text ?? ""
-      };
+    if (!type || type === "none") {
+      return this._getBlankInventoryUseEffect();
     }
 
-    return this._getDefaultInventoryUseEffect(item.name, item.type);
+    return {
+      type,
+      resource,
+      amount: Math.max(0, Number(explicitEffect.amount ?? 0)),
+      consumeOnUse: explicitEffect.consumeOnUse !== false,
+      text: explicitEffect.text ?? ""
+    };
   }
 
   async useInventoryConsumable(itemId) {
@@ -2648,18 +2692,46 @@ async decreaseBase(baseKey) {
 
     const effect = this._getInventoryUseEffect(item);
 
-    if (!effect.type) {
+    if (!effect.type || effect.type === "none") {
       ui.notifications.warn("Ce consommable n’a pas encore d’effet utilisable.");
       return;
     }
 
-    if (effect.type !== "restoreResource" || effect.resource !== "chakra") {
+    if (effect.type !== "restoreResource") {
       ui.notifications.warn("Cet effet de consommable n’est pas encore pris en charge.");
       return;
     }
 
-    const currentChakra = Math.max(0, Number(this.system.resources?.chakra?.value ?? 0));
-    const maxChakra = Math.max(0, Number(this.system.resources?.chakra?.max ?? 0));
+    const supportedResources = {
+      chakra: {
+        label: "Chakra",
+        valuePath: "system.resources.chakra.value",
+        maxPath: "system.resources.chakra.max",
+        data: this.system.resources?.chakra
+      },
+      vigueur: {
+        label: "Vigueur",
+        valuePath: "system.resources.vigueur.value",
+        maxPath: "system.resources.vigueur.max",
+        data: this.system.resources?.vigueur
+      },
+      caractere: {
+        label: "Caractère",
+        valuePath: "system.resources.caractere.value",
+        maxPath: "system.resources.caractere.max",
+        data: this.system.resources?.caractere
+      }
+    };
+
+    const resource = supportedResources[effect.resource];
+
+    if (!resource) {
+      ui.notifications.warn("La ressource ciblée par ce consommable n’est pas prise en charge.");
+      return;
+    }
+
+    const currentValue = Math.max(0, Number(resource.data?.value ?? 0));
+    const maxValue = Math.max(0, Number(resource.data?.max ?? 0));
     const amount = Math.max(0, Number(effect.amount ?? 0));
 
     if (amount <= 0) {
@@ -2667,32 +2739,36 @@ async decreaseBase(baseKey) {
       return;
     }
 
-    if (maxChakra <= 0) {
-      ui.notifications.warn("Le Chakra maximum du personnage est invalide.");
+    if (maxValue <= 0) {
+      ui.notifications.warn(`Le maximum de ${resource.label} du personnage est invalide.`);
       return;
     }
 
-    if (currentChakra >= maxChakra) {
-      ui.notifications.info(`${this.name} a déjà son Chakra au maximum.`);
+    if (currentValue >= maxValue) {
+      ui.notifications.info(`${this.name} a déjà sa ressource ${resource.label} au maximum.`);
       return;
     }
 
-    const newChakra = Math.min(maxChakra, currentChakra + amount);
-    const restored = newChakra - currentChakra;
+    const newValue = Math.min(maxValue, currentValue + amount);
+    const restored = newValue - currentValue;
 
-    item.quantity = Math.max(1, Number(item.quantity ?? 1)) - 1;
+    if (effect.consumeOnUse) {
+      item.quantity = Math.max(1, Number(item.quantity ?? 1)) - 1;
+    }
 
     const updatedItems = item.quantity > 0
       ? items
       : items.filter((entry) => entry.id !== itemId);
 
     await this.update({
-      "system.resources.chakra.value": newChakra,
+      [resource.valuePath]: newValue,
       "system.inventory.items": updatedItems
     });
 
     const safeItemName = foundry.utils.escapeHTML?.(String(item.name ?? "Consommable")) ?? String(item.name ?? "Consommable");
     const safeActorName = foundry.utils.escapeHTML?.(this.name) ?? this.name;
+    const safeResourceLabel = foundry.utils.escapeHTML?.(resource.label) ?? resource.label;
+    const safeEffectText = foundry.utils.escapeHTML?.(String(effect.text ?? "")) ?? String(effect.text ?? "");
 
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: this }),
@@ -2707,13 +2783,19 @@ async decreaseBase(baseKey) {
 
           <div class="naruto-consumable-effect">
             <strong>Effet :</strong>
-            <span>+${restored} Chakra</span>
+            <span>+${restored} ${safeResourceLabel}</span>
           </div>
 
           <div class="naruto-consumable-resource">
-            <strong>Chakra :</strong>
-            <span>${currentChakra} → ${newChakra} / ${maxChakra}</span>
+            <strong>${safeResourceLabel} :</strong>
+            <span>${currentValue} → ${newValue} / ${maxValue}</span>
           </div>
+
+          ${safeEffectText ? `
+            <div class="naruto-consumable-text">
+              ${safeEffectText}
+            </div>
+          ` : ""}
 
           <div class="naruto-consumable-quantity">
             <strong>Quantité restante :</strong>
@@ -2723,6 +2805,6 @@ async decreaseBase(baseKey) {
       `
     });
 
-    ui.notifications.info(`${item.name} utilisé : +${restored} Chakra.`);
+    ui.notifications.info(`${item.name} utilisé : +${restored} ${resource.label}.`);
   }
 }

@@ -2,6 +2,29 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.22.4]
+
+### Ajouté
+
+- Ajout du pont fonctionnel entre les vrais Items Foundry d’équipement et l’inventaire intégré des fiches Shinobi.
+- Ajout du drag & drop d’Items `arme`, `armure`, `equipement` et `consommable` vers l’inventaire d’un Shinobi.
+- Les consommables déposés depuis un vrai Item Foundry conservent désormais leur effet structuré `system.useEffect`.
+- Les consommables peuvent restaurer Chakra, Vigueur ou Caractère selon leur configuration.
+- Ajout de la prise en compte du champ `consumeOnUse` pour les consommables.
+
+### Modifié
+
+- Suppression de la reconnaissance spéciale par nom exact de la `Pilule de Chakra mineure`.
+- L’ajout manuel d’un objet dans l’inventaire crée désormais un objet neutre, sans effet caché.
+- L’effet d’un consommable dépend désormais de ses données structurées, et non plus de son nom.
+
+### Préparé
+
+- Préparation du futur compendium d’équipement et de consommables.
+- Préparation d’un futur système d’utilisation depuis carte de chat ou ciblage de token.
+
+---
+
 ## [0.1.22.3]
 
 ### Ajouté

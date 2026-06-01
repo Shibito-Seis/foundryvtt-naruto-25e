@@ -749,6 +749,32 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     });
   }
 
+  async _onDrop(event) {
+    const data = TextEditor.getDragEventData(event);
+
+    if (data?.type !== "Item") {
+      return super._onDrop(event);
+    }
+
+    const item = await Item.implementation.fromDropData(data);
+
+    if (!item) {
+      ui.notifications.warn("Impossible de lire l’objet déposé.");
+      return false;
+    }
+
+    const allowedTypes = ["arme", "armure", "equipement", "consommable"];
+
+    if (!allowedTypes.includes(item.type)) {
+      ui.notifications.warn("Cet Item ne peut pas être ajouté à l’inventaire.");
+      return false;
+    }
+
+    await this.actor.addInventoryItemFromDocument(item);
+
+    return false;
+  }
+
   activateListeners(html) {
   super.activateListeners(html);
 
