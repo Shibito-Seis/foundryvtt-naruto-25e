@@ -153,8 +153,10 @@
           "initiative": {
             "base": 0,
             "bonus": 0,
+            "specializationBonus": 0,
             "total": 0,
-            "formula": "1d10"
+            "formula": "1d10",
+            "skill": "physique"
           },
           "attacks": {
             "arm": {
@@ -173,7 +175,9 @@
           "damage": {
             "arm": {
               "base": 0,
+              "weaponBonus": 1,
               "bonus": 0,
+              "specializationBonus": 0,
               "total": 0
             },
             "tai": {
@@ -195,6 +199,12 @@
             }
           },
           "quickSkill": "",
+          "actions": {
+            "simpleAvailable": true,
+            "complexAvailable": true,
+            "delayedAvailable": false,
+            "notes": ""
+          },
           "counters": {
             "interceptions": {
               "arm": {
@@ -216,7 +226,15 @@
           "health": {
             "manualState": "none",
             "chakraState": "none",
+            "conditions": "",
+            "aggravations": "",
+            "weaknesses": "",
             "notes": "",
+            "woundCalculator": {
+              "incomingDamage": 0,
+              "defense": "vigueur",
+              "damageType": "PHY"
+            },
             "reserves": {
               "lineageA": {
                 "enabled": false,

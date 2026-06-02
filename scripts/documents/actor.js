@@ -1676,7 +1676,27 @@ async decreaseBase(baseKey) {
     return checks;
   }
 
-    _prepareCombat(system) {
+    _getInterceptionUsesFromScore(score) {
+    const value = Math.max(0, Number(score ?? 0));
+
+    if (value >= 10) return 5;
+    if (value >= 8) return 4;
+    if (value >= 6) return 3;
+    if (value >= 4) return 2;
+    if (value >= 1) return 1;
+
+    return 0;
+  }
+
+  _getCombatDefenseValue(defenseKey) {
+    if (defenseKey === "caractere") {
+      return Number(this.system.resources?.caractere?.max ?? this.system.resources?.caractere?.value ?? 0);
+    }
+
+    return Number(this.system.resources?.vigueur?.max ?? this.system.resources?.vigueur?.value ?? 0);
+  }
+
+  _prepareCombat(system) {
     if (!system.combat) system.combat = {};
 
     const combat = system.combat;
@@ -1692,10 +1712,12 @@ async decreaseBase(baseKey) {
     combat.interceptions = combat.interceptions ?? {};
     combat.interceptions.arm = combat.interceptions.arm ?? {};
     combat.interceptions.tai = combat.interceptions.tai ?? {};
+    combat.actions = combat.actions ?? {};
     combat.health = combat.health ?? {};
     combat.health.reserves = combat.health.reserves ?? {};
     combat.health.reserves.lineageA = combat.health.reserves.lineageA ?? {};
     combat.health.reserves.lineageB = combat.health.reserves.lineageB ?? {};
+    combat.health.woundCalculator = combat.health.woundCalculator ?? {};
 
     const cor = this._getBaseEffective(system, "cor");
     const arm = this._getBaseEffective(system, "arm");
@@ -1705,17 +1727,19 @@ async decreaseBase(baseKey) {
       return Number(system.skills?.[skillKey]?.total ?? 0);
     };
 
+    const physique = getSkillTotal("physique");
     const armesSimples = getSkillTotal("armesSimples");
     const corpsACorps = getSkillTotal("corpsACorps");
 
-    // Initiative provisoire validée : 1d10 + 1 + COR total + bonus éventuel.
-    combat.initiative.base = 1 + cor;
+    // Initiative databook : 1d10 + Physique + bonus/malus.
+    combat.initiative.skill = "physique";
+    combat.initiative.base = physique;
     combat.initiative.bonus = Number(combat.initiative.bonus ?? 0);
     combat.initiative.specializationBonus = Number(chakraBonuses.initiative ?? 0);
     combat.initiative.total = combat.initiative.base + combat.initiative.bonus + combat.initiative.specializationBonus;
     combat.initiative.formula = `1d10 + ${combat.initiative.total}`;
 
-    // Attaques basiques.
+    // Attaques basiques provisoires, en attendant les jets directement depuis armes/techniques.
     combat.attacks.arm.label = "Attaque ARM basique";
     combat.attacks.arm.skill = "armesSimples";
     combat.attacks.arm.bonus = Number(combat.attacks.arm.bonus ?? 0);
@@ -1726,27 +1750,35 @@ async decreaseBase(baseKey) {
     combat.attacks.tai.bonus = Number(combat.attacks.tai.bonus ?? 0);
     combat.attacks.tai.total = Math.max(corpsACorps, tai) + combat.attacks.tai.bonus;
 
-    // Dégâts basiques provisoires : Base effective + 1 + bonus.
-    combat.damage.arm.base = arm + 1;
+    // Dégâts basiques databook.
+    combat.damage.arm.weaponBonus = Math.max(0, Number(combat.damage.arm.weaponBonus ?? 1));
+    combat.damage.arm.base = cor + arm + combat.damage.arm.weaponBonus;
     combat.damage.arm.bonus = Number(combat.damage.arm.bonus ?? 0);
     combat.damage.arm.specializationBonus = Number(chakraBonuses.armDamage ?? 0);
     combat.damage.arm.total = combat.damage.arm.base + combat.damage.arm.bonus + combat.damage.arm.specializationBonus;
 
-    combat.damage.tai.base = tai + 1;
+    combat.damage.tai.base = cor + tai;
     combat.damage.tai.bonus = Number(combat.damage.tai.bonus ?? 0);
     combat.damage.tai.specializationBonus = Number(chakraBonuses.taiDamage ?? 0);
     combat.damage.tai.total = combat.damage.tai.base + combat.damage.tai.bonus + combat.damage.tai.specializationBonus;
 
-    // Interceptions basiques.
-    combat.interceptions.arm.base = arm;
+    // Interceptions databook : le score ARM/TAI donne un nombre d'interceptions par paliers.
+    combat.interceptions.arm.base = this._getInterceptionUsesFromScore(arm);
     combat.interceptions.arm.bonus = Number(combat.interceptions.arm.bonus ?? 0);
-    combat.interceptions.arm.total = combat.interceptions.arm.base + combat.interceptions.arm.bonus;
+    combat.interceptions.arm.total = Math.max(0, combat.interceptions.arm.base + combat.interceptions.arm.bonus);
+    combat.interceptions.arm.rollTotal = arm;
 
-    combat.interceptions.tai.base = tai;
+    combat.interceptions.tai.base = this._getInterceptionUsesFromScore(tai);
     combat.interceptions.tai.bonus = Number(combat.interceptions.tai.bonus ?? 0);
-    combat.interceptions.tai.total = combat.interceptions.tai.base + combat.interceptions.tai.bonus;
+    combat.interceptions.tai.total = Math.max(0, combat.interceptions.tai.base + combat.interceptions.tai.bonus);
+    combat.interceptions.tai.rollTotal = tai;
 
     combat.quickSkill = combat.quickSkill ?? "";
+
+    combat.actions.simpleAvailable = combat.actions.simpleAvailable !== false;
+    combat.actions.complexAvailable = combat.actions.complexAvailable !== false;
+    combat.actions.delayedAvailable = Boolean(combat.actions.delayedAvailable);
+    combat.actions.notes = combat.actions.notes ?? "";
 
     combat.counters = combat.counters ?? {};
     combat.counters.interceptions = combat.counters.interceptions ?? {};
@@ -1790,7 +1822,17 @@ async decreaseBase(baseKey) {
 
     // Santé / paliers.
     combat.health.manualState = combat.health.manualState ?? "none";
+    combat.health.conditions = combat.health.conditions ?? "";
+    combat.health.aggravations = combat.health.aggravations ?? "";
+    combat.health.weaknesses = combat.health.weaknesses ?? "";
     combat.health.notes = combat.health.notes ?? "";
+
+    combat.health.woundCalculator.incomingDamage = Math.max(
+      0,
+      Number(combat.health.woundCalculator.incomingDamage ?? 0)
+    );
+    combat.health.woundCalculator.defense = combat.health.woundCalculator.defense ?? "vigueur";
+    combat.health.woundCalculator.damageType = combat.health.woundCalculator.damageType ?? "PHY";
 
     const chakraValue = Number(system.resources?.chakra?.value ?? 0);
 
@@ -2495,7 +2537,7 @@ async decreaseBase(baseKey) {
     });
 
     const label = kind === "arm" ? "Interception ARM" : "Interception TAI";
-    const total = Number(interception.total ?? 0);
+    const total = Number(interception.rollTotal ?? 0);
 
     return this._rollExplodingD10(label, total, {
       flavor: `${label} — ${this.name} (${remaining - 1}/${counter.max} restantes)`
@@ -2522,6 +2564,59 @@ async decreaseBase(baseKey) {
     ui.notifications.info(`Utilisation de pouvoir de lignée dépensée (${remaining - 1}/${counter.max} restantes).`);
   }
 
+    async calculateWoundFromCombatForm() {
+    if (this.type !== "shinobi") return null;
+
+    const calculator = this.system.combat?.health?.woundCalculator ?? {};
+    const incomingDamage = Math.max(0, Number(calculator.incomingDamage ?? 0));
+    const defenseKey = calculator.defense ?? "vigueur";
+    const damageType = calculator.damageType ?? "PHY";
+    const defenseValue = Math.max(0, this._getCombatDefenseValue(defenseKey));
+    const margin = incomingDamage - defenseValue;
+
+    const wounds = margin > 0
+      ? 1 + Math.floor(Math.max(0, margin - 1) / 5)
+      : 0;
+
+    const defenseLabel = defenseKey === "caractere" ? "Caractère" : "Vigueur";
+    const woundLabel = wounds > 1 ? "Blessures" : "Blessure";
+
+    const content = `
+      <div class="naruto-roll-card combat-wound-card">
+        <header class="naruto-roll-header">
+          <h2>Calcul de blessures</h2>
+        </header>
+
+        <div class="naruto-roll-details">
+          <div><strong>Acteur :</strong> ${this.name}</div>
+          <div><strong>Dégâts entrants :</strong> ${incomingDamage} (${damageType})</div>
+          <div><strong>Défense :</strong> ${defenseLabel} ${defenseValue}</div>
+          <div><strong>Marge :</strong> ${margin}</div>
+          <div><strong>Résultat :</strong> ${wounds > 0 ? `${wounds} ${woundLabel}` : "Aucune Blessure"}</div>
+        </div>
+
+        <p class="formula-hint">
+          Rappel : si les dégâts dépassent la défense, la cible subit 1 Blessure, puis +1 Blessure par tranche complète de 5 points au-dessus.
+        </p>
+      </div>
+    `;
+
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+      flavor: `Calcul de blessures — ${this.name}`,
+      content
+    });
+
+    return {
+      incomingDamage,
+      defenseKey,
+      defenseValue,
+      damageType,
+      margin,
+      wounds
+    };
+  }
+
   async resetCombatCounters(scope = "round") {
     if (this.type !== "shinobi") return;
 
@@ -2538,6 +2633,9 @@ async decreaseBase(baseKey) {
 
       updates["system.combat.counters.interceptions.arm.remaining"] = armMax;
       updates["system.combat.counters.interceptions.tai.remaining"] = taiMax;
+      updates["system.combat.actions.simpleAvailable"] = true;
+      updates["system.combat.actions.complexAvailable"] = true;
+      updates["system.combat.actions.delayedAvailable"] = false;
     }
 
     if (scope === "session") {

@@ -1468,6 +1468,12 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     await this.actor.spendLineagePowerUse();
   });
 
+  html.find(".combat-calculate-wounds").on("click", async (event) => {
+    event.preventDefault();
+
+    await this.actor.calculateWoundFromCombatForm();
+  });
+
   html.find(".lineage-power-toggle").on("click", async (event) => {
     event.preventDefault();
 

@@ -639,6 +639,47 @@
           </section>
 
           <section class="combat-card">
+            <h3>Économie d’action</h3>
+
+            <label>
+              <input
+                name="system.combat.actions.simpleAvailable"
+                type="checkbox"
+                {{checked system.combat.actions.simpleAvailable}}
+              />
+              Action simple disponible
+            </label>
+
+            <label>
+              <input
+                name="system.combat.actions.complexAvailable"
+                type="checkbox"
+                {{checked system.combat.actions.complexAvailable}}
+              />
+              Action complexe disponible
+            </label>
+
+            <label>
+              <input
+                name="system.combat.actions.delayedAvailable"
+                type="checkbox"
+                {{checked system.combat.actions.delayedAvailable}}
+              />
+              Action retardée en réserve
+            </label>
+
+            <label>
+              Notes d’action
+              <input
+                name="system.combat.actions.notes"
+                type="text"
+                value="{{system.combat.actions.notes}}"
+                placeholder="Dégainage, posture, action préparée..."
+              />
+            </label>
+          </section>
+
+          <section class="combat-card">
             <h3>Initiative</h3>
 
             <div class="combat-main-value">
@@ -655,7 +696,10 @@
             </label>
 
             <p class="formula-hint">
-              Base actuelle : 1 + COR = {{system.combat.initiative.base}}
+              Base actuelle : Physique = {{system.combat.initiative.base}}
+              {{#if system.combat.initiative.specializationBonus}}
+                | Bonus spécialisation : +{{system.combat.initiative.specializationBonus}}
+              {{/if}}
             </p>
           </section>
 
@@ -700,9 +744,18 @@
             </div>
 
             <label>
+              Bonus arme provisoire
+              <input name="system.combat.damage.arm.weaponBonus" type="number" value="{{system.combat.damage.arm.weaponBonus}}" />
+            </label>
+
+            <label>
               Bonus dégâts ARM
               <input name="system.combat.damage.arm.bonus" type="number" value="{{system.combat.damage.arm.bonus}}" />
             </label>
+
+            <p class="formula-hint">
+              Formule : COR + ARM + bonus arme + bonus divers.
+            </p>
 
             <div class="combat-resource-line">
               <strong>Dégâts TAI</strong>
@@ -713,6 +766,10 @@
               Bonus dégâts TAI
               <input name="system.combat.damage.tai.bonus" type="number" value="{{system.combat.damage.tai.bonus}}" />
             </label>
+
+            <p class="formula-hint">
+              Formule : COR + TAI + bonus divers.
+            </p>
           </section>
 
           <section class="combat-card">
@@ -721,8 +778,8 @@
             <div class="combat-resource-line">
               <strong>Interception ARM</strong>
               <span>
-                {{system.combat.interceptions.arm.total}}
-                — {{system.combat.counters.interceptions.arm.remaining}} / {{system.combat.counters.interceptions.arm.max}}
+                {{system.combat.counters.interceptions.arm.remaining}} / {{system.combat.counters.interceptions.arm.max}}
+                — jet +{{system.combat.interceptions.arm.rollTotal}}
               </span>
             </div>
 
@@ -743,8 +800,8 @@
             <div class="combat-resource-line">
               <strong>Interception TAI</strong>
               <span>
-                {{system.combat.interceptions.tai.total}}
-                — {{system.combat.counters.interceptions.tai.remaining}} / {{system.combat.counters.interceptions.tai.max}}
+                {{system.combat.counters.interceptions.tai.remaining}} / {{system.combat.counters.interceptions.tai.max}}
+                — jet +{{system.combat.interceptions.tai.rollTotal}}
               </span>
             </div>
 
@@ -761,6 +818,9 @@
               Bonus interception TAI
               <input name="system.combat.interceptions.tai.bonus" type="number" value="{{system.combat.interceptions.tai.bonus}}" />
             </label>
+            <p class="formula-hint">
+              Table : score 1 = 1 interception, 4 = 2, 6 = 3, 8 = 4, 10 = 5. Le bonus ajoute des interceptions, pas un bonus au jet.
+            </p>
           </section>
 
         <section class="combat-card">
@@ -790,6 +850,43 @@
             <span>Blessure 2</span>
             <span>Blessure 3</span>
           </div>
+
+          <hr />
+
+          <h4>Calculateur de blessures</h4>
+
+          <label>
+            Dégâts entrants
+            <input
+              name="system.combat.health.woundCalculator.incomingDamage"
+              type="number"
+              value="{{system.combat.health.woundCalculator.incomingDamage}}"
+            />
+          </label>
+
+          <label>
+            Défense ciblée
+            <select name="system.combat.health.woundCalculator.defense">
+              <option value="vigueur" {{#if (eq system.combat.health.woundCalculator.defense "vigueur")}}selected{{/if}}>Vigueur</option>
+              <option value="caractere" {{#if (eq system.combat.health.woundCalculator.defense "caractere")}}selected{{/if}}>Caractère</option>
+            </select>
+          </label>
+
+          <label>
+            Type de dégâts
+            <select name="system.combat.health.woundCalculator.damageType">
+              <option value="PHY" {{#if (eq system.combat.health.woundCalculator.damageType "PHY")}}selected{{/if}}>PHY</option>
+              <option value="ELEM" {{#if (eq system.combat.health.woundCalculator.damageType "ELEM")}}selected{{/if}}>ELEM</option>
+              <option value="ENVI" {{#if (eq system.combat.health.woundCalculator.damageType "ENVI")}}selected{{/if}}>ENVI</option>
+              <option value="EMO" {{#if (eq system.combat.health.woundCalculator.damageType "EMO")}}selected{{/if}}>EMO</option>
+              <option value="PSY" {{#if (eq system.combat.health.woundCalculator.damageType "PSY")}}selected{{/if}}>PSY</option>
+              <option value="MYTH" {{#if (eq system.combat.health.woundCalculator.damageType "MYTH")}}selected{{/if}}>MYTH</option>
+            </select>
+          </label>
+
+          <button type="button" class="combat-calculate-wounds">
+            Calculer les blessures
+          </button>
         </section>
 
         <section class="combat-card">
@@ -840,8 +937,27 @@
         </div>
 
         <section class="combat-card combat-notes">
-          <h3>Notes de combat / blessures</h3>
-          <textarea name="system.combat.health.notes">{{system.combat.health.notes}}</textarea>
+          <h3>Conditions / blessures</h3>
+
+          <label>
+            Conditions
+            <textarea name="system.combat.health.conditions">{{system.combat.health.conditions}}</textarea>
+          </label>
+
+          <label>
+            Aggravations
+            <textarea name="system.combat.health.aggravations">{{system.combat.health.aggravations}}</textarea>
+          </label>
+
+          <label>
+            Faiblesses
+            <textarea name="system.combat.health.weaknesses">{{system.combat.health.weaknesses}}</textarea>
+          </label>
+
+          <label>
+            Notes de combat / blessures
+            <textarea name="system.combat.health.notes">{{system.combat.health.notes}}</textarea>
+          </label>
         </section>
       </section>
     </div>

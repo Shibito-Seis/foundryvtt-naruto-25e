@@ -2,6 +2,48 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.26]
+
+### Ajouté
+
+- Ajout d’une économie d’action minimale sur la fiche :
+  - action simple disponible ;
+  - action complexe disponible ;
+  - action retardée en réserve ;
+  - notes d’action.
+- Ajout d’un calculateur MJ de blessures :
+  - dégâts entrants ;
+  - défense ciblée : Vigueur ou Caractère ;
+  - type de dégâts : PHY, ELEM, ENVI, EMO, PSY, MYTH ;
+  - calcul du nombre de Blessures selon les degrés de 5.
+- Ajout de champs de suivi simples pour :
+  - conditions ;
+  - aggravations ;
+  - faiblesses.
+
+### Modifié
+
+- L’initiative utilise désormais la compétence Physique comme base, conformément au databook.
+- Les dégâts basiques sont rapprochés des formules papier :
+  - ARM : COR + ARM + bonus arme provisoire + bonus divers ;
+  - TAI : COR + TAI + bonus divers.
+- Les interceptions utilisent désormais la table papier :
+  - score 1 : 1 interception ;
+  - score 4 : 2 interceptions ;
+  - score 6 : 3 interceptions ;
+  - score 8 : 4 interceptions ;
+  - score 10 : 5 interceptions.
+- Le bonus manuel d’interception ajoute des utilisations d’interception, pas un bonus au jet.
+- Le reset de round réinitialise aussi l’économie d’action minimale.
+
+### Notes
+
+- Les attaques depuis armes équipées et techniques restent prévues pour une itération ultérieure.
+- L’onglet Actions complet façon PF2e est repoussé à une future refonte de fiche.
+- Le calculateur de blessures affiche un résultat en chat mais n’applique pas encore automatiquement les blessures à une cible.
+
+---
+
 ## [0.1.25.6]
 
 ### Ajouté
