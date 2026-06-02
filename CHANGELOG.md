@@ -2,6 +2,37 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.26.2]
+
+### Ajouté
+
+- Ajout d’une première confrontation automatisée attaque/défense pour les attaques ARM et TAI basiques.
+- Les attaques ARM/TAI peuvent désormais utiliser la cible token sélectionnée.
+- La cible défend automatiquement avec Esquive ou Parade.
+- Si plusieurs défenses sont valides, le propriétaire de la cible ou le MJ peut choisir la défense utilisée.
+- Ajout de l’indicateur `Action de lignée ce tour : Disponible / Déjà utilisée`.
+
+### Modifié
+
+- Les utilisations de pouvoirs de lignée par session sont désormais calculées automatiquement :
+  - base = score effectif de Lignée ;
+  - bonus = spécialisation Chakra Héréditaire ;
+  - total = base + bonus.
+- Le champ manuel `Utilisations de lignée de base` est remplacé par un affichage calculé.
+- Dépenser une utilisation de pouvoir de lignée consomme aussi l’action de lignée du tour.
+- Activer un pouvoir de lignée activable comme Sharingan, Mangekyō, Byakugan ou Yūrengan consomme désormais une utilisation de lignée.
+- Le reset de round rend l’action de lignée à nouveau disponible.
+- Le reset de session MJ restaure les utilisations de lignée et libère l’action de lignée du tour.
+
+### Notes
+
+- Mokuton n’est pas concerné : il reste une nature/compétence de chakra supérieure, pas un pouvoir actif de lignée par session.
+- Les techniques de clan classiques ne consomment pas automatiquement d’utilisation de lignée.
+- Seuls les pouvoirs activables passant par le système de pouvoirs de lignée consomment actuellement cette ressource.
+- L’application automatique complète dégâts → Vigueur/Caractère → blessures reste volontairement séparée pour éviter une automatisation prématurée.
+
+---
+
 ## [0.1.26.1]
 
 ### Ajouté

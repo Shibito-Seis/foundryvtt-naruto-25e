@@ -1803,21 +1803,30 @@ async decreaseBase(baseKey) {
     prepareCounter(combat.counters.interceptions.arm, combat.interceptions.arm.total);
     prepareCounter(combat.counters.interceptions.tai, combat.interceptions.tai.total);
 
-    const lineageBaseUses = Number(combat.counters.lineagePowers.base ?? 0);
-    const lineageBonusUses = Number(system.chakra?.specializationBonuses?.lineagePowerUses ?? 0);
+    const previousLineageMax = Math.max(0, Number(combat.counters.lineagePowers.max ?? 0));
+    const previousLineageRemaining = Number(combat.counters.lineagePowers.remaining);
 
-    combat.counters.lineagePowers.base = Math.max(0, lineageBaseUses);
-    combat.counters.lineagePowers.bonus = Math.max(0, lineageBonusUses);
-    combat.counters.lineagePowers.max = combat.counters.lineagePowers.base + combat.counters.lineagePowers.bonus;
+    const lineageBaseUses = Math.max(0, this._getBaseEffective(system, "lign"));
+    const lineageBonusUses = Math.max(0, Number(system.chakra?.specializationBonuses?.lineagePowerUses ?? 0));
+    const lineageMaxUses = lineageBaseUses + lineageBonusUses;
 
-    if (!Number.isFinite(Number(combat.counters.lineagePowers.remaining))) {
-      combat.counters.lineagePowers.remaining = combat.counters.lineagePowers.max;
+    combat.counters.lineagePowers.base = lineageBaseUses;
+    combat.counters.lineagePowers.bonus = lineageBonusUses;
+    combat.counters.lineagePowers.max = lineageMaxUses;
+    combat.counters.lineagePowers.usedThisTurn = Boolean(combat.counters.lineagePowers.usedThisTurn);
+
+    let lineageRemaining = Number.isFinite(previousLineageRemaining)
+      ? previousLineageRemaining
+      : lineageMaxUses;
+
+    if (lineageMaxUses > previousLineageMax) {
+      lineageRemaining += lineageMaxUses - previousLineageMax;
     }
 
     combat.counters.lineagePowers.remaining = this._clampNumber(
-      Number(combat.counters.lineagePowers.remaining ?? combat.counters.lineagePowers.max),
+      lineageRemaining,
       0,
-      combat.counters.lineagePowers.max
+      lineageMaxUses
     );
 
     // Santé / paliers.
@@ -2490,6 +2499,106 @@ async decreaseBase(baseKey) {
     return roll;
   }
 
+  async _rollExplodingD10Data(modifier = 0) {
+    const safeModifier = Number(modifier ?? 0);
+    const formula = `1d10x + ${safeModifier}`;
+
+    const roll = new Roll(formula);
+    await roll.evaluate();
+
+    const dice = roll.dice?.[0];
+    const naturalResults = (dice?.results ?? []).map((result) => Number(result.result ?? 0));
+    const exploded = naturalResults.some((value) => value === 10) && naturalResults.length > 1;
+
+    return {
+      roll,
+      total: roll.total,
+      modifier: safeModifier,
+      diceText: naturalResults.length ? naturalResults.join(" + ") : "—",
+      exploded
+    };
+  }
+
+  _getSkillCombatTotal(skillKey) {
+    const skill = this.system.skills?.[skillKey];
+    const definition = NARUTO25E.skillDefinitions?.[skillKey];
+
+    if (!skill || !definition) return null;
+    if (!skill.owned && !definition.ownedByDefault) return null;
+
+    return {
+      key: skillKey,
+      label: definition.label,
+      total: Number(skill.total ?? 0)
+    };
+  }
+
+  _getBasicDefenseOptions(kind) {
+    const options = [];
+
+    const esquive = this._getSkillCombatTotal("esquive");
+    const parade = this._getSkillCombatTotal("parade");
+
+    if (esquive) options.push(esquive);
+    if (parade) options.push(parade);
+
+    return options;
+  }
+
+  async _chooseDefenseOption(targetActor, kind, defenseOptions) {
+    if (!defenseOptions.length) return null;
+    if (defenseOptions.length === 1) return defenseOptions[0];
+
+    const canChoose = game.user?.isGM || targetActor.isOwner;
+
+    if (!canChoose) {
+      return defenseOptions.reduce((best, option) => {
+        return option.total > best.total ? option : best;
+      }, defenseOptions[0]);
+    }
+
+    const rows = defenseOptions.map((option) => {
+      return `
+        <label class="naruto-defense-choice">
+          <input type="radio" name="defense" value="${option.key}" ${option.key === defenseOptions[0].key ? "checked" : ""} />
+          <span>${foundry.utils.escapeHTML?.(option.label) ?? option.label}</span>
+          <strong>${option.total}</strong>
+        </label>
+      `;
+    }).join("");
+
+    return new Promise((resolve) => {
+      new Dialog({
+        title: `Défense — ${targetActor.name}`,
+        content: `
+          <form class="naruto-defense-dialog">
+            <p>Choisis la défense utilisée contre cette attaque.</p>
+            ${rows}
+          </form>
+        `,
+        buttons: {
+          validate: {
+            label: "Valider",
+            callback: (html) => {
+              const selectedKey = html.find('input[name="defense"]:checked').val();
+              resolve(defenseOptions.find((option) => option.key === selectedKey) ?? defenseOptions[0]);
+            }
+          },
+          best: {
+            label: "Meilleure défense",
+            callback: () => {
+              resolve(defenseOptions.reduce((best, option) => {
+                return option.total > best.total ? option : best;
+              }, defenseOptions[0]));
+            }
+          }
+        },
+        default: "validate",
+        close: () => resolve(null)
+      }).render(true);
+    });
+  }
+
   async rollBasicAttack(kind) {
     const attack = this.system.combat?.attacks?.[kind];
 
@@ -2499,11 +2608,92 @@ async decreaseBase(baseKey) {
     }
 
     const label = kind === "arm" ? "Attaque ARM basique" : "Attaque TAI basique";
-    const total = Number(attack.total ?? 0);
+    const attackTotal = Number(attack.total ?? 0);
 
-    return this._rollExplodingD10(label, total, {
-      flavor: `${label} — ${this.name}`
+    const targets = Array.from(game.user?.targets ?? []);
+
+    if (targets.length !== 1) {
+      return this._rollExplodingD10(label, attackTotal, {
+        flavor: `${label} — ${this.name}`
+      });
+    }
+
+    const targetToken = targets[0];
+    const targetActor = targetToken?.actor;
+
+    if (!targetActor || targetActor.type !== "shinobi") {
+      ui.notifications.warn("La cible doit être un acteur Shinobi.");
+      return null;
+    }
+
+    const defenseOptions = targetActor._getBasicDefenseOptions?.(kind) ?? [];
+    const defense = await targetActor._chooseDefenseOption?.(targetActor, kind, defenseOptions);
+
+    if (!defense) {
+      ui.notifications.warn("Aucune défense valide sélectionnée.");
+      return null;
+    }
+
+    const attackRoll = await this._rollExplodingD10Data(attackTotal);
+    const defenseRoll = await targetActor._rollExplodingD10Data(defense.total);
+
+    const success = attackRoll.total >= defenseRoll.total;
+    const margin = attackRoll.total - defenseRoll.total;
+
+    const safeActorName = foundry.utils.escapeHTML?.(this.name) ?? this.name;
+    const safeTargetName = foundry.utils.escapeHTML?.(targetActor.name) ?? targetActor.name;
+    const safeLabel = foundry.utils.escapeHTML?.(label) ?? label;
+    const safeDefenseLabel = foundry.utils.escapeHTML?.(defense.label) ?? defense.label;
+
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+      flavor: `${safeLabel} — ${safeActorName}`,
+      content: `
+        <div class="naruto-roll-card">
+          <header class="naruto-roll-header">
+            <h3>${safeLabel}</h3>
+          </header>
+
+          <p><strong>${safeActorName}</strong> attaque <strong>${safeTargetName}</strong>.</p>
+
+          <div class="naruto-roll-result ${success ? "success" : "failure"}">
+            ${success ? "Réussite" : "Échec"}
+          </div>
+
+          <div class="naruto-roll-details">
+            <span>Résultat d’attaque : ${attackRoll.total}</span>
+            <span>Cible : ${safeTargetName}</span>
+          </div>
+
+          ${success ? `<p>L’attaque touche. Résous ensuite les dégâts et blessures.</p>` : `<p>La défense tient bon.</p>`}
+        </div>
+      `,
+      rolls: [attackRoll.roll]
     });
+
+    if (game.user?.isGM) {
+      await ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor: this }),
+        whisper: ChatMessage.getWhisperRecipients("GM"),
+        flavor: `Détails MJ — ${safeLabel}`,
+        content: `
+          <div class="naruto-roll-card">
+            <header class="naruto-roll-header">
+              <h3>Détails MJ — confrontation</h3>
+            </header>
+
+            <div><strong>Attaquant :</strong> ${safeActorName}</div>
+            <div><strong>Cible :</strong> ${safeTargetName}</div>
+            <div><strong>Attaque :</strong> ${attackRoll.total} — D10 ${attackRoll.diceText} + ${attackRoll.modifier}</div>
+            <div><strong>Défense :</strong> ${defenseRoll.total} — ${safeDefenseLabel}, D10 ${defenseRoll.diceText} + ${defenseRoll.modifier}</div>
+            <div><strong>Marge :</strong> ${margin >= 0 ? "+" : ""}${margin}</div>
+          </div>
+        `,
+        rolls: [defenseRoll.roll]
+      });
+    }
+
+    return attackRoll.roll;
   }
 
   async rollSkillAction(skillKey) {
@@ -2562,24 +2752,36 @@ async decreaseBase(baseKey) {
     });
   }
 
-  async spendLineagePowerUse() {
-    if (this.type !== "shinobi") return;
+  async spendLineagePowerUse(options = {}) {
+    if (this.type !== "shinobi") return false;
 
+    const notify = options.notify !== false;
     const counter = this.system.combat?.counters?.lineagePowers;
-    if (!counter) return;
+    if (!counter) return false;
 
     const remaining = Number(counter.remaining ?? 0);
+    const usedThisTurn = Boolean(counter.usedThisTurn);
+
+    if (usedThisTurn) {
+      if (notify) ui.notifications.warn("Une action de lignée a déjà été utilisée ce tour.");
+      return false;
+    }
 
     if (remaining <= 0) {
-      ui.notifications.warn("Aucune utilisation de pouvoir de lignée restante.");
-      return;
+      if (notify) ui.notifications.warn("Aucune utilisation de pouvoir de lignée restante.");
+      return false;
     }
 
     await this.update({
-      "system.combat.counters.lineagePowers.remaining": remaining - 1
+      "system.combat.counters.lineagePowers.remaining": remaining - 1,
+      "system.combat.counters.lineagePowers.usedThisTurn": true
     });
 
-    ui.notifications.info(`Utilisation de pouvoir de lignée dépensée (${remaining - 1}/${counter.max} restantes).`);
+    if (notify) {
+      ui.notifications.info(`Utilisation de pouvoir de lignée dépensée (${remaining - 1}/${counter.max} restantes).`);
+    }
+
+    return true;
   }
 
     async calculateWoundFromCombatForm() {
@@ -2657,12 +2859,14 @@ async decreaseBase(baseKey) {
       updates["system.combat.actions.simpleAvailable"] = true;
       updates["system.combat.actions.complexAvailable"] = true;
       updates["system.combat.actions.delayedAvailable"] = false;
+      updates["system.combat.counters.lineagePowers.usedThisTurn"] = false;
     }
 
     if (scope === "session") {
       const lineageMax = Number(this.system.combat?.counters?.lineagePowers?.max ?? 0);
 
       updates["system.combat.counters.lineagePowers.remaining"] = lineageMax;
+      updates["system.combat.counters.lineagePowers.usedThisTurn"] = false;
     }
 
     await this.update(updates);
@@ -3093,6 +3297,12 @@ async decreaseBase(baseKey) {
 
     if (activationCost > 0 && currentChakra < activationCost) {
       ui.notifications.warn(`${this.name} n’a pas assez de Chakra pour activer ${item.name} (${currentChakra}/${activationCost}).`);
+      return;
+    }
+
+    const lineageUseSpent = await this.spendLineagePowerUse({ notify: false });
+
+    if (!lineageUseSpent) {
       return;
     }
 

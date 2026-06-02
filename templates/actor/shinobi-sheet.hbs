@@ -603,14 +603,10 @@
 
                 <hr />
 
-                <label>
-                  Utilisations de lignée de base
-                  <input
-                  name="system.combat.counters.lineagePowers.base"
-                  type="number"
-                  value="{{system.combat.counters.lineagePowers.base}}"
-                  />
-                </label>
+                <div class="combat-resource-line">
+                  <strong>Utilisations de lignée de base</strong>
+                  <span>{{system.combat.counters.lineagePowers.base}}</span>
+                </div>
 
                 <div class="combat-resource-line">
                   <strong>Pouvoirs de lignée</strong>
@@ -622,9 +618,21 @@
                   </span>
                 </div>
 
+                <div class="combat-resource-line">
+                  <strong>Action de lignée ce tour</strong>
+                  <span>
+                    {{#if system.combat.counters.lineagePowers.usedThisTurn}}
+                      Déjà utilisée
+                    {{else}}
+                      Disponible
+                    {{/if}}
+                  </span>
+                </div>
+
                 <button
                   type="button"
                   class="combat-spend-lineage-power"
+                  {{#if system.combat.counters.lineagePowers.usedThisTurn}}disabled{{/if}}
                   {{#unless system.combat.counters.lineagePowers.remaining}}disabled{{/unless}}
                   >
                   Dépenser une utilisation de lignée
