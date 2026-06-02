@@ -7,6 +7,10 @@ export class Naruto25eItem extends Item {
         if (this.type === "technique") {
             this._prepareTechniqueData();
         }
+
+        if (this.type === "pouvoirLignee") {
+            this._prepareLineagePowerData();
+        }
     }
 
     _prepareTechniqueData() {
@@ -48,6 +52,54 @@ export class Naruto25eItem extends Item {
         system.prerequisites.text = system.prerequisites.text ?? "";
         system.prerequisites.masteryRank = Number(system.prerequisites.masteryRank ?? 5);
         system.prerequisites.validated = Boolean(system.prerequisites.validated);
+    }
+
+    _prepareLineagePowerData() {
+        const system = this.system;
+
+        system.clan = system.clan ?? "";
+        system.lineageRank = Math.max(1, Number(system.lineageRank ?? 1));
+        system.powerType = system.powerType ?? "maintained";
+
+        system.activationCost = Math.max(0, Number(system.activationCost ?? 0));
+        system.maintenanceCost = Math.max(0, Number(system.maintenanceCost ?? 0));
+
+        system.effect = system.effect ?? "";
+
+        system.prerequisites = system.prerequisites ?? {};
+        system.prerequisites.text = system.prerequisites.text ?? "";
+        system.prerequisites.gmValidation = Boolean(system.prerequisites.gmValidation);
+    }
+
+    async toggleLineagePower() {
+        if (this.type !== "pouvoirLignee") {
+            ui.notifications.warn("Cet item n’est pas un pouvoir de lignée.");
+            return;
+        }
+
+        const actor = this.parent;
+
+        if (!(actor instanceof Actor)) {
+            ui.notifications.warn("Ce pouvoir doit être possédé par un acteur pour être activé.");
+            return;
+        }
+
+        if (actor.type !== "shinobi") {
+            ui.notifications.warn("Ce pouvoir doit être utilisé par un Shinobi.");
+            return;
+        }
+
+        if (typeof actor.isLineagePowerActive !== "function") {
+            ui.notifications.warn("La fiche ne sait pas encore gérer les pouvoirs de lignée actifs.");
+            return;
+        }
+
+        if (actor.isLineagePowerActive(this)) {
+            await actor.deactivateLineagePower(this.id);
+            return;
+        }
+
+        await actor.activateLineagePower(this);
     }
 
     getTechniqueRollActor() {

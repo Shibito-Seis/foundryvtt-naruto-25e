@@ -27,6 +27,10 @@ export class Naruto25eItemSheet extends ItemSheet {
         context.system = this.item.system;
         context.isTechnique = this.item.type === "technique";
         context.isConsommable = this.item.type === "consommable";
+        context.isPouvoirLignee = this.item.type === "pouvoirLignee";
+        context.isEmbeddedInActor = this.item.parent instanceof Actor;
+        context.isLineagePowerActive = context.isEmbeddedInActor
+            && this.item.parent?.isLineagePowerActive?.(this.item);
 
         context.consumableSubtypes = [
             { key: "medicine", label: "Médecine" },
@@ -57,6 +61,15 @@ export class Naruto25eItemSheet extends ItemSheet {
         ].map((option) => ({
             ...option,
             selected: context.system.useEffect?.resource === option.key
+        }));
+
+        context.lineagePowerTypes = [
+            { key: "passive", label: "Passif" },
+            { key: "activable", label: "Activable" },
+            { key: "maintained", label: "Maintenu" }
+        ].map((option) => ({
+            ...option,
+            selected: context.system.powerType === option.key
         }));
 
         context.techniqueFamilies = Object.entries(NARUTO25E.techniqueFamilies ?? {}).map(([key, label]) => ({
@@ -115,6 +128,11 @@ export class Naruto25eItemSheet extends ItemSheet {
         html.find(".technique-roll").on("click", async (event) => {
             event.preventDefault();
             await this.item.rollTechnique();
+        });
+
+        html.find(".lineage-power-toggle").on("click", async (event) => {
+            event.preventDefault();
+            await this.item.toggleLineagePower();
         });
     }
 }

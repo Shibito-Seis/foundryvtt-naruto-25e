@@ -137,3 +137,18 @@ Hooks.once("init", async function () {
     inplace: false
   });
 });
+
+Hooks.on("updateCombat", async function (combat, changed) {
+  const turnChanged = foundry.utils.hasProperty(changed, "turn");
+  const roundChanged = foundry.utils.hasProperty(changed, "round");
+
+  if (!turnChanged && !roundChanged) return;
+  if (!game.user.isGM) return;
+
+  const actor = combat.combatant?.actor;
+
+  if (!actor || actor.type !== "shinobi") return;
+  if (typeof actor.applyMaintainedLineagePowerUpkeep !== "function") return;
+
+  await actor.applyMaintainedLineagePowerUpkeep({ forceDialog: false });
+});

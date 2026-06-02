@@ -311,12 +311,74 @@
             </div>
           </section>
         {{else}}
-          <section class="panel">
-            <h2>Item</h2>
-            <p class="muted">
-              Fiche générique provisoire. Les fiches détaillées arriveront dans une prochaine version.
-            </p>
-          </section>
+          {{#if isPouvoirLignee}}
+            <section class="panel">
+              <h2>Pouvoir de lignée</h2>
+
+              <div class="item-grid two-columns">
+                <label>
+                  Clan lié
+                  <input name="system.clan" type="text" value="{{system.clan}}" placeholder="uchiha, hyuga, kato..." />
+                </label>
+
+                <label>
+                  Rang de Lignée requis
+                  <input name="system.lineageRank" type="number" value="{{system.lineageRank}}" min="1" />
+                </label>
+
+                <label>
+                  Type de pouvoir
+                  <select name="system.powerType">
+                    {{#each lineagePowerTypes}}
+                      <option value="{{key}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+                    {{/each}}
+                  </select>
+                </label>
+
+                <label>
+                  Coût d’activation
+                  <input name="system.activationCost" type="number" value="{{system.activationCost}}" min="0" />
+                </label>
+
+                <label>
+                  Entretien / tour
+                  <input name="system.maintenanceCost" type="number" value="{{system.maintenanceCost}}" min="0" />
+                </label>
+
+                <label>
+                  Validation MJ requise
+                  <input name="system.prerequisites.gmValidation" type="checkbox" {{#if system.prerequisites.gmValidation}}checked{{/if}} />
+                </label>
+
+                <label class="wide">
+                  Prérequis
+                  <input name="system.prerequisites.text" type="text" value="{{system.prerequisites.text}}" />
+                </label>
+
+                <label class="wide">
+                  Effet
+                  <textarea name="system.effect">{{system.effect}}</textarea>
+                </label>
+              </div>
+
+              {{#if isEmbeddedInActor}}
+                <button type="button" class="lineage-power-toggle">
+                  {{#if isLineagePowerActive}}Désactiver{{else}}Activer{{/if}} le pouvoir
+                </button>
+              {{else}}
+                <p class="formula-hint">
+                  Ce pouvoir doit être possédé par un acteur pour être activé.
+                </p>
+              {{/if}}
+            </section>
+          {{else}}
+            <section class="panel">
+              <h2>Item</h2>
+              <p class="muted">
+                Fiche générique provisoire. Les fiches détaillées arriveront dans une prochaine version.
+              </p>
+            </section>
+          {{/if}}
         {{/if}}
       {{/if}}
     </div>

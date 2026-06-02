@@ -106,7 +106,8 @@
             "max": 0,
             "allocated": 0,
             "notes": ""
-          }
+          },
+          "activeLineagePowers": []
         },
         "chakra": {
           "affinities": {
@@ -371,6 +372,19 @@
         "amount": 0,
         "consumeOnUse": true,
         "text": ""
+      }
+    },
+    "pouvoirLignee": {
+      "templates": ["baseItem"],
+      "clan": "",
+      "lineageRank": 1,
+      "powerType": "maintained",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "",
+      "prerequisites": {
+        "text": "",
+        "gmValidation": false
       }
     },
     "nindoAction": {

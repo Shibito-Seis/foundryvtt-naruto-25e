@@ -2564,6 +2564,305 @@ async decreaseBase(baseKey) {
     };
   }
 
+    isLineagePowerActive(itemOrId) {
+    const itemId = typeof itemOrId === "string"
+      ? itemOrId
+      : itemOrId?.id;
+
+    if (!itemId) return false;
+
+    const activePowers = this.system.resources?.activeLineagePowers ?? [];
+    return activePowers.some((power) => power.itemId === itemId);
+  }
+
+  _getActiveLineagePowers() {
+    return foundry.utils.deepClone(this.system.resources?.activeLineagePowers ?? []);
+  }
+
+  _getLineagePowerCostsFromItem(item) {
+    const system = item?.system ?? {};
+
+    return {
+      activationCost: Math.max(0, Number(system.activationCost ?? 0)),
+      maintenanceCost: Math.max(0, Number(system.maintenanceCost ?? 0))
+    };
+  }
+
+  async activateLineagePower(item) {
+    if (this.type !== "shinobi") return;
+
+    if (!item || item.type !== "pouvoirLignee") {
+      ui.notifications.warn("Pouvoir de lignée invalide.");
+      return;
+    }
+
+    if (this.isLineagePowerActive(item)) {
+      ui.notifications.info(`${item.name} est déjà actif.`);
+      return;
+    }
+
+    const chakra = this.system.resources?.chakra ?? {};
+    const currentChakra = Math.max(0, Number(chakra.value ?? 0));
+    const maxChakra = Math.max(0, Number(chakra.max ?? 0));
+    const { activationCost, maintenanceCost } = this._getLineagePowerCostsFromItem(item);
+
+    if (activationCost > 0 && currentChakra < activationCost) {
+      ui.notifications.warn(`${this.name} n’a pas assez de Chakra pour activer ${item.name} (${currentChakra}/${activationCost}).`);
+      return;
+    }
+
+    const activePowers = this._getActiveLineagePowers();
+
+    activePowers.push({
+      id: foundry.utils.randomID(16),
+      itemId: item.id,
+      uuid: item.uuid,
+      name: item.name,
+      activationCost,
+      maintenanceCost,
+      startedRound: game.combat?.round ?? 0,
+      startedTurn: game.combat?.turn ?? 0
+    });
+
+    const newChakra = Math.max(0, currentChakra - activationCost);
+
+    await this.update({
+      "system.resources.chakra.value": newChakra,
+      "system.resources.activeLineagePowers": activePowers
+    });
+
+    const safeActorName = foundry.utils.escapeHTML?.(this.name) ?? this.name;
+    const safePowerName = foundry.utils.escapeHTML?.(item.name) ?? item.name;
+
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+      flavor: `${safeActorName} active ${safePowerName}`,
+      content: `
+        <div class="naruto-lineage-power-card">
+          <header><h3>${safePowerName}</h3></header>
+          <p><strong>${safeActorName}</strong> active un pouvoir de lignée.</p>
+          <div><strong>Coût d’activation :</strong> ${activationCost} Chakra</div>
+          <div><strong>Chakra :</strong> ${currentChakra} → ${newChakra} / ${maxChakra}</div>
+          <div><strong>Entretien :</strong> ${maintenanceCost} Chakra / tour</div>
+        </div>
+      `
+    });
+
+    ui.notifications.info(`${item.name} activé.`);
+  }
+
+  async deactivateLineagePower(itemId) {
+    if (this.type !== "shinobi") return;
+
+    const activePowers = this._getActiveLineagePowers();
+    const power = activePowers.find((entry) => entry.itemId === itemId || entry.id === itemId);
+
+    if (!power) {
+      ui.notifications.warn("Pouvoir actif introuvable.");
+      return;
+    }
+
+    const remainingPowers = activePowers.filter((entry) => entry.id !== power.id);
+
+    await this.update({
+      "system.resources.activeLineagePowers": remainingPowers
+    });
+
+    const safeActorName = foundry.utils.escapeHTML?.(this.name) ?? this.name;
+    const safePowerName = foundry.utils.escapeHTML?.(power.name) ?? power.name;
+
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+      flavor: `${safeActorName} désactive ${safePowerName}`,
+      content: `
+        <div class="naruto-lineage-power-card">
+          <header><h3>${safePowerName}</h3></header>
+          <p><strong>${safeActorName}</strong> désactive ce pouvoir de lignée.</p>
+        </div>
+      `
+    });
+
+    ui.notifications.info(`${power.name} désactivé.`);
+  }
+
+  _computeLineageMaintenanceCost(powers = []) {
+    const totalMaintenance = powers.reduce((total, power) => {
+      return total + Math.max(0, Number(power.maintenanceCost ?? 0));
+    }, 0);
+
+    const passiveRegen = Math.max(0, Number(this.system.resources?.chakra?.passiveRegen ?? 0));
+    const netCost = Math.max(0, totalMaintenance - passiveRegen);
+
+    return {
+      totalMaintenance,
+      passiveRegen,
+      netCost
+    };
+  }
+
+  _crossesCriticalChakraThreshold(currentValue, nextValue) {
+    const thresholds = [50, 30, 10];
+
+    return thresholds.some((threshold) => {
+      return currentValue >= threshold && nextValue < threshold;
+    });
+  }
+
+  async applyMaintainedLineagePowerUpkeep({ forceDialog = false } = {}) {
+    if (this.type !== "shinobi") return;
+
+    const activePowers = this._getActiveLineagePowers();
+
+    if (!activePowers.length) return;
+
+    const chakra = this.system.resources?.chakra ?? {};
+    const currentChakra = Math.max(0, Number(chakra.value ?? 0));
+    const maxChakra = Math.max(0, Number(chakra.max ?? 0));
+
+    const maintenance = this._computeLineageMaintenanceCost(activePowers);
+    const nextChakra = Math.max(0, currentChakra - maintenance.netCost);
+
+    const needsChoice = forceDialog
+      || currentChakra < maintenance.netCost
+      || this._crossesCriticalChakraThreshold(currentChakra, nextChakra);
+
+    if (needsChoice) {
+      await this._openLineageMaintenanceDialog(activePowers, {
+        currentChakra,
+        maxChakra,
+        ...maintenance
+      });
+      return;
+    }
+
+    await this.update({
+      "system.resources.chakra.value": nextChakra
+    });
+
+    const safeActorName = foundry.utils.escapeHTML?.(this.name) ?? this.name;
+
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+      flavor: `${safeActorName} entretient ses pouvoirs de lignée`,
+      content: `
+        <div class="naruto-lineage-power-card">
+          <header><h3>Entretien des pouvoirs de lignée</h3></header>
+          <p><strong>${safeActorName}</strong> maintient ses pouvoirs actifs.</p>
+          <div><strong>Entretien total :</strong> ${maintenance.totalMaintenance}</div>
+          <div><strong>Régénération passive :</strong> -${maintenance.passiveRegen}</div>
+          <div><strong>Coût net :</strong> ${maintenance.netCost}</div>
+          <div><strong>Chakra :</strong> ${currentChakra} → ${nextChakra} / ${maxChakra}</div>
+        </div>
+      `
+    });
+  }
+
+  async _openLineageMaintenanceDialog(activePowers, context = {}) {
+    const rows = activePowers.map((power) => {
+      const safeName = foundry.utils.escapeHTML?.(power.name) ?? power.name;
+      const cost = Math.max(0, Number(power.maintenanceCost ?? 0));
+
+      return `
+        <label class="naruto-maintenance-choice">
+          <input type="checkbox" name="power" value="${power.id}" checked />
+          <span>${safeName}</span>
+          <strong>${cost} Chakra / tour</strong>
+        </label>
+      `;
+    }).join("");
+
+    const content = `
+      <form class="naruto-maintenance-dialog">
+        <p>
+          Les entretiens actifs dépassent la réserve disponible ou franchissent un seuil critique.
+          Choisis les effets à maintenir.
+        </p>
+
+        <div class="naruto-maintenance-summary">
+          <div><strong>Chakra actuel :</strong> ${context.currentChakra} / ${context.maxChakra}</div>
+          <div><strong>Entretien total actuel :</strong> ${context.totalMaintenance}</div>
+          <div><strong>Régénération passive :</strong> -${context.passiveRegen}</div>
+          <div><strong>Coût net actuel :</strong> ${context.netCost}</div>
+        </div>
+
+        <hr />
+
+        ${rows}
+
+        <p class="formula-hint">
+          Rappel : les entretiens sont additionnés, puis la régénération passive est soustraite une seule fois.
+        </p>
+      </form>
+    `;
+
+    await new Promise((resolve) => {
+      new Dialog({
+        title: `Entretien des pouvoirs — ${this.name}`,
+        content,
+        buttons: {
+          validate: {
+            label: "Valider l’entretien",
+            callback: async (html) => {
+              const selectedIds = html.find('input[name="power"]:checked')
+                .map((_, input) => input.value)
+                .get();
+
+              const keptPowers = activePowers.filter((power) => selectedIds.includes(power.id));
+              const removedPowers = activePowers.filter((power) => !selectedIds.includes(power.id));
+
+              const maintenance = this._computeLineageMaintenanceCost(keptPowers);
+              const currentChakra = Math.max(0, Number(this.system.resources?.chakra?.value ?? 0));
+              const maxChakra = Math.max(0, Number(this.system.resources?.chakra?.max ?? 0));
+
+              if (currentChakra < maintenance.netCost) {
+                ui.notifications.warn("Le Chakra restant ne permet toujours pas de maintenir cette sélection.");
+                resolve();
+                return;
+              }
+
+              const nextChakra = Math.max(0, currentChakra - maintenance.netCost);
+
+              await this.update({
+                "system.resources.chakra.value": nextChakra,
+                "system.resources.activeLineagePowers": keptPowers
+              });
+
+              const safeActorName = foundry.utils.escapeHTML?.(this.name) ?? this.name;
+              const keptNames = keptPowers.map((power) => foundry.utils.escapeHTML?.(power.name) ?? power.name).join(", ") || "Aucun";
+              const removedNames = removedPowers.map((power) => foundry.utils.escapeHTML?.(power.name) ?? power.name).join(", ") || "Aucun";
+
+              await ChatMessage.create({
+                speaker: ChatMessage.getSpeaker({ actor: this }),
+                flavor: `${safeActorName} ajuste ses pouvoirs maintenus`,
+                content: `
+                  <div class="naruto-lineage-power-card">
+                    <header><h3>Entretien ajusté</h3></header>
+                    <p><strong>${safeActorName}</strong> choisit les pouvoirs de lignée maintenus.</p>
+                    <div><strong>Maintenus :</strong> ${keptNames}</div>
+                    <div><strong>Désactivés :</strong> ${removedNames}</div>
+                    <div><strong>Entretien total :</strong> ${maintenance.totalMaintenance}</div>
+                    <div><strong>Régénération passive :</strong> -${maintenance.passiveRegen}</div>
+                    <div><strong>Coût net :</strong> ${maintenance.netCost}</div>
+                    <div><strong>Chakra :</strong> ${currentChakra} → ${nextChakra} / ${maxChakra}</div>
+                  </div>
+                `
+              });
+
+              resolve();
+            }
+          },
+          cancel: {
+            label: "Reporter",
+            callback: () => resolve()
+          }
+        },
+        default: "validate",
+        close: () => resolve()
+      }).render(true);
+    });
+  }
+
+
     async addInventoryItemFromDraft() {
     if (this.type !== "shinobi") return;
 

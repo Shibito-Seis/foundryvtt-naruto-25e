@@ -1846,6 +1846,46 @@
       </section>
 
       <section class="lineage-section">
+        <h3>Pouvoirs de lignée possédés</h3>
+
+        {{#if hasLineagePowerItems}}
+          <div class="naruto-lineage-power-list">
+            {{#each lineagePowerItems as |power|}}
+              <div class="naruto-lineage-power-row {{#if power.active}}is-active{{/if}}">
+                <div>
+                  <strong>{{power.name}}</strong>
+                  <span>
+                    Activation {{power.activationCost}} —
+                    Entretien {{power.maintenanceCost}} / tour
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  class="lineage-power-toggle"
+                  data-item-id="{{power.id}}"
+                >
+                  {{#if power.active}}Désactiver{{else}}Activer{{/if}}
+                </button>
+              </div>
+            {{/each}}
+          </div>
+        {{else}}
+          <p class="muted">
+            Aucun pouvoir de lignée possédé pour le moment.
+          </p>
+        {{/if}}
+
+        <button type="button" class="lineage-power-upkeep-check">
+          Vérifier l’entretien maintenant
+        </button>
+
+        <p class="formula-hint">
+          Les coûts d’entretien sont cumulés, puis la régénération passive est soustraite une seule fois.
+        </p>
+      </section>
+
+      <section class="lineage-section">
         <h3>Capacités de lignée</h3>
 
         <p class="lineage-help">

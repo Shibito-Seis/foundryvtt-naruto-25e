@@ -26,6 +26,20 @@ export class Naruto25eShinobiSheet extends ActorSheet {
   context.system = this.actor.system;
   context.actor = this.actor;
   context.items = this.actor.items;
+    const activeLineagePowers = this.actor.system.resources?.activeLineagePowers ?? [];
+
+  context.lineagePowerItems = this.actor.items
+    .filter((item) => item.type === "pouvoirLignee")
+    .map((item) => ({
+      id: item.id,
+      name: item.name,
+      activationCost: Number(item.system.activationCost ?? 0),
+      maintenanceCost: Number(item.system.maintenanceCost ?? 0),
+      powerType: item.system.powerType ?? "maintained",
+      active: activeLineagePowers.some((power) => power.itemId === item.id)
+    }));
+
+  context.hasLineagePowerItems = context.lineagePowerItems.length > 0;
   context.chakraFormulaMode = game.settings.get("naruto-25e", "chakraFormulaMode");
   context.affinityCostMode = game.settings.get("naruto-25e", "affinityCostMode");
 
@@ -1019,6 +1033,16 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
       return false;
     }
 
+    if (item.type === "pouvoirLignee") {
+      const itemData = item.toObject();
+      delete itemData._id;
+
+      await this.actor.createEmbeddedDocuments("Item", [itemData]);
+
+      ui.notifications.info(`${item.name} ajouté aux pouvoirs de lignée de ${this.actor.name}.`);
+      return false;
+    }
+
     const allowedTypes = ["arme", "armure", "equipement", "consommable"];
 
     if (!allowedTypes.includes(item.type)) {
@@ -1420,6 +1444,26 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     event.preventDefault();
 
     await this.actor.spendLineagePowerUse();
+  });
+
+  html.find(".lineage-power-toggle").on("click", async (event) => {
+    event.preventDefault();
+
+    const itemId = event.currentTarget.dataset.itemId;
+    const item = this.actor.items.get(itemId);
+
+    if (!item) {
+      ui.notifications.warn("Pouvoir de lignée introuvable.");
+      return;
+    }
+
+    await item.toggleLineagePower();
+  });
+
+  html.find(".lineage-power-upkeep-check").on("click", async (event) => {
+    event.preventDefault();
+
+    await this.actor.applyMaintainedLineagePowerUpkeep({ forceDialog: true });
   });
 
   html.find(".inventory-add-item").on("click", async (event) => {

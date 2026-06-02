@@ -2,6 +2,27 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.25.2]
+
+### Ajouté
+
+- Ajout du moteur minimal des pouvoirs de lignée activables.
+- Ajout des coûts d’activation et d’entretien sur les items `pouvoirLignee`.
+- Ajout du suivi des pouvoirs de lignée actifs sur la fiche Shinobi.
+- Ajout de l’activation et de la désactivation des pouvoirs de lignée depuis la fiche.
+- Ajout de la dépense immédiate du coût d’activation en Chakra.
+- Ajout de l’entretien automatique au changement de tour en combat.
+- Ajout du calcul d’entretien cumulé : tous les coûts actifs sont additionnés avant soustraction unique de la régénération passive.
+- Ajout d’une fenêtre de choix si le Chakra est insuffisant ou si l’entretien franchit un seuil critique.
+- Ajout du drag & drop des items `pouvoirLignee` sur la fiche Shinobi.
+
+### Notes
+
+- Les premiers pouvoirs concrets comme Sharingan, Byakugan et Yūrengan seront ajoutés au compendium dans une itération dédiée de la 0.1.25.x.
+- La fenêtre de choix d’entretien est actuellement gérée côté MJ pendant le combat.
+
+---
+
 ## [0.1.25.1]
 
 ### Modifié
