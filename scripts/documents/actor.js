@@ -2464,12 +2464,30 @@ async decreaseBase(baseKey) {
     return roll;
   }
 
-  async rollInitiativeAction() {
+  async rollInitiativeAction(options = {}) {
+    const updateTracker = options.updateTracker !== false;
     const total = Number(this.system.combat?.initiative?.total ?? 0);
 
-    return this._rollExplodingD10("Initiative", total, {
+    const roll = await this._rollExplodingD10("Initiative", total, {
       flavor: `Initiative — ${this.name}`
     });
+
+    if (updateTracker && game.combat) {
+      const combatant = game.combat.combatants.find((candidate) => {
+        return candidate.actor?.id === this.id;
+      });
+
+      if (combatant) {
+        await game.combat.updateEmbeddedDocuments("Combatant", [
+          {
+            _id: combatant.id,
+            initiative: roll.total
+          }
+        ]);
+      }
+    }
+
+    return roll;
   }
 
   async rollBasicAttack(kind) {
@@ -2617,10 +2635,13 @@ async decreaseBase(baseKey) {
     };
   }
 
-  async resetCombatCounters(scope = "round") {
+  async resetCombatCounters(scope = "round", options = {}) {
     if (this.type !== "shinobi") return;
 
-    if (!game.user.isGM) {
+    const notify = options.notify !== false;
+    const requireGM = options.requireGM !== false;
+
+    if (requireGM && !game.user?.isGM) {
       ui.notifications.warn("Seul le MJ peut réinitialiser les compteurs.");
       return;
     }
@@ -2646,11 +2667,11 @@ async decreaseBase(baseKey) {
 
     await this.update(updates);
 
-    if (scope === "round") {
+    if (notify && scope === "round") {
       ui.notifications.info("Compteurs de round réinitialisés.");
     }
 
-    if (scope === "session") {
+    if (notify && scope === "session") {
       ui.notifications.info("Compteurs de session réinitialisés.");
     }
   }

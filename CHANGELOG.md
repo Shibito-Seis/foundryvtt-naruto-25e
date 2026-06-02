@@ -2,6 +2,34 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.26.1]
+
+### Ajouté
+
+- Ajout de l’intégration de l’initiative Naruto au Combat Tracker Foundry.
+- Le bouton d’initiative de la fiche met désormais à jour l’initiative du combattant dans le Combat Tracker si l’acteur est en combat.
+- Le bouton d’initiative du Combat Tracker utilise désormais la logique Naruto pour les acteurs Shinobi.
+- Ajout d’un paramètre MJ `Relancer l’initiative à chaque round`.
+
+### Modifié
+
+- Au changement de round, les compteurs de round des Shinobi sont automatiquement réinitialisés :
+  - interceptions ARM ;
+  - interceptions TAI ;
+  - action simple ;
+  - action complexe ;
+  - action retardée.
+- Le reset automatique de round ne génère plus de notification par acteur.
+- L’entretien des pouvoirs maintenus reste déclenché au changement de tour comme auparavant.
+
+### Notes
+
+- La relance automatique de l’initiative à chaque round est désactivée par défaut.
+- Les tables qui préfèrent une initiative fixe façon Foundry classique peuvent conserver le comportement standard.
+- La relance automatique par round reste une option MJ pour coller davantage au databook.
+
+---
+
 ## [0.1.26]
 
 ### Ajouté

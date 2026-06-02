@@ -141,6 +141,16 @@ Hooks.once("init", async function () {
     default: true
   });
 
+    game.settings.register("naruto-25e", "rerollInitiativeEachRound", {
+    name: "Relancer l’initiative à chaque round",
+    hint: "Si activé, le MJ relance automatiquement l’initiative de tous les combattants Shinobi au début de chaque nouveau round. Si désactivé, l’initiative reste fixe comme dans le Combat Tracker Foundry classique.",
+    scope: "world",
+    config: true,
+    restricted: true,
+    type: Boolean,
+    default: false
+  });
+
     game.settings.registerMenu("naruto-25e", "techniqueImporter", {
     name: "Importer les techniques",
     label: "Ouvrir l’importeur",
@@ -191,6 +201,66 @@ Hooks.once("init", async function () {
   });
 });
 
+async function rollNaruto25eCombatInitiative(combat, ids, options = {}) {
+  const combatantIds = ids
+    ? Array.isArray(ids) ? ids : [ids]
+    : combat.combatants.map((combatant) => combatant.id);
+
+  const updates = [];
+
+  for (const combatantId of combatantIds) {
+    const combatant = combat.combatants.get(combatantId);
+    const actor = combatant?.actor;
+
+    if (!actor || actor.type !== "shinobi") continue;
+    if (typeof actor.rollInitiativeAction !== "function") continue;
+
+    const roll = await actor.rollInitiativeAction({
+      updateTracker: false
+    });
+
+    if (!roll) continue;
+
+    updates.push({
+      _id: combatant.id,
+      initiative: roll.total
+    });
+  }
+
+  if (updates.length > 0) {
+    await combat.updateEmbeddedDocuments("Combatant", updates);
+  }
+
+  return combat;
+}
+
+function patchNaruto25eCombatInitiative() {
+  if (Combat.prototype._naruto25eInitiativePatched) return;
+
+  const originalRollInitiative = Combat.prototype.rollInitiative;
+
+  Combat.prototype.rollInitiative = async function (ids, options = {}) {
+    const combatantIds = ids
+      ? Array.isArray(ids) ? ids : [ids]
+      : this.combatants.map((combatant) => combatant.id);
+
+    const hasOnlyShinobi = combatantIds.every((combatantId) => {
+      const combatant = this.combatants.get(combatantId);
+      return combatant?.actor?.type === "shinobi";
+    });
+
+    if (!hasOnlyShinobi) {
+      return originalRollInitiative.call(this, ids, options);
+    }
+
+    return rollNaruto25eCombatInitiative(this, combatantIds, options);
+  };
+
+  Combat.prototype._naruto25eInitiativePatched = true;
+}
+
+patchNaruto25eCombatInitiative();
+
 Hooks.once("ready", async function () {
   if (!game.user?.isGM) return;
 
@@ -214,7 +284,33 @@ Hooks.on("updateCombat", async function (combat, changed) {
   const roundChanged = foundry.utils.hasProperty(changed, "round");
 
   if (!turnChanged && !roundChanged) return;
-  if (!game.user.isGM) return;
+  if (!game.user?.isGM) return;
+
+  if (roundChanged) {
+    for (const combatant of combat.combatants ?? []) {
+      const actor = combatant.actor;
+
+      if (!actor || actor.type !== "shinobi") continue;
+      if (typeof actor.resetCombatCounters !== "function") continue;
+
+      await actor.resetCombatCounters("round", {
+        notify: false,
+        requireGM: false
+      });
+    }
+
+    let rerollInitiative = false;
+
+    try {
+      rerollInitiative = game.settings.get("naruto-25e", "rerollInitiativeEachRound");
+    } catch (error) {
+      rerollInitiative = false;
+    }
+
+    if (rerollInitiative) {
+      await rollNaruto25eCombatInitiative(combat);
+    }
+  }
 
   const actor = combat.combatant?.actor;
 
