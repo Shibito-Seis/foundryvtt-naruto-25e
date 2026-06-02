@@ -2564,6 +2564,217 @@ async decreaseBase(baseKey) {
     };
   }
 
+    _getCurrentLineagePowerDefinitions() {
+    const system = this.system ?? {};
+    const heritage = system.heritage ?? {};
+    const lineageValue = Math.max(0, Number(system.bases?.lign?.value ?? 0));
+
+    const mode = heritage.mode === "customClan"
+      ? "clan"
+      : heritage.mode ?? "clan";
+
+    const clanKeys = [];
+
+    const addClan = (clanKey) => {
+      if (!clanKey) return;
+      if (NARUTO25E.isCustomClanKey?.(clanKey)) return;
+      if (!clanKeys.includes(clanKey)) clanKeys.push(clanKey);
+    };
+
+    if (mode === "clan" || mode === "hybridClan" || mode === "hybridVoie") {
+      addClan(heritage.clan);
+    }
+
+    if (mode === "hybridClan") {
+      addClan(heritage.hybrid?.secondaryClan);
+    }
+
+    const definitions = [];
+
+    for (const clanKey of clanKeys) {
+      if (clanKey === "uchiha") {
+        if (lineageValue >= 3) {
+          definitions.push({
+            key: "uchiha-sharingan-3",
+            name: "Sharingan — 3 tomoe",
+            clan: "uchiha",
+            minRank: 3
+          });
+        } else if (lineageValue >= 2) {
+          definitions.push({
+            key: "uchiha-sharingan-2",
+            name: "Sharingan — 2 tomoe",
+            clan: "uchiha",
+            minRank: 2
+          });
+        } else if (lineageValue >= 1) {
+          definitions.push({
+            key: "uchiha-sharingan-1",
+            name: "Sharingan — 1 tomoe",
+            clan: "uchiha",
+            minRank: 1
+          });
+        }
+
+        continue;
+      }
+
+      if (clanKey === "hyuga" && lineageValue >= 1) {
+        definitions.push({
+          key: "hyuga-byakugan",
+          name: "Byakugan",
+          clan: "hyuga",
+          minRank: 1
+        });
+        continue;
+      }
+
+      if (clanKey === "kato" && lineageValue >= 1) {
+        definitions.push({
+          key: "kato-yurengan",
+          name: "Yūrengan",
+          clan: "kato",
+          minRank: 1
+        });
+        continue;
+      }
+
+      if (clanKey === "aburame" && lineageValue >= 1) {
+        definitions.push({
+          key: "aburame-kikaichu",
+          name: "Kikaichū — Colonie symbiotique",
+          clan: "aburame",
+          minRank: 1
+        });
+        continue;
+      }
+
+      if (clanKey === "nara" && lineageValue >= 1) {
+        definitions.push({
+          key: "nara-ombres",
+          name: "Affinité aux ombres",
+          clan: "nara",
+          minRank: 1
+        });
+        continue;
+      }
+
+      if (clanKey === "inuzuka" && lineageValue >= 1) {
+        definitions.push({
+          key: "inuzuka-gardien-inu",
+          name: "Gardien du clan Inu",
+          clan: "inuzuka",
+          minRank: 1
+        });
+        continue;
+      }
+    }
+
+    return definitions;
+  }
+
+  _getManagedLineagePowerNames() {
+    return new Set([
+      "Sharingan — 1 tomoe",
+      "Sharingan — 2 tomoe",
+      "Sharingan — 3 tomoe",
+      "Byakugan",
+      "Yūrengan",
+      "Kikaichū — Colonie symbiotique",
+      "Affinité aux ombres",
+      "Gardien du clan Inu"
+    ]);
+  }
+
+  async _getLineagePowerSourceData(powerName) {
+    const pack = game.packs.get("naruto-25e.pouvoirs-lignee");
+
+    if (!pack) {
+      console.warn(`Naruto 2.5e | Compendium pouvoirs-lignee introuvable pour ${powerName}.`);
+      return null;
+    }
+
+    const index = await pack.getIndex({
+      fields: ["name", "type", "system.clan", "system.lineageRank"]
+    });
+
+    const entry = index.find((document) => document.name === powerName);
+
+    if (!entry) {
+      console.warn(`Naruto 2.5e | Pouvoir de lignée introuvable dans le compendium : ${powerName}.`);
+      return null;
+    }
+
+    const sourceDocument = await pack.getDocument(entry._id);
+    if (!sourceDocument) return null;
+
+    return sourceDocument.toObject();
+  }
+
+  async syncLineagePowersFromHeritage({ notify = false } = {}) {
+    if (this.type !== "shinobi") return;
+    if (!game.user?.isGM) return;
+
+    const desiredDefinitions = this._getCurrentLineagePowerDefinitions();
+    const desiredNames = new Set(desiredDefinitions.map((definition) => definition.name));
+    const managedNames = this._getManagedLineagePowerNames();
+
+    const currentManagedItems = this.items.filter((item) => {
+      return item.type === "pouvoirLignee" && managedNames.has(item.name);
+    });
+
+    const itemsToDelete = currentManagedItems.filter((item) => !desiredNames.has(item.name));
+
+    if (itemsToDelete.length > 0) {
+      const deletedIds = itemsToDelete.map((item) => item.id);
+      const activePowers = this._getActiveLineagePowers();
+      const remainingActivePowers = activePowers.filter((power) => !deletedIds.includes(power.itemId));
+
+      await this.deleteEmbeddedDocuments("Item", deletedIds);
+
+      if (remainingActivePowers.length !== activePowers.length) {
+        await this.update({
+          "system.resources.activeLineagePowers": remainingActivePowers
+        });
+      }
+    }
+
+    const currentNames = new Set(
+      this.items
+        .filter((item) => item.type === "pouvoirLignee")
+        .map((item) => item.name)
+    );
+
+    const documentsToCreate = [];
+
+    for (const definition of desiredDefinitions) {
+      if (currentNames.has(definition.name)) continue;
+
+      const sourceData = await this._getLineagePowerSourceData(definition.name);
+      if (!sourceData) continue;
+
+      sourceData.flags = foundry.utils.mergeObject(sourceData.flags ?? {}, {
+        "naruto-25e": {
+          autoLineagePower: true,
+          lineagePowerKey: definition.key,
+          lineagePowerClan: definition.clan
+        }
+      }, {
+        inplace: false
+      });
+
+      documentsToCreate.push(sourceData);
+    }
+
+    if (documentsToCreate.length > 0) {
+      await this.createEmbeddedDocuments("Item", documentsToCreate);
+    }
+
+    if (notify && (itemsToDelete.length > 0 || documentsToCreate.length > 0)) {
+      ui.notifications.info(`${this.name} : pouvoirs de lignée synchronisés.`);
+    }
+  }
+
     isLineagePowerActive(itemOrId) {
     const itemId = typeof itemOrId === "string"
       ? itemOrId
@@ -2633,6 +2844,9 @@ async decreaseBase(baseKey) {
 
     const safeActorName = foundry.utils.escapeHTML?.(this.name) ?? this.name;
     const safePowerName = foundry.utils.escapeHTML?.(item.name) ?? item.name;
+    const safeEffect = foundry.utils.escapeHTML?.(item.system.effect ?? "") ?? "";
+    const safeClan = foundry.utils.escapeHTML?.(item.system.clan ?? "—") ?? "—";
+    const lineageRank = Math.max(0, Number(item.system.lineageRank ?? 0));
 
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: this }),
@@ -2641,6 +2855,11 @@ async decreaseBase(baseKey) {
         <div class="naruto-lineage-power-card">
           <header><h3>${safePowerName}</h3></header>
           <p><strong>${safeActorName}</strong> active un pouvoir de lignée.</p>
+
+          ${safeEffect ? `<p class="lineage-power-effect"><strong>Effet :</strong> ${safeEffect}</p>` : ""}
+
+          <div><strong>Clan :</strong> ${safeClan}</div>
+          <div><strong>Rang requis :</strong> ${lineageRank}</div>
           <div><strong>Coût d’activation :</strong> ${activationCost} Chakra</div>
           <div><strong>Chakra :</strong> ${currentChakra} → ${newChakra} / ${maxChakra}</div>
           <div><strong>Entretien :</strong> ${maintenanceCost} Chakra / tour</div>
@@ -2668,8 +2887,11 @@ async decreaseBase(baseKey) {
       "system.resources.activeLineagePowers": remainingPowers
     });
 
+    const item = this.items.get(power.itemId);
     const safeActorName = foundry.utils.escapeHTML?.(this.name) ?? this.name;
     const safePowerName = foundry.utils.escapeHTML?.(power.name) ?? power.name;
+    const safeEffect = foundry.utils.escapeHTML?.(item?.system?.effect ?? "") ?? "";
+    const maintenanceCost = Math.max(0, Number(power.maintenanceCost ?? item?.system?.maintenanceCost ?? 0));
 
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: this }),
@@ -2678,6 +2900,10 @@ async decreaseBase(baseKey) {
         <div class="naruto-lineage-power-card">
           <header><h3>${safePowerName}</h3></header>
           <p><strong>${safeActorName}</strong> désactive ce pouvoir de lignée.</p>
+
+          ${safeEffect ? `<p class="lineage-power-effect"><strong>Effet interrompu :</strong> ${safeEffect}</p>` : ""}
+
+          <div><strong>Entretien arrêté :</strong> ${maintenanceCost} Chakra / tour</div>
         </div>
       `
     });

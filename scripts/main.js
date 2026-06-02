@@ -152,3 +152,28 @@ Hooks.on("updateCombat", async function (combat, changed) {
 
   await actor.applyMaintainedLineagePowerUpkeep({ forceDialog: false });
 });
+
+Hooks.on("createActor", async function (actor) {
+  if (!game.user?.isGM) return;
+  if (!actor || actor.type !== "shinobi") return;
+  if (typeof actor.syncLineagePowersFromHeritage !== "function") return;
+
+  await actor.syncLineagePowersFromHeritage();
+});
+
+Hooks.on("updateActor", async function (actor, changed) {
+  if (!game.user?.isGM) return;
+  if (!actor || actor.type !== "shinobi") return;
+  if (typeof actor.syncLineagePowersFromHeritage !== "function") return;
+
+  const shouldSync =
+    foundry.utils.hasProperty(changed, "system.heritage.mode")
+    || foundry.utils.hasProperty(changed, "system.heritage.clan")
+    || foundry.utils.hasProperty(changed, "system.heritage.hybrid.secondaryClan")
+    || foundry.utils.hasProperty(changed, "system.bases.lign.value")
+    || foundry.utils.hasProperty(changed, "system.bases.lign.bonus");
+
+  if (!shouldSync) return;
+
+  await actor.syncLineagePowersFromHeritage({ notify: true });
+});

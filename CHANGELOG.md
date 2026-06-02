@@ -2,6 +2,34 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.25.4]
+
+### Ajouté
+
+- Ajout de la synchronisation automatique des pouvoirs de lignée selon le clan et la Base Lignée.
+- Ajout automatique des pouvoirs de lignée depuis le compendium `Pouvoirs de lignée`.
+- Retrait automatique des pouvoirs de lignée gérés lorsqu’ils ne correspondent plus au clan actuel du personnage.
+- Gestion du remplacement naturel du Sharingan selon la Base Lignée :
+  - Lignée 1 : Sharingan — 1 tomoe ;
+  - Lignée 2 : Sharingan — 2 tomoe ;
+  - Lignée 3+ : Sharingan — 3 tomoe.
+- Support initial des clans suivants pour l’attribution automatique :
+  - Uchiha ;
+  - Hyūga ;
+  - Katō ;
+  - Aburame ;
+  - Nara ;
+  - Inuzuka.
+- Les cartes chat d’activation et de désactivation des pouvoirs de lignée affichent désormais un rappel d’effet.
+
+### Notes
+
+- Le clan Senju ne reçoit pas encore de pouvoir de lignée automatique dédié : Mokuton reste géré par la compétence de clan et les techniques associées.
+- Les greffes, implants, multiplicateurs de coût hors lignée et exceptions de compatibilité seront traités dans une itération future.
+- L’habillage visuel avancé des cartes chat sera traité plus tard avec la refonte visuelle des fiches acteur/item.
+
+---
+
 ## [0.1.25.3]
 
 ### Ajouté

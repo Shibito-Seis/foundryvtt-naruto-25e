@@ -1606,3 +1606,11 @@
   text-transform: uppercase;
   opacity: 0.75;
 }
+
+.naruto-lineage-power-card .lineage-power-effect {
+  margin: 6px 0;
+  padding: 6px;
+  border-left: 3px solid #7a1f1f;
+  background: rgba(0, 0, 0, 0.06);
+  font-style: italic;
+}
