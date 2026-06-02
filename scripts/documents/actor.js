@@ -1815,11 +1815,17 @@ async decreaseBase(baseKey) {
     combat.counters.lineagePowers.max = lineageMaxUses;
     combat.counters.lineagePowers.usedThisTurn = Boolean(combat.counters.lineagePowers.usedThisTurn);
 
-    let lineageRemaining = Number.isFinite(previousLineageRemaining)
-      ? previousLineageRemaining
-      : lineageMaxUses;
+    let lineageRemaining;
 
-    if (lineageMaxUses > previousLineageMax) {
+    if (!Number.isFinite(previousLineageRemaining)) {
+      lineageRemaining = lineageMaxUses;
+    } else if (previousLineageMax <= 0 && previousLineageRemaining <= 0 && lineageMaxUses > 0) {
+      lineageRemaining = lineageMaxUses;
+    } else {
+      lineageRemaining = previousLineageRemaining;
+    }
+
+    if (previousLineageMax > 0 && lineageMaxUses > previousLineageMax) {
       lineageRemaining += lineageMaxUses - previousLineageMax;
     }
 
@@ -2773,6 +2779,9 @@ async decreaseBase(baseKey) {
     }
 
     await this.update({
+      "system.combat.counters.lineagePowers.base": Math.max(0, Number(counter.base ?? 0)),
+      "system.combat.counters.lineagePowers.bonus": Math.max(0, Number(counter.bonus ?? 0)),
+      "system.combat.counters.lineagePowers.max": Math.max(0, Number(counter.max ?? 0)),
       "system.combat.counters.lineagePowers.remaining": remaining - 1,
       "system.combat.counters.lineagePowers.usedThisTurn": true
     });

@@ -2,6 +2,12 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.26.3]
+
+### Corrigé
+- Correction du compteur de pouvoirs de lignée : la dépense d’une utilisation reste désormais correctement affichée et conservée après recalcul de la fiche.
+- Stabilisation de la persistance des valeurs base/bonus/max du compteur de lignée lors d’une dépense.
+
 ## [0.1.26.2]
 
 ### Ajouté
