@@ -2981,6 +2981,17 @@ async decreaseBase(baseKey) {
       ? 200
       : 0;
 
+    const chakraAfterActivationCost = Math.max(0, currentChakra - activationCost);
+
+    const mangekyoChakraSnapshot = mangekyoActiveBonus
+      ? {
+        beforeActivationCurrent: currentChakra,
+        afterActivationCostCurrent: chakraAfterActivationCost,
+        beforeActivationMax: maxChakra,
+        activeBonus: mangekyoActiveBonus
+      }
+      : null;
+
     const updatedActivePowers = [
       ...powersToKeep,
       {
@@ -2990,12 +3001,13 @@ async decreaseBase(baseKey) {
         name: item.name,
         activationCost,
         maintenanceCost,
+        mangekyoChakraSnapshot,
         startedRound: game.combat?.round ?? 0,
         startedTurn: game.combat?.turn ?? 0
       }
     ];
 
-    const newChakra = Math.max(0, currentChakra - activationCost + mangekyoActiveBonus);
+    const newChakra = chakraAfterActivationCost + mangekyoActiveBonus;
     const displayMaxChakra = maxChakra + mangekyoActiveBonus;
 
     await this.update({
@@ -3069,8 +3081,23 @@ async decreaseBase(baseKey) {
           ? currentChakra / activeMaxChakra
           : 0;
 
-        nextChakra = Math.floor(ratio * normalMaxChakra);
-        mangekyoChakraMessage = `<div><strong>Fin du bonus Mangekyō :</strong> conservation relative du Chakra (${currentChakra}/${activeMaxChakra} → ${nextChakra}/${normalMaxChakra}).</div>`;
+        const relativeChakra = Math.floor(ratio * normalMaxChakra);
+
+        if (endMode === "relativeCapped") {
+          const cap = Math.max(
+            0,
+            Math.min(
+              normalMaxChakra,
+              Number(power.mangekyoChakraSnapshot?.afterActivationCostCurrent ?? normalMaxChakra)
+            )
+          );
+
+          nextChakra = Math.min(relativeChakra, cap);
+          mangekyoChakraMessage = `<div><strong>Fin du bonus Mangekyō :</strong> conservation relative plafonnée (${currentChakra}/${activeMaxChakra} → ${nextChakra}/${normalMaxChakra}, plafond ${cap}).</div>`;
+        } else {
+          nextChakra = relativeChakra;
+          mangekyoChakraMessage = `<div><strong>Fin du bonus Mangekyō :</strong> conservation relative classique (${currentChakra}/${activeMaxChakra} → ${nextChakra}/${normalMaxChakra}).</div>`;
+        }
       }
 
       updateData["system.resources.chakra.value"] = nextChakra;

@@ -3,6 +3,7 @@ import { Naruto25eItem } from "./documents/item.js";
 import { Naruto25eShinobiSheet } from "./sheets/shinobi-sheet.js";
 import { Naruto25eItemSheet } from "./sheets/item-sheet.js";
 import {
+  autoImportMissingNaruto25eDataPacks,
   importNaruto25eTechniquePacks,
   Naruto25eTechniqueImportApplication
 } from "./importers/technique-pack-importer.js";
@@ -117,16 +118,27 @@ Hooks.once("init", async function () {
     restricted: true,
     type: String,
     choices: {
-      relative: "Conservation relative — garde le même pourcentage de Chakra",
+      relative: "Relatif classique — garde le même pourcentage de Chakra",
+      relativeCapped: "Relatif plafonné — garde le pourcentage sans gain abusif",
       brutal: "Perte sèche — retire 200 Chakra actuel"
     },
-    default: "relative",
+    default: "relativeCapped",
     onChange: () => {
       for (const actor of game.actors ?? []) {
         actor.prepareData();
         actor.sheet?.render(false);
       }
     }
+  });
+
+    game.settings.register("naruto-25e", "autoImportDataOnReady", {
+    name: "Auto-import des données système",
+    hint: "Au lancement du monde, le MJ importe automatiquement les entrées JSON manquantes dans les compendiums système. L’import est non destructif : les entrées déjà présentes ne sont pas supprimées.",
+    scope: "world",
+    config: true,
+    restricted: true,
+    type: Boolean,
+    default: true
   });
 
     game.settings.registerMenu("naruto-25e", "techniqueImporter", {
@@ -171,10 +183,29 @@ Hooks.once("init", async function () {
   });
 
   game.naruto25e = foundry.utils.mergeObject(game.naruto25e ?? {}, {
+    autoImportMissingDataPacks: autoImportMissingNaruto25eDataPacks,
     importTechniquePacks: importNaruto25eTechniquePacks,
     openTechniqueImporter: () => new Naruto25eTechniqueImportApplication().render(true)
   }, {
     inplace: false
+  });
+});
+
+Hooks.once("ready", async function () {
+  if (!game.user?.isGM) return;
+
+  let enabled = true;
+
+  try {
+    enabled = game.settings.get("naruto-25e", "autoImportDataOnReady");
+  } catch (error) {
+    enabled = true;
+  }
+
+  if (!enabled) return;
+
+  await autoImportMissingNaruto25eDataPacks({
+    notify: true
   });
 });
 

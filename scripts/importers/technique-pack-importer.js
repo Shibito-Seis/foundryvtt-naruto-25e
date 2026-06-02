@@ -216,6 +216,88 @@ export async function importNaruto25eTechniquePacks(options = {}) {
   return results;
 }
 
+export async function autoImportMissingNaruto25eDataPacks(options = {}) {
+  const notify = Boolean(options.notify);
+
+  if (!game.user?.isGM) {
+    return [];
+  }
+
+  const importSources = [
+    ...TECHNIQUE_SOURCES.map((source) => ({
+      ...source,
+      label: "technique",
+      normalize: normalizeTechniqueData
+    })),
+    ...LINEAGE_POWER_SOURCES.map((source) => ({
+      ...source,
+      label: "pouvoir de lignée",
+      normalize: normalizeLineagePowerData
+    }))
+  ];
+
+  const results = [];
+
+  for (const source of importSources) {
+    const pack = game.packs.get(source.pack);
+
+    if (!pack) {
+      console.warn(`Naruto 2.5e | Auto-import impossible, compendium introuvable : ${source.pack}`);
+      results.push({
+        pack: source.pack,
+        type: source.label,
+        imported: 0,
+        skipped: 0,
+        error: "Compendium introuvable"
+      });
+      continue;
+    }
+
+    await unlockPack(pack);
+
+    const sourceData = await readTechniqueSource(source);
+    const documents = sourceData.map(source.normalize);
+
+    const index = await pack.getIndex({
+      fields: ["name", "type"]
+    });
+
+    const existingKeys = new Set(
+      index.map((document) => `${document.type ?? ""}::${document.name ?? ""}`)
+    );
+
+    const missingDocuments = documents.filter((document) => {
+      const key = `${document.type ?? ""}::${document.name ?? ""}`;
+      return !existingKeys.has(key);
+    });
+
+    if (missingDocuments.length > 0) {
+      await Item.createDocuments(missingDocuments, {
+        pack: pack.collection
+      });
+    }
+
+    results.push({
+      pack: source.pack,
+      type: source.label,
+      imported: missingDocuments.length,
+      skipped: documents.length - missingDocuments.length
+    });
+  }
+
+  const totalImported = results.reduce((total, result) => total + result.imported, 0);
+
+  if (totalImported > 0) {
+    console.table(results);
+
+    if (notify) {
+      ui.notifications.info(`Naruto 2.5e : ${totalImported} entrée(s) manquante(s) auto-importée(s).`);
+    }
+  }
+
+  return results;
+}
+
 export class Naruto25eTechniqueImportApplication extends FormApplication {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {

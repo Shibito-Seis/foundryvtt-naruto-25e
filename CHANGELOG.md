@@ -2,6 +2,34 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.25.6]
+
+### Ajouté
+
+- Ajout du mode `Relatif plafonné` pour la désactivation du bonus actif du Mangekyō Sharingan.
+- Mémorisation du Chakra restant après paiement du coût d’activation du Mangekyō afin d’éviter les gains abusifs de Chakra en mode relatif plafonné.
+- Ajout d’un paramètre MJ `Auto-import des données système`.
+- Ajout d’un auto-import non destructif des compendiums au lancement du monde :
+  - MJ uniquement ;
+  - ajoute les entrées manquantes depuis les fichiers JSON ;
+  - ne vide pas les compendiums déjà remplis ;
+  - conserve l’import manuel existant.
+
+### Modifié
+
+- Le paramètre de désactivation du bonus actif Mangekyō propose désormais trois modes :
+  - relatif classique ;
+  - relatif plafonné ;
+  - perte sèche de 200 Chakra actuel.
+- Le mode relatif plafonné empêche le Mangekyō Sharingan de devenir une source de régénération de Chakra par activation/désactivation répétée.
+
+### Notes
+
+- Le mode relatif classique reste disponible pour les MJ qui souhaitent une lecture plus généreuse ou dramatique du Mangekyō.
+- Le Chakra négatif n’est toujours pas automatisé : la perte sèche reste plafonnée à 0.
+
+---
+
 ## [0.1.25.5]
 
 ### Ajouté
