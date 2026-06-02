@@ -2,6 +2,32 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.25.3]
+
+### Ajouté
+
+- Ajout du fichier JSON `data/pouvoirs-lignee/pouvoirs-lignee.json`.
+- Ajout de l’import des pouvoirs de lignée vers le compendium `Pouvoirs de lignée`.
+- Extension de l’importeur MJ pour importer à la fois les techniques et les pouvoirs de lignée.
+- Ajout des premiers pouvoirs de lignée importables :
+  - Sharingan — 1 tomoe ;
+  - Sharingan — 2 tomoe ;
+  - Sharingan — 3 tomoe ;
+  - Byakugan ;
+  - Yūrengan ;
+  - Kikaichū — Colonie symbiotique ;
+  - Affinité aux ombres ;
+  - Gardien du clan Inu.
+- Les Sharingan 1, 2 et 3 tomoe sont séparés afin d’exploiter directement le rang de Lignée du personnage.
+
+### Notes
+
+- Aucun pouvoir de lignée Senju/Mokuton n’est ajouté pour l’instant : Mokuton reste géré par la compétence de clan et les techniques associées.
+- L’attribution automatique des pouvoirs selon le clan et le rang de Lignée sera traitée dans une itération suivante.
+- Les prérequis stricts de clan, les greffes et les multiplicateurs de Chakra hors lignée d’origine seront traités plus tard avec la logique d’implantation.
+
+---
+
 ## [0.1.25.2.1]
 
 ### Corrigé

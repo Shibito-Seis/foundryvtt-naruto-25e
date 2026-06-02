@@ -13,6 +13,13 @@ const TECHNIQUE_SOURCES = [
   }
 ];
 
+const LINEAGE_POWER_SOURCES = [
+  {
+    pack: "naruto-25e.pouvoirs-lignee",
+    path: "systems/naruto-25e/data/pouvoirs-lignee/pouvoirs-lignee.json"
+  }
+];
+
 function getTechniqueDefaults() {
   return {
     type: "technique",
@@ -70,6 +77,39 @@ function normalizeTechniqueData(data) {
   );
 }
 
+function getLineagePowerDefaults() {
+  return {
+    type: "pouvoirLignee",
+    img: "icons/svg/eye.svg",
+    system: {
+      description: "",
+      clan: "",
+      lineageRank: 1,
+      powerType: "maintained",
+      activationCost: 0,
+      maintenanceCost: 0,
+      effect: "",
+      prerequisites: {
+        text: "",
+        gmValidation: false
+      }
+    }
+  };
+}
+
+function normalizeLineagePowerData(data) {
+  return foundry.utils.mergeObject(
+    getLineagePowerDefaults(),
+    data,
+    {
+      inplace: false,
+      overwrite: true,
+      insertKeys: true,
+      insertValues: true
+    }
+  );
+}
+
 async function readTechniqueSource(source) {
   const response = await fetch(source.path);
 
@@ -110,19 +150,33 @@ export async function importNaruto25eTechniquePacks(options = {}) {
   const clear = Boolean(options.clear);
 
   if (!game.user?.isGM) {
-    ui.notifications.warn("Seul le MJ peut importer les techniques Naruto 2.5e.");
+    ui.notifications.warn("Seul le MJ peut importer les données Naruto 2.5e.");
     return [];
   }
 
   const results = [];
 
-  for (const source of TECHNIQUE_SOURCES) {
+  const importSources = [
+    ...TECHNIQUE_SOURCES.map((source) => ({
+      ...source,
+      label: "technique",
+      normalize: normalizeTechniqueData
+    })),
+    ...LINEAGE_POWER_SOURCES.map((source) => ({
+      ...source,
+      label: "pouvoir de lignée",
+      normalize: normalizeLineagePowerData
+    }))
+  ];
+
+  for (const source of importSources) {
     const pack = game.packs.get(source.pack);
 
     if (!pack) {
       ui.notifications.warn(`Compendium introuvable : ${source.pack}`);
       results.push({
         pack: source.pack,
+        type: source.label,
         imported: 0,
         deleted: 0,
         error: "Compendium introuvable"
@@ -134,7 +188,7 @@ export async function importNaruto25eTechniquePacks(options = {}) {
 
     const deleted = clear ? await clearPack(pack) : 0;
     const sourceData = await readTechniqueSource(source);
-    const documents = sourceData.map(normalizeTechniqueData);
+    const documents = sourceData.map(source.normalize);
 
     if (documents.length > 0) {
       await Item.createDocuments(documents, {
@@ -144,6 +198,7 @@ export async function importNaruto25eTechniquePacks(options = {}) {
 
     results.push({
       pack: source.pack,
+      type: source.label,
       imported: documents.length,
       deleted
     });
@@ -153,7 +208,7 @@ export async function importNaruto25eTechniquePacks(options = {}) {
   const totalDeleted = results.reduce((total, result) => total + result.deleted, 0);
 
   ui.notifications.info(
-    `Import Naruto 2.5e terminé : ${totalImported} technique(s) importée(s), ${totalDeleted} ancienne(s) entrée(s) supprimée(s).`
+    `Import Naruto 2.5e terminé : ${totalImported} entrée(s) importée(s), ${totalDeleted} ancienne(s) entrée(s) supprimée(s).`
   );
 
   console.table(results);
@@ -176,7 +231,10 @@ export class Naruto25eTechniqueImportApplication extends FormApplication {
   async getData(options = {}) {
     const context = await super.getData(options);
 
-    context.sources = TECHNIQUE_SOURCES.map((source) => ({
+    context.sources = [
+      ...TECHNIQUE_SOURCES,
+      ...LINEAGE_POWER_SOURCES
+    ].map((source) => ({
       pack: source.pack,
       path: source.path
     }));

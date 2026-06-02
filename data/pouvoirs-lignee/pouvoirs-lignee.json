@@ -1,0 +1,146 @@
+[
+  {
+    "name": "Sharingan — 1 tomoe",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/perception/eye-ringed-glow-angry-red.webp",
+    "system": {
+      "description": "Premier éveil du Sharingan. L’œil révèle une tomoe et permet une lecture instinctive du Chakra, des mouvements et des intentions hostiles.",
+      "clan": "uchiha",
+      "lineageRank": 1,
+      "powerType": "maintained",
+      "activationCost": 10,
+      "maintenanceCost": 5,
+      "effect": "Active le Sharingan à 1 tomoe. Sert de base aux effets de perception Uchiha et aux futures techniques liées au Sharingan.",
+      "prerequisites": {
+        "text": "Clan Uchiha ou Sharingan greffé accepté. Lignée 1 requise pour l’obtention naturelle.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Sharingan — 2 tomoe",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/perception/eye-ringed-glow-angry-red.webp",
+    "system": {
+      "description": "Sharingan développé. Deux tomoe permettent une lecture plus fine des mouvements et une meilleure anticipation des actions adverses.",
+      "clan": "uchiha",
+      "lineageRank": 2,
+      "powerType": "maintained",
+      "activationCost": 10,
+      "maintenanceCost": 5,
+      "effect": "Active le Sharingan à 2 tomoe. Remplace naturellement la version 1 tomoe lorsque l’Uchiha atteint le rang de Lignée requis.",
+      "prerequisites": {
+        "text": "Clan Uchiha ou Sharingan greffé accepté. Lignée 2 requise pour l’obtention naturelle.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Sharingan — 3 tomoe",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/perception/eye-ringed-glow-angry-red.webp",
+    "system": {
+      "description": "Sharingan mature. Trois tomoe offrent la forme classique avancée du dōjutsu Uchiha, prérequis naturel avant l’éveil du Mangekyō Sharingan.",
+      "clan": "uchiha",
+      "lineageRank": 3,
+      "powerType": "maintained",
+      "activationCost": 10,
+      "maintenanceCost": 5,
+      "effect": "Active le Sharingan à 3 tomoe. Sert de forme aboutie du Sharingan classique et de socle aux pouvoirs supérieurs Uchiha.",
+      "prerequisites": {
+        "text": "Clan Uchiha ou Sharingan greffé accepté. Lignée 3 requise pour l’obtention naturelle.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Byakugan",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/perception/eye-slit-pink.webp",
+    "system": {
+      "description": "Dōjutsu du clan Hyūga. Le Byakugan offre une perception circulaire presque totale, une vision du réseau de Chakra et sert de fondation au Jūken.",
+      "clan": "hyuga",
+      "lineageRank": 1,
+      "powerType": "maintained",
+      "activationCost": 10,
+      "maintenanceCost": 5,
+      "effect": "Active le Byakugan. Sert de base aux techniques Hyūga, à la vision du Chakra et aux futurs effets liés au Jūken.",
+      "prerequisites": {
+        "text": "Clan Hyūga ou Byakugan greffé accepté. Lignée 1 requise pour l’obtention naturelle.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Yūrengan",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/perception/orb-eye-scrying.webp",
+    "system": {
+      "description": "Dōjutsu spirituel du clan Katō. Le Yūrengan ouvre la voie aux pouvoirs de projection, de perception mentale et de manipulation spirituelle.",
+      "clan": "kato",
+      "lineageRank": 1,
+      "powerType": "maintained",
+      "activationCost": 10,
+      "maintenanceCost": 5,
+      "effect": "Active le Yūrengan. Sert de base aux capacités spirituelles du clan Katō et aux futurs pouvoirs liés à l’Ikiryō.",
+      "prerequisites": {
+        "text": "Clan Katō ou Yūrengan greffé accepté. Lignée 1 requise pour l’obtention naturelle.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Kikaichū — Colonie symbiotique",
+    "type": "pouvoirLignee",
+    "img": "icons/creatures/invertebrates/wasp-swarm-movement.webp",
+    "system": {
+      "description": "Le corps de l’Aburame abrite une colonie de Kikaichū vivant en symbiose avec son Chakra. Cette colonie permet l’usage des techniques d’insectes et justifie la réserve dédiée.",
+      "clan": "aburame",
+      "lineageRank": 1,
+      "powerType": "passive",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir passif. Représente la symbiose Kikaichū et l’accès aux techniques Aburame. La réserve Kikaichū reste gérée directement par la fiche.",
+      "prerequisites": {
+        "text": "Clan Aburame. Lignée 1 requise.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Affinité aux ombres",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/unholy/silhouette-robe-evil-power.webp",
+    "system": {
+      "description": "Le clan Nara possède une affinité naturelle avec la manipulation des ombres. Ce pouvoir représente le socle héréditaire nécessaire aux techniques Kage.",
+      "clan": "nara",
+      "lineageRank": 1,
+      "powerType": "passive",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir passif. Sert de socle aux futures techniques de manipulation des ombres du clan Nara.",
+      "prerequisites": {
+        "text": "Clan Nara. Lignée 1 requise.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Gardien du clan Inu",
+    "type": "pouvoirLignee",
+    "img": "icons/creatures/mammals/wolf-howl-moon-white.webp",
+    "system": {
+      "description": "L’Inuzuka développe un lien instinctif avec son partenaire canin et les méthodes martiales du clan. Ce pouvoir représente l’accès au style de combat bestial et au futur compagnon ninken.",
+      "clan": "inuzuka",
+      "lineageRank": 1,
+      "powerType": "passive",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir passif. Représente le lien Inuzuka avec le ninken et prépare les futures capacités de pistage, flair, transformation et combat bestial.",
+      "prerequisites": {
+        "text": "Clan Inuzuka. Lignée 1 requise.",
+        "gmValidation": false
+      }
+    }
+  }
+]
