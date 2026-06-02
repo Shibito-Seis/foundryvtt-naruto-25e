@@ -89,6 +89,46 @@ Hooks.once("init", async function () {
     }
   });
 
+    game.settings.register("naruto-25e", "mangekyoChakraBonusMode", {
+    name: "Bonus Chakra Mangekyō",
+    hint: "Détermine si le bonus de +200 Chakra du Mangekyō Sharingan est passif ou seulement actif pendant l’activation du pouvoir.",
+    scope: "world",
+    config: true,
+    restricted: true,
+    type: String,
+    choices: {
+      passive: "Passif — +200 Chakra max dès possession validée",
+      active: "Actif — +200 Chakra max et actuel pendant l’activation"
+    },
+    default: "passive",
+    onChange: () => {
+      for (const actor of game.actors ?? []) {
+        actor.prepareData();
+        actor.sheet?.render(false);
+      }
+    }
+  });
+
+  game.settings.register("naruto-25e", "mangekyoActiveChakraEndMode", {
+    name: "Désactivation du bonus actif Mangekyō",
+    hint: "S’applique uniquement si le bonus Chakra Mangekyō est actif. Détermine comment le Chakra actuel est recalculé à la désactivation.",
+    scope: "world",
+    config: true,
+    restricted: true,
+    type: String,
+    choices: {
+      relative: "Conservation relative — garde le même pourcentage de Chakra",
+      brutal: "Perte sèche — retire 200 Chakra actuel"
+    },
+    default: "relative",
+    onChange: () => {
+      for (const actor of game.actors ?? []) {
+        actor.prepareData();
+        actor.sheet?.render(false);
+      }
+    }
+  });
+
     game.settings.registerMenu("naruto-25e", "techniqueImporter", {
     name: "Importer les techniques",
     label: "Ouvrir l’importeur",
@@ -170,6 +210,11 @@ Hooks.on("updateActor", async function (actor, changed) {
     foundry.utils.hasProperty(changed, "system.heritage.mode")
     || foundry.utils.hasProperty(changed, "system.heritage.clan")
     || foundry.utils.hasProperty(changed, "system.heritage.hybrid.secondaryClan")
+    || foundry.utils.hasProperty(changed, "system.heritage.gmOptions.hasMangekyoSharingan")
+    || foundry.utils.hasProperty(changed, "system.heritage.uchiha.mangekyo.rightEyePlayerValidated")
+    || foundry.utils.hasProperty(changed, "system.heritage.uchiha.mangekyo.rightEyeGmValidated")
+    || foundry.utils.hasProperty(changed, "system.heritage.uchiha.mangekyo.leftEyePlayerValidated")
+    || foundry.utils.hasProperty(changed, "system.heritage.uchiha.mangekyo.leftEyeGmValidated")
     || foundry.utils.hasProperty(changed, "system.bases.lign.value")
     || foundry.utils.hasProperty(changed, "system.bases.lign.bonus");
 

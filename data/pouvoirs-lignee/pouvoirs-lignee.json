@@ -54,6 +54,24 @@
     }
   },
   {
+    "name": "Mangekyō Sharingan",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/perception/eye-ringed-glow-angry-red.webp",
+    "system": {
+      "description": "Éveil supérieur du Sharingan, né d’un traumatisme profond et d’une validation narrative majeure. Le Mangekyō Sharingan ouvre l’accès aux pouvoirs uniques des yeux Uchiha, mais son usage répété dégrade progressivement la vue.",
+      "clan": "uchiha",
+      "lineageRank": 5,
+      "powerType": "maintained",
+      "activationCost": 30,
+      "maintenanceCost": 10,
+      "effect": "Active le Mangekyō Sharingan. Ne compte pas comme une utilisation oculaire dégradante tant qu’aucune technique propre au Mangekyō n’est lancée. Surclasse le Sharingan classique actif. Le bonus de +200 Chakra dépend du paramètre MJ du monde.",
+      "prerequisites": {
+        "text": "Clan Uchiha, Lignée 5, éveil narratif du Mangekyō et validation MJ requise. Les pouvoirs d’œil droit/gauche et les techniques associées seront gérés séparément.",
+        "gmValidation": true
+      }
+    }
+  },
+  {
     "name": "Byakugan",
     "type": "pouvoirLignee",
     "img": "icons/magic/perception/eye-slit-pink.webp",

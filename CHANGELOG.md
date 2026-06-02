@@ -2,6 +2,36 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.25.5]
+
+### Ajouté
+
+- Ajout du pouvoir de lignée `Mangekyō Sharingan`.
+- Attribution automatique du Mangekyō Sharingan pour les Uchiha de Lignée 5+ lorsque le Mangekyō est validé par le MJ.
+- Ajout d’un paramètre MJ `Bonus Chakra Mangekyō` :
+  - mode passif : +200 Chakra maximum dès possession validée ;
+  - mode actif : +200 Chakra maximum et actuel à l’activation.
+- Ajout d’un paramètre MJ de désactivation du bonus actif Mangekyō :
+  - conservation relative du pourcentage de Chakra ;
+  - perte sèche de 200 Chakra actuel.
+- Ajout d’un fallback JSON pour les pouvoirs de lignée si le compendium `pouvoirs-lignee` est vide, incomplet ou introuvable.
+
+### Modifié
+
+- Le Mangekyō Sharingan ne remplace pas `Sharingan — 3 tomoe` dans les items possédés.
+- À l’activation, le Mangekyō Sharingan surclasse le Sharingan classique actif.
+- Activation directe du Mangekyō : 30 Chakra.
+- Activation depuis un Sharingan classique déjà actif : 20 Chakra.
+- Entretien du Mangekyō : 10 Chakra par tour.
+- L’activation seule du Mangekyō ne compte pas comme une utilisation oculaire dégradante.
+
+### Notes
+
+- Les techniques propres au Mangekyō comme Amaterasu, Tsukuyomi, Kamui, Kotoamatsukami, Enton et Susanō restent prévues pour une itération ultérieure.
+- Le Chakra négatif n’est pas encore automatisé : en mode perte sèche, le Chakra actuel est plafonné à 0.
+
+---
+
 ## [0.1.25.4]
 
 ### Ajouté

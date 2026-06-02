@@ -615,6 +615,133 @@ export class Naruto25eActor extends Actor {
     }
   }
 
+  _getMangekyoChakraBonusMode() {
+    try {
+      return game.settings?.get("naruto-25e", "mangekyoChakraBonusMode") ?? "passive";
+    } catch (error) {
+      return "passive";
+    }
+  }
+
+  _getMangekyoActiveChakraEndMode() {
+    try {
+      return game.settings?.get("naruto-25e", "mangekyoActiveChakraEndMode") ?? "relative";
+    } catch (error) {
+      return "relative";
+    }
+  }
+
+  _isMangekyoPowerName(name) {
+    return name === "Mangekyō Sharingan";
+  }
+
+  _isClassicSharinganPowerName(name) {
+    return [
+      "Sharingan — 1 tomoe",
+      "Sharingan — 2 tomoe",
+      "Sharingan — 3 tomoe"
+    ].includes(name);
+  }
+
+  _hasValidatedMangekyoSharingan() {
+    return Boolean(this.system.heritage?.gmOptions?.hasMangekyoSharingan);
+  }
+
+  _hasMangekyoPowerItem() {
+    return this.items.some((item) => {
+      return item.type === "pouvoirLignee" && this._isMangekyoPowerName(item.name);
+    });
+  }
+
+  _hasActiveMangekyoSharingan(activePowers = null) {
+    const powers = activePowers ?? this._getActiveLineagePowers?.() ?? [];
+
+    return powers.some((power) => this._isMangekyoPowerName(power.name));
+  }
+
+  _getMangekyoChakraBonusForPrepare() {
+    const mode = this._getMangekyoChakraBonusMode();
+
+    if (mode === "passive") {
+      return this._hasValidatedMangekyoSharingan() || this._hasMangekyoPowerItem()
+        ? 200
+        : 0;
+    }
+
+    if (mode === "active") {
+      return this._hasActiveMangekyoSharingan()
+        ? 200
+        : 0;
+    }
+
+    return 0;
+  }
+
+  _getLineagePowerDefaults() {
+    return {
+      type: "pouvoirLignee",
+      img: "icons/svg/eye.svg",
+      system: {
+        description: "",
+        clan: "",
+        lineageRank: 1,
+        powerType: "maintained",
+        activationCost: 0,
+        maintenanceCost: 0,
+        effect: "",
+        prerequisites: {
+          text: "",
+          gmValidation: false
+        }
+      }
+    };
+  }
+
+  _normalizeLineagePowerSourceData(data) {
+    return foundry.utils.mergeObject(
+      this._getLineagePowerDefaults(),
+      data,
+      {
+        inplace: false,
+        overwrite: true,
+        insertKeys: true,
+        insertValues: true
+      }
+    );
+  }
+
+  async _getLineagePowerSourceDataFromJson(powerName) {
+    const path = "systems/naruto-25e/data/pouvoirs-lignee/pouvoirs-lignee.json";
+
+    try {
+      const response = await fetch(path);
+
+      if (!response.ok) {
+        console.warn(`Naruto 2.5e | Impossible de lire ${path} (${response.status}) pour ${powerName}.`);
+        return null;
+      }
+
+      const json = await response.json();
+      const entries = Array.isArray(json)
+        ? json
+        : Array.isArray(json.items)
+          ? json.items
+          : [];
+
+      const entry = entries.find((document) => document.name === powerName);
+
+      if (!entry) {
+        console.warn(`Naruto 2.5e | Pouvoir de lignée introuvable dans le JSON : ${powerName}.`);
+        return null;
+      }
+
+      return this._normalizeLineagePowerSourceData(entry);
+    } catch (error) {
+      console.warn(`Naruto 2.5e | Erreur pendant la lecture JSON du pouvoir de lignée ${powerName}.`, error);
+      return null;
+    }
+  }
+
   _prepareResources(system) {
     const cor = this._getBaseEffective(system, "cor");
     const esp = this._getBaseEffective(system, "esp");
@@ -662,8 +789,9 @@ export class Naruto25eActor extends Actor {
       chakra.rawMax = rawMax;
 
       const kikaichuAllocated = this._prepareKikaichuReserve(system, rawMax, lign);
+      const mangekyoChakraBonus = this._getMangekyoChakraBonusForPrepare();
 
-      chakra.max = Math.max(0, rawMax - kikaichuAllocated);
+      chakra.max = Math.max(0, rawMax - kikaichuAllocated + mangekyoChakraBonus);
       chakra.value = this._clampNumber(chakra.value, 0, chakra.max);
 
       chakra.passiveRegenPercent = passiveRegenPercent;
@@ -2616,6 +2744,15 @@ async decreaseBase(baseKey) {
           });
         }
 
+        if (lineageValue >= 5 && this._hasValidatedMangekyoSharingan()) {
+          definitions.push({
+            key: "uchiha-mangekyo-sharingan",
+            name: "Mangekyō Sharingan",
+            clan: "uchiha",
+            minRank: 5
+          });
+        }
+
         continue;
       }
 
@@ -2678,6 +2815,7 @@ async decreaseBase(baseKey) {
       "Sharingan — 1 tomoe",
       "Sharingan — 2 tomoe",
       "Sharingan — 3 tomoe",
+      "Mangekyō Sharingan",
       "Byakugan",
       "Yūrengan",
       "Kikaichū — Colonie symbiotique",
@@ -2689,26 +2827,24 @@ async decreaseBase(baseKey) {
   async _getLineagePowerSourceData(powerName) {
     const pack = game.packs.get("naruto-25e.pouvoirs-lignee");
 
-    if (!pack) {
-      console.warn(`Naruto 2.5e | Compendium pouvoirs-lignee introuvable pour ${powerName}.`);
-      return null;
+    if (pack) {
+      const index = await pack.getIndex({
+        fields: ["name", "type", "system.clan", "system.lineageRank"]
+      });
+
+      const entry = index.find((document) => document.name === powerName);
+
+      if (entry) {
+        const sourceDocument = await pack.getDocument(entry._id);
+        if (sourceDocument) return sourceDocument.toObject();
+      }
+
+      console.warn(`Naruto 2.5e | Pouvoir de lignée absent du compendium, tentative JSON : ${powerName}.`);
+    } else {
+      console.warn(`Naruto 2.5e | Compendium pouvoirs-lignee introuvable, tentative JSON : ${powerName}.`);
     }
 
-    const index = await pack.getIndex({
-      fields: ["name", "type", "system.clan", "system.lineageRank"]
-    });
-
-    const entry = index.find((document) => document.name === powerName);
-
-    if (!entry) {
-      console.warn(`Naruto 2.5e | Pouvoir de lignée introuvable dans le compendium : ${powerName}.`);
-      return null;
-    }
-
-    const sourceDocument = await pack.getDocument(entry._id);
-    if (!sourceDocument) return null;
-
-    return sourceDocument.toObject();
+    return this._getLineagePowerSourceDataFromJson(powerName);
   }
 
   async syncLineagePowersFromHeritage({ notify = false } = {}) {
@@ -2815,31 +2951,56 @@ async decreaseBase(baseKey) {
     const chakra = this.system.resources?.chakra ?? {};
     const currentChakra = Math.max(0, Number(chakra.value ?? 0));
     const maxChakra = Math.max(0, Number(chakra.max ?? 0));
-    const { activationCost, maintenanceCost } = this._getLineagePowerCostsFromItem(item);
+
+    let { activationCost, maintenanceCost } = this._getLineagePowerCostsFromItem(item);
+
+    const isMangekyo = this._isMangekyoPowerName(item.name);
+    const mangekyoBonusMode = this._getMangekyoChakraBonusMode();
+
+    const activePowers = this._getActiveLineagePowers();
+    let powersToKeep = activePowers;
+
+    let supersededSharingan = null;
+
+    if (isMangekyo) {
+      supersededSharingan = activePowers.find((power) => this._isClassicSharinganPowerName(power.name));
+
+      if (supersededSharingan) {
+        const sharinganActivationCost = Math.max(0, Number(supersededSharingan.activationCost ?? 0));
+        activationCost = Math.max(0, activationCost - sharinganActivationCost);
+        powersToKeep = activePowers.filter((power) => power.id !== supersededSharingan.id);
+      }
+    }
 
     if (activationCost > 0 && currentChakra < activationCost) {
       ui.notifications.warn(`${this.name} n’a pas assez de Chakra pour activer ${item.name} (${currentChakra}/${activationCost}).`);
       return;
     }
 
-    const activePowers = this._getActiveLineagePowers();
+    const mangekyoActiveBonus = isMangekyo && mangekyoBonusMode === "active"
+      ? 200
+      : 0;
 
-    activePowers.push({
-      id: foundry.utils.randomID(16),
-      itemId: item.id,
-      uuid: item.uuid,
-      name: item.name,
-      activationCost,
-      maintenanceCost,
-      startedRound: game.combat?.round ?? 0,
-      startedTurn: game.combat?.turn ?? 0
-    });
+    const updatedActivePowers = [
+      ...powersToKeep,
+      {
+        id: foundry.utils.randomID(16),
+        itemId: item.id,
+        uuid: item.uuid,
+        name: item.name,
+        activationCost,
+        maintenanceCost,
+        startedRound: game.combat?.round ?? 0,
+        startedTurn: game.combat?.turn ?? 0
+      }
+    ];
 
-    const newChakra = Math.max(0, currentChakra - activationCost);
+    const newChakra = Math.max(0, currentChakra - activationCost + mangekyoActiveBonus);
+    const displayMaxChakra = maxChakra + mangekyoActiveBonus;
 
     await this.update({
       "system.resources.chakra.value": newChakra,
-      "system.resources.activeLineagePowers": activePowers
+      "system.resources.activeLineagePowers": updatedActivePowers
     });
 
     const safeActorName = foundry.utils.escapeHTML?.(this.name) ?? this.name;
@@ -2861,8 +3022,10 @@ async decreaseBase(baseKey) {
           <div><strong>Clan :</strong> ${safeClan}</div>
           <div><strong>Rang requis :</strong> ${lineageRank}</div>
           <div><strong>Coût d’activation :</strong> ${activationCost} Chakra</div>
-          <div><strong>Chakra :</strong> ${currentChakra} → ${newChakra} / ${maxChakra}</div>
+          <div><strong>Chakra :</strong> ${currentChakra} → ${newChakra} / ${displayMaxChakra}</div>
           <div><strong>Entretien :</strong> ${maintenanceCost} Chakra / tour</div>
+          ${supersededSharingan ? `<div><strong>Surclasse :</strong> ${foundry.utils.escapeHTML?.(supersededSharingan.name) ?? supersededSharingan.name}</div>` : ""}
+          ${mangekyoActiveBonus ? `<div><strong>Bonus Mangekyō actif :</strong> +200 Chakra max et actuel</div>` : ""}
         </div>
       `
     });
@@ -2883,9 +3046,37 @@ async decreaseBase(baseKey) {
 
     const remainingPowers = activePowers.filter((entry) => entry.id !== power.id);
 
-    await this.update({
+    const updateData = {
       "system.resources.activeLineagePowers": remainingPowers
-    });
+    };
+
+    let mangekyoChakraMessage = "";
+
+    if (this._isMangekyoPowerName(power.name) && this._getMangekyoChakraBonusMode() === "active") {
+      const chakra = this.system.resources?.chakra ?? {};
+      const currentChakra = Math.max(0, Number(chakra.value ?? 0));
+      const activeMaxChakra = Math.max(0, Number(chakra.max ?? 0));
+      const normalMaxChakra = Math.max(0, activeMaxChakra - 200);
+      const endMode = this._getMangekyoActiveChakraEndMode();
+
+      let nextChakra = currentChakra;
+
+      if (endMode === "brutal") {
+        nextChakra = Math.max(0, currentChakra - 200);
+        mangekyoChakraMessage = `<div><strong>Fin du bonus Mangekyō :</strong> perte sèche de 200 Chakra (${currentChakra} → ${nextChakra} / ${normalMaxChakra}).</div>`;
+      } else {
+        const ratio = activeMaxChakra > 0
+          ? currentChakra / activeMaxChakra
+          : 0;
+
+        nextChakra = Math.floor(ratio * normalMaxChakra);
+        mangekyoChakraMessage = `<div><strong>Fin du bonus Mangekyō :</strong> conservation relative du Chakra (${currentChakra}/${activeMaxChakra} → ${nextChakra}/${normalMaxChakra}).</div>`;
+      }
+
+      updateData["system.resources.chakra.value"] = nextChakra;
+    }
+
+    await this.update(updateData);
 
     const item = this.items.get(power.itemId);
     const safeActorName = foundry.utils.escapeHTML?.(this.name) ?? this.name;
@@ -2904,6 +3095,7 @@ async decreaseBase(baseKey) {
           ${safeEffect ? `<p class="lineage-power-effect"><strong>Effet interrompu :</strong> ${safeEffect}</p>` : ""}
 
           <div><strong>Entretien arrêté :</strong> ${maintenanceCost} Chakra / tour</div>
+          ${mangekyoChakraMessage}
         </div>
       `
     });
