@@ -2,6 +2,21 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.25.2.1]
+
+### Corrigé
+
+- Le bouton de résolution manuelle de l’entretien des pouvoirs de lignée est désormais cadré comme outil MJ.
+- Ajout d’un récapitulatif non destructif des coûts d’entretien actifs sur la fiche Shinobi.
+- Le récapitulatif affiche le nombre de pouvoirs actifs, l’entretien total, la régénération passive, le coût net et le Chakra restant après entretien.
+- Correction du dialogue d’entretien : si la sélection choisie ne peut pas être maintenue, le dialogue se rouvre au lieu de laisser les pouvoirs actifs sans paiement valide.
+
+### Confirmé
+
+- Le comportement Aburame / Kikaichū est correct : la réserve dépend bien de la Lignée et peut absorber une grande partie du Chakra si le personnage n’a pas assez investi en Chakra brut.
+
+---
+
 ## [0.1.25.2]
 
 ### Ajouté

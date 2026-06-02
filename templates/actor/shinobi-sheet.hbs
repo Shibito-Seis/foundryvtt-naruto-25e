@@ -1876,13 +1876,52 @@
           </p>
         {{/if}}
 
-        <button type="button" class="lineage-power-upkeep-check">
-          Vérifier l’entretien maintenant
-        </button>
+        <div class="naruto-lineage-maintenance-summary">
+          <h4>Entretien actif</h4>
 
-        <p class="formula-hint">
-          Les coûts d’entretien sont cumulés, puis la régénération passive est soustraite une seule fois.
-        </p>
+          <div class="maintenance-grid">
+            <div>
+              <strong>Pouvoirs actifs</strong>
+              <span>{{lineageMaintenanceSummary.activeCount}}</span>
+            </div>
+
+            <div>
+              <strong>Entretien total</strong>
+              <span>{{lineageMaintenanceSummary.totalMaintenance}}</span>
+            </div>
+
+            <div>
+              <strong>Régénération passive</strong>
+              <span>-{{lineageMaintenanceSummary.passiveRegen}}</span>
+            </div>
+
+            <div>
+              <strong>Coût net / tour</strong>
+              <span>{{lineageMaintenanceSummary.netCost}}</span>
+            </div>
+
+            <div>
+              <strong>Chakra après entretien</strong>
+              <span>{{lineageMaintenanceSummary.nextChakra}}</span>
+            </div>
+          </div>
+
+          {{#if lineageMaintenanceSummary.crossesCriticalThreshold}}
+            <p class="warning-text">
+              Attention : l’entretien ferait franchir un seuil critique de Chakra.
+            </p>
+          {{/if}}
+
+          <p class="formula-hint">
+            Les coûts d’entretien sont cumulés, puis la régénération passive est soustraite une seule fois.
+          </p>
+        </div>
+
+        {{#if isGM}}
+          <button type="button" class="lineage-power-upkeep-check">
+            MJ : tester / résoudre l’entretien
+          </button>
+        {{/if}}
       </section>
 
       <section class="lineage-section">

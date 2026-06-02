@@ -2815,7 +2815,19 @@ async decreaseBase(baseKey) {
               const maxChakra = Math.max(0, Number(this.system.resources?.chakra?.max ?? 0));
 
               if (currentChakra < maintenance.netCost) {
-                ui.notifications.warn("Le Chakra restant ne permet toujours pas de maintenir cette sélection.");
+                ui.notifications.warn("Le Chakra restant ne permet toujours pas de maintenir cette sélection. Décoche au moins un effet maintenu.");
+
+                setTimeout(() => {
+                  this._openLineageMaintenanceDialog(activePowers, {
+                    ...context,
+                    currentChakra,
+                    maxChakra,
+                    totalMaintenance: maintenance.totalMaintenance,
+                    passiveRegen: maintenance.passiveRegen,
+                    netCost: maintenance.netCost
+                  });
+                }, 100);
+
                 resolve();
                 return;
               }

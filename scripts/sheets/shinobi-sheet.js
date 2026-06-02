@@ -40,6 +40,28 @@ export class Naruto25eShinobiSheet extends ActorSheet {
     }));
 
   context.hasLineagePowerItems = context.lineagePowerItems.length > 0;
+
+  const lineageMaintenance = this.actor._computeLineageMaintenanceCost?.(activeLineagePowers) ?? {
+    totalMaintenance: 0,
+    passiveRegen: 0,
+    netCost: 0
+  };
+
+  const currentChakra = Math.max(0, Number(this.actor.system.resources?.chakra?.value ?? 0));
+  const nextChakraAfterMaintenance = Math.max(0, currentChakra - lineageMaintenance.netCost);
+
+  context.lineageMaintenanceSummary = {
+    activeCount: activeLineagePowers.length,
+    totalMaintenance: lineageMaintenance.totalMaintenance,
+    passiveRegen: lineageMaintenance.passiveRegen,
+    netCost: lineageMaintenance.netCost,
+    currentChakra,
+    nextChakra: nextChakraAfterMaintenance,
+    crossesCriticalThreshold: this.actor._crossesCriticalChakraThreshold?.(
+      currentChakra,
+      nextChakraAfterMaintenance
+    ) ?? false
+  };
   context.chakraFormulaMode = game.settings.get("naruto-25e", "chakraFormulaMode");
   context.affinityCostMode = game.settings.get("naruto-25e", "affinityCostMode");
 

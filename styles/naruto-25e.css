@@ -1573,3 +1573,36 @@
   text-transform: uppercase;
   opacity: 0.75;
 }
+
+.naruto-25e-shinobi-sheet .naruto-lineage-maintenance-summary {
+  margin-top: 10px;
+  padding: 8px;
+  border: 1px dashed #777;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.naruto-25e-shinobi-sheet .naruto-lineage-maintenance-summary h4 {
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+.naruto-25e-shinobi-sheet .maintenance-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(90px, 1fr));
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.naruto-25e-shinobi-sheet .maintenance-grid div {
+  padding: 6px;
+  border: 1px solid #999;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.naruto-25e-shinobi-sheet .maintenance-grid strong {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
