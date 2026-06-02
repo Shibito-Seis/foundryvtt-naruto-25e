@@ -831,28 +831,32 @@ NARUTO25E.clanCreationData = {
   },
 
   kato: {
-    summary: "Clan lié aux arts spirituels, à la projection de l’âme et aux techniques sensibles.",
-    lore: "Les Kato sont associés à des pratiques subtiles, souvent proches de la perception spirituelle, du lien entre corps et esprit, et d’approches rares du chakra.",
-    creationAdvice: "Bon choix pour un joueur voulant un personnage plus mystique, sensible ou orienté soutien/contrôle. Le clan sert bien les concepts de médium, éclaireur spirituel ou spécialiste atypique.",
+    summary: "Clan lié au Yūrengan, à l’infiltration spectrale et aux arts de Meidō.",
+    lore: "Les Katō sont associés aux missions à haut risque, aux phénomènes surnaturels et aux techniques fantomatiques. Leur dōjutsu, le Yūrengan, modifie leur perception et leur permet de distinguer le tangible de l’intangible.",
+    creationAdvice: "Bon choix pour un joueur voulant un personnage subtil, infiltrateur ou mystique. Le clan se prête bien aux éclaireurs surnaturels, assassins spectraux, médiums de terrain et spécialistes des créatures issues des Royaumes Parallèles.",
     mandatorySkills: [],
     mandatoryAffinities: [],
-    startingFeatures: [],
+    startingFeatures: ["Yūrengan"],
     futureUnlocks: [
-      "Pouvoirs spirituels",
-      "Projection ou perception avancée selon lignée",
-      "Synergies possibles avec Genjutsu, Iryō ou détection"
+      "Yūrengan comme dōjutsu de rang 1",
+      "Forteresse mentale et renforcement interne",
+      "Forme spectrale / état éthéré",
+      "Invisibilité fantomatique",
+      "Cri silencieux et possession spectrale",
+      "Transformation spirituelle comme sommet de lignée"
     ],
     narrativeWarnings: [
-      "Certaines capacités peuvent être très narratives et demander un cadrage MJ.",
-      "Le clan doit être précisé lors de la consolidation de ses pouvoirs."
+      "Les pouvoirs actifs Katō exigent généralement l’activation du Yūrengan.",
+      "La forme spectrale, la possession et les interactions avec Meidō doivent être cadrées par le MJ.",
+      "Le rang 8 Katō devra être vérifié ou clarifié depuis les règles papier avant automatisation complète."
     ],
     recommendedBuilds: [
-      "Soutien spirituel",
+      "Infiltrateur spectral",
+      "Éclaireur surnaturel",
       "Contrôleur subtil",
-      "Éclaireur sensoriel",
-      "Mystique de Konoha"
+      "Spécialiste des Royaumes Parallèles"
     ],
-    previewTags: ["Esprit", "Soutien", "Perception", "Mystique"]
+    previewTags: ["Yūrengan", "Spectral", "Infiltration", "Meidō"]
   },
 
   nara: {
@@ -908,21 +912,23 @@ NARUTO25E.clanCreationData = {
   },
 
   inuzuka: {
-    summary: "Clan combattant en duo avec un compagnon canin.",
-    lore: "Les Inuzuka forment un binôme instinctif avec leur partenaire animal. Leur style repose sur l’odorat, la traque, la vitesse et la coordination brutale.",
-    creationAdvice: "Excellent choix pour un joueur voulant un style direct, mobile et très incarné. Le compagnon devra être pris en compte par le Charactomancer à terme.",
-    mandatorySkills: [],
+    summary: "Clan combattant en duo permanent avec un compagnon du clan Inu.",
+    lore: "Les Inuzuka forment un binôme instinctif avec leur partenaire animal. Leur style repose sur l’odorat, la traque, la vitesse, la brutalité coordonnée et les techniques de Forme Sauvage.",
+    creationAdvice: "Excellent choix pour un joueur voulant un style direct, mobile et très incarné. Le personnage doit être pensé avec son compagnon, car le duo est le cœur de la lignée.",
+    mandatorySkills: ["kuchiyose"],
     mandatoryAffinities: [],
-    startingFeatures: ["Compagnon canin"],
+    startingFeatures: ["Gardien du clan Inu"],
     futureUnlocks: [
-      "Techniques de duo",
-      "Traque et odorat",
-      "Mobilité et assauts coordonnés",
-      "Progression du compagnon animal"
+      "Compagnon canin permanent",
+      "Bonus de pistage et de survie",
+      "Jinjū Kongō / Forme Sauvage",
+      "Gatsuga et assauts coordonnés",
+      "Flair, fusion et appel de la meute"
     ],
     narrativeWarnings: [
       "Le compagnon animal doit être géré comme une partie importante du personnage.",
-      "Certaines mécaniques de duo seront consolidées plus tard."
+      "Le Charactomancer devra prévoir une étape dédiée au compagnon Inuzuka.",
+      "Les pouvoirs de duo seront d’abord prévisualisés avant automatisation complète."
     ],
     recommendedBuilds: [
       "Traqueur",
@@ -930,7 +936,7 @@ NARUTO25E.clanCreationData = {
       "Duo offensif",
       "Éclaireur agressif"
     ],
-    previewTags: ["Compagnon", "Traque", "Mobilité", "Duo"]
+    previewTags: ["Clan Inu", "Traque", "Forme Sauvage", "Duo"]
   },
 
   munefuda: {
@@ -1347,27 +1353,43 @@ NARUTO25E.clanLineageFeatures = {
   aburame: [
     {
       rank: 1,
-      label: "Kikaichū — Insectes destructeurs",
+      label: "Esprit de l’Essaim",
       type: "Capacité de lignée",
-      summary: "Le personnage abrite une colonie de Kikaichū et peut allouer une partie de son chakra général à sa réserve d’insectes.",
-      mechanical: "Active la réserve Kikaichū. Minimum : Lignée × 15. Maximum : Lignée × 25.",
+      summary: "Le personnage abrite une colonie de Kikaichū et gagne la compétence clanique Kikaichū dès la création.",
+      mechanical: "Débloque la compétence Kikaichū au niveau 1. Prépare la future réserve Kikaichū et les interactions de chakra des insectes.",
       tags: ["clan", "aburame", "kikaichu", "chakra-reserve"]
     },
     {
       rank: 2,
-      label: "Essaim défensif",
+      label: "Empathie",
       type: "Capacité de lignée",
-      summary: "Les insectes peuvent être employés pour gêner, protéger ou intercepter selon la situation.",
-      mechanical: "Effet détaillé à préciser depuis la lignée Aburame.",
-      tags: ["clan", "aburame", "kikaichu", "defense"]
+      summary: "Les insectes étendent les sens du personnage et servent de relais de perception.",
+      mechanical: "Permet des jets de Vigilance, Sixième Sens ou Sentinelle dans une large zone. Détail exact à automatiser plus tard.",
+      tags: ["clan", "aburame", "kikaichu", "perception"]
     },
     {
       rank: 3,
-      label: "Dévoration de chakra",
-      type: "Capacité de lignée",
-      summary: "Les Kikaichū peuvent drainer ou perturber le chakra adverse.",
-      mechanical: "Effet détaillé à préciser depuis la lignée Aburame.",
-      tags: ["clan", "aburame", "kikaichu", "chakra-drain"]
+      label: "Kaisan — Devenir la Multitude",
+      type: "Pouvoir actif",
+      summary: "Le personnage peut se désunifier en une multitude d’insectes.",
+      mechanical: "Prépare l’état Particules / unification-désunification. Immunités et faiblesses à automatiser plus tard.",
+      tags: ["clan", "aburame", "kikaichu", "particles", "ud"]
+    },
+    {
+      rank: 4,
+      label: "Ruche",
+      type: "Bonus de lignée",
+      summary: "La symbiose avec la colonie renforce le chakra et la stabilité mentale du personnage.",
+      mechanical: "+100 Chakra, +2 Caractère.",
+      tags: ["clan", "aburame", "kikaichu", "chakra", "caractere"]
+    },
+    {
+      rank: 5,
+      label: "Ryūsei — Météore d’Insectes",
+      type: "Technique de lignée",
+      summary: "Le personnage concentre son essaim en une attaque destructrice.",
+      mechanical: "Dégâts de base LIGN × 4, augmentés par dépense de chakra insecte. Automatisation future.",
+      tags: ["clan", "aburame", "kikaichu", "damage"]
     }
   ],
 
@@ -1376,16 +1398,80 @@ NARUTO25E.clanLineageFeatures = {
       rank: 1,
       label: "Byakugan",
       type: "Dōjutsu",
-      summary: "Œil blanc héréditaire du clan Hyūga.",
-      mechanical: "Débloque le Byakugan, la perception du chakra et la base des techniques propres au clan Hyūga.",
+      summary: "Œil blanc héréditaire du clan Hyūga, permettant de voir le chakra et presque tout l’environnement autour du personnage.",
+      mechanical: "Activation à volonté. Coût papier : 10 Chakra, entretien 5 Chakra par tour actif. Zone de vision du chakra : Lignée × 5 m.",
       tags: ["clan", "hyuga", "byakugan", "dojutsu"]
     },
     {
+      rank: 2,
+      label: "Art du Poing Faible",
+      type: "Bonus de lignée",
+      summary: "Le personnage raffine son Jūken grâce à la lecture du chakra offerte par le Byakugan.",
+      mechanical: "Bonus de Lignée à Corps à Corps selon le databook. Condition : Byakugan activé. À adapter plus tard à la compétence Jūken du système.",
+      tags: ["clan", "hyuga", "juken", "taijutsu"]
+    },
+    {
+      rank: 3,
+      label: "Vision Spatiale",
+      type: "Pouvoir actif",
+      summary: "Le Byakugan projette la perception du personnage sur une zone étendue.",
+      mechanical: "Zone papier : 500 m de rayon par point de Lignée. Immunité à la situation Surpris pendant l’activation. Automatisation future.",
+      tags: ["clan", "hyuga", "byakugan", "perception"]
+    },
+    {
+      rank: 4,
+      label: "Intensité Spirituelle",
+      type: "Bonus de lignée",
+      summary: "Le sang Hyūga renforce le corps, l’esprit et la réserve de chakra.",
+      mechanical: "+2 Vigueur, +1 Caractère, +50 Chakra.",
+      tags: ["clan", "hyuga", "vigueur", "caractere", "chakra"]
+    },
+    {
+      rank: 5,
+      label: "Hakke Kūshō — Technique de la Paume Absolue",
+      type: "Technique de lignée",
+      summary: "Le personnage projette une frappe de Jūken à distance.",
+      mechanical: "Condition : jet de Jūken réussi et Byakugan activé. Coût papier : 50 Chakra. Dégâts et portée à automatiser plus tard.",
+      tags: ["clan", "hyuga", "juken", "byakugan", "damage"]
+    },
+    {
+      rank: 6,
+      label: "359 Degrés",
+      type: "Bonus de lignée",
+      summary: "Le personnage exploite presque parfaitement l’angle de vision du Byakugan.",
+      mechanical: "+Lignée Esquive selon le databook. À automatiser plus tard.",
+      tags: ["clan", "hyuga", "byakugan", "defense"]
+    },
+    {
+      rank: 7,
+      label: "Hakke Rokujūyon Shō — Soixante-Quatre Paumes",
+      type: "Technique de lignée",
+      summary: "Le personnage frappe les points de chakra d’une cible et bloque sa circulation interne.",
+      mechanical: "Bloque le chakra et les pouvoirs de lignée actifs des cibles pendant Lignée rounds. Condition : attaque de corps à corps réussie. Automatisation future.",
+      tags: ["clan", "hyuga", "juken", "chakra-block"]
+    },
+    {
+      rank: 8,
+      label: "Force Mystique",
+      type: "Bonus de lignée",
+      summary: "La lignée Hyūga atteint un palier supérieur de puissance interne.",
+      mechanical: "+2 Vigueur, +2 Caractère, +150 Chakra.",
+      tags: ["clan", "hyuga", "vigueur", "caractere", "chakra"]
+    },
+    {
+      rank: 9,
+      label: "Hakkeshō Kaiten — Barrage Tournoyant de Tendō",
+      type: "Technique de lignée",
+      summary: "Le personnage crée une défense tournoyante de chakra repoussant les attaques et les adversaires.",
+      mechanical: "Barrière de rayon Lignée mètres, solidité TAI × 6, repousse hors zone. Automatisation future.",
+      tags: ["clan", "hyuga", "juken", "barrier", "defense"]
+    },
+    {
       rank: 10,
-      label: "Voie du Tenseigan",
-      type: "Prédisposition d’éveil",
-      summary: "Le personnage atteint le sommet de la lignée Hyūga et peut prétendre à un éveil supérieur.",
-      mechanical: "Prépare l’option MJ Tenseigan. L’éveil réel restera conditionné par validation MJ et conditions narratives.",
+      label: "Tenseigan — Œil de la Réincarnation",
+      type: "Dōjutsu supérieur",
+      summary: "Évolution extrêmement rare du Byakugan, réservée aux Hyūga sous validation MJ.",
+      mechanical: "Option MJ rare. Augmente la supervision et permet des interactions télépathiques selon le databook. Éveil réel à cadrer narrativement.",
       tags: ["clan", "hyuga", "tenseigan", "dojutsu", "mj-only"]
     }
   ],
@@ -1436,17 +1522,17 @@ NARUTO25E.clanLineageFeatures = {
   senju: [
     {
       rank: 1,
-      label: "Sève des Mille Mains",
+      label: "Nature Supérieure — Mokuton",
       type: "Capacité de lignée",
-      summary: "Le personnage manifeste la vitalité exceptionnelle du sang Senju et une connexion profonde aux forces naturelles.",
-      mechanical: "Prépare les interactions avec Mokuton, déjà accordé comme compétence obligatoire de clan.",
-      tags: ["clan", "senju", "mokuton", "vitality"]
+      summary: "Le personnage manifeste l’élément Bois, héritage rare du clan Senju.",
+      mechanical: "Débloque la compétence Mokuton. Le databook indique que Suiton et Doton sont nécessaires pour les techniques Mokuton.",
+      tags: ["clan", "senju", "mokuton", "chakra-nature"]
     },
     {
       rank: 2,
       label: "Force Naturelle",
       type: "Bonus de lignée",
-      summary: "Le corps du personnage bénéficie de la vitalité du Mokuton.",
+      summary: "Le corps du personnage bénéficie de la vitalité naturelle du Mokuton.",
       mechanical: "+2 Vigueur, +50 Chakra.",
       tags: ["clan", "senju", "vigueur", "chakra"]
     },
@@ -1454,9 +1540,57 @@ NARUTO25E.clanLineageFeatures = {
       rank: 3,
       label: "Jukai Shirei — Domination Végétale",
       type: "Technique de lignée",
-      summary: "Le personnage manipule le bois et les structures végétales.",
-      mechanical: "Effet détaillé à automatiser plus tard.",
+      summary: "Le personnage manipule les structures végétales et les objets en bois.",
+      mechanical: "Attraction/répulsion du bois, dégâts sur structures et cibles selon jet de Mokuton réussi. Automatisation future.",
       tags: ["clan", "senju", "mokuton", "control"]
+    },
+    {
+      rank: 4,
+      label: "Vague de Chakra",
+      type: "Bonus de lignée",
+      summary: "Le chakra du personnage se manifeste avec une présence imposante.",
+      mechanical: "+Lignée Intimidation.",
+      tags: ["clan", "senju", "chakra", "intimidation"]
+    },
+    {
+      rank: 5,
+      label: "Shichūrō — La Prison aux Quatre Piliers",
+      type: "Technique de lignée",
+      summary: "Le personnage crée une prison de bois drainant le chakra.",
+      mechanical: "Sur jet de Mokuton réussi. Prison avec solidité NIN + Lignée × 2, drain Lignée × 5 Chakra par tour. Automatisation future.",
+      tags: ["clan", "senju", "mokuton", "prison", "chakra-drain"]
+    },
+    {
+      rank: 6,
+      label: "Énergie Mystique",
+      type: "Bonus de lignée",
+      summary: "Le personnage atteint un palier supérieur de vitalité et de force spirituelle.",
+      mechanical: "+2 Vigueur, +2 Caractère, +150 Chakra.",
+      tags: ["clan", "senju", "vigueur", "caractere", "chakra"]
+    },
+    {
+      rank: 7,
+      label: "Jukai Gōhei — Fusion Végétale",
+      type: "Pouvoir actif",
+      summary: "Le personnage transforme son corps en bois et peut absorber les dégâts.",
+      mechanical: "Prépare une unification/désunification végétale. Automatisation future.",
+      tags: ["clan", "senju", "mokuton", "ud", "defense"]
+    },
+    {
+      rank: 8,
+      label: "Piliers Mythiques",
+      type: "Technique de lignée",
+      summary: "Le Mokuton permet de réduire à l’obéissance ou d’immobiliser des créatures mythiques.",
+      mechanical: "Effet contre démons / animaux mythiques selon le databook. Automatisation future.",
+      tags: ["clan", "senju", "mokuton", "mythic", "control"]
+    },
+    {
+      rank: 9,
+      label: "Jukai Heki — Barrière Végétale",
+      type: "Technique de lignée",
+      summary: "Le personnage érige une barrière végétale défensive.",
+      mechanical: "Solidité (LIGN + NIN) × 3. Durée, zone et fréquence à automatiser plus tard.",
+      tags: ["clan", "senju", "mokuton", "barrier", "defense"]
     },
     {
       rank: 10,
@@ -1467,6 +1601,165 @@ NARUTO25E.clanLineageFeatures = {
       tags: ["clan", "senju", "mokuton", "mythic"]
     }
   ],
+
+    kato: [
+    {
+      rank: 1,
+      label: "Yūrengan — Vision Crépusculaire",
+      type: "Dōjutsu",
+      summary: "Le personnage éveille le Yūrengan, dōjutsu du clan Katō lié à Meidō et aux phénomènes surnaturels.",
+      mechanical: "Activation à volonté. Coût papier : 10 Chakra, entretien 5 Chakra par tour actif. Permet de percevoir les manifestations surnaturelles et de distinguer tangible / intangible.",
+      tags: ["clan", "kato", "yurengan", "dojutsu"]
+    },
+    {
+      rank: 2,
+      label: "Forteresse Mentale",
+      type: "Bonus de lignée",
+      summary: "Le sang Katō renforce la stabilité psychique, physique et la réserve de chakra.",
+      mechanical: "+1 Caractère, +1 Vigueur, +50 Chakra.",
+      tags: ["clan", "kato", "caractere", "vigueur", "chakra"]
+    },
+    {
+      rank: 3,
+      label: "Ikiryō — Forme Spectrale",
+      type: "Pouvoir actif",
+      summary: "Le personnage transforme son corps en forme spectrale intangible.",
+      mechanical: "État Éthéré, durée Lignée tours, coût papier 30 Chakra, utilisable Lignée fois par semaine. Automatisation future.",
+      tags: ["clan", "kato", "spectral", "ethereal", "ud"]
+    },
+    {
+      rank: 4,
+      label: "Invisibilité Fantomatique",
+      type: "Bonus de lignée",
+      summary: "Le personnage devient plus difficile à percevoir et à suivre.",
+      mechanical: "+Lignée Camouflage.",
+      tags: ["clan", "kato", "camouflage", "infiltration"]
+    },
+    {
+      rank: 5,
+      label: "Zekkyou — Cri Silencieux",
+      type: "Technique de lignée",
+      summary: "Le personnage projette un cri spirituel inaudible perturbant l’initiative ennemie.",
+      mechanical: "Genjutsu auditif. Effet papier : -3 × GEN Initiative pendant Lignée tours. Automatisation future.",
+      tags: ["clan", "kato", "genjutsu", "meido", "control"]
+    },
+    {
+      rank: 6,
+      label: "Amplificateur",
+      type: "Bonus de lignée",
+      summary: "La forme spectrale du personnage devient plus stable et son chakra augmente.",
+      mechanical: "+100 Chakra. La forme spectrale dure désormais LIGN × 5 tours selon le databook.",
+      tags: ["clan", "kato", "chakra", "spectral"]
+    },
+    {
+      rank: 7,
+      label: "Possession Spectrale",
+      type: "Pouvoir actif",
+      summary: "En forme spectrale, le personnage peut entrer dans le corps d’un individu et contrôler ses facultés motrices.",
+      mechanical: "Durée Lignée tours. Effet sensible à cadrer par le MJ. Automatisation future.",
+      tags: ["clan", "kato", "spectral", "possession", "mj-sensitive"]
+    },
+    {
+      rank: 9,
+      label: "Himei — Cri de la Banshee",
+      type: "Technique de lignée",
+      summary: "Le personnage libère un cri spirituel destructeur, particulièrement efficace contre les créatures des Royaumes Parallèles.",
+      mechanical: "NIN × 4 dégâts, ×2 contre créatures des Royaumes Parallèles. Automatisation future.",
+      tags: ["clan", "kato", "meido", "damage", "banshee"]
+    },
+    {
+      rank: 10,
+      label: "Reika — Transformation Spirituelle",
+      type: "Pouvoir mythique",
+      summary: "Le personnage devient un esprit capable de traverser de grandes distances et de posséder un corps.",
+      mechanical: "Immunité aux attaques pendant l’effet, déplacement Lignée × 100 km par tour, peut utiliser les pouvoirs du Yūrengan. Automatisation future et validation MJ recommandée.",
+      tags: ["clan", "kato", "spirit", "meido", "mythic", "mj-only"]
+    }
+  ],
+
+  inuzuka: [
+    {
+      rank: 1,
+      label: "Gardien du clan Inu",
+      type: "Capacité de lignée",
+      summary: "Le personnage est lié à un compagnon chien-loup du clan Inu.",
+      mechanical: "Compagnon permanent joué conjointement par le PJ et le MJ. Prépare la future étape Charactomancer dédiée au compagnon.",
+      tags: ["clan", "inuzuka", "companion", "inu"]
+    },
+    {
+      rank: 2,
+      label: "Pisteur de Chikushōdō",
+      type: "Bonus de lignée",
+      summary: "Le personnage hérite des instincts de traque du clan Inuzuka.",
+      mechanical: "+Lignée Survie.",
+      tags: ["clan", "inuzuka", "survie", "tracking"]
+    },
+    {
+      rank: 3,
+      label: "Jinjū Kongō — Forme Sauvage",
+      type: "Pouvoir actif",
+      summary: "Le personnage adopte une forme de combat bestiale renforçant sa puissance physique.",
+      mechanical: "+Lignée Physique / dégâts selon le databook. Durée Lignée rounds, fréquence Lignée par semaine. Automatisation future.",
+      tags: ["clan", "inuzuka", "wild-form", "physical"]
+    },
+    {
+      rank: 4,
+      label: "Empathie Animale",
+      type: "Capacité de lignée",
+      summary: "Le personnage communique plus naturellement avec les animaux.",
+      mechanical: "Permet de parler ou donner des ordres aux animaux selon leur niveau et la situation. Automatisation future.",
+      tags: ["clan", "inuzuka", "animal", "communication"]
+    },
+    {
+      rank: 5,
+      label: "Gatsuga — Furie Sauvage",
+      type: "Technique de lignée",
+      summary: "Le personnage lance une attaque tournoyante brutale, souvent en coordination avec son compagnon.",
+      mechanical: "Sur jet de Corps à corps réussi. Dégâts papier : (TAI + COR) × 2. Automatisation future.",
+      tags: ["clan", "inuzuka", "gatsuga", "damage"]
+    },
+    {
+      rank: 6,
+      label: "Flair",
+      type: "Bonus de lignée",
+      summary: "L’odorat du personnage devient un outil de traque exceptionnel.",
+      mechanical: "+Lignée Vigilance.",
+      tags: ["clan", "inuzuka", "flair", "vigilance"]
+    },
+    {
+      rank: 7,
+      label: "Sōtōrō — Loup Monstrueux à Deux Têtes",
+      type: "Pouvoir actif",
+      summary: "Le personnage et son animal fusionnent en une créature gigantesque à deux têtes.",
+      mechanical: "+Lignée Vigueur et Caractère. Effet de terreur / initiative en zone à automatiser plus tard.",
+      tags: ["clan", "inuzuka", "fusion", "beast", "mythic"]
+    },
+    {
+      rank: 8,
+      label: "Crocs & Fourrure",
+      type: "Bonus de lignée",
+      summary: "Le personnage et son compagnon gagnent en robustesse et en puissance interne.",
+      mechanical: "+3 Vigueur, +3 Caractère, +100 Chakra.",
+      tags: ["clan", "inuzuka", "vigueur", "caractere", "chakra"]
+    },
+    {
+      rank: 9,
+      label: "Appeler la Meute",
+      type: "Pouvoir actif",
+      summary: "Le personnage peut rejoindre Chikushōdō avec son animal gardien et emmener d’autres alliés.",
+      mechanical: "Effet de voyage / unification-désunification. Peut emmener Lignée % 3 personnes en plus du compagnon. Automatisation future.",
+      tags: ["clan", "inuzuka", "chikushodo", "travel", "pack"]
+    },
+    {
+      rank: 10,
+      label: "Totem",
+      type: "Pouvoir mythique",
+      summary: "Sommet spirituel et bestial de la lignée Inuzuka.",
+      mechanical: "Effet exact à préciser depuis le databook ou cadrage MJ avant automatisation.",
+      tags: ["clan", "inuzuka", "totem", "mythic", "mj-only"]
+    }
+  ],
+
 
   munefuda: [
     {

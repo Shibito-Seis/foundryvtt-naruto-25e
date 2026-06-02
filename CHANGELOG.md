@@ -2,6 +2,25 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.25.1]
+
+### Modifié
+
+- Consolidation des données de lignée pour les 7 clans de test du futur Charactomancer.
+- Extension de la progression Hyūga avec les rangs Byakugan, Art du Poing Faible, Vision Spatiale, Intensité Spirituelle, Hakke Kūshō, 359 Degrés, Hakke Rokujūyon Shō, Force Mystique, Hakkeshō Kaiten et Tenseigan.
+- Extension de la progression Senju avec les rangs Mokuton, Force Naturelle, Jukai Shirei, Vague de Chakra, Shichūrō, Énergie Mystique, Jukai Gōhei, Piliers Mythiques, Jukai Heki et Jukai Kōtan.
+- Extension de la progression Aburame avec Esprit de l’Essaim, Empathie, Kaisan, Ruche et Ryūsei.
+- Ajout de la progression Katō avec Yūrengan, Forteresse Mentale, Ikiryō, Invisibilité Fantomatique, Zekkyou, Amplificateur, Possession Spectrale, Himei et Reika.
+- Ajout de la progression Inuzuka avec Gardien du clan Inu, Pisteur de Chikushōdō, Forme Sauvage, Empathie Animale, Gatsuga, Flair, Sōtōrō, Crocs & Fourrure, Appeler la Meute et Totem.
+- Mise à jour des données de création Katō et Inuzuka pour mieux préparer leur affichage dans le futur Charactomancer.
+
+### À vérifier plus tard
+
+- Le rang 8 Katō n’a pas été trouvé dans l’extrait exploitable du databook et reste à clarifier avant automatisation complète.
+- Les effets actifs Byakugan, Yūrengan, Sharingan, Forme Sauvage, Kikaichū et autres pouvoirs de lignée devront être transformés en vrais items activables dans une version ultérieure.
+
+---
+
 ## [0.1.25]
 
 ### Ajouté
