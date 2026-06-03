@@ -2,6 +2,50 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.27]
+
+### Ajouté
+
+- Ajout de l’onglet `Effets / États` sur la fiche Shinobi.
+- Ajout de l’onglet `Background` sur la fiche Shinobi.
+- Ajout de champs libres pour :
+  - loyauté ;
+  - doctrine ;
+  - vie quotidienne ;
+  - religion ;
+  - préjugés ;
+  - arcs narratifs / Roue Narrative ;
+  - balance narrative manuelle ;
+  - notes de background.
+- Ajout d’un compendium `Équipements de départ`.
+- Ajout d’un fichier JSON source `equipements-depart.json`.
+- Ajout des premiers items d’équipement de départ :
+  - Kunaï ;
+  - Shuriken ;
+  - Note explosive ;
+  - Pilule du soldat ;
+  - Pilule de chakra mineure ;
+  - Kit de premiers soins ;
+  - Kit de survie ;
+  - Kit technique.
+- Ajout d’avertissements non bloquants dans le résumé de création pour les 7 clans test.
+
+### Modifié
+
+- L’importeur MJ importe désormais aussi les équipements de départ.
+- L’auto-import non destructif peut importer les équipements de départ manquants.
+- Le résumé de création prépare mieux les informations utiles au futur Charactomancer.
+- Le résumé de création affiche désormais les avertissements non bloquants.
+
+### Notes
+
+- La Roue Narrative reste volontairement en version champ libre / balance manuelle.
+- L’attribution automatique de l’équipement de départ est repoussée au Charactomancer.
+- Le bouton de calcul de blessures depuis la carte d’attaque est repoussé à `0.2.1`.
+- Les ActiveEffects Foundry, icônes token, onglet Actions complet, greffes, techniques automatisées et Kagemane/Kage Nui automatisés restent prévus après `0.2.0`.
+
+---
+
 ## [0.1.26.4]
 
 ### Corrigé

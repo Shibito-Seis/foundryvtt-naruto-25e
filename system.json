@@ -2,7 +2,7 @@
   "id": "naruto-25e",
   "title": "Naruto 2.5e",
   "description": "Système maison Naruto 2.5e pour Foundry VTT v13.",
-  "version": "0.1.26.4",
+  "version": "0.1.27",
   "compatibility": {
     "minimum": "13",
     "verified": "13.351"
@@ -110,6 +110,17 @@
       "name": "pouvoirs-lignee",
       "label": "Pouvoirs de lignée",
       "path": "packs/pouvoirs-lignee",
+      "type": "Item",
+      "system": "naruto-25e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "equipements-depart",
+      "label": "Équipements de départ",
+      "path": "packs/equipements-depart",
       "type": "Item",
       "system": "naruto-25e",
       "ownership": {

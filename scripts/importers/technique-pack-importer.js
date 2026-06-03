@@ -20,6 +20,13 @@ const LINEAGE_POWER_SOURCES = [
   }
 ];
 
+const STARTING_EQUIPMENT_SOURCES = [
+  {
+    pack: "naruto-25e.equipements-depart",
+    path: "systems/naruto-25e/data/equipements/equipements-depart.json"
+  }
+];
+
 function getTechniqueDefaults() {
   return {
     type: "technique",
@@ -110,6 +117,32 @@ function normalizeLineagePowerData(data) {
   );
 }
 
+function getStartingEquipmentDefaults() {
+  return {
+    type: "equipement",
+    img: "icons/svg/item-bag.svg",
+    system: {
+      description: "",
+      quantity: 1,
+      value: 0,
+      weight: 0
+    }
+  };
+}
+
+function normalizeStartingEquipmentData(data) {
+  return foundry.utils.mergeObject(
+    getStartingEquipmentDefaults(),
+    data,
+    {
+      inplace: false,
+      overwrite: true,
+      insertKeys: true,
+      insertValues: true
+    }
+  );
+}
+
 async function readTechniqueSource(source) {
   const response = await fetch(source.path);
 
@@ -166,6 +199,11 @@ export async function importNaruto25eTechniquePacks(options = {}) {
       ...source,
       label: "pouvoir de lignée",
       normalize: normalizeLineagePowerData
+    })),
+    ...STARTING_EQUIPMENT_SOURCES.map((source) => ({
+      ...source,
+      label: "équipement de départ",
+      normalize: normalizeStartingEquipmentData
     }))
   ];
 
@@ -233,6 +271,11 @@ export async function autoImportMissingNaruto25eDataPacks(options = {}) {
       ...source,
       label: "pouvoir de lignée",
       normalize: normalizeLineagePowerData
+    })),
+    ...STARTING_EQUIPMENT_SOURCES.map((source) => ({
+      ...source,
+      label: "équipement de départ",
+      normalize: normalizeStartingEquipmentData
     }))
   ];
 
@@ -315,7 +358,8 @@ export class Naruto25eTechniqueImportApplication extends FormApplication {
 
     context.sources = [
       ...TECHNIQUE_SOURCES,
-      ...LINEAGE_POWER_SOURCES
+      ...LINEAGE_POWER_SOURCES,
+      ...STARTING_EQUIPMENT_SOURCES
     ].map((source) => ({
       pack: source.pack,
       path: source.path

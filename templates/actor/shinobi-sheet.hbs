@@ -46,6 +46,8 @@
 
   <nav class="sheet-tabs tabs" data-group="primary">
   <a class="item" data-tab="summary">Résumé</a>
+  <a class="item" data-tab="background">Background</a>
+  <a class="item" data-tab="effects">Effets / États</a>
   <a class="item" data-tab="combat">Combat / Actions</a>
   <a class="item" data-tab="chakra">Chakra</a>
   <a class="item" data-tab="inventory">Inventaire</a>
@@ -135,6 +137,16 @@
                 <ul>
                   {{#each creationValidation.errors as |error|}}
                     <li>{{error}}</li>
+                  {{/each}}
+                </ul>
+              </div>
+            {{/if}}
+            {{#if creationValidation.warnings.length}}
+              <div class="creation-warnings">
+                <strong>Avertissements</strong>
+                <ul>
+                  {{#each creationValidation.warnings as |warning|}}
+                    <li>{{warning}}</li>
                   {{/each}}
                 </ul>
               </div>
@@ -520,6 +532,267 @@
         </section>
 
       </div>
+    </div>
+
+    <div class="tab" data-group="primary" data-tab="background">
+      <section class="panel">
+        <h2>Background</h2>
+
+        <div class="summary-grid">
+          <section class="panel">
+            <h3>Nindō narratif</h3>
+
+            <label>
+              Nom personnalisé
+              <input
+                name="system.nindo.custom.name"
+                type="text"
+                value="{{system.nindo.custom.name}}"
+                placeholder="Nom du Nindō personnalisé"
+                {{#unless permissionsState.canEditNindo}}disabled{{/unless}}
+              />
+            </label>
+
+            <label>
+              Description du Nindō
+              <textarea
+                name="system.nindo.custom.description"
+                {{#unless permissionsState.canEditNindo}}disabled{{/unless}}
+              >{{system.nindo.custom.description}}</textarea>
+            </label>
+
+            <p class="formula-hint">
+              Le Nindō décrit la voie intérieure du personnage. Les points et charges restent gérés dans la fiche comme auparavant.
+            </p>
+          </section>
+
+          <section class="panel">
+            <h3>Identité narrative</h3>
+
+            <label>
+              Loyauté
+              <textarea name="system.identity.loyalty" placeholder="Village, clan, équipe, idéaux...">{{system.identity.loyalty}}</textarea>
+            </label>
+
+            <label>
+              Doctrine
+              <textarea name="system.identity.doctrine" placeholder="Vision du devoir ninja, discipline, morale...">{{system.identity.doctrine}}</textarea>
+            </label>
+
+            <label>
+              Vie quotidienne
+              <textarea name="system.identity.dailyLife" placeholder="Habitudes, loisirs, famille, réputation...">{{system.identity.dailyLife}}</textarea>
+            </label>
+
+            <label>
+              Religion / croyances
+              <textarea name="system.identity.religion" placeholder="Croyances, superstitions, respect des kami, ancêtres...">{{system.identity.religion}}</textarea>
+            </label>
+
+            <label>
+              Préjugés
+              <textarea name="system.identity.prejudices" placeholder="Méfiances, biais culturels, rivalités...">{{system.identity.prejudices}}</textarea>
+            </label>
+          </section>
+        </div>
+
+        <section class="panel">
+          <h3>Roue Narrative / Arcs narratifs</h3>
+
+          <label>
+            Arcs narratifs
+            <textarea
+              name="system.background.narrativeWheel.arcs"
+              placeholder="Arcs claniques, personnels, héroïques, dramatiques..."
+            >{{system.background.narrativeWheel.arcs}}</textarea>
+          </label>
+
+          <label>
+            Balance narrative manuelle
+            <input
+              name="system.background.narrativeWheel.balance"
+              type="number"
+              value="{{system.background.narrativeWheel.balance}}"
+            />
+          </label>
+
+          <label>
+            Notes de Roue Narrative
+            <textarea name="system.background.narrativeWheel.notes">{{system.background.narrativeWheel.notes}}</textarea>
+          </label>
+
+          <p class="formula-hint">
+            Version préparatoire : la Roue Narrative complète sera affinée après le Charactomancer.
+          </p>
+        </section>
+
+        <section class="panel">
+          <h3>Notes de background</h3>
+          <textarea name="system.background.notes">{{system.background.notes}}</textarea>
+        </section>
+      </section>
+    </div>
+
+    <div class="tab" data-group="primary" data-tab="effects">
+      <section class="panel">
+        <h2>Effets / États</h2>
+
+        <div class="summary-grid">
+          <section class="panel">
+            <h3>Pouvoirs de lignée actifs</h3>
+
+            {{#if lineagePowerItems.length}}
+              {{#each lineagePowerItems as |power|}}
+                {{#if power.active}}
+                  <div class="naruto-lineage-power-row is-active">
+                    <div>
+                      <strong>{{power.name}}</strong>
+                      <span>{{power.typeLabel}}</span>
+                      {{#if power.effect}}
+                        <p class="formula-hint">{{power.effect}}</p>
+                      {{/if}}
+                    </div>
+                  </div>
+                {{/if}}
+              {{/each}}
+            {{else}}
+              <p class="muted">Aucun pouvoir de lignée possédé.</p>
+            {{/if}}
+
+            <hr />
+
+            <div class="combat-resource-line">
+              <strong>Entretien total</strong>
+              <span>{{lineageMaintenanceSummary.totalMaintenance}}</span>
+            </div>
+
+            <div class="combat-resource-line">
+              <strong>Régénération passive</strong>
+              <span>-{{lineageMaintenanceSummary.passiveRegen}}</span>
+            </div>
+
+            <div class="combat-resource-line">
+              <strong>Coût net prochain tour</strong>
+              <span>{{lineageMaintenanceSummary.netCost}}</span>
+            </div>
+
+            <div class="combat-resource-line">
+              <strong>Chakra après entretien</strong>
+              <span>{{lineageMaintenanceSummary.nextChakra}}</span>
+            </div>
+
+            {{#if lineageMaintenanceSummary.crossesCriticalThreshold}}
+              <p class="warning-text">
+                Attention : l’entretien risque de franchir un seuil critique de Chakra.
+              </p>
+            {{/if}}
+          </section>
+
+          <section class="panel">
+            <h3>Pouvoirs de lignée passifs</h3>
+
+            {{#if lineagePowerItems.length}}
+              {{#each lineagePowerItems as |power|}}
+                {{#if power.isPassive}}
+                  <div class="naruto-lineage-power-row is-passive">
+                    <div>
+                      <strong>{{power.name}}</strong>
+                      <span>Passif</span>
+                      {{#if power.effect}}
+                        <p class="formula-hint">{{power.effect}}</p>
+                      {{/if}}
+                    </div>
+                  </div>
+                {{/if}}
+              {{/each}}
+            {{else}}
+              <p class="muted">Aucun pouvoir passif.</p>
+            {{/if}}
+          </section>
+        </div>
+
+        <section class="panel">
+          <h3>États de combat</h3>
+
+          <div class="combat-resource-line">
+            <strong>État manuel</strong>
+            <span>{{combatSummary.manualStateLabel}}</span>
+          </div>
+
+          <div class="combat-resource-line {{#if combatSummary.hasChakraAlert}}chakra-alert{{/if}}">
+            <strong>État Chakra</strong>
+            <span>{{combatSummary.chakraStateLabel}}</span>
+          </div>
+
+          <label>
+            Conditions
+            <textarea name="system.combat.health.conditions">{{system.combat.health.conditions}}</textarea>
+          </label>
+
+          <label>
+            Aggravations
+            <textarea name="system.combat.health.aggravations">{{system.combat.health.aggravations}}</textarea>
+          </label>
+
+          <label>
+            Faiblesses
+            <textarea name="system.combat.health.weaknesses">{{system.combat.health.weaknesses}}</textarea>
+          </label>
+
+          <label>
+            Notes de combat / blessures
+            <textarea name="system.combat.health.notes">{{system.combat.health.notes}}</textarea>
+          </label>
+        </section>
+
+        {{#if heritageState.hasUchihaLineage}}
+          <section class="panel">
+            <h3>Santé oculaire Uchiha</h3>
+
+            <div class="summary-grid">
+              <div class="combat-resource-line">
+                <strong>Œil droit</strong>
+                <span>{{heritageState.mangekyo.rightEyeStateLabel}}</span>
+              </div>
+
+              <div class="combat-resource-line">
+                <strong>Pouvoir œil droit</strong>
+                <span>{{heritageState.mangekyo.rightEyePowerLabel}}</span>
+              </div>
+
+              <div class="combat-resource-line">
+                <strong>Œil gauche</strong>
+                <span>{{heritageState.mangekyo.leftEyeStateLabel}}</span>
+              </div>
+
+              <div class="combat-resource-line">
+                <strong>Pouvoir œil gauche</strong>
+                <span>{{heritageState.mangekyo.leftEyePowerLabel}}</span>
+              </div>
+            </div>
+
+            <div class="combat-resource-line">
+              <strong>Utilisations Mangekyō</strong>
+              <span>{{heritageState.mangekyo.uses}}</span>
+            </div>
+
+            <div class="combat-resource-line">
+              <strong>Palier</strong>
+              <span>{{heritageState.mangekyo.usageState.thresholdLabel}}</span>
+            </div>
+
+            {{#if heritageState.mangekyo.usageState.warning}}
+              <p class="warning-text">
+                {{heritageState.mangekyo.usageState.warning}}
+              </p>
+            {{/if}}
+
+            <p class="formula-hint">
+              Les réglages détaillés des yeux restent dans l’onglet Lignée.
+            </p>
+          </section>
+        {{/if}}
+      </section>
     </div>
 
     <div class="tab" data-group="primary" data-tab="combat">

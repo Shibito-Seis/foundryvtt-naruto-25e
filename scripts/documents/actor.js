@@ -21,6 +21,7 @@ export class Naruto25eActor extends Actor {
     this._prepareExperience(system);
     this._prepareMissions(system);
     this._prepareNindo(system);
+    this._prepareBackground(system);
     this._prepareRankProgression(system);
   }
 
@@ -336,6 +337,57 @@ export class Naruto25eActor extends Actor {
       if (secondaryAffinity) {
         const label = NARUTO25E.chakraAffinities?.[secondaryAffinity]?.label ?? secondaryAffinity;
         affinityLabels.push(`${label} secondaire`);
+      }
+
+            const addWarning = (message) => {
+        if (!warnings.includes(message)) warnings.push(message);
+      };
+
+      if (mode === "clan" || mode === "hybridClan" || mode === "hybridVoie") {
+        const mainClanKey = clanKey;
+        const secondaryKey = secondaryClanKey;
+
+        const hasClan = (key) => mainClanKey === key || secondaryKey === key;
+
+        if (hasClan("uchiha")) {
+          addWarning("Uchiha : les pouvoirs du Mangekyō peuvent nécessiter une validation MJ, une santé oculaire suivie et des choix d’œil cohérents.");
+        }
+
+        if (hasClan("senju")) {
+          addWarning("Senju : Mokuton impose Doton et Suiton comme affinités de lignée. Le joueur devra tenir compte de cette contrainte dans ses compétences initiales.");
+        }
+
+        if (hasClan("aburame")) {
+          addWarning("Aburame : une part du Chakra brut est allouée aux Kikaichū. Un faible COR/ESP peut fortement réduire le Chakra général disponible.");
+        }
+
+        if (hasClan("nara")) {
+          addWarning("Nara : Pouvoir des Ombres est un passif. Kagemane et Kage Nui seront traités plus tard comme techniques de clan.");
+        }
+
+        if (hasClan("hyuga")) {
+          addWarning("Hyūga : Jūken et Byakugan structurent fortement le style de combat. Les greffes et cas particuliers seront gérés plus tard.");
+        }
+
+        if (hasClan("kato")) {
+          addWarning("Katō : Yūrengan est disponible, mais les pouvoirs avancés spirituels seront détaillés progressivement.");
+        }
+
+        if (hasClan("inuzuka")) {
+          addWarning("Inuzuka : le compagnon ou gardien canin est préparé comme passif, mais la fiche compagnon complète viendra plus tard.");
+        }
+      }
+
+      if (xpAvailable > 0) {
+        addWarning(`Il reste ${xpAvailable} XP disponible(s) à la création.`);
+      }
+
+      if (initialSkillsUsed === maxInitialSkills) {
+        addWarning("Les compétences initiales sont au maximum autorisé.");
+      }
+
+      if (initialSkillsUsed === maxInitialSkills - 1) {
+        addWarning("Il ne reste qu’une compétence initiale disponible.");
       }
 
       return {
@@ -969,6 +1021,23 @@ _prepareExperience(system) {
 
       nindo.unlockedByGM = Boolean(nindo.unlockedByGM);
     }
+
+  _prepareBackground(system) {
+    system.identity = system.identity ?? {};
+    system.identity.loyalty = system.identity.loyalty ?? "";
+    system.identity.doctrine = system.identity.doctrine ?? "";
+    system.identity.dailyLife = system.identity.dailyLife ?? "";
+    system.identity.religion = system.identity.religion ?? "";
+    system.identity.prejudices = system.identity.prejudices ?? "";
+
+    system.background = system.background ?? {};
+    system.background.notes = system.background.notes ?? "";
+
+    system.background.narrativeWheel = system.background.narrativeWheel ?? {};
+    system.background.narrativeWheel.arcs = system.background.narrativeWheel.arcs ?? "";
+    system.background.narrativeWheel.balance = Number(system.background.narrativeWheel.balance ?? 0);
+    system.background.narrativeWheel.notes = system.background.narrativeWheel.notes ?? "";
+  }
 
   _clampNumber(value, min, max) {
     const number = Number(value ?? 0);

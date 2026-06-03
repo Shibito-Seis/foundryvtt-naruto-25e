@@ -8,7 +8,12 @@
           "village": "",
           "clan": "",
           "rang": "aspirant",
-          "nindoText": ""
+          "nindoText": "",
+          "loyalty": "",
+          "doctrine": "",
+          "dailyLife": "",
+          "religion": "",
+          "prejudices": ""
         },
         "heritage": {
           "mode": "clan",
@@ -279,6 +284,14 @@
             }
           },
           "unlockedByGM": false
+        },
+        "background": {
+          "narrativeWheel": {
+            "arcs": "",
+            "balance": 0,
+            "notes": ""
+            },
+          "notes": ""
         },
         "inventory": {
           "ryo": 0,
