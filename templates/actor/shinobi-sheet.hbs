@@ -542,27 +542,15 @@
           <section class="panel">
             <h3>Nindō narratif</h3>
 
-            <label>
-              Nom personnalisé
-              <input
-                name="system.nindo.custom.name"
-                type="text"
-                value="{{system.nindo.custom.name}}"
-                placeholder="Nom du Nindō personnalisé"
-                {{#unless permissionsState.canEditNindo}}disabled{{/unless}}
-              />
-            </label>
+            <div class="combat-resource-line">
+              <strong>Nindō actuel</strong>
+              <span>{{nindoDisplay.name}}</span>
+            </div>
 
-            <label>
-              Description du Nindō
-              <textarea
-                name="system.nindo.custom.description"
-                {{#unless permissionsState.canEditNindo}}disabled{{/unless}}
-              >{{system.nindo.custom.description}}</textarea>
-            </label>
+            <p>{{nindoDisplay.description}}</p>
 
             <p class="formula-hint">
-              Le Nindō décrit la voie intérieure du personnage. Les points et charges restent gérés dans la fiche comme auparavant.
+              Le Nindō se modifie depuis le bloc Nindō principal de l’onglet Résumé. Ce rappel est en lecture seule pour éviter les doublons de formulaire.
             </p>
           </section>
 
@@ -724,25 +712,29 @@
             <span>{{combatSummary.chakraStateLabel}}</span>
           </div>
 
-          <label>
-            Conditions
-            <textarea name="system.combat.health.conditions">{{system.combat.health.conditions}}</textarea>
-          </label>
+          <div class="combat-resource-line">
+            <strong>Conditions</strong>
+            <span>{{system.combat.health.conditions}}</span>
+          </div>
 
-          <label>
-            Aggravations
-            <textarea name="system.combat.health.aggravations">{{system.combat.health.aggravations}}</textarea>
-          </label>
+          <div class="combat-resource-line">
+            <strong>Aggravations</strong>
+            <span>{{system.combat.health.aggravations}}</span>
+          </div>
 
-          <label>
-            Faiblesses
-            <textarea name="system.combat.health.weaknesses">{{system.combat.health.weaknesses}}</textarea>
-          </label>
+          <div class="combat-resource-line">
+            <strong>Faiblesses</strong>
+            <span>{{system.combat.health.weaknesses}}</span>
+          </div>
 
-          <label>
-            Notes de combat / blessures
-            <textarea name="system.combat.health.notes">{{system.combat.health.notes}}</textarea>
-          </label>
+          <div class="combat-resource-line">
+            <strong>Notes de combat / blessures</strong>
+            <span>{{system.combat.health.notes}}</span>
+          </div>
+
+          <p class="formula-hint">
+            Ces champs se modifient depuis l’onglet Combat / Actions. Cet onglet affiche seulement le résumé des états.
+          </p>
         </section>
 
         {{#if heritageState.hasUchihaLineage}}

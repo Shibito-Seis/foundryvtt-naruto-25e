@@ -2,6 +2,22 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.27.1]
+
+### Corrigé
+
+- Correction d’un bug où certains champs texte se remplissaient progressivement de virgules.
+- Suppression des doublons de champs éditables dans plusieurs onglets de la fiche.
+- Le bloc Nindō de l’onglet Background devient un rappel en lecture seule.
+- Les conditions, aggravations, faiblesses et notes de combat affichées dans `Effets / États` deviennent un résumé en lecture seule.
+
+### Notes
+
+- Les champs Nindō restent modifiables depuis le bloc Nindō principal.
+- Les champs d’états de combat restent modifiables depuis l’onglet Combat / Actions.
+
+---
+
 ## [0.1.27]
 
 ### Ajouté
