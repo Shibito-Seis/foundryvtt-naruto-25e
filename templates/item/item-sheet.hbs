@@ -362,9 +362,15 @@
               </div>
 
               {{#if isEmbeddedInActor}}
-                <button type="button" class="lineage-power-toggle">
-                  {{#if isLineagePowerActive}}Désactiver{{else}}Activer{{/if}} le pouvoir
-                </button>
+                {{#if (eq system.powerType "passive")}}
+                  <p class="formula-hint">
+                    Ce pouvoir est passif : il ne s’active pas et ne consomme pas d’utilisation de lignée.
+                  </p>
+                {{else}}
+                  <button type="button" class="lineage-power-toggle">
+                    {{#if isLineagePowerActive}}Désactiver{{else}}Activer{{/if}} le pouvoir
+                  </button>
+                {{/if}}
               {{else}}
                 <p class="formula-hint">
                   Ce pouvoir doit être possédé par un acteur pour être activé.

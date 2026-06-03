@@ -125,24 +125,24 @@
       }
     }
   },
-  {
-    "name": "Affinité aux ombres",
-    "type": "pouvoirLignee",
-    "img": "icons/magic/unholy/silhouette-robe-evil-power.webp",
-    "system": {
-      "description": "Le clan Nara possède une affinité naturelle avec la manipulation des ombres. Ce pouvoir représente le socle héréditaire nécessaire aux techniques Kage.",
-      "clan": "nara",
-      "lineageRank": 1,
-      "powerType": "passive",
-      "activationCost": 0,
-      "maintenanceCost": 0,
-      "effect": "Pouvoir passif. Sert de socle aux futures techniques de manipulation des ombres du clan Nara.",
-      "prerequisites": {
-        "text": "Clan Nara. Lignée 1 requise.",
-        "gmValidation": false
-      }
+{
+  "name": "Pouvoir des Ombres",
+  "type": "pouvoirLignee",
+  "img": "icons/magic/unholy/silhouette-robe-evil-power.webp",
+  "system": {
+    "description": "Le clan Nara possède une affinité héréditaire avec la manipulation des ombres. Ce pouvoir passif représente le socle naturel nécessaire aux techniques Kage du clan.",
+    "clan": "nara",
+    "lineageRank": 1,
+    "powerType": "passive",
+    "activationCost": 0,
+    "maintenanceCost": 0,
+    "effect": "Pouvoir passif. Ne s’active pas, ne consomme pas d’utilisation de lignée et sert de prérequis narratif aux futures techniques Kage comme Kagemane et Kage Nui.",
+    "prerequisites": {
+      "text": "Clan Nara. Lignée 1 requise.",
+      "gmValidation": false
     }
-  },
+  }
+},
   {
     "name": "Gardien du clan Inu",
     "type": "pouvoirLignee",

@@ -688,6 +688,7 @@ export class Naruto25eActor extends Actor {
         powerType: "maintained",
         activationCost: 0,
         maintenanceCost: 0,
+        consumesLineageUse: true,
         effect: "",
         prerequisites: {
           text: "",
@@ -3120,8 +3121,8 @@ async decreaseBase(baseKey) {
 
       if (clanKey === "nara" && lineageValue >= 1) {
         definitions.push({
-          key: "nara-ombres",
-          name: "Affinité aux ombres",
+          key: "nara-pouvoir-des-ombres",
+          name: "Pouvoir des Ombres",
           clan: "nara",
           minRank: 1
         });
@@ -3152,6 +3153,7 @@ async decreaseBase(baseKey) {
       "Yūrengan",
       "Kikaichū — Colonie symbiotique",
       "Affinité aux ombres",
+      "Pouvoir des Ombres",
       "Gardien du clan Inu"
     ]);
   }
@@ -3207,40 +3209,85 @@ async decreaseBase(baseKey) {
       }
     }
 
-    const currentNames = new Set(
-      this.items
-        .filter((item) => item.type === "pouvoirLignee")
-        .map((item) => item.name)
-    );
+  const currentPowerItems = this.items.filter((item) => item.type === "pouvoirLignee");
+  const currentNames = new Set(currentPowerItems.map((item) => item.name));
 
-    const documentsToCreate = [];
+  const documentsToCreate = [];
+  const documentsToUpdate = [];
+  const passivePowerIdsToDeactivate = new Set();
 
-    for (const definition of desiredDefinitions) {
-      if (currentNames.has(definition.name)) continue;
+  for (const definition of desiredDefinitions) {
+    const sourceData = await this._getLineagePowerSourceData(definition.name);
+    if (!sourceData) continue;
 
-      const sourceData = await this._getLineagePowerSourceData(definition.name);
-      if (!sourceData) continue;
+    sourceData.flags = foundry.utils.mergeObject(sourceData.flags ?? {}, {
+      "naruto-25e": {
+        autoLineagePower: true,
+        lineagePowerKey: definition.key,
+        lineagePowerClan: definition.clan
+      }
+    }, {
+      inplace: false
+    });
 
-      sourceData.flags = foundry.utils.mergeObject(sourceData.flags ?? {}, {
-        "naruto-25e": {
-          autoLineagePower: true,
-          lineagePowerKey: definition.key,
-          lineagePowerClan: definition.clan
-        }
-      }, {
-        inplace: false
+    const existingItem = currentPowerItems.find((item) => item.name === definition.name);
+
+    if (existingItem) {
+      documentsToUpdate.push({
+        _id: existingItem.id,
+        img: sourceData.img,
+        "system.description": sourceData.system?.description ?? "",
+        "system.clan": sourceData.system?.clan ?? "",
+        "system.lineageRank": Math.max(1, Number(sourceData.system?.lineageRank ?? 1)),
+        "system.powerType": sourceData.system?.powerType ?? "maintained",
+        "system.activationCost": Math.max(0, Number(sourceData.system?.activationCost ?? 0)),
+        "system.maintenanceCost": Math.max(0, Number(sourceData.system?.maintenanceCost ?? 0)),
+        "system.consumesLineageUse": sourceData.system?.powerType !== "passive",
+        "system.effect": sourceData.system?.effect ?? "",
+        "system.prerequisites": sourceData.system?.prerequisites ?? {
+          text: "",
+          gmValidation: false
+        },
+        flags: sourceData.flags
       });
 
-      documentsToCreate.push(sourceData);
+      if (sourceData.system?.powerType === "passive") {
+        passivePowerIdsToDeactivate.add(existingItem.id);
+      }
+
+      continue;
     }
 
-    if (documentsToCreate.length > 0) {
-      await this.createEmbeddedDocuments("Item", documentsToCreate);
-    }
+    sourceData.system = sourceData.system ?? {};
+    sourceData.system.consumesLineageUse = sourceData.system.powerType !== "passive";
 
-    if (notify && (itemsToDelete.length > 0 || documentsToCreate.length > 0)) {
-      ui.notifications.info(`${this.name} : pouvoirs de lignée synchronisés.`);
+    documentsToCreate.push(sourceData);
+  }
+
+  if (documentsToUpdate.length > 0) {
+    await this.updateEmbeddedDocuments("Item", documentsToUpdate);
+  }
+
+  if (documentsToCreate.length > 0) {
+    await this.createEmbeddedDocuments("Item", documentsToCreate);
+  }
+
+  if (passivePowerIdsToDeactivate.size > 0) {
+    const activePowers = this._getActiveLineagePowers();
+    const remainingActivePowers = activePowers.filter((power) => {
+      return !passivePowerIdsToDeactivate.has(power.itemId);
+    });
+
+    if (remainingActivePowers.length !== activePowers.length) {
+      await this.update({
+        "system.resources.activeLineagePowers": remainingActivePowers
+      });
     }
+  }
+
+  if (notify && (itemsToDelete.length > 0 || documentsToCreate.length > 0 || documentsToUpdate.length > 0)) {
+    ui.notifications.info(`${this.name} : pouvoirs de lignée synchronisés.`);
+  }
   }
 
     isLineagePowerActive(itemOrId) {
@@ -3277,6 +3324,13 @@ async decreaseBase(baseKey) {
 
     if (this.isLineagePowerActive(item)) {
       ui.notifications.info(`${item.name} est déjà actif.`);
+      return;
+    }
+
+    const powerType = item.system?.powerType ?? "maintained";
+
+    if (powerType === "passive") {
+      ui.notifications.info(`${item.name} est un pouvoir passif et ne s’active pas.`);
       return;
     }
 

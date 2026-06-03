@@ -94,6 +94,11 @@ export class Naruto25eItem extends Item {
             return;
         }
 
+        if ((this.system.powerType ?? "maintained") === "passive") {
+            ui.notifications.info(`${this.name} est un pouvoir passif et ne s’active pas.`);
+            return;
+        }
+
         if (actor.isLineagePowerActive(this)) {
             await actor.deactivateLineagePower(this.id);
             return;

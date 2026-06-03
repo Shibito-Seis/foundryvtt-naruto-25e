@@ -30,14 +30,26 @@ export class Naruto25eShinobiSheet extends ActorSheet {
 
   context.lineagePowerItems = this.actor.items
     .filter((item) => item.type === "pouvoirLignee")
-    .map((item) => ({
-      id: item.id,
-      name: item.name,
-      activationCost: Number(item.system.activationCost ?? 0),
-      maintenanceCost: Number(item.system.maintenanceCost ?? 0),
-      powerType: item.system.powerType ?? "maintained",
-      active: activeLineagePowers.some((power) => power.itemId === item.id)
-    }));
+    .map((item) => {
+      const powerType = item.system.powerType ?? "maintained";
+
+      return {
+        id: item.id,
+        name: item.name,
+        activationCost: Number(item.system.activationCost ?? 0),
+        maintenanceCost: Number(item.system.maintenanceCost ?? 0),
+        powerType,
+        isPassive: powerType === "passive",
+        isActivable: powerType !== "passive",
+        typeLabel: powerType === "passive"
+          ? "Passif"
+          : powerType === "maintained"
+          ? "Maintenu"
+          : "Activable",
+          effect: item.system.effect ?? "",
+          active: activeLineagePowers.some((power) => power.itemId === item.id)
+      };
+    });
 
   context.hasLineagePowerItems = context.lineagePowerItems.length > 0;
 

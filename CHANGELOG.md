@@ -2,9 +2,34 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.26.4]
+
+### Corrigé
+
+- Correction du cas Nara : le pouvoir de rang 1 est désormais traité comme un passif de socle.
+- Renommage du pouvoir Nara `Affinité aux ombres` en `Pouvoir des Ombres`, plus conforme au databook.
+- Les pouvoirs de lignée passifs ne peuvent plus être activés ou désactivés.
+- Les pouvoirs de lignée passifs ne consomment plus d’utilisation de lignée.
+- Les pouvoirs de lignée passifs ne sont plus ajoutés aux pouvoirs maintenus actifs.
+
+### Modifié
+
+- La synchronisation automatique des pouvoirs de lignée met désormais à jour les pouvoirs déjà présents sur l’acteur lorsque les données source ont changé.
+- Les anciens pouvoirs automatiques obsolètes peuvent être retirés ou resynchronisés proprement.
+- L’affichage des pouvoirs de lignée distingue désormais les passifs des pouvoirs activables/maintenus.
+
+### Notes
+
+- Kagemane et Kage Nui ne sont pas encore automatisés : ils seront traités plus tard comme techniques de clan Nara actives.
+- Mokuton reste une nature/compétence de chakra supérieure et ne consomme pas d’utilisation de lignée.
+- Les techniques de clan classiques ne consomment pas automatiquement d’utilisation de lignée.
+
+---
+
 ## [0.1.26.3]
 
 ### Corrigé
+
 - Correction du compteur de pouvoirs de lignée : la dépense d’une utilisation reste désormais correctement affichée et conservée après recalcul de la fiche.
 - Stabilisation de la persistance des valeurs base/bonus/max du compteur de lignée lors d’une dépense.
 

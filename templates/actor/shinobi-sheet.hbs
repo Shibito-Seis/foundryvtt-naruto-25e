@@ -1975,22 +1975,37 @@
         {{#if hasLineagePowerItems}}
           <div class="naruto-lineage-power-list">
             {{#each lineagePowerItems as |power|}}
-              <div class="naruto-lineage-power-row {{#if power.active}}is-active{{/if}}">
+              <div class="naruto-lineage-power-row {{#if power.active}}is-active{{/if}} {{#if power.isPassive}}is-passive{{/if}}">
                 <div>
                   <strong>{{power.name}}</strong>
-                  <span>
-                    Activation {{power.activationCost}} —
-                    Entretien {{power.maintenanceCost}} / tour
-                  </span>
+
+                  {{#if power.isPassive}}
+                    <span>
+                      Passif — ne consomme pas d’utilisation de lignée.
+                    </span>
+                  {{else}}
+                    <span>
+                      Activation {{power.activationCost}} —
+                      Entretien {{power.maintenanceCost}} / tour
+                    </span>
+                  {{/if}}
+
+                  {{#if power.effect}}
+                    <p class="formula-hint">{{power.effect}}</p>
+                  {{/if}}
                 </div>
 
-                <button
-                  type="button"
-                  class="lineage-power-toggle"
-                  data-item-id="{{power.id}}"
-                >
-                  {{#if power.active}}Désactiver{{else}}Activer{{/if}}
-                </button>
+                {{#if power.isActivable}}
+                  <button
+                    type="button"
+                    class="lineage-power-toggle"
+                    data-item-id="{{power.id}}"
+                  >
+                    {{#if power.active}}Désactiver{{else}}Activer{{/if}}
+                  </button>
+                {{else}}
+                  <span class="tag">Passif</span>
+                {{/if}}
               </div>
             {{/each}}
           </div>
