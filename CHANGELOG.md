@@ -2,6 +2,43 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.28]
+
+### Ajouté
+
+- Ajout d’une pré-version visuelle du `Shinobimancer`.
+- Ajout d’une grande fenêtre d’accueil de création avec choix entre :
+  - utiliser le Shinobimancer ;
+  - ouvrir la fiche manuelle.
+- Ajout d’une première fenêtre Shinobimancer avec :
+  - barre latérale verticale d’étapes ;
+  - panneau central ;
+  - résumé permanent à droite ;
+  - première étape `Identité`.
+- Ajout des templates :
+  - `templates/apps/shinobimancer-choice.hbs` ;
+  - `templates/apps/shinobimancer.hbs`.
+- Ajout du script dédié :
+  - `scripts/apps/shinobimancer.js`.
+- Ajout du style dédié :
+  - `styles/shinobimancer.css`.
+- Ajout des commandes de test :
+  - `game.naruto25e.openShinobimancerChoice(actor)` ;
+  - `game.naruto25e.openShinobimancer(actor)`.
+
+### Modifié
+
+- Le manifeste charge désormais le CSS dédié du Shinobimancer.
+- À l’ouverture d’un Shinobi non validé, la fiche peut proposer le choix entre Shinobimancer et fiche manuelle.
+
+### Notes
+
+- Cette version sert de support de maquette graphique.
+- Le Shinobimancer n’est pas encore un assistant de création complet.
+- Les étapes suivantes, la sauvegarde progressive, l’attribution d’équipement et la validation finale restent prévues pour la vraie `0.2.0`.
+
+---
+
 ## [0.1.27.1]
 
 ### Corrigé

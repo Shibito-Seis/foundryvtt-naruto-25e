@@ -1,0 +1,96 @@
+<section class="shinobimancer-shell shinobimancer-choice">
+  <header class="shinobimancer-hero">
+    <div class="shinobimancer-hero-seal">
+      <i class="fa-solid fa-leaf"></i>
+    </div>
+
+    <div class="shinobimancer-hero-content">
+      <p class="shinobimancer-kicker">Académie Ninja de Konoha</p>
+      <h1>Création du Shinobi</h1>
+      <p>
+        Le dossier de <strong>{{actorName}}</strong> est encore en préparation.
+        Choisis une méthode de création pour poursuivre.
+      </p>
+    </div>
+
+    <div class="shinobimancer-hero-portrait">
+      <img src="{{actorImg}}" alt="{{actorName}}" />
+    </div>
+  </header>
+
+  <main class="shinobimancer-choice-layout">
+    <section class="shinobimancer-choice-intro">
+      <div class="shinobimancer-document-stamp">
+        <span>Pré-version</span>
+        <strong>0.1.28</strong>
+      </div>
+
+      <h2>Mode de création</h2>
+      <p>
+        Cette fenêtre sert de première maquette intégrée à Foundry.
+        Elle doit permettre de comparer la création guidée et la fiche manuelle,
+        tout en posant l’ambiance visuelle du futur Shinobimancer.
+      </p>
+
+      <div class="shinobimancer-notice is-info">
+        <strong>Note de développement</strong>
+        <span>
+          L’écran est volontairement grand : il est pensé comme une vraie page d’accueil,
+          pas comme un simple pop-up de confirmation.
+        </span>
+      </div>
+    </section>
+
+    <section class="shinobimancer-choice-cards">
+      {{#each choiceCards as |card|}}
+        <article class="shinobimancer-choice-card {{#if card.recommended}}is-recommended{{/if}}">
+          <div class="shinobimancer-card-icon">
+            <i class="{{card.icon}}"></i>
+          </div>
+
+          <p class="shinobimancer-card-eyebrow">{{card.eyebrow}}</p>
+          <h2>{{card.title}}</h2>
+          <p>{{card.text}}</p>
+
+          {{#if card.recommended}}
+            <div class="shinobimancer-card-badge">
+              Recommandé pour la maquette
+            </div>
+          {{/if}}
+
+          {{#if (eq card.key "shinobimancer")}}
+            <button type="button" class="shinobimancer-button is-primary shinobimancer-choice-start">
+              <i class="fa-solid fa-scroll"></i>
+              {{card.buttonLabel}}
+            </button>
+          {{else}}
+            <button type="button" class="shinobimancer-button is-secondary shinobimancer-choice-manual">
+              <i class="fa-solid fa-pen-nib"></i>
+              {{card.buttonLabel}}
+            </button>
+          {{/if}}
+        </article>
+      {{/each}}
+    </section>
+  </main>
+
+  <footer class="shinobimancer-footer">
+    <div>
+      <strong>État du dossier :</strong>
+      {{#if creationLocked}}
+        Création déjà validée
+      {{else}}
+        Brouillon non validé
+      {{/if}}
+    </div>
+
+    <div>
+      <strong>Contrôle actuel :</strong>
+      {{#if creationValidation.valid}}
+        conforme
+      {{else}}
+        à compléter
+      {{/if}}
+    </div>
+  </footer>
+</section>

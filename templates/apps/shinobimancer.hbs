@@ -1,0 +1,193 @@
+<section class="shinobimancer-shell shinobimancer-main">
+  <header class="shinobimancer-topbar">
+    <div>
+      <p class="shinobimancer-kicker">Dossier officiel de Shinobi</p>
+      <h1>Shinobimancer</h1>
+    </div>
+
+    <div class="shinobimancer-topbar-actor">
+      <img src="{{actorImg}}" alt="{{actorName}}" />
+      <div>
+        <strong>{{actorName}}</strong>
+        <span>Création guidée</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="shinobimancer-layout">
+    <aside class="shinobimancer-sidebar">
+      <div class="shinobimancer-binding-title">
+        <span>Étapes</span>
+      </div>
+
+      <nav class="shinobimancer-step-list">
+        {{#each steps as |step|}}
+          <div class="shinobimancer-step {{step.cssClass}}" data-step="{{step.key}}">
+            <div class="shinobimancer-step-seal">
+              {{step.number}}
+            </div>
+
+            <div class="shinobimancer-step-text">
+              <strong>{{step.shortLabel}}</strong>
+              <span>{{step.description}}</span>
+            </div>
+          </div>
+        {{/each}}
+      </nav>
+    </aside>
+
+    <main class="shinobimancer-content">
+      <section class="shinobimancer-page-header">
+        <p class="shinobimancer-kicker">Étape {{activeStep.number}}</p>
+        <h2>{{activeStep.label}}</h2>
+        <p>{{activeStep.description}}</p>
+      </section>
+
+      {{#if (eq currentStep "identity")}}
+        <section class="shinobimancer-panel shinobimancer-identity-panel">
+          <div class="shinobimancer-panel-heading">
+            <div>
+              <p class="shinobimancer-kicker">Registre d’identité</p>
+              <h3>Premiers éléments du dossier</h3>
+            </div>
+
+            <span class="shinobimancer-status-pill">
+              Maquette visuelle
+            </span>
+          </div>
+
+          <div class="shinobimancer-identity-grid">
+            <div class="shinobimancer-portrait-card">
+              <img src="{{actorImg}}" alt="{{actorName}}" />
+              <button type="button" class="shinobimancer-button is-secondary shinobimancer-open-sheet">
+                Modifier depuis la fiche
+              </button>
+            </div>
+
+            <div class="shinobimancer-form-preview">
+              <label>
+                Nom du personnage
+                <input type="text" value="{{identity.name}}" readonly />
+              </label>
+
+              <label>
+                Prénom(s)
+                <input type="text" value="{{identity.prenom}}" readonly />
+              </label>
+
+              <label>
+                Rang de départ
+                <input type="text" value="{{identity.rank}}" readonly />
+              </label>
+
+              <label>
+                Notes rapides
+                <textarea readonly>{{identity.notes}}</textarea>
+              </label>
+            </div>
+          </div>
+
+          <div class="shinobimancer-notice-list">
+            {{#each previewNotices as |notice|}}
+              <div class="shinobimancer-notice is-{{notice.type}}">
+                <strong>{{notice.title}}</strong>
+                <span>{{notice.text}}</span>
+              </div>
+            {{/each}}
+          </div>
+        </section>
+      {{/if}}
+    </main>
+
+    <aside class="shinobimancer-summary">
+      <div class="shinobimancer-summary-header">
+        <p class="shinobimancer-kicker">Résumé permanent</p>
+        <h3>Dossier actuel</h3>
+      </div>
+
+      <div class="shinobimancer-summary-portrait">
+        <img src="{{actorImg}}" alt="{{actorName}}" />
+        <strong>{{actorName}}</strong>
+      </div>
+
+      <dl class="shinobimancer-summary-list">
+        <div>
+          <dt>Village</dt>
+          <dd>{{summaryPanel.village}}</dd>
+        </div>
+
+        <div>
+          <dt>Statut</dt>
+          <dd>{{summaryPanel.status}}</dd>
+        </div>
+
+        <div>
+          <dt>Héritage</dt>
+          <dd>{{summaryPanel.heritage}}</dd>
+        </div>
+
+        <div>
+          <dt>Type</dt>
+          <dd>{{summaryPanel.heritageMode}}</dd>
+        </div>
+
+        <div>
+          <dt>Compétences</dt>
+          <dd>
+            {{summaryPanel.initialSkillsUsed}} / {{summaryPanel.maxInitialSkills}}
+            — restantes : {{summaryPanel.initialSkillsRemaining}}
+          </dd>
+        </div>
+
+        <div>
+          <dt>XP disponible</dt>
+          <dd>{{summaryPanel.xpAvailable}}</dd>
+        </div>
+      </dl>
+
+      <div class="shinobimancer-affinity-tags">
+        <strong>Affinités</strong>
+        <div>
+          {{#each summaryPanel.affinities as |affinity|}}
+            <span>{{affinity}}</span>
+          {{/each}}
+        </div>
+      </div>
+
+      <div class="shinobimancer-validation-state {{#if summaryPanel.valid}}is-valid{{else}}is-invalid{{/if}}">
+        {{#if summaryPanel.valid}}
+          <strong>Dossier conforme</strong>
+          <span>Aucune erreur bloquante détectée.</span>
+        {{else}}
+          <strong>Dossier à compléter</strong>
+          <span>
+            {{summaryPanel.errorCount}} erreur(s),
+            {{summaryPanel.warningCount}} avertissement(s).
+          </span>
+        {{/if}}
+      </div>
+    </aside>
+  </div>
+
+  <footer class="shinobimancer-footer">
+    <button type="button" class="shinobimancer-button is-secondary shinobimancer-previous-step">
+      <i class="fa-solid fa-arrow-left"></i>
+      Retour
+    </button>
+
+    <div class="shinobimancer-footer-note">
+      Pré-version visuelle : navigation complète à venir.
+    </div>
+
+    <div class="shinobimancer-footer-actions">
+      <button type="button" class="shinobimancer-button is-secondary shinobimancer-close">
+        Fermer
+      </button>
+
+      <button type="button" class="shinobimancer-button is-primary shinobimancer-next-step">
+        Suivant
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </div>
+  </footer>
+</section>

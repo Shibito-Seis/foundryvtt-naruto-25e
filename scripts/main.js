@@ -7,6 +7,10 @@ import {
   importNaruto25eTechniquePacks,
   Naruto25eTechniqueImportApplication
 } from "./importers/technique-pack-importer.js";
+import {
+  Naruto25eShinobimancerApplication,
+  Naruto25eShinobimancerChoiceApplication
+} from "./apps/shinobimancer.js";
 
 Hooks.once("init", async function () {
   console.log("Naruto 2.5e | Initialisation du système");
@@ -195,7 +199,23 @@ Hooks.once("init", async function () {
   game.naruto25e = foundry.utils.mergeObject(game.naruto25e ?? {}, {
     autoImportMissingDataPacks: autoImportMissingNaruto25eDataPacks,
     importTechniquePacks: importNaruto25eTechniquePacks,
-    openTechniqueImporter: () => new Naruto25eTechniqueImportApplication().render(true)
+    openTechniqueImporter: () => new Naruto25eTechniqueImportApplication().render(true),
+    openShinobimancerChoice: (actor, options = {}) => {
+      if (!actor || actor.type !== "shinobi") {
+        ui.notifications.warn("Sélectionne un acteur Shinobi pour ouvrir le Shinobimancer.");
+        return null;
+      }
+
+      return new Naruto25eShinobimancerChoiceApplication(actor, options).render(true);
+    },
+    openShinobimancer: (actor, options = {}) => {
+      if (!actor || actor.type !== "shinobi") {
+        ui.notifications.warn("Sélectionne un acteur Shinobi pour ouvrir le Shinobimancer.");
+        return null;
+      }
+
+      return new Naruto25eShinobimancerApplication(actor, options).render(true);
+    }
   }, {
     inplace: false
   });

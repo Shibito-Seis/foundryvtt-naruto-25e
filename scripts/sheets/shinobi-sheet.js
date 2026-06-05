@@ -1,4 +1,6 @@
 import { NARUTO25E } from "../config.js";
+import { Naruto25eShinobimancerChoiceApplication } from "../apps/shinobimancer.js";
+
 export class Naruto25eShinobiSheet extends ActorSheet {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -18,6 +20,47 @@ export class Naruto25eShinobiSheet extends ActorSheet {
 
   get title() {
     return `${this.actor.name} — Shinobi`;
+  }
+
+  _maybeOpenShinobimancerChoice() {
+    if (!this.actor || this.actor.type !== "shinobi") return;
+
+    const creationLocked = typeof this.actor.isCreationLocked === "function"
+      ? this.actor.isCreationLocked()
+      : Boolean(this.actor.system?.progression?.creation?.locked);
+
+    if (creationLocked) return;
+
+    if (!this.actor.isOwner && !game.user?.isGM) return;
+
+    if (!Naruto25eShinobiSheet._shinobimancerPromptedActors) {
+      Naruto25eShinobiSheet._shinobimancerPromptedActors = new Set();
+    }
+
+    const promptKey = `${game.user?.id ?? "unknown"}:${this.actor.id}`;
+
+    if (Naruto25eShinobiSheet._shinobimancerPromptedActors.has(promptKey)) {
+      return;
+    }
+
+    Naruto25eShinobiSheet._shinobimancerPromptedActors.add(promptKey);
+
+    window.setTimeout(() => {
+      if (!this.rendered) return;
+
+      const opener = game.naruto25e?.openShinobimancerChoice;
+
+      if (typeof opener === "function") {
+        opener(this.actor, {
+          sourceSheet: this
+        });
+        return;
+      }
+
+      new Naruto25eShinobimancerChoiceApplication(this.actor, {
+        sourceSheet: this
+      }).render(true);
+    }, 150);
   }
 
   async getData(options = {}) {
@@ -1091,6 +1134,8 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
 
   activateListeners(html) {
   super.activateListeners(html);
+
+  this._maybeOpenShinobimancerChoice();
 
   if (!this.isEditable) return;
 

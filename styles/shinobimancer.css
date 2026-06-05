@@ -1,0 +1,656 @@
+/* ----------------------------------------- */
+/* Naruto 2.5e — Shinobimancer              */
+/* Pré-version visuelle 0.1.28               */
+/* ----------------------------------------- */
+
+.naruto-25e.shinobimancer.window-app .window-content {
+  padding: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top left, rgba(130, 36, 24, 0.16), transparent 34rem),
+    linear-gradient(135deg, #efe0bd 0%, #d8bf8d 48%, #b9925a 100%);
+}
+
+.shinobimancer-shell {
+  --shinobi-ink: #24170f;
+  --shinobi-muted: rgba(36, 23, 15, 0.72);
+  --shinobi-paper: rgba(255, 247, 221, 0.78);
+  --shinobi-paper-strong: rgba(255, 248, 226, 0.92);
+  --shinobi-border: rgba(58, 35, 20, 0.42);
+  --shinobi-red: #842719;
+  --shinobi-red-dark: #4c1710;
+  --shinobi-gold: #b8873b;
+  --shinobi-amber: #a76518;
+  --shinobi-green: #35633c;
+  --shinobi-blue: #2f5368;
+
+  min-height: 620px;
+  color: var(--shinobi-ink);
+  font-family: var(--font-primary);
+  background:
+    linear-gradient(90deg, rgba(83, 46, 25, 0.18), transparent 18%),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.09) 0,
+      rgba(255, 255, 255, 0.09) 1px,
+      transparent 1px,
+      transparent 7px
+    );
+}
+
+.shinobimancer-shell h1,
+.shinobimancer-shell h2,
+.shinobimancer-shell h3,
+.shinobimancer-shell p {
+  margin-top: 0;
+}
+
+.shinobimancer-kicker {
+  margin: 0 0 0.25rem;
+  color: var(--shinobi-red-dark);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.shinobimancer-button {
+  display: inline-flex;
+  gap: 0.45rem;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.35rem;
+  padding: 0.45rem 0.85rem;
+  border: 1px solid var(--shinobi-border);
+  border-radius: 0.35rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+
+.shinobimancer-button.is-primary {
+  color: #fff7e0;
+  border-color: rgba(50, 12, 8, 0.75);
+  background: linear-gradient(180deg, #9c3322, #5b1b13);
+}
+
+.shinobimancer-button.is-secondary {
+  color: var(--shinobi-ink);
+  background: rgba(255, 245, 218, 0.68);
+}
+
+.shinobimancer-button:hover {
+  filter: brightness(1.06);
+}
+
+.shinobimancer-hero {
+  display: grid;
+  grid-template-columns: 6rem 1fr 8.5rem;
+  gap: 1rem;
+  align-items: center;
+  padding: 1.35rem 1.5rem;
+  border-bottom: 2px solid rgba(58, 35, 20, 0.36);
+  background:
+    linear-gradient(90deg, rgba(60, 25, 16, 0.16), transparent 40%),
+    rgba(255, 248, 226, 0.42);
+}
+
+.shinobimancer-hero-seal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.8rem;
+  height: 4.8rem;
+  border: 3px double rgba(96, 20, 14, 0.78);
+  border-radius: 50%;
+  color: var(--shinobi-red);
+  background: rgba(255, 247, 221, 0.52);
+  font-size: 2rem;
+  transform: rotate(-8deg);
+}
+
+.shinobimancer-hero-content h1,
+.shinobimancer-topbar h1 {
+  margin: 0;
+  font-size: 2.2rem;
+  letter-spacing: 0.02em;
+}
+
+.shinobimancer-hero-content p {
+  margin-bottom: 0;
+  color: var(--shinobi-muted);
+}
+
+.shinobimancer-hero-portrait {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.shinobimancer-hero-portrait img,
+.shinobimancer-topbar-actor img,
+.shinobimancer-summary-portrait img,
+.shinobimancer-portrait-card img {
+  object-fit: cover;
+  border: 2px solid rgba(58, 35, 20, 0.58);
+  background: rgba(255, 248, 226, 0.7);
+}
+
+.shinobimancer-hero-portrait img {
+  width: 6.5rem;
+  height: 6.5rem;
+}
+
+.shinobimancer-choice-layout {
+  display: grid;
+  grid-template-columns: minmax(17rem, 0.85fr) minmax(30rem, 1.55fr);
+  gap: 1rem;
+  padding: 1.35rem;
+}
+
+.shinobimancer-choice-intro,
+.shinobimancer-choice-card,
+.shinobimancer-panel,
+.shinobimancer-summary {
+  border: 1px solid var(--shinobi-border);
+  background: var(--shinobi-paper);
+  box-shadow: 0 0.45rem 1.25rem rgba(37, 20, 10, 0.16);
+}
+
+.shinobimancer-choice-intro {
+  position: relative;
+  padding: 1.2rem;
+}
+
+.shinobimancer-document-stamp {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 0.45rem 0.8rem;
+  border: 2px solid rgba(132, 39, 25, 0.7);
+  color: var(--shinobi-red-dark);
+  text-transform: uppercase;
+  transform: rotate(-4deg);
+}
+
+.shinobimancer-document-stamp span {
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.shinobimancer-document-stamp strong {
+  font-size: 1.15rem;
+}
+
+.shinobimancer-choice-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(14rem, 1fr));
+  gap: 1rem;
+}
+
+.shinobimancer-choice-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 24rem;
+  padding: 1.25rem;
+}
+
+.shinobimancer-choice-card.is-recommended {
+  border-color: rgba(132, 39, 25, 0.74);
+  background:
+    linear-gradient(180deg, rgba(132, 39, 25, 0.08), transparent 42%),
+    var(--shinobi-paper-strong);
+}
+
+.shinobimancer-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.2rem;
+  height: 3.2rem;
+  margin-bottom: 1rem;
+  border: 2px double rgba(58, 35, 20, 0.5);
+  border-radius: 50%;
+  color: var(--shinobi-red);
+  font-size: 1.35rem;
+}
+
+.shinobimancer-card-eyebrow {
+  margin: 0 0 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--shinobi-muted);
+}
+
+.shinobimancer-card-badge {
+  display: inline-flex;
+  width: fit-content;
+  margin-top: auto;
+  margin-bottom: 0.9rem;
+  padding: 0.25rem 0.55rem;
+  border: 1px solid rgba(132, 39, 25, 0.55);
+  border-radius: 999px;
+  color: var(--shinobi-red-dark);
+  background: rgba(132, 39, 25, 0.08);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.shinobimancer-choice-card .shinobimancer-button {
+  margin-top: auto;
+}
+
+.shinobimancer-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 2px solid rgba(58, 35, 20, 0.36);
+  background: rgba(255, 248, 226, 0.42);
+}
+
+.shinobimancer-topbar-actor {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid var(--shinobi-border);
+  background: rgba(255, 248, 226, 0.48);
+}
+
+.shinobimancer-topbar-actor img {
+  width: 3.1rem;
+  height: 3.1rem;
+}
+
+.shinobimancer-topbar-actor span {
+  display: block;
+  color: var(--shinobi-muted);
+  font-size: 0.78rem;
+}
+
+.shinobimancer-layout {
+  display: grid;
+  grid-template-columns: 15rem minmax(28rem, 1fr) 16rem;
+  min-height: 31rem;
+}
+
+.shinobimancer-sidebar {
+  position: relative;
+  padding: 1rem 0.75rem;
+  border-right: 2px solid rgba(58, 35, 20, 0.36);
+  background:
+    linear-gradient(90deg, rgba(65, 30, 16, 0.22), rgba(255, 248, 226, 0.26)),
+    rgba(97, 55, 31, 0.16);
+}
+
+.shinobimancer-sidebar::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 1.05rem;
+  width: 0.45rem;
+  border-inline: 1px solid rgba(58, 35, 20, 0.26);
+  background: rgba(92, 44, 23, 0.22);
+}
+
+.shinobimancer-binding-title {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 0.8rem;
+  padding-left: 1.35rem;
+  color: var(--shinobi-red-dark);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.shinobimancer-step-list {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.shinobimancer-step {
+  display: grid;
+  grid-template-columns: 2.15rem 1fr;
+  gap: 0.55rem;
+  align-items: center;
+  padding: 0.45rem;
+  border: 1px solid transparent;
+  border-radius: 0.35rem;
+  opacity: 0.62;
+}
+
+.shinobimancer-step.is-active {
+  border-color: rgba(132, 39, 25, 0.62);
+  background: rgba(255, 248, 226, 0.68);
+  opacity: 1;
+}
+
+.shinobimancer-step.is-complete {
+  opacity: 0.86;
+}
+
+.shinobimancer-step.is-locked {
+  filter: grayscale(0.35);
+}
+
+.shinobimancer-step-seal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.05rem;
+  height: 2.05rem;
+  border: 2px solid rgba(58, 35, 20, 0.48);
+  border-radius: 50%;
+  background: rgba(255, 248, 226, 0.64);
+  font-weight: 800;
+}
+
+.shinobimancer-step.is-active .shinobimancer-step-seal {
+  color: #fff7e0;
+  border-color: rgba(60, 12, 8, 0.84);
+  background: var(--shinobi-red);
+}
+
+.shinobimancer-step-text strong {
+  display: block;
+  font-size: 0.86rem;
+}
+
+.shinobimancer-step-text span {
+  display: block;
+  color: var(--shinobi-muted);
+  font-size: 0.72rem;
+  line-height: 1.2;
+}
+
+.shinobimancer-content {
+  padding: 1rem;
+  background: rgba(255, 248, 226, 0.24);
+}
+
+.shinobimancer-page-header {
+  margin-bottom: 0.8rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--shinobi-border);
+  background: rgba(255, 248, 226, 0.55);
+}
+
+.shinobimancer-page-header h2 {
+  margin-bottom: 0.25rem;
+  font-size: 1.55rem;
+}
+
+.shinobimancer-page-header p {
+  margin-bottom: 0;
+  color: var(--shinobi-muted);
+}
+
+.shinobimancer-panel {
+  padding: 1rem;
+}
+
+.shinobimancer-panel-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(58, 35, 20, 0.24);
+  padding-bottom: 0.65rem;
+}
+
+.shinobimancer-panel-heading h3 {
+  margin-bottom: 0;
+}
+
+.shinobimancer-status-pill {
+  padding: 0.25rem 0.55rem;
+  border: 1px solid rgba(47, 83, 104, 0.55);
+  border-radius: 999px;
+  color: var(--shinobi-blue);
+  background: rgba(47, 83, 104, 0.09);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.shinobimancer-identity-grid {
+  display: grid;
+  grid-template-columns: 12rem 1fr;
+  gap: 1rem;
+}
+
+.shinobimancer-portrait-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.shinobimancer-portrait-card img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+}
+
+.shinobimancer-form-preview {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(11rem, 1fr));
+  gap: 0.75rem;
+}
+
+.shinobimancer-form-preview label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-weight: 700;
+}
+
+.shinobimancer-form-preview input,
+.shinobimancer-form-preview textarea {
+  width: 100%;
+  border: 1px solid rgba(58, 35, 20, 0.38);
+  background: rgba(255, 250, 235, 0.62);
+}
+
+.shinobimancer-form-preview textarea {
+  grid-column: 1 / -1;
+  min-height: 5.5rem;
+  resize: vertical;
+}
+
+.shinobimancer-notice-list {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 1rem;
+}
+
+.shinobimancer-notice {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.6rem 0.75rem;
+  border-left: 4px solid var(--shinobi-blue);
+  background: rgba(47, 83, 104, 0.08);
+}
+
+.shinobimancer-notice.is-warning {
+  border-left-color: var(--shinobi-amber);
+  background: rgba(167, 101, 24, 0.1);
+}
+
+.shinobimancer-notice.is-info {
+  border-left-color: var(--shinobi-blue);
+  background: rgba(47, 83, 104, 0.08);
+}
+
+.shinobimancer-notice.is-error {
+  border-left-color: var(--shinobi-red);
+  background: rgba(132, 39, 25, 0.1);
+}
+
+.shinobimancer-notice strong {
+  display: block;
+}
+
+.shinobimancer-notice span {
+  color: var(--shinobi-muted);
+}
+
+.shinobimancer-summary {
+  padding: 1rem;
+  border-width: 0 0 0 2px;
+  border-top: 0;
+  border-right: 0;
+  border-bottom: 0;
+  box-shadow: none;
+  background: rgba(255, 248, 226, 0.58);
+}
+
+.shinobimancer-summary-header h3 {
+  margin-bottom: 0.75rem;
+}
+
+.shinobimancer-summary-portrait {
+  display: grid;
+  justify-items: center;
+  gap: 0.45rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  border: 1px solid var(--shinobi-border);
+  background: rgba(255, 248, 226, 0.52);
+}
+
+.shinobimancer-summary-portrait img {
+  width: 5.4rem;
+  height: 5.4rem;
+  border-radius: 50%;
+}
+
+.shinobimancer-summary-list {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+}
+
+.shinobimancer-summary-list div {
+  padding-bottom: 0.45rem;
+  border-bottom: 1px solid rgba(58, 35, 20, 0.18);
+}
+
+.shinobimancer-summary-list dt {
+  color: var(--shinobi-muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.shinobimancer-summary-list dd {
+  margin: 0.12rem 0 0;
+  font-weight: 700;
+}
+
+.shinobimancer-affinity-tags {
+  margin-top: 0.9rem;
+}
+
+.shinobimancer-affinity-tags > strong {
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.shinobimancer-affinity-tags div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.shinobimancer-affinity-tags span {
+  padding: 0.2rem 0.45rem;
+  border: 1px solid rgba(58, 35, 20, 0.32);
+  border-radius: 999px;
+  background: rgba(255, 248, 226, 0.58);
+  font-size: 0.78rem;
+}
+
+.shinobimancer-validation-state {
+  display: grid;
+  gap: 0.2rem;
+  margin-top: 1rem;
+  padding: 0.65rem;
+  border: 1px solid rgba(58, 35, 20, 0.35);
+}
+
+.shinobimancer-validation-state.is-valid {
+  border-color: rgba(53, 99, 60, 0.58);
+  background: rgba(53, 99, 60, 0.08);
+}
+
+.shinobimancer-validation-state.is-invalid {
+  border-color: rgba(132, 39, 25, 0.58);
+  background: rgba(132, 39, 25, 0.08);
+}
+
+.shinobimancer-validation-state span {
+  color: var(--shinobi-muted);
+  font-size: 0.82rem;
+}
+
+.shinobimancer-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 3.7rem;
+  padding: 0.8rem 1rem;
+  border-top: 2px solid rgba(58, 35, 20, 0.36);
+  background: rgba(255, 248, 226, 0.42);
+}
+
+.shinobimancer-footer-note {
+  color: var(--shinobi-muted);
+  font-size: 0.82rem;
+  text-align: center;
+}
+
+.shinobimancer-footer-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+@media (max-width: 980px) {
+  .shinobimancer-choice-layout,
+  .shinobimancer-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .shinobimancer-sidebar {
+    border-right: 0;
+    border-bottom: 2px solid rgba(58, 35, 20, 0.36);
+  }
+
+  .shinobimancer-step-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  }
+
+  .shinobimancer-summary {
+    border-left: 0;
+    border-top: 2px solid rgba(58, 35, 20, 0.36);
+  }
+
+  .shinobimancer-choice-cards,
+  .shinobimancer-identity-grid,
+  .shinobimancer-form-preview {
+    grid-template-columns: 1fr;
+  }
+}
