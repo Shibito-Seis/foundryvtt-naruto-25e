@@ -22,16 +22,16 @@
 
       <nav class="shinobimancer-step-list">
         {{#each steps as |step|}}
-          <div class="shinobimancer-step {{step.cssClass}}" data-step="{{step.key}}">
-            <div class="shinobimancer-step-seal">
+          <button type="button" class="shinobimancer-step {{step.cssClass}}" data-step="{{step.key}}">
+            <span class="shinobimancer-step-seal">
               {{step.number}}
-            </div>
+            </span>
 
-            <div class="shinobimancer-step-text">
+            <span class="shinobimancer-step-text">
               <strong>{{step.shortLabel}}</strong>
               <span>{{step.description}}</span>
-            </div>
-          </div>
+            </span>
+          </button>
         {{/each}}
       </nav>
     </aside>
@@ -51,9 +51,7 @@
               <h3>Premiers éléments du dossier</h3>
             </div>
 
-            <span class="shinobimancer-status-pill">
-              Maquette visuelle
-            </span>
+            <span class="shinobimancer-status-pill">Maquette visuelle</span>
           </div>
 
           <div class="shinobimancer-identity-grid">
@@ -64,7 +62,7 @@
               </button>
             </div>
 
-            <div class="shinobimancer-form-preview">
+            <div class="shinobimancer-form-preview shinobimancer-form-preview-large">
               <label>
                 Nom du personnage
                 <input type="text" value="{{identity.name}}" readonly />
@@ -76,13 +74,58 @@
               </label>
 
               <label>
+                Âge
+                <input type="text" value="{{identity.age}}" readonly placeholder="À renseigner" />
+              </label>
+
+              <label>
+                Naissance
+                <input type="text" value="{{identity.birth}}" readonly placeholder="À renseigner" />
+              </label>
+
+              <label>
+                Sexe
+                <input type="text" value="{{identity.sex}}" readonly placeholder="À renseigner" />
+              </label>
+
+              <label>
                 Rang de départ
                 <input type="text" value="{{identity.rank}}" readonly />
               </label>
 
               <label>
-                Notes rapides
-                <textarea readonly>{{identity.notes}}</textarea>
+                Taille
+                <input type="text" value="{{identity.height}}" readonly placeholder="À renseigner" />
+              </label>
+
+              <label>
+                Poids
+                <input type="text" value="{{identity.weight}}" readonly placeholder="À renseigner" />
+              </label>
+
+              <label>
+                Cheveux
+                <input type="text" value="{{identity.hair}}" readonly placeholder="À renseigner" />
+              </label>
+
+              <label>
+                Yeux
+                <input type="text" value="{{identity.eyes}}" readonly placeholder="À renseigner" />
+              </label>
+
+              <label>
+                Sensei
+                <input type="text" value="{{identity.sensei}}" readonly placeholder="À renseigner" />
+              </label>
+
+              <label>
+                Équipe
+                <input type="text" value="{{identity.team}}" readonly placeholder="À renseigner" />
+              </label>
+
+              <label class="is-wide">
+                Nindō
+                <textarea readonly placeholder="Le Nindō sera renseigné depuis la fiche ou une étape dédiée ultérieure.">{{identity.nindo}}</textarea>
               </label>
             </div>
           </div>
@@ -94,6 +137,435 @@
                 <span>{{notice.text}}</span>
               </div>
             {{/each}}
+          </div>
+        </section>
+      {{/if}}
+
+      {{#if (eq currentStep "village")}}
+        <section class="shinobimancer-panel">
+          <div class="shinobimancer-panel-heading">
+            <div>
+              <p class="shinobimancer-kicker">Registre du village</p>
+              <h3>Choix du village d’origine</h3>
+            </div>
+
+            <span class="shinobimancer-status-pill">Prévisualisation</span>
+          </div>
+
+          <div class="shinobimancer-card-grid">
+            {{#each villageCards as |village|}}
+              <article class="shinobimancer-data-card {{#if village.selected}}is-selected{{/if}} {{#unless village.selectable}}is-disabled{{/unless}}">
+                <div class="shinobimancer-card-emblem">
+                  {{#if village.selectable}}
+                    <i class="fa-solid fa-leaf"></i>
+                  {{else}}
+                    <i class="fa-solid fa-lock"></i>
+                  {{/if}}
+                </div>
+
+                <div>
+                  <p class="shinobimancer-card-eyebrow">{{village.status}}</p>
+                  <h4>{{village.label}}</h4>
+                  <p>{{village.description}}</p>
+                </div>
+              </article>
+            {{/each}}
+          </div>
+
+          <div class="shinobimancer-notice is-info">
+            <strong>Note de maquette</strong>
+            <span>Konoha reste le village disponible pour la phase de test. Les autres villages sont affichés pour préparer l’extension future.</span>
+          </div>
+        </section>
+      {{/if}}
+
+      {{#if (eq currentStep "heritage")}}
+        <section class="shinobimancer-panel">
+          <div class="shinobimancer-panel-heading">
+            <div>
+              <p class="shinobimancer-kicker">Origine shinobi</p>
+              <h3>Type d’héritage</h3>
+            </div>
+
+            <span class="shinobimancer-status-pill">Choix fondateur</span>
+          </div>
+
+          <div class="shinobimancer-card-grid is-two-columns">
+            {{#each heritageModeCards as |mode|}}
+              <article class="shinobimancer-data-card {{#if mode.selected}}is-selected{{/if}}">
+                <div class="shinobimancer-card-emblem">
+                  <i class="fa-solid fa-scroll"></i>
+                </div>
+
+                <div>
+                  <p class="shinobimancer-card-eyebrow">{{#if mode.available}}Disponible{{else}}Verrouillé{{/if}}</p>
+                  <h4>{{mode.label}}</h4>
+                  <p>{{mode.description}}</p>
+                  <span class="shinobimancer-mini-note">{{mode.note}}</span>
+                </div>
+              </article>
+            {{/each}}
+          </div>
+
+          <div class="shinobimancer-notice is-warning">
+            <strong>Validation MJ</strong>
+            <span>Les modes hybrides sont visibles pour la maquette, mais restent à encadrer mécaniquement dans une version ultérieure.</span>
+          </div>
+        </section>
+      {{/if}}
+
+      {{#if (eq currentStep "clan")}}
+        <section class="shinobimancer-panel">
+          <div class="shinobimancer-panel-heading">
+            <div>
+              <p class="shinobimancer-kicker">Registre des clans</p>
+              <h3>Clans de test du Shinobimancer</h3>
+            </div>
+
+            <span class="shinobimancer-status-pill">7 clans initiaux</span>
+          </div>
+
+          <div class="shinobimancer-clan-grid">
+            {{#each clanCards as |clan|}}
+              <article class="shinobimancer-clan-card {{#if clan.selected}}is-selected{{/if}}">
+                <div class="shinobimancer-clan-emblem">{{clan.emblem}}</div>
+
+                <div class="shinobimancer-clan-body">
+                  <p class="shinobimancer-card-eyebrow">{{clan.village}} · {{clan.skillLabel}}</p>
+                  <h4>{{clan.label}}</h4>
+                  <p>{{clan.tagline}}</p>
+
+                  <div class="shinobimancer-clan-feature">
+                    {{clan.feature}}
+                  </div>
+
+                  <div class="shinobimancer-notice is-warning">
+                    <strong>Avertissement</strong>
+                    <span>{{clan.warning}}</span>
+                  </div>
+                </div>
+              </article>
+            {{/each}}
+          </div>
+
+          <div class="shinobimancer-notice is-info">
+            <strong>Extensible</strong>
+            <span>La grille est pensée pour accueillir les 25 clans plus tard, une fois les 7 clans test validés.</span>
+          </div>
+        </section>
+      {{/if}}
+
+      {{#if (eq currentStep "bases")}}
+        <section class="shinobimancer-panel">
+          <div class="shinobimancer-panel-heading">
+            <div>
+              <p class="shinobimancer-kicker">Structure du Shinobi</p>
+              <h3>Bases / XP</h3>
+            </div>
+
+            <span class="shinobimancer-status-pill">Échelle 1–14</span>
+          </div>
+
+          <div class="shinobimancer-bases-layout">
+            <div class="shinobimancer-radar-card">
+              <div class="shinobimancer-radar-frame">
+                {{{baseRadarSvg}}}
+              </div>
+
+              <div class="shinobimancer-radar-caption">
+                <strong>Toile des Bases</strong>
+                <span>Profil visuel généré depuis les 7 Bases du personnage.</span>
+              </div>
+            </div>
+
+            <div class="shinobimancer-base-list">
+              {{#each baseRows as |base|}}
+                <div class="shinobimancer-base-row">
+                  <div>
+                    <strong>{{base.label}}</strong>
+                    <span>{{base.key}}</span>
+                  </div>
+
+                  <div class="shinobimancer-base-meter">
+                    <span style="width: {{base.percent}}%;"></span>
+                  </div>
+
+                  <div class="shinobimancer-base-score">
+                    {{base.total}} / {{base.max}}
+                  </div>
+                </div>
+              {{/each}}
+            </div>
+          </div>
+
+          <div class="shinobimancer-xp-strip">
+            <div>
+              <span>XP total</span>
+              <strong>{{experienceSummary.total}}</strong>
+            </div>
+
+            <div>
+              <span>XP dépensé</span>
+              <strong>{{experienceSummary.spent}}</strong>
+            </div>
+
+            <div>
+              <span>XP disponible</span>
+              <strong>{{experienceSummary.available}}</strong>
+            </div>
+
+            <div>
+              <span>Plafond actuel</span>
+              <strong>{{baseCap}}</strong>
+            </div>
+          </div>
+
+          <div class="shinobimancer-notice is-info">
+            <strong>Ordre de création</strong>
+            <span>Les Bases passent avant les affinités et compétences, car elles structurent les plafonds mécaniques du personnage.</span>
+          </div>
+        </section>
+      {{/if}}
+
+      {{#if (eq currentStep "affinities")}}
+        <section class="shinobimancer-panel">
+          <div class="shinobimancer-panel-heading">
+            <div>
+              <p class="shinobimancer-kicker">Chakra</p>
+              <h3>Affinités naturelles et imposées</h3>
+            </div>
+
+            <span class="shinobimancer-status-pill">Après les Bases</span>
+          </div>
+
+          <div class="shinobimancer-affinity-grid">
+            {{#each affinityCards as |affinity|}}
+              <article class="shinobimancer-affinity-card {{#if affinity.isPrimary}}is-selected{{/if}} {{#if affinity.isForced}}is-forced{{/if}}">
+                <div class="shinobimancer-affinity-icon">{{affinity.icon}}</div>
+
+                <div>
+                  <p class="shinobimancer-card-eyebrow">{{affinity.status}}</p>
+                  <h4>{{affinity.label}}</h4>
+                  <p>{{affinity.description}}</p>
+                  <span>{{affinity.tone}}</span>
+                </div>
+              </article>
+            {{/each}}
+          </div>
+
+          <div class="shinobimancer-notice is-warning">
+            <strong>Rappel</strong>
+            <span>Certaines affinités peuvent consommer ou accorder des choix de compétences. C’est pour cela que les compétences viennent après cette étape.</span>
+          </div>
+        </section>
+      {{/if}}
+
+      {{#if (eq currentStep "skills")}}
+        <section class="shinobimancer-panel">
+          <div class="shinobimancer-panel-heading">
+            <div>
+              <p class="shinobimancer-kicker">Formation initiale</p>
+              <h3>Compétences</h3>
+            </div>
+
+            <span class="shinobimancer-status-pill">
+              {{summaryPanel.initialSkillsUsed}} / {{summaryPanel.maxInitialSkills}}
+            </span>
+          </div>
+
+          <div class="shinobimancer-skill-summary">
+            <div>
+              <span>Utilisées</span>
+              <strong>{{summaryPanel.initialSkillsUsed}}</strong>
+            </div>
+
+            <div>
+              <span>Maximum</span>
+              <strong>{{summaryPanel.maxInitialSkills}}</strong>
+            </div>
+
+            <div>
+              <span>Restantes</span>
+              <strong>{{summaryPanel.initialSkillsRemaining}}</strong>
+            </div>
+          </div>
+
+          <div class="shinobimancer-skill-groups">
+            {{#each skillGroups as |group|}}
+              <section class="shinobimancer-skill-group">
+                <h4>{{group.label}}</h4>
+
+                <div class="shinobimancer-skill-list">
+                  {{#each group.skills as |skill|}}
+                    <article class="shinobimancer-skill-pill {{#if skill.owned}}is-owned{{/if}}">
+                      <div>
+                        <strong>{{skill.label}}</strong>
+                        <span>{{skill.baseLabel}} · {{skill.sourceText}}</span>
+                      </div>
+
+                      <b>{{skill.total}}</b>
+                    </article>
+                  {{/each}}
+                </div>
+              </section>
+            {{/each}}
+          </div>
+        </section>
+      {{/if}}
+
+      {{#if (eq currentStep "equipment")}}
+        <section class="shinobimancer-panel">
+          <div class="shinobimancer-panel-heading">
+            <div>
+              <p class="shinobimancer-kicker">Armurerie de départ</p>
+              <h3>Paquetage ninja</h3>
+            </div>
+
+            <span class="shinobimancer-status-pill">Prévisualisation</span>
+          </div>
+
+          <div class="shinobimancer-equipment-grid">
+            {{#each equipmentPreview as |item|}}
+              <article class="shinobimancer-equipment-card">
+                <div class="shinobimancer-equipment-quantity">{{item.quantityLabel}}</div>
+
+                <div>
+                  <p class="shinobimancer-card-eyebrow">{{item.type}}</p>
+                  <h4>{{item.name}}</h4>
+                  <p>{{item.description}}</p>
+                </div>
+              </article>
+            {{/each}}
+          </div>
+
+          <div class="shinobimancer-notice is-info">
+            <strong>Attribution différée</strong>
+            <span>L’attribution automatique du paquetage viendra avec le Charactomancer fonctionnel. Pour l’instant, cet écran sert à la maquette et à la validation visuelle.</span>
+          </div>
+        </section>
+      {{/if}}
+
+      {{#if (eq currentStep "summary")}}
+        <section class="shinobimancer-panel">
+          <div class="shinobimancer-panel-heading">
+            <div>
+              <p class="shinobimancer-kicker">Contrôle final</p>
+              <h3>Résumé du dossier</h3>
+            </div>
+
+            <span class="shinobimancer-status-pill">Sceau MJ à venir</span>
+          </div>
+
+          <div class="shinobimancer-final-sheet">
+            <section class="shinobimancer-final-identity">
+              <div class="shinobimancer-final-portrait">
+                <img src="{{actorImg}}" alt="{{actorName}}" />
+              </div>
+
+              <div class="shinobimancer-final-fields">
+                <h4>{{actorName}}</h4>
+
+                <dl>
+                  <div>
+                    <dt>Village</dt>
+                    <dd>{{summaryPanel.village}}</dd>
+                  </div>
+
+                  <div>
+                    <dt>Statut</dt>
+                    <dd>{{summaryPanel.status}}</dd>
+                  </div>
+
+                  <div>
+                    <dt>Héritage</dt>
+                    <dd>{{summaryPanel.heritage}}</dd>
+                  </div>
+
+                  <div>
+                    <dt>Rang</dt>
+                    <dd>{{identity.rank}}</dd>
+                  </div>
+
+                  <div>
+                    <dt>Sensei</dt>
+                    <dd>{{identity.sensei}}</dd>
+                  </div>
+
+                  <div>
+                    <dt>Équipe</dt>
+                    <dd>{{identity.team}}</dd>
+                  </div>
+                </dl>
+              </div>
+
+              <div class="shinobimancer-final-radar">
+                {{{baseRadarSvg}}}
+              </div>
+            </section>
+
+            <section class="shinobimancer-final-blocks">
+              <article>
+                <h4>Affinités</h4>
+                <div class="shinobimancer-affinity-tags">
+                  <div>
+                    {{#each summaryPanel.affinities as |affinity|}}
+                      <span>{{affinity}}</span>
+                    {{/each}}
+                  </div>
+                </div>
+              </article>
+
+              <article>
+                <h4>Compétences</h4>
+                <p>{{summaryPanel.initialSkillsUsed}} / {{summaryPanel.maxInitialSkills}} utilisées — {{summaryPanel.initialSkillsRemaining}} restante(s).</p>
+              </article>
+
+              <article>
+                <h4>XP</h4>
+                <p>{{summaryPanel.xpAvailable}} XP disponible(s).</p>
+              </article>
+
+              <article>
+                <h4>Équipement</h4>
+                <p>Paquetage ninja affiché en prévisualisation. Attribution automatique prévue plus tard.</p>
+              </article>
+            </section>
+
+            <section class="shinobimancer-final-alerts">
+              {{#if creationValidation.errors}}
+                <div class="shinobimancer-notice is-error">
+                  <strong>Erreurs bloquantes</strong>
+                  <ul>
+                    {{#each creationValidation.errors as |error|}}
+                      <li>{{error}}</li>
+                    {{/each}}
+                  </ul>
+                </div>
+              {{/if}}
+
+              {{#if creationValidation.warnings}}
+                <div class="shinobimancer-notice is-warning">
+                  <strong>Avertissements</strong>
+                  <ul>
+                    {{#each creationValidation.warnings as |warning|}}
+                      <li>{{warning}}</li>
+                    {{/each}}
+                  </ul>
+                </div>
+              {{/if}}
+
+              {{#if summaryPanel.valid}}
+                <div class="shinobimancer-notice is-success">
+                  <strong>Dossier conforme</strong>
+                  <span>Aucune erreur bloquante détectée. Le sceau officiel du MJ sera branché avec la validation finale.</span>
+                </div>
+              {{/if}}
+            </section>
+
+            <button type="button" class="shinobimancer-button is-primary shinobimancer-finalize-preview">
+              <i class="fa-solid fa-stamp"></i>
+              Prévisualiser le sceau de validation MJ
+            </button>
           </div>
         </section>
       {{/if}}
@@ -170,13 +642,13 @@
   </div>
 
   <footer class="shinobimancer-footer">
-    <button type="button" class="shinobimancer-button is-secondary shinobimancer-previous-step">
+    <button type="button" class="shinobimancer-button is-secondary shinobimancer-previous-step" {{#unless canGoPrevious}}disabled{{/unless}}>
       <i class="fa-solid fa-arrow-left"></i>
       Retour
     </button>
 
     <div class="shinobimancer-footer-note">
-      Pré-version visuelle : navigation complète à venir.
+      Étape {{activeStep.number}} / 9 — {{activeStep.label}}
     </div>
 
     <div class="shinobimancer-footer-actions">
@@ -184,7 +656,7 @@
         Fermer
       </button>
 
-      <button type="button" class="shinobimancer-button is-primary shinobimancer-next-step">
+      <button type="button" class="shinobimancer-button is-primary shinobimancer-next-step" {{#unless canGoNext}}disabled{{/unless}}>
         Suivant
         <i class="fa-solid fa-arrow-right"></i>
       </button>

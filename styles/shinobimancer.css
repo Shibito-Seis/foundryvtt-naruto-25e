@@ -901,3 +901,526 @@
 .shinobimancer-main .shinobimancer-validation-state {
   background-clip: padding-box;
 }
+
+/* ----------------------------------------- */
+/* Shinobimancer 0.1.29 — étapes complètes   */
+/* ----------------------------------------- */
+
+.shinobimancer-step {
+  width: 100%;
+  text-align: left;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+
+.shinobimancer-step:hover {
+  border-color: rgba(132, 39, 25, 0.42);
+  background: rgba(255, 248, 226, 0.38);
+  opacity: 1;
+}
+
+.shinobimancer-step.is-complete .shinobimancer-step-seal {
+  color: #fff7e0;
+  border-color: rgba(53, 99, 60, 0.58);
+  background: rgba(53, 99, 60, 0.72);
+}
+
+.shinobimancer-button:disabled,
+.shinobimancer-button:disabled:hover {
+  opacity: 0.48;
+  cursor: not-allowed;
+  filter: grayscale(0.2);
+}
+
+.shinobimancer-form-preview-large {
+  grid-template-columns: repeat(3, minmax(9rem, 1fr));
+}
+
+.shinobimancer-form-preview label.is-wide {
+  grid-column: 1 / -1;
+}
+
+.shinobimancer-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 0.75rem;
+}
+
+.shinobimancer-card-grid.is-two-columns {
+  grid-template-columns: repeat(2, minmax(14rem, 1fr));
+}
+
+.shinobimancer-data-card,
+.shinobimancer-affinity-card,
+.shinobimancer-equipment-card,
+.shinobimancer-skill-pill {
+  border: 1px solid rgba(58, 35, 20, 0.32);
+  background: rgba(255, 248, 226, 0.58);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+
+.shinobimancer-data-card {
+  display: grid;
+  grid-template-columns: 3.2rem 1fr;
+  gap: 0.75rem;
+  align-items: flex-start;
+  min-height: 8.5rem;
+  padding: 0.8rem;
+}
+
+.shinobimancer-data-card.is-selected,
+.shinobimancer-affinity-card.is-selected,
+.shinobimancer-clan-card.is-selected {
+  border-color: rgba(132, 39, 25, 0.78);
+  background:
+    linear-gradient(180deg, rgba(132, 39, 25, 0.08), transparent 48%),
+    rgba(255, 248, 226, 0.78);
+}
+
+.shinobimancer-data-card.is-disabled {
+  opacity: 0.58;
+  filter: grayscale(0.3);
+}
+
+.shinobimancer-card-emblem,
+.shinobimancer-clan-emblem,
+.shinobimancer-affinity-icon,
+.shinobimancer-equipment-quantity {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px double rgba(58, 35, 20, 0.46);
+  border-radius: 50%;
+  background: rgba(255, 248, 226, 0.72);
+  color: var(--shinobi-red-dark);
+  font-weight: 800;
+}
+
+.shinobimancer-card-emblem {
+  width: 2.65rem;
+  height: 2.65rem;
+  font-size: 1.05rem;
+}
+
+.shinobimancer-data-card h4,
+.shinobimancer-clan-card h4,
+.shinobimancer-affinity-card h4,
+.shinobimancer-equipment-card h4,
+.shinobimancer-skill-group h4 {
+  margin: 0 0 0.35rem;
+  color: var(--shinobi-ink);
+  font-size: 1rem;
+}
+
+.shinobimancer-data-card p,
+.shinobimancer-clan-card p,
+.shinobimancer-affinity-card p,
+.shinobimancer-equipment-card p {
+  margin-bottom: 0;
+  color: var(--shinobi-muted);
+}
+
+.shinobimancer-mini-note {
+  display: inline-block;
+  margin-top: 0.5rem;
+  color: var(--shinobi-red-dark);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.shinobimancer-clan-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 0.8rem;
+}
+
+.shinobimancer-clan-card {
+  display: grid;
+  grid-template-columns: 3.4rem 1fr;
+  gap: 0.75rem;
+  padding: 0.8rem;
+  border: 1px solid rgba(58, 35, 20, 0.32);
+  background: rgba(255, 248, 226, 0.58);
+}
+
+.shinobimancer-clan-emblem {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.25rem;
+  font-size: 1.25rem;
+}
+
+.shinobimancer-clan-feature {
+  margin-top: 0.55rem;
+  padding: 0.45rem 0.55rem;
+  border-left: 3px solid rgba(132, 39, 25, 0.58);
+  background: rgba(132, 39, 25, 0.07);
+  font-weight: 700;
+}
+
+.shinobimancer-clan-card .shinobimancer-notice {
+  margin-top: 0.55rem;
+  padding: 0.45rem 0.55rem;
+}
+
+.shinobimancer-bases-layout {
+  display: grid;
+  grid-template-columns: minmax(16rem, 0.85fr) minmax(18rem, 1.15fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.shinobimancer-radar-card {
+  display: grid;
+  gap: 0.6rem;
+  justify-items: center;
+  padding: 0.85rem;
+  border: 1px solid rgba(58, 35, 20, 0.32);
+  background: rgba(255, 248, 226, 0.58);
+}
+
+.shinobimancer-radar-frame {
+  width: min(100%, 18rem);
+  color: rgba(36, 23, 15, 0.92);
+}
+
+.shinobimancer-base-radar-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.shinobimancer-radar-label {
+  fill: currentColor;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.shinobimancer-radar-value {
+  fill: rgba(132, 39, 25, 0.88);
+  font-size: 8px;
+  font-weight: 900;
+}
+
+.shinobimancer-radar-shape {
+  fill: rgba(132, 39, 25, 0.18);
+  stroke: rgba(132, 39, 25, 0.78);
+  stroke-width: 2;
+}
+
+.shinobimancer-radar-center {
+  fill: rgba(132, 39, 25, 0.85);
+}
+
+.shinobimancer-radar-caption {
+  display: grid;
+  gap: 0.15rem;
+  text-align: center;
+}
+
+.shinobimancer-radar-caption span {
+  color: var(--shinobi-muted);
+  font-size: 0.78rem;
+}
+
+.shinobimancer-base-list {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.shinobimancer-base-row {
+  display: grid;
+  grid-template-columns: 6rem 1fr 3.8rem;
+  gap: 0.55rem;
+  align-items: center;
+  padding: 0.55rem;
+  border: 1px solid rgba(58, 35, 20, 0.26);
+  background: rgba(255, 248, 226, 0.54);
+}
+
+.shinobimancer-base-row strong,
+.shinobimancer-base-row span {
+  display: block;
+}
+
+.shinobimancer-base-row span {
+  color: var(--shinobi-muted);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.shinobimancer-base-meter {
+  height: 0.55rem;
+  border: 1px solid rgba(58, 35, 20, 0.28);
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.shinobimancer-base-meter span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(132, 39, 25, 0.42), rgba(132, 39, 25, 0.72));
+}
+
+.shinobimancer-base-score {
+  text-align: right;
+  font-weight: 800;
+}
+
+.shinobimancer-xp-strip,
+.shinobimancer-skill-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(7rem, 1fr));
+  gap: 0.6rem;
+  margin-top: 0.85rem;
+}
+
+.shinobimancer-skill-summary {
+  grid-template-columns: repeat(3, minmax(7rem, 1fr));
+  margin-top: 0;
+  margin-bottom: 0.85rem;
+}
+
+.shinobimancer-xp-strip div,
+.shinobimancer-skill-summary div {
+  padding: 0.6rem;
+  border: 1px solid rgba(58, 35, 20, 0.26);
+  background: rgba(255, 248, 226, 0.54);
+}
+
+.shinobimancer-xp-strip span,
+.shinobimancer-skill-summary span {
+  display: block;
+  color: var(--shinobi-muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.shinobimancer-xp-strip strong,
+.shinobimancer-skill-summary strong {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 1.2rem;
+}
+
+.shinobimancer-affinity-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13.5rem, 1fr));
+  gap: 0.75rem;
+}
+
+.shinobimancer-affinity-card {
+  display: grid;
+  grid-template-columns: 3rem 1fr;
+  gap: 0.7rem;
+  padding: 0.75rem;
+}
+
+.shinobimancer-affinity-card.is-forced {
+  border-color: rgba(167, 101, 24, 0.72);
+  background:
+    linear-gradient(180deg, rgba(167, 101, 24, 0.08), transparent 48%),
+    rgba(255, 248, 226, 0.64);
+}
+
+.shinobimancer-affinity-icon {
+  width: 2.7rem;
+  height: 2.7rem;
+  font-size: 1.1rem;
+}
+
+.shinobimancer-affinity-card > div:last-child > span {
+  display: inline-flex;
+  margin-top: 0.4rem;
+  padding: 0.15rem 0.4rem;
+  border: 1px solid rgba(58, 35, 20, 0.24);
+  border-radius: 999px;
+  color: var(--shinobi-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.shinobimancer-skill-groups {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.shinobimancer-skill-group {
+  padding: 0.7rem;
+  border: 1px solid rgba(58, 35, 20, 0.26);
+  background: rgba(255, 248, 226, 0.42);
+}
+
+.shinobimancer-skill-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 0.45rem;
+}
+
+.shinobimancer-skill-pill {
+  display: grid;
+  grid-template-columns: 1fr 2rem;
+  gap: 0.45rem;
+  align-items: center;
+  padding: 0.5rem;
+}
+
+.shinobimancer-skill-pill.is-owned {
+  border-color: rgba(53, 99, 60, 0.44);
+  background: rgba(53, 99, 60, 0.07);
+}
+
+.shinobimancer-skill-pill strong,
+.shinobimancer-skill-pill span {
+  display: block;
+}
+
+.shinobimancer-skill-pill span {
+  color: var(--shinobi-muted);
+  font-size: 0.72rem;
+}
+
+.shinobimancer-skill-pill b {
+  text-align: right;
+  color: var(--shinobi-red-dark);
+  font-size: 1.05rem;
+}
+
+.shinobimancer-equipment-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 0.75rem;
+}
+
+.shinobimancer-equipment-card {
+  display: grid;
+  grid-template-columns: 3rem 1fr;
+  gap: 0.7rem;
+  padding: 0.75rem;
+}
+
+.shinobimancer-equipment-quantity {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.3rem;
+  color: #fff7e0;
+  background: rgba(132, 39, 25, 0.82);
+}
+
+.shinobimancer-final-sheet {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.shinobimancer-final-identity {
+  display: grid;
+  grid-template-columns: 6.5rem 1fr 13rem;
+  gap: 0.85rem;
+  align-items: center;
+  padding: 0.85rem;
+  border: 1px solid rgba(58, 35, 20, 0.32);
+  background: rgba(255, 248, 226, 0.62);
+}
+
+.shinobimancer-final-portrait img {
+  width: 6rem;
+  height: 6rem;
+  object-fit: cover;
+  border: 2px solid rgba(58, 35, 20, 0.48);
+}
+
+.shinobimancer-final-fields h4 {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+}
+
+.shinobimancer-final-fields dl,
+.shinobimancer-final-blocks {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+}
+
+.shinobimancer-final-fields dl {
+  grid-template-columns: repeat(2, minmax(8rem, 1fr));
+}
+
+.shinobimancer-final-fields div {
+  border-bottom: 1px solid rgba(58, 35, 20, 0.18);
+}
+
+.shinobimancer-final-fields dt {
+  color: var(--shinobi-muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.shinobimancer-final-fields dd {
+  margin: 0.1rem 0 0.25rem;
+  font-weight: 700;
+}
+
+.shinobimancer-final-radar {
+  color: rgba(36, 23, 15, 0.92);
+}
+
+.shinobimancer-final-blocks {
+  grid-template-columns: repeat(2, minmax(14rem, 1fr));
+}
+
+.shinobimancer-final-blocks article {
+  padding: 0.7rem;
+  border: 1px solid rgba(58, 35, 20, 0.26);
+  background: rgba(255, 248, 226, 0.5);
+}
+
+.shinobimancer-final-blocks h4 {
+  margin: 0 0 0.35rem;
+}
+
+.shinobimancer-final-blocks p {
+  margin-bottom: 0;
+  color: var(--shinobi-muted);
+}
+
+.shinobimancer-final-alerts {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.shinobimancer-notice.is-success {
+  border-left-color: var(--shinobi-green);
+  background: rgba(53, 99, 60, 0.1);
+}
+
+.shinobimancer-notice ul {
+  margin: 0.35rem 0 0;
+  padding-left: 1.2rem;
+}
+
+.shinobimancer-notice li + li {
+  margin-top: 0.2rem;
+}
+
+@media (max-width: 1100px) {
+  .shinobimancer-form-preview-large,
+  .shinobimancer-bases-layout,
+  .shinobimancer-final-identity,
+  .shinobimancer-final-blocks {
+    grid-template-columns: 1fr;
+  }
+
+  .shinobimancer-card-grid.is-two-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .shinobimancer-xp-strip,
+  .shinobimancer-skill-summary {
+    grid-template-columns: repeat(2, minmax(7rem, 1fr));
+  }
+}

@@ -2,6 +2,62 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.29]
+
+### Ajouté
+
+- Ajout d’une pré-maquette complète navigable du Shinobimancer.
+- Ajout des 9 étapes visibles :
+  - Identité ;
+  - Village ;
+  - Héritage ;
+  - Clan / Voie ;
+  - Bases / XP ;
+  - Affinités ;
+  - Compétences ;
+  - Équipement ;
+  - Résumé final.
+- Ajout d’une navigation réelle entre les étapes avec :
+  - bouton Retour ;
+  - bouton Suivant ;
+  - clic sur les étapes de la barre latérale ;
+  - sauvegarde de l’étape courante via `currentStep`.
+- Ajout d’une toile SVG des Bases.
+- La toile des Bases utilise désormais les 7 axes :
+  - Corps ;
+  - Armes ;
+  - Taijutsu ;
+  - Ninjutsu ;
+  - Genjutsu ;
+  - Esprit ;
+  - Lignée.
+- Ajout de la toile des Bases dans l’étape `Bases / XP`.
+- Ajout d’une reprise compacte de la toile des Bases dans le `Résumé final`.
+- Ajout d’écrans de prévisualisation pour :
+  - les villages ;
+  - les modes d’héritage ;
+  - les 7 clans de test ;
+  - les affinités ;
+  - les compétences ;
+  - le paquetage ninja de départ.
+- Ajout d’un résumé final inspiré d’un dossier officiel / fiche papier de Shinobi.
+- Ajout d’un bouton de prévisualisation du futur sceau de validation MJ.
+
+### Modifié
+
+- Réorganisation de l’ordre des étapes :
+  - les Bases / XP passent avant les Affinités ;
+  - les Affinités passent avant les Compétences.
+- Le Shinobimancer devient une vraie pré-maquette graphique complète avant la version fonctionnelle `0.2.0`.
+
+### Notes
+
+- Cette version reste une pré-maquette : les choix ne sont pas encore tous appliqués automatiquement.
+- La validation finale réelle, l’attribution automatique complète et les verrous mécaniques restent prévus pour `0.2.0`.
+- Le mode PNJ MJ reste une piste future.
+
+---
+
 ## [0.1.28.2]
 
 ### Corrigé
