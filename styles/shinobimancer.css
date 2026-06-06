@@ -837,3 +837,67 @@
 .shinobimancer-main .shinobimancer-footer-note {
   font-size: 0.78rem;
 }
+
+/* ----------------------------------------- */
+/* Shinobimancer 0.1.28.2 — fond scrollable  */
+/* ----------------------------------------- */
+
+.shinobimancer-main .shinobimancer-layout {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(97, 55, 31, 0.20) 0,
+      rgba(97, 55, 31, 0.20) calc(14rem - 1px),
+      rgba(58, 35, 20, 0.36) calc(14rem - 1px),
+      rgba(58, 35, 20, 0.36) calc(14rem + 1px),
+      rgba(255, 248, 226, 0.24) calc(14rem + 1px),
+      rgba(255, 248, 226, 0.24) calc(100% - 14.5rem - 1px),
+      rgba(58, 35, 20, 0.36) calc(100% - 14.5rem - 1px),
+      rgba(58, 35, 20, 0.36) calc(100% - 14.5rem + 1px),
+      rgba(255, 248, 226, 0.58) calc(100% - 14.5rem + 1px),
+      rgba(255, 248, 226, 0.58) 100%
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.06) 0,
+      rgba(255, 255, 255, 0.06) 1px,
+      transparent 1px,
+      transparent 7px
+    );
+  background-attachment: local;
+}
+
+.shinobimancer-main .shinobimancer-sidebar {
+  border-right: 0;
+  background:
+    linear-gradient(90deg, rgba(65, 30, 16, 0.20), rgba(255, 248, 226, 0.12));
+}
+
+.shinobimancer-main .shinobimancer-content {
+  background: transparent;
+}
+
+.shinobimancer-main .shinobimancer-summary {
+  border-left: 0;
+  background: transparent;
+}
+
+.shinobimancer-main .shinobimancer-sidebar::before {
+  bottom: auto;
+  height: 100%;
+  min-height: 42rem;
+}
+
+.shinobimancer-main .shinobimancer-page-header,
+.shinobimancer-main .shinobimancer-panel,
+.shinobimancer-main .shinobimancer-summary-portrait {
+  background-color: rgba(255, 248, 226, 0.66);
+}
+
+.shinobimancer-main .shinobimancer-summary-list div {
+  border-bottom-color: rgba(58, 35, 20, 0.22);
+}
+
+.shinobimancer-main .shinobimancer-validation-state {
+  background-clip: padding-box;
+}

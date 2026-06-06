@@ -2,6 +2,23 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.28.2]
+
+### Corrigé
+
+- Correction mineure du CSS du Shinobimancer.
+- Le fond de la zone centrale scrollable est désormais porté par le conteneur principal.
+- Les styles de colonnes restent visibles lors du défilement global du Shinobimancer.
+- Les séparations visuelles gauche / centre / droite restent cohérentes même lorsque le contenu dépasse la hauteur visible initiale.
+
+### Notes
+
+- Aucun changement de logique de création.
+- Aucun changement de template.
+- Cette version corrige uniquement l’habillage visuel de la pré-version Shinobimancer.
+
+---
+
 ## [0.1.28.1]
 
 ### Corrigé
