@@ -631,7 +631,7 @@ export class Naruto25eShinobimancerApplication extends Application {
       classes: ["naruto-25e", "shinobimancer", "shinobimancer-window"],
       title: "Shinobimancer",
       template: "systems/naruto-25e/templates/apps/shinobimancer.hbs",
-      width: 1040,
+      width: 1160,
       height: 740,
       resizable: true
     });

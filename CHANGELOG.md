@@ -2,6 +2,23 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.29.1]
+
+### Corrigé
+
+- Correction mineure de la largeur de la fenêtre principale du Shinobimancer.
+- La fenêtre principale passe à une largeur par défaut plus confortable pour la pré-maquette complète.
+- Ajout d’une largeur minimale afin d’éviter le chevauchement entre le panneau central et le résumé permanent.
+- Ajout d’une sécurité de scroll horizontal si la fenêtre est forcée sous la largeur minimale.
+
+### Notes
+
+- Aucun changement de logique de création.
+- Aucun changement de template.
+- La fenêtre d’accueil du choix Shinobimancer / fiche manuelle reste inchangée.
+
+---
+
 ## [0.1.29]
 
 ### Ajouté

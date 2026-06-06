@@ -1424,3 +1424,31 @@
     grid-template-columns: repeat(2, minmax(7rem, 1fr));
   }
 }
+
+/* ----------------------------------------- */
+/* Shinobimancer 0.1.29.1 — largeur minimale */
+/* ----------------------------------------- */
+
+.naruto-25e.shinobimancer-window.window-app {
+  min-width: 1120px;
+}
+
+.naruto-25e.shinobimancer-window.window-app .window-content {
+  overflow-x: auto;
+}
+
+.naruto-25e.shinobimancer-window.window-app .shinobimancer-main {
+  min-width: 1120px;
+}
+
+.naruto-25e.shinobimancer-window.window-app .shinobimancer-layout {
+  grid-template-columns: 14rem minmax(35rem, 1fr) 14.5rem;
+}
+
+.naruto-25e.shinobimancer-window.window-app .shinobimancer-content {
+  min-width: 35rem;
+}
+
+.naruto-25e.shinobimancer-window.window-app .shinobimancer-summary {
+  min-width: 14.5rem;
+}
