@@ -100,6 +100,35 @@ function getSafeSystemValue(actor, path, fallback = "") {
   return foundry.utils.getProperty(actor?.system ?? {}, path) ?? fallback;
 }
 
+function normalizeShinobimancerStep(stepKey) {
+  const key = String(stepKey ?? "identity");
+  const allowedSteps = new Set(SHINOBIMANCER_STEPS.map((step) => step.key));
+
+  return allowedSteps.has(key) ? key : "identity";
+}
+
+async function updateShinobimancerCreationState(actor, updateData = {}) {
+  if (!actor || actor.type !== "shinobi") {
+    ui.notifications.warn("Aucun acteur Shinobi valide n’est associé au Shinobimancer.");
+    return false;
+  }
+
+  if (!actor.isOwner && !game.user?.isGM) {
+    ui.notifications.warn("Tu n’as pas les droits nécessaires pour modifier ce dossier de création.");
+    return false;
+  }
+
+  const expandedData = {};
+
+  for (const [key, value] of Object.entries(updateData)) {
+    expandedData[`system.progression.creation.${key}`] = value;
+  }
+
+  await actor.update(expandedData);
+
+  return true;
+}
+
 export class Naruto25eShinobimancerChoiceApplication extends Application {
   constructor(actor, options = {}) {
     super(options);
@@ -159,7 +188,7 @@ export class Naruto25eShinobimancerChoiceApplication extends Application {
   activateListeners(html) {
     super.activateListeners(html);
 
-    html.find(".shinobimancer-choice-start").on("click", (event) => {
+    html.find(".shinobimancer-choice-start").on("click", async (event) => {
       event.preventDefault();
 
       if (!this.actor) {
@@ -167,16 +196,41 @@ export class Naruto25eShinobimancerChoiceApplication extends Application {
         return;
       }
 
+      const creation = this.actor.system?.progression?.creation ?? {};
+      const currentStep = normalizeShinobimancerStep(creation.currentStep ?? "identity");
+      const now = new Date().toISOString();
+
+      const updated = await updateShinobimancerCreationState(this.actor, {
+        mode: "shinobimancer",
+        currentStep,
+        shinobimancerStartedAt: creation.shinobimancerStartedAt || now,
+        lastOpenedAt: now
+      });
+
+      if (!updated) return;
+
       new Naruto25eShinobimancerApplication(this.actor, {
-        sourceSheet: this.sourceSheet
+        sourceSheet: this.sourceSheet,
+        currentStep
       }).render(true);
 
       this.close();
     });
 
-    html.find(".shinobimancer-choice-manual").on("click", (event) => {
+    html.find(".shinobimancer-choice-manual").on("click", async (event) => {
       event.preventDefault();
 
+      const now = new Date().toISOString();
+
+      const updated = await updateShinobimancerCreationState(this.actor, {
+        mode: "manual",
+        manualChosenAt: now,
+        lastOpenedAt: now
+      });
+
+      if (!updated) return;
+
+      this.actor._naruto25eBypassShinobimancerOnce = game.user?.id ?? "unknown";
       this.sourceSheet?.render?.(true);
       this.close();
     });
@@ -189,7 +243,9 @@ export class Naruto25eShinobimancerApplication extends Application {
 
     this.actor = actor;
     this.sourceSheet = options.sourceSheet ?? null;
-    this.currentStep = options.currentStep ?? "identity";
+    this.currentStep = normalizeShinobimancerStep(
+      options.currentStep ?? actor?.system?.progression?.creation?.currentStep ?? "identity"
+    );
   }
 
   static get defaultOptions() {
@@ -199,7 +255,7 @@ export class Naruto25eShinobimancerApplication extends Application {
       title: "Shinobimancer",
       template: "systems/naruto-25e/templates/apps/shinobimancer.hbs",
       width: 1040,
-      height: "auto",
+      height: 740,
       resizable: true
     });
   }
@@ -269,7 +325,7 @@ export class Naruto25eShinobimancerApplication extends Application {
     context.previewNotices = [
       {
         type: "info",
-        title: "Pré-version 0.1.28",
+        title: "Pré-version 0.1.28.1",
         text: "Cette fenêtre sert de support visuel pour la maquette. Les prochaines étapes seront branchées progressivement."
       },
       {
@@ -292,16 +348,33 @@ export class Naruto25eShinobimancerApplication extends Application {
 
     html.find(".shinobimancer-open-sheet").on("click", (event) => {
       event.preventDefault();
+
+      if (this.actor) {
+        this.actor._naruto25eBypassShinobimancerOnce = game.user?.id ?? "unknown";
+      }
+
       this.actor?.sheet?.render(true);
     });
 
-    html.find(".shinobimancer-next-step").on("click", (event) => {
+    html.find(".shinobimancer-next-step").on("click", async (event) => {
       event.preventDefault();
+
+      await updateShinobimancerCreationState(this.actor, {
+        currentStep: this.currentStep,
+        lastOpenedAt: new Date().toISOString()
+      });
+
       ui.notifications.info("Les étapes suivantes du Shinobimancer seront branchées après validation de la maquette.");
     });
 
-    html.find(".shinobimancer-previous-step").on("click", (event) => {
+    html.find(".shinobimancer-previous-step").on("click", async (event) => {
       event.preventDefault();
+
+      await updateShinobimancerCreationState(this.actor, {
+        currentStep: this.currentStep,
+        lastOpenedAt: new Date().toISOString()
+      });
+
       ui.notifications.info("La navigation complète sera ajoutée dans une prochaine version.");
     });
   }

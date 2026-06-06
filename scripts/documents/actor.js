@@ -43,7 +43,12 @@ export class Naruto25eActor extends Actor {
         locked: false,
         validatedAt: "",
         validatedBy: "",
-        notes: ""
+        notes: "",
+        mode: "",
+        currentStep: "identity",
+        manualChosenAt: "",
+        shinobimancerStartedAt: "",
+        lastOpenedAt: ""
       };
     }
 
@@ -53,6 +58,15 @@ export class Naruto25eActor extends Actor {
     creation.validatedAt = creation.validatedAt ?? "";
     creation.validatedBy = creation.validatedBy ?? "";
     creation.notes = creation.notes ?? "";
+
+    const allowedCreationModes = new Set(["", "manual", "shinobimancer"]);
+    const mode = String(creation.mode ?? "");
+
+    creation.mode = allowedCreationModes.has(mode) ? mode : "";
+    creation.currentStep = creation.currentStep ?? "identity";
+    creation.manualChosenAt = creation.manualChosenAt ?? "";
+    creation.shinobimancerStartedAt = creation.shinobimancerStartedAt ?? "";
+    creation.lastOpenedAt = creation.lastOpenedAt ?? "";
   }
 
     isCreationLocked() {

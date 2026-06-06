@@ -1,5 +1,8 @@
 import { NARUTO25E } from "../config.js";
-import { Naruto25eShinobimancerChoiceApplication } from "../apps/shinobimancer.js";
+import {
+  Naruto25eShinobimancerApplication,
+  Naruto25eShinobimancerChoiceApplication
+} from "../apps/shinobimancer.js";
 
 export class Naruto25eShinobiSheet extends ActorSheet {
   static get defaultOptions() {
@@ -33,33 +36,70 @@ export class Naruto25eShinobiSheet extends ActorSheet {
 
     if (!this.actor.isOwner && !game.user?.isGM) return;
 
-    if (!Naruto25eShinobiSheet._shinobimancerPromptedActors) {
-      Naruto25eShinobiSheet._shinobimancerPromptedActors = new Set();
+    const bypassUserId = this.actor._naruto25eBypassShinobimancerOnce;
+
+    if (bypassUserId && bypassUserId === (game.user?.id ?? "unknown")) {
+      delete this.actor._naruto25eBypassShinobimancerOnce;
+      return;
+    }
+
+    if (!Naruto25eShinobiSheet._shinobimancerOpeningActors) {
+      Naruto25eShinobiSheet._shinobimancerOpeningActors = new Set();
     }
 
     const promptKey = `${game.user?.id ?? "unknown"}:${this.actor.id}`;
 
-    if (Naruto25eShinobiSheet._shinobimancerPromptedActors.has(promptKey)) {
+    if (Naruto25eShinobiSheet._shinobimancerOpeningActors.has(promptKey)) {
       return;
     }
 
-    Naruto25eShinobiSheet._shinobimancerPromptedActors.add(promptKey);
+    Naruto25eShinobiSheet._shinobimancerOpeningActors.add(promptKey);
 
-    window.setTimeout(() => {
-      if (!this.rendered) return;
+    window.setTimeout(async () => {
+      try {
+        if (!this.rendered) return;
 
-      const opener = game.naruto25e?.openShinobimancerChoice;
+        const creation = this.actor.system?.progression?.creation ?? {};
+        const creationMode = String(creation.mode ?? "");
+        const currentStep = String(creation.currentStep ?? "identity");
 
-      if (typeof opener === "function") {
-        opener(this.actor, {
-          sourceSheet: this
-        });
-        return;
+        if (creationMode === "manual") return;
+
+        if (creationMode === "shinobimancer") {
+          const opener = game.naruto25e?.openShinobimancer;
+
+          if (typeof opener === "function") {
+            opener(this.actor, {
+              sourceSheet: this,
+              currentStep
+            });
+          } else {
+            new Naruto25eShinobimancerApplication(this.actor, {
+              sourceSheet: this,
+              currentStep
+            }).render(true);
+          }
+
+          await this.close();
+          return;
+        }
+
+        const opener = game.naruto25e?.openShinobimancerChoice;
+
+        if (typeof opener === "function") {
+          opener(this.actor, {
+            sourceSheet: this
+          });
+        } else {
+          new Naruto25eShinobimancerChoiceApplication(this.actor, {
+            sourceSheet: this
+          }).render(true);
+        }
+
+        await this.close();
+      } finally {
+        Naruto25eShinobiSheet._shinobimancerOpeningActors.delete(promptKey);
       }
-
-      new Naruto25eShinobimancerChoiceApplication(this.actor, {
-        sourceSheet: this
-      }).render(true);
     }, 150);
   }
 

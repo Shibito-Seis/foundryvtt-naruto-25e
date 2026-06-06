@@ -2,6 +2,30 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.28.1]
+
+### Corrigé
+
+- Correction de la logique d’ouverture du Shinobimancer.
+- Fermer la fenêtre de choix ne compte plus comme un choix de création.
+- Ajout d’un mode de création persistant sur l’acteur :
+  - aucun mode choisi ;
+  - fiche manuelle ;
+  - Shinobimancer.
+- Si le mode Shinobimancer est choisi, l’ouverture d’un Shinobi non validé relance directement le Shinobimancer.
+- Préparation de la reprise à la dernière étape via `currentStep`.
+- La fiche manuelle n’est plus conservée ouverte derrière le Shinobimancer lorsque celui-ci est le mode choisi.
+- Correction de la hauteur de la fenêtre principale du Shinobimancer.
+- Ajout d’un scroll global unique sur le corps du Shinobimancer pour garder ensemble la barre d’étapes, le panneau central et le résumé permanent.
+
+### Notes
+
+- La navigation complète entre les étapes reste prévue pour la vraie `0.2.0`.
+- Le mode PNJ MJ reste une piste future et n’est pas encore ajouté dans cette version.
+- Cette version reste une pré-version visuelle destinée à stabiliser l’expérience avant la maquette définitive.
+
+---
+
 ## [0.1.28]
 
 ### Ajouté

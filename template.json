@@ -69,7 +69,12 @@
             "locked": false,
             "validatedAt": "",
             "validatedBy": "",
-            "notes": ""
+            "notes": "",
+            "mode": "",
+            "currentStep": "identity",
+            "manualChosenAt": "",
+            "shinobimancerStartedAt": "",
+            "lastOpenedAt": ""
           },
           "rank": {
             "current": "aspirant",
