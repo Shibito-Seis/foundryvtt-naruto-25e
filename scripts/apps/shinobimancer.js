@@ -754,7 +754,7 @@ export class Naruto25eShinobimancerApplication extends Application {
     context.previewNotices = [
       {
         type: "info",
-        title: "Pré-version 0.1.29",
+        title: "Pré-version 0.1.29.2",
         text: "Toutes les étapes sont maintenant visibles et navigables pour soutenir la maquette graphique."
       },
       {

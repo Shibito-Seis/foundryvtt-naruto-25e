@@ -2,6 +2,25 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## [0.1.29.2]
+
+### Corrigé
+
+- Correction mineure de la hauteur maximale de la fenêtre principale du Shinobimancer.
+- La fenêtre principale n’est plus bridée à environ 750 px de hauteur.
+- La hauteur maximale dépend désormais du viewport disponible.
+- Les grands écrans peuvent agrandir davantage la fenêtre vers le bas.
+- Les petits écrans conservent le scroll interne du corps du Shinobimancer.
+
+### Notes
+
+- Aucun changement de logique de création.
+- Aucun changement de template.
+- La largeur minimale ajoutée en `0.1.29.1` reste inchangée.
+- La hauteur `740 px` reste la hauteur d’ouverture par défaut, mais n’est plus un plafond absolu.
+
+---
+
 ## [0.1.29.1]
 
 ### Corrigé

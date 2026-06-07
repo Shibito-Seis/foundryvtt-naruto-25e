@@ -1452,3 +1452,36 @@
 .naruto-25e.shinobimancer-window.window-app .shinobimancer-summary {
   min-width: 14.5rem;
 }
+
+/* ----------------------------------------- */
+/* Shinobimancer 0.1.29.2 — hauteur adaptive */
+/* ----------------------------------------- */
+
+.naruto-25e.shinobimancer-window.window-app {
+  max-height: calc(100vh - 24px);
+}
+
+.naruto-25e.shinobimancer-window.window-app .window-content {
+  max-height: calc(100vh - 72px);
+  overflow: hidden;
+}
+
+.naruto-25e.shinobimancer-window.window-app .shinobimancer-main {
+  height: 100%;
+  max-height: none;
+}
+
+.naruto-25e.shinobimancer-window.window-app .shinobimancer-layout {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.naruto-25e.shinobimancer-choice-window.window-app {
+  max-height: calc(100vh - 24px);
+}
+
+.naruto-25e.shinobimancer-choice-window.window-app .window-content {
+  max-height: calc(100vh - 72px);
+  overflow: auto;
+}
