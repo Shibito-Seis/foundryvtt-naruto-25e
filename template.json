@@ -5,6 +5,16 @@
       "base": {
         "identity": {
           "prenom": "",
+          "age": "",
+          "birth": "",
+          "sex": "",
+          "height": "",
+          "weight": "",
+          "hair": "",
+          "eyes": "",
+          "sensei": "",
+          "team": "",
+          "notes": "",
           "village": "",
           "clan": "",
           "rang": "aspirant",
@@ -60,7 +70,8 @@
             "primary": "",
             "secondary": "",
             "forced": [],
-            "extra": []
+            "extra": [],
+            "notes": ""
           },
           "notes": ""
         },

@@ -62,7 +62,7 @@ const SHINOBIMANCER_STEPS = [
     number: 9,
     label: "Résumé final",
     shortLabel: "Résumé",
-    description: "Contrôle final, avertissements, récapitulatif et validation MJ."
+    description: "Contrôle final, avertissements, récapitulatif et validation du dossier."
   }
 ];
 
@@ -427,6 +427,20 @@ function buildAffinityCards(actor) {
   const secondary = actor?.system?.chakra?.affinities?.secondary ?? "";
   const forced = actor?.system?.chakra?.affinities?.forced ?? [];
 
+  const getForcedKey = (entry) => {
+    if (!entry) return "";
+    if (typeof entry === "object") return String(entry.key ?? entry.id ?? entry.value ?? "");
+    return String(entry);
+  };
+
+  const getForcedSlot = (entry) => {
+    if (!entry || typeof entry !== "object") return "";
+    return String(entry.slot ?? "");
+  };
+
+  const forcedEntries = Array.isArray(forced) ? forced : [];
+  const forcedKeys = forcedEntries.map(getForcedKey).filter(Boolean);
+
   const entries = Object.keys(chakraAffinities).length > 0
     ? Object.entries(chakraAffinities).slice(0, 10).map(([key, affinity]) => ({
         key,
@@ -437,19 +451,28 @@ function buildAffinityCards(actor) {
       }))
     : SHINOBIMANCER_AFFINITY_FALLBACKS;
 
-  return entries.map((affinity) => ({
-    ...affinity,
-    isPrimary: affinity.key === primary,
-    isSecondary: affinity.key === secondary,
-    isForced: forced.includes(affinity.key),
-    status: forced.includes(affinity.key)
-      ? "Imposée"
-      : affinity.key === primary
-      ? "Principale"
-      : affinity.key === secondary
-      ? "Secondaire"
-      : "Disponible"
-  }));
+  return entries.map((affinity) => {
+    const forcedEntry = forcedEntries.find((entry) => getForcedKey(entry) === affinity.key);
+    const forcedSlot = getForcedSlot(forcedEntry);
+
+    return {
+      ...affinity,
+      isPrimary: affinity.key === primary,
+      isSecondary: affinity.key === secondary,
+      isForced: forcedKeys.includes(affinity.key),
+      status: forcedKeys.includes(affinity.key)
+        ? forcedSlot === "primary"
+          ? "Principale imposée"
+          : forcedSlot === "secondary"
+          ? "Secondaire imposée"
+          : "Imposée"
+        : affinity.key === primary
+        ? "Principale"
+        : affinity.key === secondary
+        ? "Secondaire"
+        : "Disponible"
+    };
+  });
 }
 
 function buildSkillPreview(actor) {
@@ -731,6 +754,10 @@ export class Naruto25eShinobimancerApplication extends Application {
     };
 
     context.creationValidation = validation;
+    context.canFinalizeCreation = Boolean(this.actor?.isOwner || game.user?.isGM)
+      && !Boolean(this.actor?.system?.progression?.creation?.locked)
+      && Boolean(validation.valid);
+    context.creationLocked = Boolean(this.actor?.system?.progression?.creation?.locked);
 
     context.baseRows = baseRows;
     context.baseRadarSvg = baseRadarSvg;
@@ -811,9 +838,22 @@ export class Naruto25eShinobimancerApplication extends Application {
       await this._setCurrentStep(previousStep);
     });
 
-    html.find(".shinobimancer-finalize-preview").on("click", (event) => {
+    html.find(".shinobimancer-finalize-creation").on("click", async (event) => {
       event.preventDefault();
-      ui.notifications.info("La validation finale complète sera branchée avec le Charactomancer fonctionnel.");
+
+      if (!this.actor || typeof this.actor.finalizeCreation !== "function") {
+        ui.notifications.warn("La finalisation de création n’est pas disponible pour cet acteur.");
+        return;
+      }
+
+      await this.actor.finalizeCreation();
+
+      if (this.actor.system?.progression?.creation?.locked) {
+        this.sourceSheet?.render?.(false);
+        this.close();
+      } else {
+        this.render(false);
+      }
     });
   }
 }

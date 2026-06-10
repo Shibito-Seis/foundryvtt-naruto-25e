@@ -109,6 +109,31 @@ export class Naruto25eActor extends Actor {
       const errors = [];
       const warnings = [];
 
+      const addError = (message) => {
+        if (!errors.includes(message)) errors.push(message);
+      };
+
+      const addWarning = (message) => {
+        if (!warnings.includes(message)) warnings.push(message);
+      };
+
+      const getForcedAffinityKey = (entry) => {
+        if (!entry) return "";
+        if (typeof entry === "object") {
+          return String(entry.key ?? entry.id ?? entry.value ?? "");
+        }
+        return String(entry);
+      };
+
+      const getForcedAffinitySlot = (entry) => {
+        if (!entry || typeof entry !== "object") return "";
+        return String(entry.slot ?? "");
+      };
+
+      const getAffinityLabel = (key) => {
+        return NARUTO25E.chakraAffinities?.[key]?.label ?? key;
+      };
+
       const villageKey = heritage.village ?? "";
       const village = NARUTO25E.villages?.[villageKey];
 
@@ -134,11 +159,6 @@ export class Naruto25eActor extends Actor {
         "affinityExtra"
       ]);
 
-      const nonCountableSources = new Set([
-        "common",
-        "affinityPrimaryFree"
-      ]);
-
       let initialSkillsUsed = 0;
 
       for (const skill of Object.values(skills)) {
@@ -146,19 +166,19 @@ export class Naruto25eActor extends Actor {
           ? skill.creationSources
           : [];
 
-          const hasCountingSource = sources.some((source) => countableSources.has(source));
-          const hasFreePrimaryAffinity = sources.includes("affinityPrimaryFree");
+        const hasCountingSource = sources.some((source) => countableSources.has(source));
+        const hasFreePrimaryAffinity = sources.includes("affinityPrimaryFree");
 
-          /*
-          Une compétence ne compte qu'une seule fois.
-          Si elle est seulement possédée via affinité principale offerte, elle ne compte pas.
-          Si elle a une source payante/obligatoire, elle compte.
-          Si elle a "manual" + "affinityPrimaryFree", on ne la compte pas deux fois,
-          et on privilégie l'idée qu'elle est surtout accordée par l'affinité offerte.
-          */
-          const counts =
-            hasCountingSource
-            && !(hasFreePrimaryAffinity && sources.every((source) => {
+        /*
+        Une compétence ne compte qu'une seule fois.
+        Si elle est seulement possédée via affinité principale offerte, elle ne compte pas.
+        Si elle a une source payante/obligatoire, elle compte.
+        Si elle a "manual" + "affinityPrimaryFree", on ne la compte pas deux fois,
+        et on privilégie l'idée qu'elle est surtout accordée par l'affinité offerte.
+        */
+        const counts =
+          hasCountingSource
+          && !(hasFreePrimaryAffinity && sources.every((source) => {
             return source === "manual" || source === "affinityPrimaryFree";
           }));
 
@@ -167,10 +187,16 @@ export class Naruto25eActor extends Actor {
 
       const maxInitialSkills = 5;
 
+      const actorName = String(this.name ?? "").trim();
+
+      if (!actorName) {
+        addError("Le nom du ninja est obligatoire.");
+      }
+
       if (!villageKey || !village) {
-        errors.push("Aucun village d’origine valide n’est sélectionné.");
+        addError("Aucun village d’origine valide n’est sélectionné.");
       } else if (!village.selectable) {
-        errors.push(`Le village ${village.label} est visible mais pas encore sélectionnable.`);
+        addError(`Le village ${village.label} est visible mais pas encore sélectionnable.`);
       }
 
       const validateCustomClan = (roleLabel = "clan custom") => {
@@ -179,33 +205,33 @@ export class Naruto25eActor extends Actor {
         const choices = NARUTO25E.getCustomClanMandatoryChoices?.(customClan) ?? [];
 
         if (!gmOptions.allowCustomClan) {
-          errors.push(`Le ${roleLabel} n’est pas autorisé par le MJ pour cette fiche.`);
+          addError(`Le ${roleLabel} n’est pas autorisé par le MJ pour cette fiche.`);
         }
 
         if (!customName) {
-          errors.push("Le clan custom doit avoir un nom.");
+          addError("Le clan custom doit avoir un nom.");
         }
 
         if (choices.length > 2) {
-          errors.push("Le clan custom ne peut pas imposer plus de 2 choix au total.");
+          addError("Le clan custom ne peut pas imposer plus de 2 choix au total.");
         }
 
         const uniqueChoices = new Set(choices);
 
         if (uniqueChoices.size !== choices.length) {
-          errors.push("Le clan custom ne peut pas imposer deux fois le même choix.");
+          addError("Le clan custom ne peut pas imposer deux fois le même choix.");
         }
 
         for (const choiceKey of choices) {
           const choice = NARUTO25E.getCustomClanChoiceData?.(choiceKey);
 
           if (!choice) {
-            errors.push(`Choix imposé de clan custom invalide : ${choiceKey}.`);
+            addError(`Choix imposé de clan custom invalide : ${choiceKey}.`);
             continue;
           }
 
           if (!choice.valid) {
-            errors.push(choice.invalidReason || `Choix imposé de clan custom invalide : ${choiceKey}.`);
+            addError(choice.invalidReason || `Choix imposé de clan custom invalide : ${choiceKey}.`);
           }
         }
       };
@@ -214,97 +240,155 @@ export class Naruto25eActor extends Actor {
         if (NARUTO25E.isCustomClanKey?.(clanKey)) {
           validateCustomClan("clan custom");
         } else if (!clanKey || !clan) {
-          errors.push("Aucun clan principal n’est sélectionné.");
+          addError("Aucun clan principal n’est sélectionné.");
         } else if (clan.village !== villageKey) {
-          errors.push(`Le clan ${clan.label} n’est pas compatible avec le village sélectionné.`);
+          addError(`Le clan ${clan.label} n’est pas compatible avec le village sélectionné.`);
         }
       }
 
       if (mode === "voie") {
         if (!voieKey || !voie) {
-          errors.push("Aucune voie n’est sélectionnée.");
+          addError("Aucune voie n’est sélectionnée.");
         } else {
           const voieAllowed = voie.village === "any" || voie.village === villageKey;
 
           if (!voie.selectable || !voieAllowed) {
-            errors.push(`La voie ${voie.label} n’est pas compatible avec le village sélectionné.`);
+            addError(`La voie ${voie.label} n’est pas compatible avec le village sélectionné.`);
           }
         }
       }
 
       if (mode === "hybridClan") {
         if (!gmOptions.allowHybridClan) {
-          errors.push("Le clan hybride n’est pas autorisé par le MJ pour cette fiche.");
+          addError("Le clan hybride n’est pas autorisé par le MJ pour cette fiche.");
         }
 
         if (NARUTO25E.isCustomClanKey?.(clanKey)) {
           validateCustomClan("clan custom principal");
         } else if (!clanKey || !clan) {
-          errors.push("Aucun clan principal n’est sélectionné pour l’hybridation.");
+          addError("Aucun clan principal n’est sélectionné pour l’hybridation.");
         } else if (clan.village !== villageKey) {
-          errors.push(`Le clan principal ${clan.label} n’est pas compatible avec le village sélectionné.`);
+          addError(`Le clan principal ${clan.label} n’est pas compatible avec le village sélectionné.`);
         }
 
         if (!secondaryClanKey || !secondaryClan) {
-          errors.push("Aucun clan secondaire n’est sélectionné pour l’hybridation.");
+          addError("Aucun clan secondaire n’est sélectionné pour l’hybridation.");
         } else if (secondaryClan.village !== villageKey) {
-          errors.push(`Le clan secondaire ${secondaryClan.label} n’est pas compatible avec le village sélectionné.`);
+          addError(`Le clan secondaire ${secondaryClan.label} n’est pas compatible avec le village sélectionné.`);
         }
 
         if (clanKey && secondaryClanKey && clanKey === secondaryClanKey) {
-          errors.push("Le clan secondaire doit être différent du clan principal.");
+          addError("Le clan secondaire doit être différent du clan principal.");
         }
       }
 
       if (mode === "hybridVoie") {
         if (!gmOptions.allowHybridVoie) {
-          errors.push("La voie hybridée n’est pas autorisée par le MJ pour cette fiche.");
+          addError("La voie hybridée n’est pas autorisée par le MJ pour cette fiche.");
         }
 
         if (NARUTO25E.isCustomClanKey?.(clanKey)) {
           validateCustomClan("clan custom principal");
         } else if (!clanKey || !clan) {
-          errors.push("Aucun clan principal n’est sélectionné pour la voie hybridée.");
+          addError("Aucun clan principal n’est sélectionné pour la voie hybridée.");
         } else if (clan.village !== villageKey) {
-          errors.push(`Le clan principal ${clan.label} n’est pas compatible avec le village sélectionné.`);
+          addError(`Le clan principal ${clan.label} n’est pas compatible avec le village sélectionné.`);
         }
 
         if (!voieKey || !voie) {
-          errors.push("Aucune voie n’est sélectionnée pour la voie hybridée.");
+          addError("Aucune voie n’est sélectionnée pour la voie hybridée.");
         } else {
           const voieAllowed = voie.village === "any" || voie.village === villageKey;
 
           if (!voie.selectable || !voieAllowed) {
-            errors.push(`La voie ${voie.label} n’est pas compatible avec le village sélectionné.`);
+            addError(`La voie ${voie.label} n’est pas compatible avec le village sélectionné.`);
           }
         }
       }
 
+      const mainClanKey = clanKey;
+      const secondaryKey = secondaryClanKey;
+
+      const hasClan = (key) => mainClanKey === key || secondaryKey === key;
+
+      if (hasClan("kato")) {
+        const existingKatoActor = (game.actors ?? []).find((actor) => {
+          if (!actor || actor.id === this.id) return false;
+          if (actor.type !== "shinobi") return false;
+
+          const actorHeritage = actor.system?.heritage ?? {};
+          const actorCreation = actor.system?.progression?.creation ?? {};
+          const actorClan = actorHeritage.clan ?? "";
+          const actorSecondaryClan = actorHeritage.hybrid?.secondaryClan ?? "";
+
+          return Boolean(actorCreation.locked)
+            && (actorClan === "kato" || actorSecondaryClan === "kato");
+        });
+
+        if (existingKatoActor) {
+          addError(`Le clan Katō est déjà attribué à ${existingKatoActor.name}, un autre Shinobi validé.`);
+        }
+      }
+
       const forcedAffinities = Array.isArray(affinities.forced) ? affinities.forced : [];
+      const forcedAffinityKeys = Array.from(new Set(forcedAffinities.map(getForcedAffinityKey).filter(Boolean)));
       const primaryAffinity = affinities.primary ?? "";
       const secondaryAffinity = affinities.secondary ?? "";
+
+      const forcedPrimary = forcedAffinities.find((entry) => getForcedAffinitySlot(entry) === "primary");
+      const forcedSecondary = forcedAffinities.find((entry) => getForcedAffinitySlot(entry) === "secondary");
+
+      if (forcedPrimary) {
+        const forcedKey = getForcedAffinityKey(forcedPrimary);
+
+        if (primaryAffinity !== forcedKey) {
+          addError(`L’affinité principale doit être ${getAffinityLabel(forcedKey)} car elle est imposée par l’héritage.`);
+        }
+      }
+
+      if (forcedSecondary) {
+        const forcedKey = getForcedAffinityKey(forcedSecondary);
+
+        if (secondaryAffinity !== forcedKey) {
+          addError(`L’affinité secondaire doit être ${getAffinityLabel(forcedKey)} car elle est imposée par l’héritage.`);
+        }
+      }
+
+      if (hasClan("uchiha") && primaryAffinity !== "katon") {
+        addError("Un Uchiha doit avoir Katon comme affinité principale.");
+      }
+
+      if (hasClan("senju")) {
+        if (primaryAffinity !== "doton") {
+          addError("Un Senju doit avoir Doton comme affinité principale.");
+        }
+
+        if (secondaryAffinity !== "suiton") {
+          addError("Un Senju doit avoir Suiton comme affinité secondaire.");
+        }
+      }
 
       const hasAnyAffinity =
         Boolean(primaryAffinity)
         || Boolean(secondaryAffinity)
-        || forcedAffinities.length > 0;
+        || forcedAffinityKeys.length > 0;
 
       if (!hasAnyAffinity) {
-        errors.push("Aucune affinité de Chakra n’est sélectionnée.");
+        addError("Aucune affinité de Chakra n’est sélectionnée.");
       }
 
       if (primaryAffinity && secondaryAffinity && primaryAffinity === secondaryAffinity) {
-        errors.push("L’affinité secondaire doit être différente de l’affinité principale.");
+        addError("L’affinité secondaire doit être différente de l’affinité principale.");
       }
 
       if (initialSkillsUsed > maxInitialSkills) {
-        errors.push(`Trop de compétences initiales : ${initialSkillsUsed} / ${maxInitialSkills}.`);
+        addError(`Trop de compétences initiales : ${initialSkillsUsed} / ${maxInitialSkills}.`);
       }
 
       const xpAvailable = Number(experience.available ?? 0);
 
       if (xpAvailable < 0) {
-        errors.push(`XP disponible négative : ${xpAvailable}.`);
+        addError(`XP disponible négative : ${xpAvailable}.`);
       }
 
       const heritageLabel = (() => {
@@ -338,37 +422,35 @@ export class Naruto25eActor extends Actor {
 
       const affinityLabels = [];
 
-      for (const key of forcedAffinities) {
-        const label = NARUTO25E.chakraAffinities?.[key]?.label ?? key;
-        affinityLabels.push(`${label} imposée`);
+      for (const entry of forcedAffinities) {
+        const key = getForcedAffinityKey(entry);
+        if (!key) continue;
+
+        const slot = getForcedAffinitySlot(entry);
+        const slotLabel = slot === "primary"
+          ? "principale"
+          : slot === "secondary"
+          ? "secondaire"
+          : "imposée";
+
+        affinityLabels.push(`${getAffinityLabel(key)} ${slotLabel} imposée`);
       }
 
-      if (primaryAffinity) {
-        const label = NARUTO25E.chakraAffinities?.[primaryAffinity]?.label ?? primaryAffinity;
-        affinityLabels.push(`${label} principale`);
+      if (primaryAffinity && !forcedAffinityKeys.includes(primaryAffinity)) {
+        affinityLabels.push(`${getAffinityLabel(primaryAffinity)} principale`);
       }
 
-      if (secondaryAffinity) {
-        const label = NARUTO25E.chakraAffinities?.[secondaryAffinity]?.label ?? secondaryAffinity;
-        affinityLabels.push(`${label} secondaire`);
+      if (secondaryAffinity && !forcedAffinityKeys.includes(secondaryAffinity)) {
+        affinityLabels.push(`${getAffinityLabel(secondaryAffinity)} secondaire`);
       }
-
-            const addWarning = (message) => {
-        if (!warnings.includes(message)) warnings.push(message);
-      };
 
       if (mode === "clan" || mode === "hybridClan" || mode === "hybridVoie") {
-        const mainClanKey = clanKey;
-        const secondaryKey = secondaryClanKey;
-
-        const hasClan = (key) => mainClanKey === key || secondaryKey === key;
-
         if (hasClan("uchiha")) {
-          addWarning("Uchiha : les pouvoirs du Mangekyō peuvent nécessiter une validation MJ, une santé oculaire suivie et des choix d’œil cohérents.");
+          addWarning("Uchiha : les pouvoirs du Mangekyō peuvent nécessiter une validation narrative, une santé oculaire suivie et des choix d’œil cohérents.");
         }
 
         if (hasClan("senju")) {
-          addWarning("Senju : Mokuton impose Doton et Suiton comme affinités de lignée. Le joueur devra tenir compte de cette contrainte dans ses compétences initiales.");
+          addWarning("Senju : Mokuton impose Doton et Suiton. Le personnage n’a pas de choix libre d’affinité naturelle au départ.");
         }
 
         if (hasClan("aburame")) {
@@ -384,7 +466,7 @@ export class Naruto25eActor extends Actor {
         }
 
         if (hasClan("kato")) {
-          addWarning("Katō : Yūrengan est disponible, mais les pouvoirs avancés spirituels seront détaillés progressivement.");
+          addWarning("Katō : ce clan est limité à un seul Shinobi joueur validé dans ce monde.");
         }
 
         if (hasClan("inuzuka")) {
@@ -402,6 +484,10 @@ export class Naruto25eActor extends Actor {
 
       if (initialSkillsUsed === maxInitialSkills - 1) {
         addWarning("Il ne reste qu’une compétence initiale disponible.");
+      }
+
+      if (!String(system.identity?.prenom ?? "").trim()) {
+        addWarning("Le surnom Shinobi est vide.");
       }
 
       return {
@@ -425,38 +511,52 @@ export class Naruto25eActor extends Actor {
     async validateCreation() {
       if (this.type !== "shinobi") return;
 
-      if (!game.user.isGM) {
-        ui.notifications.warn("Seul le MJ peut valider définitivement la création.");
+      if (this.isCreationLocked()) {
+        ui.notifications.warn("Cette création est déjà validée.");
         return;
       }
 
-    const validation = this.getCreationValidationSummary();
+      if (!this.isOwner && !game.user.isGM) {
+        ui.notifications.warn("Tu n’as pas les droits nécessaires pour valider ce dossier.");
+        return;
+      }
 
-    if (!validation.valid) {
-      const errorList = validation.errors.map((error) => `<li>${error}</li>`).join("");
+      const validation = this.getCreationValidationSummary();
 
-      await Dialog.alert({
-        title: "Création invalide",
-        content: `
-          <p>La création de <strong>${this.name}</strong> ne peut pas encore être validée.</p>
-          <ul>${errorList}</ul>
+      if (!validation.valid) {
+        const errorList = validation.errors.map((error) => `<li>${error}</li>`).join("");
+
+        await Dialog.alert({
+          title: "Création invalide",
+          content: `
+            <p>La création de <strong>${this.name}</strong> ne peut pas encore être validée.</p>
+            <p>Corrige les erreurs bloquantes suivantes :</p>
+            <ul>${errorList}</ul>
+          `
+        });
+
+        return;
+      }
+
+      const warningList = validation.warnings.length > 0
+        ? `
+          <p>Le dossier contient aussi des avertissements non bloquants :</p>
+          <ul>${validation.warnings.map((warning) => `<li>${warning}</li>`).join("")}</ul>
         `
-      });
-
-      return;
-    }
+        : "";
 
       const confirmed = await Dialog.confirm({
-        title: "Valider la création",
+        title: "Valider le dossier de Shinobi",
         content: `
-          <p>Valider la création de <strong>${this.name}</strong> ?</p>
-          <p>Les choix fondateurs seront verrouillés pour les joueurs :</p>
+          <p>Valider définitivement le dossier de <strong>${this.name}</strong> ?</p>
+          <p>Le sceau officiel sera apposé et les choix fondateurs seront verrouillés.</p>
           <ul>
             <li>Village, statut, clan, voie, hybridation</li>
             <li>Nindō narratif</li>
             <li>Compétences initiales</li>
-            <li>Affinités de chakra futures</li>
+            <li>Affinités de Chakra futures</li>
           </ul>
+          ${warningList}
         `,
         yes: () => true,
         no: () => false,
@@ -468,10 +568,15 @@ export class Naruto25eActor extends Actor {
       await this.update({
         "system.progression.creation.locked": true,
         "system.progression.creation.validatedAt": new Date().toISOString(),
-        "system.progression.creation.validatedBy": game.user.name
+        "system.progression.creation.validatedBy": game.user.name,
+        "system.progression.creation.currentStep": "summary"
       });
 
-      ui.notifications.info(`Création validée pour ${this.name}.`);
+      ui.notifications.info(`Dossier de Shinobi validé pour ${this.name}.`);
+    }
+
+    async finalizeCreation() {
+      return this.validateCreation();
     }
 
     async unlockCreation() {
@@ -1478,6 +1583,7 @@ async decreaseBase(baseKey) {
         secondary: "",
         forced: [],
         extra: [],
+        owned: [],
         unlockedByGM: false,
         notes: ""
       };
@@ -1489,19 +1595,71 @@ async decreaseBase(baseKey) {
       ? "clan"
       : heritage.mode ?? "clan";
 
+    if (!heritage.affinities) {
+      heritage.affinities = {
+        primary: "",
+        secondary: "",
+        forced: [],
+        extra: [],
+        notes: ""
+      };
+    }
+
     affinities.primary = affinities.primary ?? "";
     affinities.secondary = affinities.secondary ?? "";
     affinities.extra = Array.isArray(affinities.extra) ? affinities.extra : [];
     affinities.notes = affinities.notes ?? "";
     affinities.unlockedByGM = Boolean(affinities.unlockedByGM);
 
-    const forcedAffinities = new Set();
+    const forcedAffinities = [];
+
+    const addForcedAffinity = (affinityKey, options = {}) => {
+      if (!affinityKey) return;
+
+      const entry = {
+        slot: options.slot ?? "",
+        key: affinityKey,
+        source: options.source ?? "clan",
+        sourceKey: options.sourceKey ?? "",
+        locked: options.locked !== false
+      };
+
+      const exists = forcedAffinities.some((candidate) => {
+        return candidate.key === entry.key
+          && candidate.slot === entry.slot
+          && candidate.source === entry.source
+          && candidate.sourceKey === entry.sourceKey;
+      });
+
+      if (!exists) forcedAffinities.push(entry);
+    };
 
     const addClanAffinities = (clanKey) => {
       if (!clanKey || !NARUTO25E.getClanMandatoryAffinities) return;
 
-      for (const affinityKey of NARUTO25E.getClanMandatoryAffinities(clanKey)) {
-        forcedAffinities.add(affinityKey);
+      const mandatoryAffinities = NARUTO25E.getClanMandatoryAffinities(clanKey);
+
+      for (const affinityKey of mandatoryAffinities) {
+        let slot = "";
+
+        if (clanKey === "uchiha" && affinityKey === "katon") {
+          slot = "primary";
+        }
+
+        if (clanKey === "senju" && affinityKey === "doton") {
+          slot = "primary";
+        }
+
+        if (clanKey === "senju" && affinityKey === "suiton") {
+          slot = "secondary";
+        }
+
+        addForcedAffinity(affinityKey, {
+          slot,
+          source: "clan",
+          sourceKey: clanKey,
+          locked: true
+        });
       }
     };
 
@@ -1522,12 +1680,37 @@ async decreaseBase(baseKey) {
         const choice = NARUTO25E.getCustomClanChoiceData?.(choiceKey);
 
         if (choice?.type === "affinity" && choice.valid) {
-          forcedAffinities.add(choice.key);
+          addForcedAffinity(choice.key, {
+            slot: "",
+            source: "customClan",
+            sourceKey: "custom",
+            locked: true
+          });
         }
       }
     }
 
-    affinities.forced = Array.from(forcedAffinities);
+    affinities.forced = forcedAffinities;
+
+    for (const entry of forcedAffinities) {
+      if (!entry.locked) continue;
+
+      if (entry.slot === "primary") {
+        affinities.primary = entry.key;
+      }
+
+      if (entry.slot === "secondary") {
+        affinities.secondary = entry.key;
+      }
+    }
+
+    heritage.affinities.primary = affinities.primary;
+    heritage.affinities.secondary = affinities.secondary;
+    heritage.affinities.forced = forcedAffinities;
+    heritage.affinities.extra = Array.isArray(heritage.affinities.extra)
+      ? heritage.affinities.extra
+      : [];
+    heritage.affinities.notes = heritage.affinities.notes ?? "";
 
     const ownedAffinityKeys = new Set();
 
@@ -1542,8 +1725,8 @@ async decreaseBase(baseKey) {
       this._addSkillCreationSource(system, skillKey, source);
     };
 
-    for (const affinityKey of affinities.forced) {
-      addAffinitySkill(affinityKey, "affinityForced");
+    for (const entry of affinities.forced) {
+      addAffinitySkill(entry.key, "affinityForced");
     }
 
     const affinityCostMode = game.settings?.get("naruto-25e", "affinityCostMode") ?? "freePrimary";

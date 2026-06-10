@@ -532,7 +532,13 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
   ].filter(Boolean);
 
   const chakraAffinities = this.actor.system.chakra?.affinities ?? {};
-  const forcedAffinities = Array.isArray(chakraAffinities.forced) ? chakraAffinities.forced : [];
+  const forcedAffinityEntries = Array.isArray(chakraAffinities.forced) ? chakraAffinities.forced : [];
+  const getForcedAffinityKey = (entry) => {
+    if (!entry) return "";
+    if (typeof entry === "object") return String(entry.key ?? entry.id ?? entry.value ?? "");
+    return String(entry);
+  };
+  const forcedAffinities = forcedAffinityEntries.map(getForcedAffinityKey).filter(Boolean);
   const ownedAffinities = Array.isArray(chakraAffinities.owned) ? chakraAffinities.owned : [];
 
   context.chakraAffinityOptions = NARUTO25E.chakraAffinityOrder.map((key) => {
@@ -596,7 +602,7 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     label: creation.locked ? "Validée" : "Brouillon",
     validatedAt: creation.validatedAt ?? "",
     validatedBy: creation.validatedBy ?? "",
-    canValidate: game.user.isGM && !creation.locked,
+    canValidate: (this.actor.isOwner || game.user.isGM) && !creation.locked,
     validationValid: Boolean(context.creationValidation?.valid),
     canUnlock: game.user.isGM && creation.locked
   };

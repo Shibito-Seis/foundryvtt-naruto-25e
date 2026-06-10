@@ -2,6 +2,55 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.30 — Shinobimancer : finalisation fonctionnelle du dossier
+
+### Ajouté
+
+- Ajout de la finalisation de création côté joueur : un joueur propriétaire peut désormais valider son dossier de Shinobi sans intervention obligatoire du MJ.
+- Ajout d’un état de finalisation exploitable dans le Shinobimancer :
+
+  - `canFinalizeCreation`
+  - `creationLocked`
+- Ajout d’une validation bloquante pour le clan Katō : un seul acteur `shinobi` validé peut porter ce clan dans le monde.
+- Ajout d’une gestion structurée des affinités imposées par héritage/clan via des entrées `forced` contenant notamment :
+
+  - `slot`
+  - `key`
+  - `source`
+  - `sourceKey`
+  - `locked`
+- Ajout des champs d’identité étendue dans le modèle acteur :
+
+  - âge
+  - naissance
+  - sexe
+  - taille
+  - poids
+  - cheveux
+  - yeux
+  - sensei
+  - équipe
+  - notes
+
+### Modifié
+
+- Le champ principal `actor.name` est désormais présenté comme “Nom du ninja”.
+- Le champ `system.identity.prenom` est désormais présenté comme “Surnom Shinobi”.
+- La validation de création n’est plus réservée au MJ : le MJ conserve seulement le déverrouillage exceptionnel.
+- Les warnings ne bloquent plus la finalisation : seules les erreurs bloquantes empêchent la validation du dossier.
+- Les affinités forcées sont désormais appliquées mécaniquement :
+
+  - Uchiha : Katon imposé en affinité principale.
+  - Senju : Doton imposé en affinité principale et Suiton imposé en affinité secondaire.
+- Le résumé final du Shinobimancer affiche désormais une validation de dossier plutôt qu’un futur sceau MJ mécanique.
+- L’étape équipement précise que le paquetage reste en prévisualisation et sera automatisé dans une future version.
+
+### Corrigé
+
+- Clarification de la séparation entre erreurs bloquantes et avertissements non bloquants.
+- Compatibilité renforcée avec les affinités forcées sous forme d’objets structurés plutôt que simples chaînes.
+- Le panneau droit et le résumé final disposent maintenant des données nécessaires pour gérer l’état de validation/finalisation.
+
 ## [0.1.29.2]
 
 ### Corrigé

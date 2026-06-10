@@ -5,12 +5,12 @@
 
     <div class="header-fields">
       <h1>
-        <input name="name" type="text" value="{{actor.name}}" placeholder="Nom du personnage" />
+        <input name="name" type="text" value="{{actor.name}}" placeholder="Nom du ninja" />
       </h1>
 
       <div class="identity-grid">
         <label>
-        Prénom(s)
+        Surnom Shinobi
         <input name="system.identity.prenom" type="text" value="{{system.identity.prenom}}" />
         </label>
 
@@ -153,25 +153,23 @@
             {{/if}}
           </div>
 
-          {{#if isGM}}
-            <div class="button-row">
-              {{#if creationState.canValidate}}
-                <button
-                  type="button"
-                  class="creation-validate"
-                  {{#unless creationState.validationValid}}disabled{{/unless}}
-                  >
-                  Valider la création
-                </button>
-              {{/if}}
+          <div class="button-row">
+            {{#if creationState.canValidate}}
+              <button
+                type="button"
+                class="creation-validate"
+                {{#unless creationState.validationValid}}disabled{{/unless}}
+                >
+                Valider mon dossier
+              </button>
+            {{/if}}
 
-              {{#if creationState.canUnlock}}
-                <button type="button" class="creation-unlock">
-                  MJ : Déverrouiller la création
-                </button>
-              {{/if}}
-            </div>
-          {{/if}}
+            {{#if creationState.canUnlock}}
+              <button type="button" class="creation-unlock">
+                MJ : Déverrouiller la création
+              </button>
+            {{/if}}
+          </div>
         </section>
       <section class="panel">
          <h2>Ressources</h2>
@@ -1247,24 +1245,24 @@
               Affinité principale
               <select name="system.chakra.affinities.primary" {{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}>
                 <option value="">— Aucune —</option>
-                  {{#each chakraAffinityOptions as |affinity|}}
-                    <option value="{{affinity.key}}" {{#if affinity.primarySelected}}selected{{/if}}>
+                {{#each chakraAffinityOptions as |affinity|}}
+                  <option value="{{affinity.key}}" {{#if affinity.primarySelected}}selected{{/if}}>
                     {{affinity.label}}
-                </option>
-                  {{/each}}
+                  </option>
+                {{/each}}
               </select>
             </label>
 
             <label>
               Affinité secondaire
-                <select name="system.chakra.affinities.secondary" {{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}>
-                  <option value="">— Aucune —</option>
-                  {{#each chakraAffinityOptions as |affinity|}}
-                    <option value="{{affinity.key}}" {{#if affinity.secondarySelected}}selected{{/if}}>
-                      {{affinity.label}}
-                    </option>
-                  {{/each}}
-                </select>
+              <select name="system.chakra.affinities.secondary" {{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}>
+                <option value="">— Aucune —</option>
+                {{#each chakraAffinityOptions as |affinity|}}
+                  <option value="{{affinity.key}}" {{#if affinity.secondarySelected}}selected{{/if}}>
+                    {{affinity.label}}
+                  </option>
+                {{/each}}
+              </select>
             </label>
           </div>
 

@@ -64,12 +64,12 @@
 
             <div class="shinobimancer-form-preview shinobimancer-form-preview-large">
               <label>
-                Nom du personnage
+                Nom du ninja
                 <input type="text" value="{{identity.name}}" readonly />
               </label>
 
               <label>
-                Prénom(s)
+                Surnom Shinobi
                 <input type="text" value="{{identity.prenom}}" readonly />
               </label>
 
@@ -439,8 +439,8 @@
           </div>
 
           <div class="shinobimancer-notice is-info">
-            <strong>Attribution différée</strong>
-            <span>L’attribution automatique du paquetage viendra avec le Charactomancer fonctionnel. Pour l’instant, cet écran sert à la maquette et à la validation visuelle.</span>
+            <strong>Attribution finale</strong>
+            <span>Le paquetage sera attribué lors de la finalisation du dossier. Cette version affiche encore le paquetage en prévisualisation.</span>
           </div>
         </section>
       {{/if}}
@@ -453,7 +453,7 @@
               <h3>Résumé du dossier</h3>
             </div>
 
-            <span class="shinobimancer-status-pill">Sceau MJ à venir</span>
+            <span class="shinobimancer-status-pill">Validation du dossier</span>
           </div>
 
           <div class="shinobimancer-final-sheet">
@@ -527,7 +527,7 @@
 
               <article>
                 <h4>Équipement</h4>
-                <p>Paquetage ninja affiché en prévisualisation. Attribution automatique prévue plus tard.</p>
+                <p>Paquetage ninja affiché en prévisualisation. L’attribution automatique complète arrivera avec la version équipement.</p>
               </article>
             </section>
 
@@ -557,15 +557,26 @@
               {{#if summaryPanel.valid}}
                 <div class="shinobimancer-notice is-success">
                   <strong>Dossier conforme</strong>
-                  <span>Aucune erreur bloquante détectée. Le sceau officiel du MJ sera branché avec la validation finale.</span>
+                  <span>Aucune erreur bloquante détectée. Le dossier peut être validé par le joueur.</span>
                 </div>
               {{/if}}
             </section>
 
-            <button type="button" class="shinobimancer-button is-primary shinobimancer-finalize-preview">
-              <i class="fa-solid fa-stamp"></i>
-              Prévisualiser le sceau de validation MJ
-            </button>
+            {{#if creationLocked}}
+              <div class="shinobimancer-notice is-success">
+                <strong>Dossier déjà validé</strong>
+                <span>Le sceau officiel est apposé. La création est verrouillée.</span>
+              </div>
+            {{else}}
+              <button
+                type="button"
+                class="shinobimancer-button is-primary shinobimancer-finalize-creation"
+                {{#unless canFinalizeCreation}}disabled{{/unless}}
+              >
+                <i class="fa-solid fa-stamp"></i>
+                Valider mon dossier de Shinobi
+              </button>
+            {{/if}}
           </div>
         </section>
       {{/if}}
@@ -638,6 +649,27 @@
           </span>
         {{/if}}
       </div>
+            {{#if creationValidation.errors.length}}
+        <div class="shinobimancer-notice is-error">
+          <strong>À corriger</strong>
+          <ul>
+            {{#each creationValidation.errors as |error|}}
+              <li>{{error}}</li>
+            {{/each}}
+          </ul>
+        </div>
+      {{/if}}
+
+      {{#if creationValidation.warnings.length}}
+        <div class="shinobimancer-notice is-warning">
+          <strong>À surveiller</strong>
+          <ul>
+            {{#each creationValidation.warnings as |warning|}}
+              <li>{{warning}}</li>
+            {{/each}}
+          </ul>
+        </div>
+      {{/if}}
     </aside>
   </div>
 
