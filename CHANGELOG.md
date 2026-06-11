@@ -2,6 +2,33 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.31.3 - Correction paquetage dans inventaire custom
+
+### Corrigé
+
+- Correction de l’attribution du paquetage de départ dans l’onglet Inventaire :
+  - les items sont toujours créés comme embedded Items Foundry ;
+  - une entrée miroir est maintenant créée dans `system.inventory.items` ;
+  - l’inventaire custom de la fiche affiche désormais les armes, consommables et objets accordés.
+- Correction de l’anti-doublon du paquetage :
+  - détection des embedded Items déjà accordés ;
+  - détection des entrées d’inventaire custom déjà accordées ;
+  - possibilité de réparer un ancien paquetage embedded sans miroir custom lors d’une revalidation.
+- Ajout de logs console pour diagnostiquer la synchronisation entre embedded Items et inventaire custom.
+
+### Technique
+
+- Maintien des types Item Foundry en français :
+  - `arme`
+  - `armure`
+  - `equipement`
+  - `consommable`
+- Maintien des types internes d’inventaire custom en anglais :
+  - `weapon`
+  - `armor`
+  - `consumable`
+  - `misc`
+
 ## 0.1.31.2 - Correctifs inventaire, Senju et validation Chakra
 
 ### Corrigé

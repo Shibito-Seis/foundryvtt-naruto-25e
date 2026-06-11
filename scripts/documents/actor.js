@@ -649,10 +649,56 @@ export class Naruto25eActor extends Actor {
       }
     }
 
-    _hasCreationEquipmentAlreadyGranted() {
-      return this.items.some((item) => {
+    _getCreationGrantedEmbeddedItems() {
+      return this.items.filter((item) => {
         return item.getFlag?.("naruto-25e", "grantedAtCreation") === true;
       });
+    }
+
+    _hasCreationEquipmentAlreadyGranted() {
+      return this._getCreationGrantedEmbeddedItems().length > 0;
+    }
+
+    _hasCreationInventoryItemsAlreadyGranted() {
+      const inventoryItems = this.system.inventory?.items ?? [];
+
+      return inventoryItems.some((item) => {
+        return item.creationGranted === true
+          || item.grantedAtCreation === true
+          || item.creationPackage === "startingEquipment"
+          || item.flags?.["naruto-25e"]?.grantedAtCreation === true;
+      });
+    }
+
+    _getCreationInventoryEntryFromDocument(itemDocument, options = {}) {
+      const inventoryItem = this._getInventoryItemDataFromDocument(itemDocument);
+
+      inventoryItem.sourceItemId = itemDocument.id ?? inventoryItem.sourceItemId ?? "";
+      inventoryItem.sourceItemUuid = itemDocument.uuid ?? inventoryItem.sourceItemUuid ?? "";
+      inventoryItem.creationGranted = true;
+      inventoryItem.grantedAtCreation = true;
+      inventoryItem.creationPackage = "startingEquipment";
+      inventoryItem.grantedAt = options.grantedAt ?? "";
+      inventoryItem.grantedBy = options.grantedBy ?? "";
+      inventoryItem.notes = inventoryItem.notes || "Paquetage de départ du Shinobimancer.";
+
+      inventoryItem.flags = foundry.utils.mergeObject(inventoryItem.flags ?? {}, {
+        "naruto-25e": {
+          grantedAtCreation: true,
+          creationPackage: "startingEquipment",
+          sourceItemId: inventoryItem.sourceItemId,
+          sourceItemUuid: inventoryItem.sourceItemUuid,
+          grantedAt: inventoryItem.grantedAt,
+          grantedBy: inventoryItem.grantedBy
+        }
+      }, {
+        inplace: false,
+        overwrite: true,
+        insertKeys: true,
+        insertValues: true
+      });
+
+      return inventoryItem;
     }
 
     async grantStartingEquipment() {
@@ -660,8 +706,10 @@ export class Naruto25eActor extends Actor {
 
       const creation = this.system.progression?.creation ?? {};
       const startingEquipment = creation.startingEquipment ?? {};
+      const existingEmbeddedItems = this._getCreationGrantedEmbeddedItems();
+      const hasCustomInventoryItems = this._hasCreationInventoryItemsAlreadyGranted();
 
-      if (startingEquipment.granted || this._hasCreationEquipmentAlreadyGranted()) {
+      if ((startingEquipment.granted || existingEmbeddedItems.length > 0) && hasCustomInventoryItems) {
         ui.notifications.info("Le paquetage de départ a déjà été attribué.");
         return true;
       }
@@ -706,54 +754,103 @@ export class Naruto25eActor extends Actor {
       const grantedAt = new Date().toISOString();
       const grantedBy = game.user?.name ?? "";
 
-      const documentsToCreate = sourceDocuments.map((document) => {
-        const raw = typeof document.toObject === "function"
-          ? document.toObject()
-          : foundry.utils.deepClone(document);
+      let createdItems = existingEmbeddedItems;
 
-        return {
-          name: raw.name,
-          type: raw.type,
-          img: raw.img ?? "icons/svg/item-bag.svg",
-          system: foundry.utils.deepClone(raw.system ?? {}),
-          flags: {
-            "naruto-25e": {
-              grantedAtCreation: true,
-              creationPackage: "startingEquipment",
-              grantedAt,
-              grantedBy
+      if (createdItems.length === 0) {
+        const documentsToCreate = sourceDocuments.map((document) => {
+          const raw = typeof document.toObject === "function"
+            ? document.toObject()
+            : foundry.utils.deepClone(document);
+
+          return {
+            name: raw.name,
+            type: raw.type,
+            img: raw.img ?? "icons/svg/item-bag.svg",
+            system: foundry.utils.deepClone(raw.system ?? {}),
+            flags: {
+              "naruto-25e": {
+                grantedAtCreation: true,
+                creationPackage: "startingEquipment",
+                grantedAt,
+                grantedBy
+              }
             }
-          }
-        };
-      });
+          };
+        });
 
-      console.groupCollapsed(`Naruto 2.5e | Attribution paquetage de départ — ${this.name}`);
-      console.info("Items demandés :", itemNames);
-      console.info("Documents trouvés :", sourceDocuments.map((document) => document.name));
-      console.table(documentsToCreate.map((document) => ({
-        name: document.name,
-        type: document.type,
-        quantity: document.system?.quantity ?? 1
-      })));
-      console.groupEnd();
+        console.groupCollapsed(`Naruto 2.5e | Attribution paquetage de départ — ${this.name}`);
+        console.info("Items demandés :", itemNames);
+        console.info("Documents trouvés :", sourceDocuments.map((document) => document.name));
+        console.table(documentsToCreate.map((document) => ({
+          name: document.name,
+          type: document.type,
+          quantity: document.system?.quantity ?? 1
+        })));
+        console.groupEnd();
 
-      let createdItems = [];
+        try {
+          createdItems = await this.createEmbeddedDocuments("Item", documentsToCreate);
+        } catch (error) {
+          console.error("Naruto 2.5e | Attribution du paquetage de départ impossible.", error);
+          ui.notifications.error("Erreur pendant l’attribution du paquetage de départ. Voir la console.");
+          return false;
+        }
 
-      try {
-        createdItems = await this.createEmbeddedDocuments("Item", documentsToCreate);
-      } catch (error) {
-        console.error("Naruto 2.5e | Attribution du paquetage de départ impossible.", error);
-        ui.notifications.error("Erreur pendant l’attribution du paquetage de départ. Voir la console.");
-        return false;
+        if (!createdItems || createdItems.length === 0) {
+          ui.notifications.warn("Aucun item de paquetage n’a été créé.");
+          console.warn("Naruto 2.5e | createEmbeddedDocuments a retourné 0 item.", {
+            actor: this.name,
+            documentsToCreate
+          });
+          return false;
+        }
+      } else {
+        console.info(`Naruto 2.5e | Paquetage embedded déjà présent pour ${this.name}, création miroir inventaire custom.`);
       }
 
-      if (!createdItems || createdItems.length === 0) {
-        ui.notifications.warn("Aucun item de paquetage n’a été créé.");
-        console.warn("Naruto 2.5e | createEmbeddedDocuments a retourné 0 item.", {
-          actor: this.name,
-          documentsToCreate
+      if (!hasCustomInventoryItems) {
+        const inventoryItems = foundry.utils.deepClone(this.system.inventory?.items ?? []);
+        const existingCreationItemNames = new Set(
+          inventoryItems
+            .filter((item) => item.creationPackage === "startingEquipment" || item.creationGranted === true)
+            .map((item) => item.name)
+        );
+
+        const inventoryEntries = createdItems
+          .filter((item) => !existingCreationItemNames.has(item.name))
+          .map((item, index) => {
+            const entry = this._getCreationInventoryEntryFromDocument(item, {
+              grantedAt,
+              grantedBy
+            });
+
+            entry.sort = inventoryItems.length + index;
+
+            return entry;
+          });
+
+        if (inventoryEntries.length === 0) {
+          ui.notifications.warn("Aucune entrée d’inventaire custom n’a été créée pour le paquetage.");
+          console.warn("Naruto 2.5e | Miroir inventaire custom vide.", {
+            actor: this.name,
+            createdItems: createdItems.map((item) => item.name),
+            inventoryItems
+          });
+          return false;
+        }
+
+        await this.update({
+          "system.inventory.items": inventoryItems.concat(inventoryEntries)
         });
-        return false;
+
+        console.groupCollapsed(`Naruto 2.5e | Miroir inventaire custom — ${this.name}`);
+        console.table(inventoryEntries.map((item) => ({
+          name: item.name,
+          type: item.type,
+          quantity: item.quantity,
+          sourceItemId: item.sourceItemId
+        })));
+        console.groupEnd();
       }
 
       await this.update({
@@ -762,7 +859,7 @@ export class Naruto25eActor extends Actor {
         "system.progression.creation.startingEquipment.grantedBy": grantedBy
       });
 
-      ui.notifications.info(`Paquetage de départ attribué à ${this.name} : ${createdItems.length} item(s).`);
+      ui.notifications.info(`Paquetage de départ attribué à ${this.name} : ${createdItems.length} item(s), inventaire synchronisé.`);
 
       return true;
     }
