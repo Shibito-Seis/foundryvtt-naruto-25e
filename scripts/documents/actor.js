@@ -709,8 +709,38 @@ export class Naruto25eActor extends Actor {
       const existingEmbeddedItems = this._getCreationGrantedEmbeddedItems();
       const hasCustomInventoryItems = this._hasCreationInventoryItemsAlreadyGranted();
 
-      if ((startingEquipment.granted || existingEmbeddedItems.length > 0) && hasCustomInventoryItems) {
+      if (hasCustomInventoryItems && existingEmbeddedItems.length > 0) {
+        if (!startingEquipment.granted) {
+          await this.update({
+            "system.progression.creation.startingEquipment.granted": true,
+            "system.progression.creation.startingEquipment.grantedAt": startingEquipment.grantedAt || new Date().toISOString(),
+            "system.progression.creation.startingEquipment.grantedBy": startingEquipment.grantedBy || game.user?.name || ""
+          });
+        }
+
         ui.notifications.info("Le paquetage de départ a déjà été attribué.");
+        return true;
+      }
+
+      if (hasCustomInventoryItems && existingEmbeddedItems.length === 0) {
+        if (!startingEquipment.granted) {
+          await this.update({
+            "system.progression.creation.startingEquipment.granted": true,
+            "system.progression.creation.startingEquipment.grantedAt": startingEquipment.grantedAt || new Date().toISOString(),
+            "system.progression.creation.startingEquipment.grantedBy": startingEquipment.grantedBy || game.user?.name || ""
+          });
+        }
+
+        ui.notifications.info("Le paquetage de départ est déjà présent dans l’inventaire.");
+        return true;
+      }
+
+      if (startingEquipment.granted && existingEmbeddedItems.length === 0 && !hasCustomInventoryItems) {
+        ui.notifications.warn("Le paquetage est marqué comme déjà attribué, mais aucun item n’a été trouvé. Déverrouillage de sécurité : aucune nouvelle attribution automatique.");
+        console.warn("Naruto 2.5e | Paquetage marqué attribué sans miroir trouvé.", {
+          actor: this.name,
+          startingEquipment
+        });
         return true;
       }
 

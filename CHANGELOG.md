@@ -2,6 +2,28 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.31.4 - Portrait PJ guidé et sécurité paquetage
+
+### Ajouté
+
+- Ajout d’un upload guidé du portrait depuis le Shinobimancer.
+- Ajout d’une fenêtre “Changer le portrait” :
+  - les joueurs peuvent importer une image depuis leur ordinateur ;
+  - le MJ peut importer une image ou choisir une image existante via le FilePicker classique.
+- Ajout de deux réglages système :
+  - `portraitUploadSource`, par défaut `forgevtt` ;
+  - `portraitUploadPath`, par défaut `worlds/Naruto/PJ`.
+
+### Modifié
+
+- Le clic sur le portrait du Shinobimancer n’ouvre plus directement l’explorateur Foundry pour les joueurs.
+- Le chemin canonique des portraits PJ devient `worlds/Naruto/PJ`.
+
+### Corrigé
+
+- Renforcement de l’anti-doublon du paquetage de départ après déverrouillage et revalidation.
+- Si le paquetage est déjà présent dans l’inventaire custom ou en embedded Items, il n’est plus attribué une seconde fois.
+
 ## 0.1.31.3 - Correction paquetage dans inventaire custom
 
 ### Corrigé

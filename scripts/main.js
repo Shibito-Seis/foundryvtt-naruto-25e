@@ -155,6 +155,30 @@ Hooks.once("init", async function () {
     default: false
   });
 
+    game.settings.register("naruto-25e", "portraitUploadSource", {
+    name: "Source d’upload des portraits PJ",
+    hint: "Source FilePicker utilisée pour l’upload guidé des portraits depuis le Shinobimancer. Sur The Forge, utiliser forgevtt.",
+    scope: "world",
+    config: true,
+    restricted: true,
+    type: String,
+    choices: {
+      forgevtt: "The Forge Assets",
+      data: "Données utilisateur Foundry"
+    },
+    default: "forgevtt"
+  });
+
+  game.settings.register("naruto-25e", "portraitUploadPath", {
+    name: "Dossier d’upload des portraits PJ",
+    hint: "Chemin cible pour les portraits importés depuis le Shinobimancer. Exemple The Forge : worlds/Naruto/PJ",
+    scope: "world",
+    config: true,
+    restricted: true,
+    type: String,
+    default: "worlds/Naruto/PJ"
+  });
+
     game.settings.registerMenu("naruto-25e", "techniqueImporter", {
     name: "Importer les techniques",
     label: "Ouvrir l’importeur",

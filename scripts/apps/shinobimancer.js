@@ -1121,22 +1121,170 @@ export class Naruto25eShinobimancerApplication extends Application {
       await this._setCurrentStep(previousStep);
     });
 
-    html.find(".shinobimancer-portrait-picker").on("click", async (event) => {
-      event.preventDefault();
+    const pickLocalImageFile = async () => {
+      return new Promise((resolve) => {
+        const input = document.createElement("input");
 
+        input.type = "file";
+        input.accept = "image/*";
+
+        input.addEventListener("change", () => {
+          resolve(input.files?.[0] ?? null);
+        }, {
+          once: true
+        });
+
+        input.click();
+      });
+    };
+
+    const getPortraitUploadSettings = () => {
+      let source = "forgevtt";
+      let path = "worlds/Naruto/PJ";
+
+      try {
+        source = game.settings.get("naruto-25e", "portraitUploadSource") || source;
+      } catch (error) {
+        source = "forgevtt";
+      }
+
+      try {
+        path = game.settings.get("naruto-25e", "portraitUploadPath") || path;
+      } catch (error) {
+        path = "worlds/Naruto/PJ";
+      }
+
+      return {
+        source,
+        path: String(path).replace(/^\/+|\/+$/g, "")
+      };
+    };
+
+    const uploadPortraitFromComputer = async () => {
+      if (!canEditCreation()) return;
+
+      const file = await pickLocalImageFile();
+
+      if (!file) return;
+
+      if (!String(file.type ?? "").startsWith("image/")) {
+        ui.notifications.warn("Le fichier choisi n’est pas une image.");
+        return;
+      }
+
+      const { source, path } = getPortraitUploadSettings();
+
+      try {
+        try {
+          await FilePicker.createDirectory(source, path, {
+            notify: false
+          });
+        } catch (directoryError) {
+          console.debug("Naruto 2.5e | Dossier portrait déjà existant ou non créable automatiquement.", {
+            source,
+            path,
+            directoryError
+          });
+        }
+
+        const result = await FilePicker.upload(source, path, file, {}, {
+          notify: true
+        });
+
+        const uploadedPath = result?.path ?? result?.url ?? result;
+
+        if (!uploadedPath) {
+          ui.notifications.warn("L’upload du portrait n’a pas renvoyé de chemin utilisable.");
+          console.warn("Naruto 2.5e | Upload portrait sans chemin exploitable.", {
+            result,
+            source,
+            path
+          });
+          return;
+        }
+
+        await this.actor.update({
+          img: uploadedPath
+        });
+
+        ui.notifications.info(`Portrait importé pour ${this.actor.name}.`);
+
+        this.render(false);
+        this.sourceSheet?.render?.(false);
+      } catch (error) {
+        console.error("Naruto 2.5e | Upload du portrait impossible.", error);
+        ui.notifications.error("Impossible d’importer le portrait. Voir la console ou demander au MJ.");
+      }
+    };
+
+    const browseExistingPortrait = async () => {
       if (!canEditCreation()) return;
 
       const picker = new FilePicker({
         type: "image",
         current: this.actor?.img ?? "",
         callback: async (path) => {
-          await this.actor.update({ img: path });
+          await this.actor.update({
+            img: path
+          });
+
           this.render(false);
           this.sourceSheet?.render?.(false);
         }
       });
 
       picker.browse();
+    };
+
+    const openPortraitDialog = async () => {
+      if (!canEditCreation()) return;
+
+      const { source, path } = getPortraitUploadSettings();
+
+      const content = `
+        <div class="naruto-portrait-upload-dialog">
+          <p>
+            Importe un portrait depuis ton ordinateur.
+          </p>
+          <p>
+            Dossier cible : <strong>${foundry.utils.escapeHTML?.(path) ?? path}</strong>
+          </p>
+          <p class="hint">
+            Source : ${foundry.utils.escapeHTML?.(source) ?? source}
+          </p>
+        </div>
+      `;
+
+      const buttons = {
+        upload: {
+          label: "Importer une image",
+          callback: async () => uploadPortraitFromComputer()
+        }
+      };
+
+      if (game.user?.isGM) {
+        buttons.browse = {
+          label: "Choisir une image existante",
+          callback: async () => browseExistingPortrait()
+        };
+      }
+
+      buttons.cancel = {
+        label: "Annuler"
+      };
+
+      await new Dialog({
+        title: "Changer le portrait",
+        content,
+        buttons,
+        default: "upload"
+      }).render(true);
+    };
+
+    html.find(".shinobimancer-portrait-picker").on("click", async (event) => {
+      event.preventDefault();
+
+      await openPortraitDialog();
     });
 
     html.find("[data-shinobimancer-field]").on("change", async (event) => {
