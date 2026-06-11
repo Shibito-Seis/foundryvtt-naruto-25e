@@ -144,6 +144,13 @@
                 </select>
               </label>
 
+              {{#if selectedNindoPreset}}
+                <div class="shinobimancer-nindo-description is-wide">
+                  <strong>{{selectedNindoPreset.name}}</strong>
+                  <p>{{selectedNindoPreset.description}}</p>
+                </div>
+              {{/if}}
+
               <label class="is-wide">
                 Nindō / devise personnelle
                 <textarea data-shinobimancer-field="system.identity.nindoText" placeholder="Formule, promesse ou voie personnelle du Shinobi." {{#if creationLocked}}disabled{{/if}}>{{identity.nindo}}</textarea>
@@ -523,7 +530,10 @@
 
                 <div class="shinobimancer-skill-list">
                   {{#each group.skills as |skill|}}
-                    <article class="shinobimancer-skill-pill {{#if skill.owned}}is-owned{{/if}}">
+                    <article
+                      class="shinobimancer-skill-pill {{#if skill.owned}}is-owned{{/if}} {{#if skill.manualOwned}}is-selected{{/if}} {{#if skill.lockedBySource}}is-locked{{/if}} {{#if skill.selectableAsInitial}}is-selectable{{/if}}"
+                      data-skill="{{skill.key}}"
+                    >
                       <div>
                         <strong>{{skill.label}}</strong>
                         <span>{{skill.baseLabel}} · {{skill.sourceText}}</span>
@@ -595,6 +605,9 @@
                     <p class="shinobimancer-card-eyebrow">{{item.type}}</p>
                     <h4>{{item.name}}</h4>
                     <p>{{item.description}}</p>
+                    {{#if item.selected}}
+                      <span class="shinobimancer-selected-stamp">Sélectionné</span>
+                    {{/if}}
                   </div>
                 </article>
               {{/each}}
@@ -621,6 +634,9 @@
                     <p class="shinobimancer-card-eyebrow">{{item.type}}</p>
                     <h4>{{item.name}}</h4>
                     <p>{{item.description}}</p>
+                    {{#if item.selected}}
+                      <span class="shinobimancer-selected-stamp">Sélectionné</span>
+                    {{/if}}
                   </div>
                 </article>
               {{/each}}

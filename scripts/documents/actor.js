@@ -652,7 +652,7 @@ export class Naruto25eActor extends Actor {
 
       if (startingEquipment.granted || this._hasCreationEquipmentAlreadyGranted()) {
         ui.notifications.info("Le paquetage de départ a déjà été attribué.");
-        return false;
+        return true;
       }
 
       const itemNames = this._getStartingEquipmentItemNames();
@@ -662,15 +662,15 @@ export class Naruto25eActor extends Actor {
         return false;
       }
 
-      let sourceDocuments = await this._getStartingEquipmentDocumentsFromPack(itemNames);
+      let sourceDocuments = await this._getStartingEquipmentDocumentsFromJson(itemNames);
 
-      const missingNames = itemNames.filter((itemName) => {
+      const missingAfterJson = itemNames.filter((itemName) => {
         return !sourceDocuments.some((document) => document.name === itemName);
       });
 
-      if (missingNames.length > 0) {
-        const jsonDocuments = await this._getStartingEquipmentDocumentsFromJson(missingNames);
-        sourceDocuments = [...sourceDocuments, ...jsonDocuments];
+      if (missingAfterJson.length > 0) {
+        const packDocuments = await this._getStartingEquipmentDocumentsFromPack(missingAfterJson);
+        sourceDocuments = [...sourceDocuments, ...packDocuments];
       }
 
       const missingAfterFallback = itemNames.filter((itemName) => {
@@ -682,36 +682,49 @@ export class Naruto25eActor extends Actor {
         return false;
       }
 
+      const grantedAt = new Date().toISOString();
+      const grantedBy = game.user?.name ?? "";
+
       const documentsToCreate = sourceDocuments.map((document) => {
-        const data = typeof document.toObject === "function"
+        const raw = typeof document.toObject === "function"
           ? document.toObject()
           : foundry.utils.deepClone(document);
 
-        delete data._id;
-
-        data.flags = foundry.utils.mergeObject(data.flags ?? {}, {
-          "naruto-25e": {
-            grantedAtCreation: true,
-            creationPackage: "startingEquipment",
-            grantedAt: new Date().toISOString(),
-            grantedBy: game.user?.name ?? ""
+        return {
+          name: raw.name,
+          type: raw.type,
+          img: raw.img ?? "icons/svg/item-bag.svg",
+          system: foundry.utils.deepClone(raw.system ?? {}),
+          flags: {
+            "naruto-25e": {
+              grantedAtCreation: true,
+              creationPackage: "startingEquipment",
+              grantedAt,
+              grantedBy
+            }
           }
-        }, {
-          inplace: false,
-          overwrite: true,
-          insertKeys: true,
-          insertValues: true
-        });
-
-        return data;
+        };
       });
 
-      await this.createEmbeddedDocuments("Item", documentsToCreate);
+      try {
+        const createdItems = await Item.createDocuments(documentsToCreate, {
+          parent: this
+        });
+
+        if (!createdItems || createdItems.length === 0) {
+          ui.notifications.warn("Aucun item de paquetage n’a été créé.");
+          return false;
+        }
+      } catch (error) {
+        console.error("Naruto 2.5e | Attribution du paquetage de départ impossible.", error);
+        ui.notifications.error("Erreur pendant l’attribution du paquetage de départ. Voir la console.");
+        return false;
+      }
 
       await this.update({
         "system.progression.creation.startingEquipment.granted": true,
-        "system.progression.creation.startingEquipment.grantedAt": new Date().toISOString(),
-        "system.progression.creation.startingEquipment.grantedBy": game.user?.name ?? ""
+        "system.progression.creation.startingEquipment.grantedAt": grantedAt,
+        "system.progression.creation.startingEquipment.grantedBy": grantedBy
       });
 
       ui.notifications.info(`Paquetage de départ attribué à ${this.name}.`);

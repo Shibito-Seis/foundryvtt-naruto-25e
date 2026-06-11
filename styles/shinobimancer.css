@@ -1485,3 +1485,139 @@
   max-height: calc(100vh - 72px);
   overflow: auto;
 }
+
+/* ----------------------------------------- */
+/* Shinobimancer 0.1.31 — correctifs UX      */
+/* ----------------------------------------- */
+
+.shinobimancer-data-card,
+.shinobimancer-clan-card,
+.shinobimancer-affinity-card,
+.shinobimancer-equipment-card,
+.shinobimancer-skill-pill {
+  position: relative;
+}
+
+.shinobimancer-data-card.is-selected,
+.shinobimancer-clan-card.is-selected,
+.shinobimancer-affinity-card.is-selected,
+.shinobimancer-equipment-card.is-selected,
+.shinobimancer-skill-pill.is-selected {
+  border: 2px solid rgba(132, 39, 25, 0.95);
+  box-shadow:
+    0 0 0 2px rgba(255, 248, 226, 0.75) inset,
+    0 0.45rem 1rem rgba(76, 23, 16, 0.22);
+  background:
+    linear-gradient(180deg, rgba(132, 39, 25, 0.13), transparent 48%),
+    rgba(255, 248, 226, 0.9);
+}
+
+.shinobimancer-data-card.is-selected::after,
+.shinobimancer-clan-card.is-selected::after,
+.shinobimancer-affinity-card.is-selected::after,
+.shinobimancer-equipment-card.is-selected::after,
+.shinobimancer-skill-pill.is-selected::after {
+  content: "Sélectionné";
+  position: absolute;
+  top: 0.45rem;
+  right: 0.45rem;
+  z-index: 2;
+  padding: 0.18rem 0.45rem;
+  border: 2px solid rgba(132, 39, 25, 0.78);
+  border-radius: 0.15rem;
+  color: var(--shinobi-red-dark);
+  background: rgba(255, 247, 221, 0.94);
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transform: rotate(-3deg);
+}
+
+.shinobimancer-equipment-card.is-fixed::after,
+.shinobimancer-skill-pill.is-locked::after {
+  content: "Accordé";
+  position: absolute;
+  top: 0.45rem;
+  right: 0.45rem;
+  padding: 0.18rem 0.45rem;
+  border: 1px solid rgba(53, 99, 60, 0.58);
+  border-radius: 0.15rem;
+  color: var(--shinobi-green);
+  background: rgba(255, 247, 221, 0.86);
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.shinobimancer-skill-pill.is-selectable {
+  cursor: pointer;
+}
+
+.shinobimancer-skill-pill.is-selectable:hover,
+.shinobimancer-equipment-card:hover,
+.shinobimancer-data-card:not(.is-disabled):hover,
+.shinobimancer-clan-card:hover,
+.shinobimancer-affinity-card:not(.is-disabled):hover {
+  border-color: rgba(132, 39, 25, 0.72);
+  box-shadow: 0 0.35rem 0.9rem rgba(76, 23, 16, 0.16);
+}
+
+.shinobimancer-selected-stamp {
+  display: inline-flex;
+  width: fit-content;
+  margin-top: 0.45rem;
+  padding: 0.18rem 0.45rem;
+  border: 1px solid rgba(132, 39, 25, 0.62);
+  border-radius: 0.15rem;
+  color: var(--shinobi-red-dark);
+  background: rgba(132, 39, 25, 0.08);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.shinobimancer-nindo-description {
+  grid-column: 1 / -1;
+  padding: 0.75rem;
+  border: 1px solid rgba(47, 83, 104, 0.38);
+  border-left: 4px solid var(--shinobi-blue);
+  background: rgba(47, 83, 104, 0.08);
+}
+
+.shinobimancer-nindo-description strong,
+.shinobimancer-nindo-description p {
+  display: block;
+  margin: 0;
+}
+
+.shinobimancer-nindo-description p {
+  margin-top: 0.35rem;
+  color: var(--shinobi-muted);
+}
+
+.shinobimancer-portrait-card {
+  min-height: 100%;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid rgba(58, 35, 20, 0.46);
+  cursor: pointer;
+}
+
+.shinobimancer-portrait-card img {
+  width: 100%;
+  height: min(32rem, 100%);
+  min-height: 26rem;
+  object-fit: cover;
+  border: 0;
+}
+
+.shinobimancer-portrait-card .shinobimancer-mini-note {
+  display: block;
+  margin: 0;
+  padding: 0.55rem;
+  text-align: center;
+  background: rgba(255, 248, 226, 0.86);
+}

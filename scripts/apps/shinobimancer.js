@@ -575,6 +575,37 @@ function buildSkillPreview(actor) {
     affinityExtra: "Affinité spéciale"
   };
 
+  const countableCreationSources = new Set([
+    "manual",
+    "heritage",
+    "affinityForced",
+    "affinityPrimary",
+    "affinitySecondary",
+    "affinityExtra"
+  ]);
+
+  let usedInitialSkills = 0;
+
+  for (const skill of Object.values(skills)) {
+    const sources = Array.isArray(skill.creationSources)
+      ? skill.creationSources
+      : [];
+
+    const hasCountingSource = sources.some((source) => countableCreationSources.has(source));
+    const hasFreePrimaryAffinity = sources.includes("affinityPrimaryFree");
+
+    const counts =
+      hasCountingSource
+      && !(hasFreePrimaryAffinity && sources.every((source) => {
+        return source === "manual" || source === "affinityPrimaryFree";
+      }));
+
+    if (counts) usedInitialSkills += 1;
+  }
+
+  const maxInitialSkills = 5;
+  const remainingInitialSkills = Math.max(0, maxInitialSkills - usedInitialSkills);
+
   return categoryOrder.map((category) => {
     const categorySkills = Object.entries(definitions)
       .filter(([, definition]) => definition.category === category)
@@ -601,7 +632,16 @@ function buildSkillPreview(actor) {
 
         const owned = Boolean(skill.owned ?? definition.ownedByDefault);
         const manualOwned = Boolean(skill.manualOwned);
-        const canIncrease = owned && natural < cap && nextCost !== null;
+        const selectableAsInitial =
+          !owned
+          && !definition.ownedByDefault
+          && definition.category !== "clan"
+          && remainingInitialSkills > 0;
+
+        const canIncrease =
+          (owned && natural < cap && nextCost !== null)
+          || selectableAsInitial;
+
         const canDecrease = natural > 1 || (manualOwned && !lockedBySource);
 
         return {
@@ -612,6 +652,7 @@ function buildSkillPreview(actor) {
           owned,
           manualOwned,
           lockedBySource,
+          selectableAsInitial,
           natural,
           total: Number(skill.total ?? natural),
           sourceText: sources.length > 0
@@ -922,6 +963,14 @@ export class Naruto25eShinobimancerApplication extends Application {
       description: preset.description ?? "",
       selected: key === (nindo.preset ?? "")
     }));
+    const selectedNindoPreset = NARUTO25E.nindoPresets?.[nindo.preset ?? ""];
+
+    context.selectedNindoPreset = selectedNindoPreset
+      ? {
+          name: selectedNindoPreset.name ?? nindo.preset,
+          description: selectedNindoPreset.description ?? ""
+        }
+      : null;
 
     const chakraSpecState = system.chakra?.specializationState ?? {
       available: 1,
@@ -1256,6 +1305,132 @@ export class Naruto25eShinobimancerApplication extends Application {
       this.sourceSheet?.render?.(false);
     });
 
+    const countInitialSkills = () => {
+      const countableSources = new Set([
+        "manual",
+        "heritage",
+        "affinityForced",
+        "affinityPrimary",
+        "affinitySecondary",
+        "affinityExtra"
+      ]);
+
+      let count = 0;
+
+      for (const skill of Object.values(this.actor.system.skills ?? {})) {
+        const sources = Array.isArray(skill.creationSources)
+          ? skill.creationSources
+          : [];
+
+        const hasCountingSource = sources.some((source) => countableSources.has(source));
+        const hasFreePrimaryAffinity = sources.includes("affinityPrimaryFree");
+
+        const counts =
+          hasCountingSource
+          && !(hasFreePrimaryAffinity && sources.every((source) => {
+            return source === "manual" || source === "affinityPrimaryFree";
+          }));
+
+        if (counts) count += 1;
+      }
+
+      return count;
+    };
+
+    const isSkillLockedBySource = (skill) => {
+      const sources = Array.isArray(skill?.creationSources) ? skill.creationSources : [];
+
+      return sources.some((source) => {
+        return source === "common"
+          || source === "heritage"
+          || source === "affinityForced"
+          || source === "affinityPrimary"
+          || source === "affinityPrimaryFree"
+          || source === "affinitySecondary"
+          || source === "affinityExtra";
+      });
+    };
+
+    const chooseInitialSkill = async (skillKey) => {
+      if (!canEditCreation()) return;
+
+      const definition = NARUTO25E.skillDefinitions?.[skillKey];
+      if (!definition) return;
+
+      const skill = this.actor.system.skills?.[skillKey] ?? {};
+      const owned = Boolean(skill.owned);
+      const manualOwned = Boolean(skill.manualOwned);
+      const lockedBySource = isSkillLockedBySource(skill);
+
+      if (owned) {
+        if (!manualOwned || lockedBySource) {
+          ui.notifications.info("Cette compétence est accordée par une source fixe et ne peut pas être retirée ici.");
+          return;
+        }
+
+        const confirmedRemove = await Dialog.confirm({
+          title: "Retirer une compétence de création",
+          content: `
+            <p>Veux-tu retirer <strong>${definition.label}</strong> de tes compétences de création ?</p>
+            <p>Elle ne comptera plus dans ta limite de 5 compétences initiales.</p>
+          `,
+          yes: () => true,
+          no: () => false,
+          defaultYes: false
+        });
+
+        if (!confirmedRemove) return;
+
+        await updateActorAndRender({
+          [`system.skills.${skillKey}.owned`]: false,
+          [`system.skills.${skillKey}.manualOwned`]: false
+        });
+
+        return;
+      }
+
+      if (definition.ownedByDefault || definition.category === "clan") {
+        ui.notifications.info("Cette compétence ne peut pas être choisie manuellement à la création.");
+        return;
+      }
+
+      const usedInitialSkills = countInitialSkills();
+
+      if (usedInitialSkills >= 5) {
+        ui.notifications.warn("La limite de 5 compétences de création est déjà atteinte.");
+        return;
+      }
+
+      const confirmedAdd = await Dialog.confirm({
+        title: "Choisir une compétence de création",
+        content: `
+          <p>Veux-tu prendre <strong>${definition.label}</strong> dans ta limite de 5 compétences de création ?</p>
+          <p>Compétences utilisées actuellement : <strong>${usedInitialSkills} / 5</strong>.</p>
+        `,
+        yes: () => true,
+        no: () => false,
+        defaultYes: false
+      });
+
+      if (!confirmedAdd) return;
+
+      await updateActorAndRender({
+        [`system.skills.${skillKey}.owned`]: true,
+        [`system.skills.${skillKey}.manualOwned`]: true
+      });
+    };
+
+    html.find(".shinobimancer-skill-pill").on("click", async (event) => {
+      if (event.target.closest("button")) return;
+
+      event.preventDefault();
+
+      const skillKey = event.currentTarget?.dataset?.skill;
+      if (!skillKey) return;
+
+      await chooseInitialSkill(skillKey);
+    });
+
     html.find(".shinobimancer-skill-increase").on("click", async (event) => {
       event.preventDefault();
 
@@ -1268,10 +1443,7 @@ export class Naruto25eShinobimancerApplication extends Application {
       const owned = Boolean(skill.owned);
 
       if (!owned) {
-        await updateActorAndRender({
-          [`system.skills.${skillKey}.owned`]: true,
-          [`system.skills.${skillKey}.manualOwned`]: true
-        });
+        await chooseInitialSkill(skillKey);
         return;
       }
 
@@ -1292,16 +1464,7 @@ export class Naruto25eShinobimancerApplication extends Application {
 
       const skill = this.actor.system.skills?.[skillKey] ?? {};
       const natural = Number(skill.natural ?? 1);
-      const sources = Array.isArray(skill.creationSources) ? skill.creationSources : [];
-      const lockedBySource = sources.some((source) => {
-        return source === "common"
-          || source === "heritage"
-          || source === "affinityForced"
-          || source === "affinityPrimary"
-          || source === "affinityPrimaryFree"
-          || source === "affinitySecondary"
-          || source === "affinityExtra";
-      });
+      const lockedBySource = isSkillLockedBySource(skill);
 
       if (natural > 1 && typeof this.actor.decreaseSkill === "function") {
         await this.actor.decreaseSkill(skillKey);
@@ -1311,10 +1474,7 @@ export class Naruto25eShinobimancerApplication extends Application {
       }
 
       if (skill.manualOwned && !lockedBySource) {
-        await updateActorAndRender({
-          [`system.skills.${skillKey}.owned`]: false,
-          [`system.skills.${skillKey}.manualOwned`]: false
-        });
+        await chooseInitialSkill(skillKey);
         return;
       }
 

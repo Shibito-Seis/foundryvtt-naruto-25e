@@ -2,6 +2,22 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.31.1 - Modification de léger bug et affichage visuel enrichie
+
+### Modifié
+
+- Correction de la sélection des compétences initiales depuis le Shinobimancer :
+  - clic sur une compétence disponible avec confirmation ;
+  - clic sur une compétence manuelle déjà choisie pour proposer son retrait ;
+  - maintien des boutons `+` / `-` pour monter ou descendre les valeurs.
+- Correction de la lisibilité des cartes sélectionnées :
+  - bordure renforcée ;
+  - sceau visuel “Sélectionné” ;
+  - état visible pour village, héritage, clan, affinités, compétences et équipement.
+- Correction de l’affichage du Nindō : la description du Nindō prédéfini sélectionné est désormais visible dans l’étape Identité.
+- Correction du cadrage du portrait dans l’étape Identité.
+- Renforcement de l’attribution de l’équipement de départ à la validation finale.
+
 ## 0.1.31 — Shinobimancer éditable, kamon de clans et équipement sélectionnable
 
 ### Ajouté
