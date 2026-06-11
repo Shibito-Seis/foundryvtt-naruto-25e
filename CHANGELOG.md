@@ -2,6 +2,32 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.31.2 - Correctifs inventaire, Senju et validation Chakra
+
+### Corrigé
+
+- Correction du clan Senju :
+  - Doton est désormais imposé comme affinité principale ;
+  - Suiton est désormais imposé comme affinité secondaire ;
+  - les deux affinités sont verrouillées dans le Shinobimancer.
+- Correction de l’attribution du paquetage de départ :
+  - création des items via `createEmbeddedDocuments("Item", ...)` ;
+  - ajout de logs console détaillés ;
+  - notification du nombre d’items réellement créés ;
+  - interruption de la validation si aucun item n’est créé.
+- Correction de la validation de création :
+  - une spécialisation de Chakra de départ est désormais obligatoire ;
+  - le dossier ne peut plus être validé si le personnage a trop de spécialisations.
+
+### Modifié
+
+- Les Bases affichent désormais le coût XP du niveau suivant.
+- Les Compétences affichent désormais le coût XP du niveau suivant.
+- Les cartes d’affinités affichent davantage d’informations quand elles sont disponibles :
+  - description ;
+  - style de jeu ;
+  - forces ou tags de prévisualisation.
+
 ## 0.1.31.1 - Modification de léger bug et affichage visuel enrichie
 
 ### Modifié

@@ -783,7 +783,7 @@ NARUTO25E.clanCreationData = {
     lore: "Les Senju incarnent la force vitale, l’adaptation et l’héritage ancien de Konoha. Leur sang est lié à de nombreuses légendes, notamment aux compatibilités rares avec certaines évolutions de lignée.",
     creationAdvice: "Très bon choix pour un personnage robuste, polyvalent ou destiné à porter une lignée puissante. Le clan convient bien aux profils protecteurs, meneurs ou ninjas à forte endurance.",
     mandatorySkills: ["mokuton"],
-    mandatoryAffinities: [],
+    mandatoryAffinities: ["doton", "suiton"],
     startingFeatures: [],
     futureUnlocks: [
       "Vitalité et puissance de lignée",

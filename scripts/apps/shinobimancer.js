@@ -321,6 +321,15 @@ function buildBaseRows(actor) {
     const total = value + bonus;
     const max = Number(base.max ?? 14);
     const absoluteMax = Number(base.absoluteMax ?? 16);
+    const nextCost = typeof actor?.getBaseUpgradeCost === "function"
+      ? actor.getBaseUpgradeCost(key)
+      : null;
+
+    const nextCostLabel = value >= max
+      ? "Maximum atteint"
+      : nextCost !== null
+      ? `${nextCost} XP`
+      : "Coût non défini";
 
     return {
       key,
@@ -330,6 +339,8 @@ function buildBaseRows(actor) {
       total,
       max,
       absoluteMax,
+      nextCost,
+      nextCostLabel,
       percent: Math.clamp((total / 14) * 100, 0, 100)
     };
   });
@@ -512,9 +523,21 @@ function buildAffinityCards(actor) {
         label: affinity.label ?? key,
         icon: affinity.icon ?? " chakra ",
         tone: affinity.tone ?? "Chakra",
-        description: affinity.summary ?? affinity.description ?? "Affinité de Chakra préparée pour la création guidée."
+        description: affinity.summary ?? affinity.description ?? "Affinité de Chakra préparée pour la création guidée.",
+        playstyle: affinity.playstyle ?? "",
+        strengths: Array.isArray(affinity.strengths) ? affinity.strengths : [],
+        weakness: affinity.weakness ?? affinity.weaknesses ?? "",
+        recommendedFor: affinity.recommendedFor ?? "",
+        previewTags: Array.isArray(affinity.previewTags) ? affinity.previewTags : []
       }))
-    : SHINOBIMANCER_AFFINITY_FALLBACKS;
+    : SHINOBIMANCER_AFFINITY_FALLBACKS.map((affinity) => ({
+        ...affinity,
+        playstyle: "",
+        strengths: [],
+        weakness: "",
+        recommendedFor: "",
+        previewTags: []
+      }));
 
   return entries.map((affinity) => {
     const forcedEntry = forcedEntries.find((entry) => getForcedKey(entry) === affinity.key);
@@ -537,6 +560,11 @@ function buildAffinityCards(actor) {
       icon: affinity.icon,
       tone: affinity.tone,
       description: affinity.description,
+      playstyle: affinity.playstyle,
+      strengths: affinity.strengths.slice(0, 2),
+      weakness: affinity.weakness,
+      recommendedFor: affinity.recommendedFor,
+      previewTags: affinity.previewTags.slice(0, 4),
       isPrimary,
       isSecondary,
       isSelected: isPrimary || isSecondary,
@@ -644,6 +672,16 @@ function buildSkillPreview(actor) {
 
         const canDecrease = natural > 1 || (manualOwned && !lockedBySource);
 
+        const nextCostLabel = !owned
+          ? selectableAsInitial
+            ? "Choix initial"
+            : "Non disponible"
+          : natural >= cap
+          ? "Maximum atteint"
+          : nextCost !== null
+          ? `${nextCost} XP`
+          : "Coût non défini";
+
         return {
           key,
           label: definition.label ?? key,
@@ -655,6 +693,9 @@ function buildSkillPreview(actor) {
           selectableAsInitial,
           natural,
           total: Number(skill.total ?? natural),
+          cap,
+          nextCost,
+          nextCostLabel,
           sourceText: sources.length > 0
             ? sources.map((source) => sourceLabels[source] ?? source).join(", ")
             : definition.ownedByDefault
@@ -672,7 +713,6 @@ function buildSkillPreview(actor) {
     };
   });
 }
-
 function buildEquipmentPreview(actor) {
   const startingEquipment = actor?.system?.progression?.creation?.startingEquipment ?? {};
   const selectedMainWeapon = String(startingEquipment.mainWeapon ?? "");

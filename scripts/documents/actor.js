@@ -146,6 +146,7 @@ export class Naruto25eActor extends Actor {
       const skills = system.skills ?? {};
       const experience = system.progression?.experience ?? {};
       const startingEquipment = system.progression?.creation?.startingEquipment ?? {};
+      const chakraSpecializationState = system.chakra?.specializationState ?? {};
 
       const errors = [];
       const warnings = [];
@@ -431,6 +432,16 @@ export class Naruto25eActor extends Actor {
       if (xpAvailable < 0) {
         addError(`XP disponible négative : ${xpAvailable}.`);
       }
+      const specializationAvailable = Number(chakraSpecializationState.available ?? 0);
+      const specializationSpent = Number(chakraSpecializationState.spent ?? 0);
+
+      if (specializationAvailable > 0 && specializationSpent < specializationAvailable) {
+        addError("Choisis ta spécialisation de Chakra de départ.");
+      }
+
+      if (Boolean(chakraSpecializationState.overLimit)) {
+        addError("Trop de spécialisations de Chakra sont sélectionnées.");
+      }
       const mainWeaponChoice = String(startingEquipment.mainWeapon ?? "");
       const combatLots = Array.isArray(startingEquipment.combatLots)
         ? startingEquipment.combatLots.filter(Boolean)
@@ -659,6 +670,10 @@ export class Naruto25eActor extends Actor {
 
       if (itemNames.length === 0) {
         ui.notifications.warn("Aucun équipement de départ à attribuer.");
+        console.warn("Naruto 2.5e | Paquetage demandé vide.", {
+          actor: this.name,
+          startingEquipment
+        });
         return false;
       }
 
@@ -679,6 +694,12 @@ export class Naruto25eActor extends Actor {
 
       if (missingAfterFallback.length > 0) {
         ui.notifications.warn(`Équipement de départ introuvable : ${missingAfterFallback.join(", ")}.`);
+        console.warn("Naruto 2.5e | Équipement de départ introuvable.", {
+          actor: this.name,
+          requested: itemNames,
+          found: sourceDocuments.map((document) => document.name),
+          missing: missingAfterFallback
+        });
         return false;
       }
 
@@ -706,18 +727,32 @@ export class Naruto25eActor extends Actor {
         };
       });
 
-      try {
-        const createdItems = await Item.createDocuments(documentsToCreate, {
-          parent: this
-        });
+      console.groupCollapsed(`Naruto 2.5e | Attribution paquetage de départ — ${this.name}`);
+      console.info("Items demandés :", itemNames);
+      console.info("Documents trouvés :", sourceDocuments.map((document) => document.name));
+      console.table(documentsToCreate.map((document) => ({
+        name: document.name,
+        type: document.type,
+        quantity: document.system?.quantity ?? 1
+      })));
+      console.groupEnd();
 
-        if (!createdItems || createdItems.length === 0) {
-          ui.notifications.warn("Aucun item de paquetage n’a été créé.");
-          return false;
-        }
+      let createdItems = [];
+
+      try {
+        createdItems = await this.createEmbeddedDocuments("Item", documentsToCreate);
       } catch (error) {
         console.error("Naruto 2.5e | Attribution du paquetage de départ impossible.", error);
         ui.notifications.error("Erreur pendant l’attribution du paquetage de départ. Voir la console.");
+        return false;
+      }
+
+      if (!createdItems || createdItems.length === 0) {
+        ui.notifications.warn("Aucun item de paquetage n’a été créé.");
+        console.warn("Naruto 2.5e | createEmbeddedDocuments a retourné 0 item.", {
+          actor: this.name,
+          documentsToCreate
+        });
         return false;
       }
 
@@ -727,7 +762,7 @@ export class Naruto25eActor extends Actor {
         "system.progression.creation.startingEquipment.grantedBy": grantedBy
       });
 
-      ui.notifications.info(`Paquetage de départ attribué à ${this.name}.`);
+      ui.notifications.info(`Paquetage de départ attribué à ${this.name} : ${createdItems.length} item(s).`);
 
       return true;
     }

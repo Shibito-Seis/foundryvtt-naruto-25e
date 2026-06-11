@@ -325,7 +325,7 @@
                 <div class="shinobimancer-base-row">
                   <div>
                     <strong>{{base.label}}</strong>
-                    <span>{{base.key}}</span>
+                    <span>{{base.key}} · naturel {{base.value}} · coût suivant : {{base.nextCostLabel}}</span>
                   </div>
 
                   <div class="shinobimancer-base-meter">
@@ -410,6 +410,27 @@
                   <p class="shinobimancer-card-eyebrow">{{affinity.status}}</p>
                   <h4>{{affinity.label}}</h4>
                   <p>{{affinity.description}}</p>
+
+                  {{#if affinity.playstyle}}
+                    <p class="shinobimancer-mini-note">{{affinity.playstyle}}</p>
+                  {{/if}}
+
+                  {{#if affinity.strengths.length}}
+                    <div class="shinobimancer-tag-row">
+                      {{#each affinity.strengths as |strength|}}
+                        <span>{{strength}}</span>
+                      {{/each}}
+                    </div>
+                  {{else}}
+                    {{#if affinity.previewTags.length}}
+                      <div class="shinobimancer-tag-row">
+                        {{#each affinity.previewTags as |tag|}}
+                          <span>{{tag}}</span>
+                        {{/each}}
+                      </div>
+                    {{/if}}
+                  {{/if}}
+
                   <span>{{affinity.tone}}</span>
                 </div>
               </article>
@@ -489,6 +510,12 @@
                 <span>Le personnage possède plus de spécialisations que son rang actuel ne le permet.</span>
               </div>
             {{/if}}
+            {{#if chakraSpecializationState.remaining}}
+              <div class="shinobimancer-notice is-warning">
+                <strong>Spécialisation requise</strong>
+                <span>Choisis ta spécialisation de Chakra de départ avant de valider le dossier.</span>
+              </div>
+            {{/if}}
           </section>
         </section>
       {{/if}}
@@ -536,7 +563,7 @@
                     >
                       <div>
                         <strong>{{skill.label}}</strong>
-                        <span>{{skill.baseLabel}} · {{skill.sourceText}}</span>
+                        <span>{{skill.baseLabel}} · {{skill.sourceText}} · coût suivant : {{skill.nextCostLabel}}</span>
                       </div>
 
                       <div class="shinobimancer-base-score">
