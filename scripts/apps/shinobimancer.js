@@ -127,56 +127,112 @@ const SHINOBIMANCER_AFFINITY_FALLBACKS = [
   { key: "fuin", label: "Fūin", icon: "封", tone: "Sceau", description: "Sceaux, stockage, verrouillage et techniques de contrôle." }
 ];
 
-const SHINOBIMANCER_EQUIPMENT_PREVIEW = [
-  {
-    name: "Kunaï",
-    type: "Arme",
-    quantity: 10,
-    description: "Arme de jet et outil polyvalent ninja."
-  },
-  {
-    name: "Shuriken",
-    type: "Arme",
-    quantity: 10,
-    description: "Projectile ninja léger pour harceler ou distraire."
-  },
-  {
-    name: "Note explosive",
-    type: "Consommable",
-    quantity: 10,
-    description: "Parchemin explosif pour pièges, diversion ou attaque."
-  },
-  {
-    name: "Pilule du soldat",
-    type: "Consommable",
-    quantity: 5,
-    description: "Pilule militaire standard pour soutenir l’endurance."
-  },
-  {
-    name: "Pilule de chakra mineure",
-    type: "Consommable",
-    quantity: 1,
-    description: "Restaure 25 Chakra."
-  },
-  {
-    name: "Kit de premiers soins",
-    type: "Équipement",
-    quantity: 1,
-    description: "Kit médical de terrain basique."
-  },
-  {
-    name: "Kit de survie",
-    type: "Équipement",
-    quantity: 1,
-    description: "Kit de base pour bivouac, déplacement et survie."
-  },
-  {
-    name: "Kit technique",
-    type: "Équipement",
-    quantity: 1,
-    description: "Outils simples pour manipulations techniques, pièges ou réparations."
-  }
-];
+const SHINOBIMANCER_STARTING_EQUIPMENT = {
+  mainWeapons: [
+    {
+      key: "kunai",
+      name: "Kunaï",
+      type: "Arme principale",
+      quantity: 1,
+      description: "Arme courte polyvalente ninja. Simple, discrète et utilitaire."
+    },
+    {
+      key: "tanto",
+      name: "Tantō",
+      type: "Arme principale",
+      quantity: 1,
+      description: "Lame courte japonaise, discrète et fiable pour un Shinobi mobile."
+    },
+    {
+      key: "wakizashi",
+      name: "Wakizashi",
+      type: "Arme principale",
+      quantity: 1,
+      description: "Sabre court, compromis entre discrétion et combat rapproché."
+    },
+    {
+      key: "katana",
+      name: "Katana",
+      type: "Arme principale",
+      quantity: 1,
+      description: "Sabre japonais emblématique, plus martial et visible."
+    },
+    {
+      key: "ninjato",
+      name: "Ninjatō",
+      type: "Arme principale",
+      quantity: 1,
+      description: "Lame droite de Shinobi, pensée pour l’efficacité et l’usage utilitaire."
+    }
+  ],
+  combatLots: [
+    {
+      key: "kunaiLot",
+      name: "Kunaï — lot de jet",
+      type: "Lot de combat",
+      quantity: 10,
+      description: "Lot de kunaï destinés au lancer, aux pièges et aux usages polyvalents."
+    },
+    {
+      key: "shurikenLot",
+      name: "Shuriken — lot de jet",
+      type: "Lot de combat",
+      quantity: 10,
+      description: "Lot de shuriken légers pour distraire, harceler ou blesser à distance."
+    },
+    {
+      key: "senbonLot",
+      name: "Senbon — lot de jet",
+      type: "Lot de combat",
+      quantity: 10,
+      description: "Lot de fines aiguilles de lancer, discrètes et précises."
+    },
+    {
+      key: "explosiveNoteLot",
+      name: "Note explosive — lot",
+      type: "Lot de combat",
+      quantity: 10,
+      description: "Lot de notes explosives pour pièges, diversion et attaque."
+    }
+  ],
+  fixed: [
+    {
+      key: "soldierPills",
+      name: "Pilule du soldat",
+      type: "Fixe",
+      quantity: 5,
+      description: "Pilules militaires standards accordées à tout Shinobi débutant."
+    },
+    {
+      key: "minorChakraPill",
+      name: "Pilule de chakra mineure",
+      type: "Fixe",
+      quantity: 1,
+      description: "Pilule de chakra de base. Restaure 25 Chakra."
+    },
+    {
+      key: "firstAidKit",
+      name: "Kit de premiers soins",
+      type: "Fixe",
+      quantity: 1,
+      description: "Kit médical de terrain basique."
+    },
+    {
+      key: "survivalKit",
+      name: "Kit de survie",
+      type: "Fixe",
+      quantity: 1,
+      description: "Kit de base pour bivouac, déplacement et survie en mission."
+    },
+    {
+      key: "technicalKit",
+      name: "Kit technique",
+      type: "Fixe",
+      quantity: 1,
+      description: "Outils simples pour manipulations techniques, pièges ou réparations."
+    }
+  ]
+};
 
 const SHINOBIMANCER_BASE_ORDER = ["cor", "arm", "tai", "nin", "gen", "esp", "lign"];
 
@@ -363,6 +419,7 @@ function buildVillageCards(actor) {
 
 function buildHeritageModeCards(actor) {
   const selectedMode = actor?.system?.heritage?.mode ?? "clan";
+  const gmOptions = actor?.system?.heritage?.gmOptions ?? {};
 
   return [
     {
@@ -371,31 +428,31 @@ function buildHeritageModeCards(actor) {
       selected: selectedMode === "clan",
       available: true,
       description: "Création classique autour d’un clan principal.",
-      note: "Recommandé pour les 7 clans de test."
+      note: "Mode actif pour la 0.1.31."
     },
     {
       key: "voie",
       label: "Voie",
       selected: selectedMode === "voie",
-      available: true,
+      available: false,
       description: "Création fondée sur une voie plutôt qu’un clan.",
-      note: "Accessible mais encore peu détaillé dans cette pré-maquette."
+      note: "Les voies seront branchées avec le chantier Voies / Hybridations."
     },
     {
       key: "hybridClan",
       label: "Clan hybride",
       selected: selectedMode === "hybridClan",
-      available: true,
+      available: Boolean(gmOptions.allowHybridClan),
       description: "Clan principal et clan secondaire sous validation MJ.",
-      note: "Mode avancé, à encadrer en 0.2.x."
+      note: gmOptions.allowHybridClan ? "Autorisé par le MJ." : "Nécessite une autorisation MJ."
     },
     {
       key: "hybridVoie",
       label: "Voie hybridée",
       selected: selectedMode === "hybridVoie",
-      available: true,
+      available: Boolean(gmOptions.allowHybridVoie),
       description: "Clan principal accompagné d’une voie particulière.",
-      note: "Mode MJ, prévu pour les cas narratifs."
+      note: gmOptions.allowHybridVoie ? "Autorisé par le MJ." : "Nécessite une autorisation MJ."
     }
   ];
 }
@@ -411,7 +468,12 @@ function buildClanCards(actor) {
       : "À définir";
 
     return {
-      ...preview,
+      key: preview.key,
+      emblem: preview.emblem,
+      kamon: `systems/naruto-25e/assets/clans/kamon_${preview.key}.svg`,
+      tagline: preview.tagline,
+      feature: preview.feature,
+      warning: preview.warning,
       label: clan.label ?? preview.key,
       selected: selectedClan === preview.key,
       available: true,
@@ -441,6 +503,9 @@ function buildAffinityCards(actor) {
   const forcedEntries = Array.isArray(forced) ? forced : [];
   const forcedKeys = forcedEntries.map(getForcedKey).filter(Boolean);
 
+  const forcedPrimary = forcedEntries.find((entry) => getForcedSlot(entry) === "primary");
+  const forcedSecondary = forcedEntries.find((entry) => getForcedSlot(entry) === "secondary");
+
   const entries = Object.keys(chakraAffinities).length > 0
     ? Object.entries(chakraAffinities).slice(0, 10).map(([key, affinity]) => ({
         key,
@@ -454,22 +519,41 @@ function buildAffinityCards(actor) {
   return entries.map((affinity) => {
     const forcedEntry = forcedEntries.find((entry) => getForcedKey(entry) === affinity.key);
     const forcedSlot = getForcedSlot(forcedEntry);
+    const isPrimary = affinity.key === primary;
+    const isSecondary = affinity.key === secondary;
+    const isForced = forcedKeys.includes(affinity.key);
+    const primaryLocked = Boolean(forcedPrimary);
+    const secondaryLocked = Boolean(forcedSecondary);
+    const bothSlotsLocked = primaryLocked && secondaryLocked;
+
+    let disabled = false;
+
+    if (isForced) disabled = true;
+    if (bothSlotsLocked && !isForced) disabled = true;
 
     return {
-      ...affinity,
-      isPrimary: affinity.key === primary,
-      isSecondary: affinity.key === secondary,
-      isForced: forcedKeys.includes(affinity.key),
-      status: forcedKeys.includes(affinity.key)
+      key: affinity.key,
+      label: affinity.label,
+      icon: affinity.icon,
+      tone: affinity.tone,
+      description: affinity.description,
+      isPrimary,
+      isSecondary,
+      isSelected: isPrimary || isSecondary,
+      isForced,
+      disabled,
+      status: isForced
         ? forcedSlot === "primary"
           ? "Principale imposée"
           : forcedSlot === "secondary"
           ? "Secondaire imposée"
           : "Imposée"
-        : affinity.key === primary
+        : isPrimary
         ? "Principale"
-        : affinity.key === secondary
+        : isSecondary
         ? "Secondaire"
+        : disabled
+        ? "Indisponible"
         : "Disponible"
     };
   });
@@ -494,23 +578,49 @@ function buildSkillPreview(actor) {
   return categoryOrder.map((category) => {
     const categorySkills = Object.entries(definitions)
       .filter(([, definition]) => definition.category === category)
-      .slice(0, category === "common" ? 12 : 9)
       .map(([key, definition]) => {
         const skill = skills[key] ?? {};
         const sources = Array.isArray(skill.creationSources) ? skill.creationSources : [];
+        const natural = Number(skill.natural ?? 1);
+        const nextCost = typeof actor?.getSkillUpgradeCost === "function"
+          ? actor.getSkillUpgradeCost(key)
+          : null;
+        const cap = typeof actor?.getSkillCap === "function"
+          ? actor.getSkillCap(key)
+          : 3;
+
+        const lockedBySource = sources.some((source) => {
+          return source === "common"
+            || source === "heritage"
+            || source === "affinityForced"
+            || source === "affinityPrimary"
+            || source === "affinityPrimaryFree"
+            || source === "affinitySecondary"
+            || source === "affinityExtra";
+        });
+
+        const owned = Boolean(skill.owned ?? definition.ownedByDefault);
+        const manualOwned = Boolean(skill.manualOwned);
+        const canIncrease = owned && natural < cap && nextCost !== null;
+        const canDecrease = natural > 1 || (manualOwned && !lockedBySource);
 
         return {
           key,
           label: definition.label ?? key,
           base: definition.base,
           baseLabel: NARUTO25E.baseLabels?.[definition.base] ?? definition.base,
-          owned: Boolean(skill.owned ?? definition.ownedByDefault),
-          total: Number(skill.total ?? skill.natural ?? 1),
+          owned,
+          manualOwned,
+          lockedBySource,
+          natural,
+          total: Number(skill.total ?? natural),
           sourceText: sources.length > 0
             ? sources.map((source) => sourceLabels[source] ?? source).join(", ")
             : definition.ownedByDefault
             ? "Commune"
-            : "Disponible"
+            : "Disponible",
+          canIncrease,
+          canDecrease
         };
       });
 
@@ -522,11 +632,39 @@ function buildSkillPreview(actor) {
   });
 }
 
-function buildEquipmentPreview() {
-  return SHINOBIMANCER_EQUIPMENT_PREVIEW.map((item) => ({
-    ...item,
-    quantityLabel: item.quantity > 1 ? `×${item.quantity}` : "×1"
-  }));
+function buildEquipmentPreview(actor) {
+  const startingEquipment = actor?.system?.progression?.creation?.startingEquipment ?? {};
+  const selectedMainWeapon = String(startingEquipment.mainWeapon ?? "");
+  const selectedCombatLots = Array.isArray(startingEquipment.combatLots)
+    ? startingEquipment.combatLots
+    : [];
+
+  const normalizeCard = (item) => ({
+    key: item.key,
+    name: item.name,
+    type: item.type,
+    quantity: item.quantity,
+    quantityLabel: item.quantity > 1 ? `×${item.quantity}` : "×1",
+    description: item.description
+  });
+
+  return {
+    mainWeapons: SHINOBIMANCER_STARTING_EQUIPMENT.mainWeapons.map((item) => {
+      const card = normalizeCard(item);
+      card.selected = card.key === selectedMainWeapon;
+      return card;
+    }),
+    combatLots: SHINOBIMANCER_STARTING_EQUIPMENT.combatLots.map((item) => {
+      const card = normalizeCard(item);
+      card.selected = selectedCombatLots.includes(card.key);
+      return card;
+    }),
+    fixed: SHINOBIMANCER_STARTING_EQUIPMENT.fixed.map(normalizeCard),
+    selectedMainWeapon,
+    selectedCombatLots,
+    selectedCombatLotCount: selectedCombatLots.length,
+    requiredCombatLotCount: 2
+  };
 }
 
 export class Naruto25eShinobimancerChoiceApplication extends Application {
@@ -768,7 +906,49 @@ export class Naruto25eShinobimancerApplication extends Application {
     context.clanCards = buildClanCards(this.actor);
     context.affinityCards = buildAffinityCards(this.actor);
     context.skillGroups = buildSkillPreview(this.actor);
-    context.equipmentPreview = buildEquipmentPreview();
+    context.equipmentPreview = buildEquipmentPreview(this.actor);
+    const nindo = system.nindo ?? {};
+    const nindoChoiceMode = nindo.choiceMode ?? "preset";
+
+    context.nindoChoiceModes = Object.entries(NARUTO25E.nindoChoiceModes ?? {}).map(([key, label]) => ({
+      key,
+      label,
+      selected: key === nindoChoiceMode
+    }));
+
+    context.nindoPresets = Object.entries(NARUTO25E.nindoPresets ?? {}).map(([key, preset]) => ({
+      key,
+      label: preset.name ?? key,
+      description: preset.description ?? "",
+      selected: key === (nindo.preset ?? "")
+    }));
+
+    const chakraSpecState = system.chakra?.specializationState ?? {
+      available: 1,
+      spent: 0,
+      remaining: 1,
+      overLimit: false
+    };
+
+    context.chakraSpecializationState = chakraSpecState;
+
+    context.chakraSpecializations = (NARUTO25E.chakraSpecializationOrder ?? []).map((key) => {
+      const definition = NARUTO25E.chakraSpecializations?.[key] ?? {};
+      const value = Number(system.chakra?.specializations?.[key] ?? 0);
+      const maxStacks = Number(definition.maxStacks ?? 1);
+
+      return {
+        key,
+        label: definition.label ?? key,
+        value,
+        maxStacks,
+        unique: Boolean(definition.unique),
+        specialOnly: Boolean(definition.specialOnly),
+        effect: definition.effect ?? "",
+        canIncrease: value < maxStacks && Number(chakraSpecState.remaining ?? 0) > 0,
+        canDecrease: value > 0
+      };
+    });
 
     context.experienceSummary = {
       total: Number(system.progression?.experience?.total ?? 0),
@@ -797,19 +977,33 @@ export class Naruto25eShinobimancerApplication extends Application {
   activateListeners(html) {
     super.activateListeners(html);
 
+    const canEditCreation = () => {
+      if (!this.actor) return false;
+
+      if (!this.actor.isOwner && !game.user?.isGM) {
+        ui.notifications.warn("Tu n’as pas les droits nécessaires pour modifier ce dossier.");
+        return false;
+      }
+
+      if (this.actor.isCreationLocked?.()) {
+        ui.notifications.warn("Cette création est déjà validée.");
+        return false;
+      }
+
+      return true;
+    };
+
+    const updateActorAndRender = async (updateData) => {
+      if (!canEditCreation()) return;
+
+      await this.actor.update(updateData);
+      this.render(false);
+      this.sourceSheet?.render?.(false);
+    };
+
     html.find(".shinobimancer-close").on("click", (event) => {
       event.preventDefault();
       this.close();
-    });
-
-    html.find(".shinobimancer-open-sheet").on("click", (event) => {
-      event.preventDefault();
-
-      if (this.actor) {
-        this.actor._naruto25eBypassShinobimancerOnce = game.user?.id ?? "unknown";
-      }
-
-      this.actor?.sheet?.render(true);
     });
 
     html.find(".shinobimancer-step").on("click", async (event) => {
@@ -836,6 +1030,338 @@ export class Naruto25eShinobimancerApplication extends Application {
       const previousStep = getAdjacentStep(this.currentStep, -1);
 
       await this._setCurrentStep(previousStep);
+    });
+
+    html.find(".shinobimancer-portrait-picker").on("click", async (event) => {
+      event.preventDefault();
+
+      if (!canEditCreation()) return;
+
+      const picker = new FilePicker({
+        type: "image",
+        current: this.actor?.img ?? "",
+        callback: async (path) => {
+          await this.actor.update({ img: path });
+          this.render(false);
+          this.sourceSheet?.render?.(false);
+        }
+      });
+
+      picker.browse();
+    });
+
+    html.find("[data-shinobimancer-field]").on("change", async (event) => {
+      event.preventDefault();
+
+      const field = event.currentTarget?.dataset?.shinobimancerField;
+      if (!field) return;
+
+      const value = event.currentTarget.value ?? "";
+
+      if (field === "name") {
+        await updateActorAndRender({ name: value });
+        return;
+      }
+
+      await updateActorAndRender({
+        [field]: value
+      });
+    });
+
+    html.find(".shinobimancer-village-card").on("click", async (event) => {
+      event.preventDefault();
+
+      const villageKey = event.currentTarget?.dataset?.village;
+      const village = NARUTO25E.villages?.[villageKey];
+
+      if (!villageKey || !village) return;
+
+      if (!village.selectable) {
+        ui.notifications.warn("Ce village n’est pas encore disponible.");
+        return;
+      }
+
+      await updateActorAndRender({
+        "system.heritage.village": villageKey,
+        "system.identity.village": villageKey
+      });
+    });
+
+    html.find(".shinobimancer-heritage-card").on("click", async (event) => {
+      event.preventDefault();
+
+      const mode = event.currentTarget?.dataset?.heritageMode;
+      if (!mode) return;
+
+      const cardIsAvailable = event.currentTarget?.dataset?.available === "true";
+
+      if (!cardIsAvailable) {
+        ui.notifications.warn("Ce mode d’héritage n’est pas encore disponible dans le Shinobimancer.");
+        return;
+      }
+
+      const updateData = {
+        "system.heritage.mode": mode
+      };
+
+      if (mode === "clan") {
+        updateData["system.heritage.voie"] = "";
+        updateData["system.heritage.hybrid.secondaryClan"] = "";
+        updateData["system.heritage.hybrid.reason"] = "";
+      }
+
+      if (mode === "voie") {
+        updateData["system.heritage.clan"] = "";
+        updateData["system.heritage.hybrid.secondaryClan"] = "";
+        updateData["system.heritage.hybrid.reason"] = "";
+      }
+
+      await updateActorAndRender(updateData);
+    });
+
+    html.find(".shinobimancer-clan-card").on("click", async (event) => {
+      event.preventDefault();
+
+      const clanKey = event.currentTarget?.dataset?.clan;
+      if (!clanKey) return;
+
+      await updateActorAndRender({
+        "system.heritage.mode": "clan",
+        "system.heritage.clan": clanKey,
+        "system.identity.clan": clanKey,
+        "system.heritage.voie": "",
+        "system.heritage.hybrid.secondaryClan": "",
+        "system.heritage.hybrid.reason": ""
+      });
+    });
+
+    html.find(".shinobimancer-base-increase").on("click", async (event) => {
+      event.preventDefault();
+
+      if (!canEditCreation()) return;
+
+      const baseKey = event.currentTarget?.dataset?.base;
+      if (!baseKey || typeof this.actor.increaseBase !== "function") return;
+
+      await this.actor.increaseBase(baseKey);
+      this.render(false);
+      this.sourceSheet?.render?.(false);
+    });
+
+    html.find(".shinobimancer-base-decrease").on("click", async (event) => {
+      event.preventDefault();
+
+      if (!canEditCreation()) return;
+
+      const baseKey = event.currentTarget?.dataset?.base;
+      if (!baseKey || typeof this.actor.decreaseBase !== "function") return;
+
+      await this.actor.decreaseBase(baseKey);
+      this.render(false);
+      this.sourceSheet?.render?.(false);
+    });
+
+    html.find(".shinobimancer-affinity-card").on("click", async (event) => {
+      event.preventDefault();
+
+      if (!canEditCreation()) return;
+
+      const affinityKey = event.currentTarget?.dataset?.affinity;
+      if (!affinityKey) return;
+
+      const chakraAffinities = this.actor.system.chakra?.affinities ?? {};
+      const forcedEntries = Array.isArray(chakraAffinities.forced) ? chakraAffinities.forced : [];
+
+      const getForcedKey = (entry) => {
+        if (!entry) return "";
+        if (typeof entry === "object") return String(entry.key ?? entry.id ?? entry.value ?? "");
+        return String(entry);
+      };
+
+      const getForcedSlot = (entry) => {
+        if (!entry || typeof entry !== "object") return "";
+        return String(entry.slot ?? "");
+      };
+
+      const forcedPrimary = forcedEntries.find((entry) => getForcedSlot(entry) === "primary");
+      const forcedSecondary = forcedEntries.find((entry) => getForcedSlot(entry) === "secondary");
+      const forcedKeys = forcedEntries.map(getForcedKey).filter(Boolean);
+
+      if (forcedKeys.includes(affinityKey)) {
+        ui.notifications.info("Cette affinité est imposée par l’héritage et ne peut pas être retirée.");
+        return;
+      }
+
+      if (forcedPrimary && forcedSecondary) {
+        ui.notifications.warn("Les deux affinités naturelles sont imposées par l’héritage.");
+        return;
+      }
+
+      const currentPrimary = chakraAffinities.primary ?? "";
+      const currentSecondary = chakraAffinities.secondary ?? "";
+
+      const updateData = {};
+
+      if (currentPrimary === affinityKey && !forcedPrimary) {
+        updateData["system.chakra.affinities.primary"] = currentSecondary;
+        updateData["system.chakra.affinities.secondary"] = "";
+        await updateActorAndRender(updateData);
+        return;
+      }
+
+      if (currentSecondary === affinityKey && !forcedSecondary) {
+        updateData["system.chakra.affinities.secondary"] = "";
+        await updateActorAndRender(updateData);
+        return;
+      }
+
+      if (!currentPrimary && !forcedPrimary) {
+        updateData["system.chakra.affinities.primary"] = affinityKey;
+        await updateActorAndRender(updateData);
+        return;
+      }
+
+      if (!currentSecondary && !forcedSecondary && currentPrimary !== affinityKey) {
+        updateData["system.chakra.affinities.secondary"] = affinityKey;
+        await updateActorAndRender(updateData);
+        return;
+      }
+
+      ui.notifications.warn("Deux affinités naturelles sont déjà sélectionnées.");
+    });
+
+    html.find(".shinobimancer-chakra-specialization-increase").on("click", async (event) => {
+      event.preventDefault();
+
+      if (!canEditCreation()) return;
+
+      const key = event.currentTarget?.dataset?.specialization;
+      if (!key || typeof this.actor.increaseChakraSpecialization !== "function") return;
+
+      await this.actor.increaseChakraSpecialization(key);
+      this.render(false);
+      this.sourceSheet?.render?.(false);
+    });
+
+    html.find(".shinobimancer-chakra-specialization-decrease").on("click", async (event) => {
+      event.preventDefault();
+
+      if (!canEditCreation()) return;
+
+      const key = event.currentTarget?.dataset?.specialization;
+      if (!key || typeof this.actor.decreaseChakraSpecialization !== "function") return;
+
+      await this.actor.decreaseChakraSpecialization(key);
+      this.render(false);
+      this.sourceSheet?.render?.(false);
+    });
+
+    html.find(".shinobimancer-skill-increase").on("click", async (event) => {
+      event.preventDefault();
+
+      if (!canEditCreation()) return;
+
+      const skillKey = event.currentTarget?.dataset?.skill;
+      if (!skillKey) return;
+
+      const skill = this.actor.system.skills?.[skillKey] ?? {};
+      const owned = Boolean(skill.owned);
+
+      if (!owned) {
+        await updateActorAndRender({
+          [`system.skills.${skillKey}.owned`]: true,
+          [`system.skills.${skillKey}.manualOwned`]: true
+        });
+        return;
+      }
+
+      if (typeof this.actor.increaseSkill === "function") {
+        await this.actor.increaseSkill(skillKey);
+        this.render(false);
+        this.sourceSheet?.render?.(false);
+      }
+    });
+
+    html.find(".shinobimancer-skill-decrease").on("click", async (event) => {
+      event.preventDefault();
+
+      if (!canEditCreation()) return;
+
+      const skillKey = event.currentTarget?.dataset?.skill;
+      if (!skillKey) return;
+
+      const skill = this.actor.system.skills?.[skillKey] ?? {};
+      const natural = Number(skill.natural ?? 1);
+      const sources = Array.isArray(skill.creationSources) ? skill.creationSources : [];
+      const lockedBySource = sources.some((source) => {
+        return source === "common"
+          || source === "heritage"
+          || source === "affinityForced"
+          || source === "affinityPrimary"
+          || source === "affinityPrimaryFree"
+          || source === "affinitySecondary"
+          || source === "affinityExtra";
+      });
+
+      if (natural > 1 && typeof this.actor.decreaseSkill === "function") {
+        await this.actor.decreaseSkill(skillKey);
+        this.render(false);
+        this.sourceSheet?.render?.(false);
+        return;
+      }
+
+      if (skill.manualOwned && !lockedBySource) {
+        await updateActorAndRender({
+          [`system.skills.${skillKey}.owned`]: false,
+          [`system.skills.${skillKey}.manualOwned`]: false
+        });
+        return;
+      }
+
+      ui.notifications.info("Cette compétence ne peut pas être retirée depuis la création.");
+    });
+
+    html.find(".shinobimancer-equipment-main").on("click", async (event) => {
+      event.preventDefault();
+
+      const key = event.currentTarget?.dataset?.equipment;
+      if (!key) return;
+
+      await updateActorAndRender({
+        "system.progression.creation.startingEquipment.mainWeapon": key
+      });
+    });
+
+    html.find(".shinobimancer-equipment-lot").on("click", async (event) => {
+      event.preventDefault();
+
+      if (!canEditCreation()) return;
+
+      const key = event.currentTarget?.dataset?.equipment;
+      if (!key) return;
+
+      const currentLots = Array.isArray(this.actor.system.progression?.creation?.startingEquipment?.combatLots)
+        ? Array.from(this.actor.system.progression.creation.startingEquipment.combatLots)
+        : [];
+
+      const selected = currentLots.includes(key);
+
+      let nextLots = [];
+
+      if (selected) {
+        nextLots = currentLots.filter((lotKey) => lotKey !== key);
+      } else {
+        if (currentLots.length >= 2) {
+          ui.notifications.warn("Tu dois choisir exactement 2 lots de combat. Retire d’abord un lot déjà sélectionné.");
+          return;
+        }
+
+        nextLots = currentLots.concat([key]);
+      }
+
+      await updateActorAndRender({
+        "system.progression.creation.startingEquipment.combatLots": nextLots
+      });
     });
 
     html.find(".shinobimancer-finalize-creation").on("click", async (event) => {

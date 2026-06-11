@@ -4,33 +4,99 @@
     "type": "arme",
     "img": "icons/weapons/daggers/dagger-simple.webp",
     "system": {
-      "description": "Arme de jet et outil polyvalent ninja. Peut aussi servir de lame courte en dernier recours.",
-      "quantity": 10,
+      "description": "Arme courte polyvalente ninja. Peut servir au corps à corps, comme outil ou en arme de jet improvisée.",
+      "quantity": 1,
       "value": 1,
       "weight": 0.1
     }
   },
   {
-    "name": "Shuriken",
+    "name": "Tantō",
     "type": "arme",
-    "img": "icons/weapons/thrown/shuriken-steel.webp",
+    "img": "icons/weapons/daggers/dagger-straight-blue.webp",
     "system": {
-      "description": "Projectile ninja léger, utilisé pour harceler, distraire ou blesser à distance.",
-      "quantity": 10,
-      "value": 1,
-      "weight": 0.05
+      "description": "Lame courte japonaise, discrète et fiable pour un Shinobi privilégiant la mobilité.",
+      "quantity": 1,
+      "value": 10,
+      "weight": 0.6
     }
   },
   {
-    "name": "Note explosive",
+    "name": "Wakizashi",
+    "type": "arme",
+    "img": "icons/weapons/swords/sword-guard.webp",
+    "system": {
+      "description": "Sabre court, compromis entre discrétion, défense personnelle et combat rapproché.",
+      "quantity": 1,
+      "value": 25,
+      "weight": 1
+    }
+  },
+  {
+    "name": "Katana",
+    "type": "arme",
+    "img": "icons/weapons/swords/sword-katana.webp",
+    "system": {
+      "description": "Sabre japonais emblématique, plus visible et martial qu’une arme de Shinobi discrète.",
+      "quantity": 1,
+      "value": 50,
+      "weight": 1.2
+    }
+  },
+  {
+    "name": "Ninjatō",
+    "type": "arme",
+    "img": "icons/weapons/swords/sword-straight.webp",
+    "system": {
+      "description": "Lame droite de Shinobi, pensée pour l’efficacité, les embuscades et l’usage utilitaire.",
+      "quantity": 1,
+      "value": 35,
+      "weight": 1
+    }
+  },
+  {
+    "name": "Kunaï — lot de jet",
+    "type": "arme",
+    "img": "icons/weapons/daggers/dagger-simple.webp",
+    "system": {
+      "description": "Lot de kunaï destinés au lancer, aux pièges et aux usages polyvalents de terrain.",
+      "quantity": 10,
+      "value": 10,
+      "weight": 1
+    }
+  },
+  {
+    "name": "Shuriken — lot de jet",
+    "type": "arme",
+    "img": "icons/weapons/thrown/shuriken-steel.webp",
+    "system": {
+      "description": "Lot de shuriken légers, utilisés pour harceler, distraire ou blesser à distance.",
+      "quantity": 10,
+      "value": 10,
+      "weight": 0.5
+    }
+  },
+  {
+    "name": "Senbon — lot de jet",
+    "type": "arme",
+    "img": "icons/weapons/ammunition/arrows-bodkin-yellow-red.webp",
+    "system": {
+      "description": "Lot de fines aiguilles de lancer, discrètes et précises.",
+      "quantity": 10,
+      "value": 10,
+      "weight": 0.2
+    }
+  },
+  {
+    "name": "Note explosive — lot",
     "type": "consommable",
     "img": "icons/sundries/documents/document-symbol-rune-brown.webp",
     "system": {
-      "description": "Parchemin explosif utilisé comme outil offensif, piège ou diversion.",
+      "description": "Lot de parchemins explosifs utilisés comme outils offensifs, pièges ou diversions.",
       "subtype": "tool",
       "quantity": 10,
-      "value": 5,
-      "weight": 0.02,
+      "value": 50,
+      "weight": 0.2,
       "useEffect": {
         "type": "none",
         "resource": "none",
@@ -49,7 +115,7 @@
       "subtype": "medicine",
       "quantity": 5,
       "value": 10,
-      "weight": 0.01,
+      "weight": 0.05,
       "useEffect": {
         "type": "none",
         "resource": "none",

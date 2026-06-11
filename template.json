@@ -85,7 +85,14 @@
             "currentStep": "identity",
             "manualChosenAt": "",
             "shinobimancerStartedAt": "",
-            "lastOpenedAt": ""
+            "lastOpenedAt": "",
+            "startingEquipment": {
+              "mainWeapon": "",
+              "combatLots": [],
+              "granted": false,
+              "grantedAt": "",
+              "grantedBy": ""
+            }
           },
           "rank": {
             "current": "aspirant",

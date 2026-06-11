@@ -1,4 +1,26 @@
 import { NARUTO25E } from "../config.js";
+const NARUTO25E_STARTING_EQUIPMENT = {
+  mainWeapons: {
+    kunai: "Kunaï",
+    tanto: "Tantō",
+    wakizashi: "Wakizashi",
+    katana: "Katana",
+    ninjato: "Ninjatō"
+  },
+  combatLots: {
+    kunaiLot: "Kunaï — lot de jet",
+    shurikenLot: "Shuriken — lot de jet",
+    senbonLot: "Senbon — lot de jet",
+    explosiveNoteLot: "Note explosive — lot"
+  },
+  fixed: [
+    "Pilule du soldat",
+    "Pilule de chakra mineure",
+    "Kit de premiers soins",
+    "Kit de survie",
+    "Kit technique"
+  ]
+};
 
 export class Naruto25eActor extends Actor {
   prepareDerivedData() {
@@ -67,6 +89,23 @@ export class Naruto25eActor extends Actor {
     creation.manualChosenAt = creation.manualChosenAt ?? "";
     creation.shinobimancerStartedAt = creation.shinobimancerStartedAt ?? "";
     creation.lastOpenedAt = creation.lastOpenedAt ?? "";
+        if (!creation.startingEquipment) {
+      creation.startingEquipment = {
+        mainWeapon: "",
+        combatLots: [],
+        granted: false,
+        grantedAt: "",
+        grantedBy: ""
+      };
+    }
+
+    creation.startingEquipment.mainWeapon = String(creation.startingEquipment.mainWeapon ?? "");
+    creation.startingEquipment.combatLots = Array.isArray(creation.startingEquipment.combatLots)
+      ? creation.startingEquipment.combatLots
+      : [];
+    creation.startingEquipment.granted = Boolean(creation.startingEquipment.granted);
+    creation.startingEquipment.grantedAt = creation.startingEquipment.grantedAt ?? "";
+    creation.startingEquipment.grantedBy = creation.startingEquipment.grantedBy ?? "";
   }
 
     isCreationLocked() {
@@ -85,6 +124,7 @@ export class Naruto25eActor extends Actor {
 
     canUserEditNindo(user = game.user) {
       if (user?.isGM) return true;
+      if (!this.isCreationLocked()) return true;
 
       return Boolean(this.system.nindo?.unlockedByGM);
     }
@@ -105,6 +145,7 @@ export class Naruto25eActor extends Actor {
       const affinities = chakra.affinities ?? {};
       const skills = system.skills ?? {};
       const experience = system.progression?.experience ?? {};
+      const startingEquipment = system.progression?.creation?.startingEquipment ?? {};
 
       const errors = [];
       const warnings = [];
@@ -390,6 +431,26 @@ export class Naruto25eActor extends Actor {
       if (xpAvailable < 0) {
         addError(`XP disponible négative : ${xpAvailable}.`);
       }
+      const mainWeaponChoice = String(startingEquipment.mainWeapon ?? "");
+      const combatLots = Array.isArray(startingEquipment.combatLots)
+        ? startingEquipment.combatLots.filter(Boolean)
+        : [];
+
+      const uniqueCombatLots = Array.from(new Set(combatLots));
+
+      if (!NARUTO25E_STARTING_EQUIPMENT.mainWeapons[mainWeaponChoice]) {
+        addError("Choisis 1 arme principale dans le paquetage de départ.");
+      }
+
+      if (uniqueCombatLots.length !== 2) {
+        addError("Choisis exactement 2 lots d’armes de jet ou consommables ninja.");
+      }
+
+      for (const lotKey of uniqueCombatLots) {
+        if (!NARUTO25E_STARTING_EQUIPMENT.combatLots[lotKey]) {
+          addError(`Choix de paquetage invalide : ${lotKey}.`);
+        }
+      }
 
       const heritageLabel = (() => {
         if (mode === "clan") {
@@ -508,6 +569,156 @@ export class Naruto25eActor extends Actor {
       };
     }
 
+    _getStartingEquipmentItemNames() {
+      const creation = this.system.progression?.creation ?? {};
+      const startingEquipment = creation.startingEquipment ?? {};
+      const mainWeaponKey = String(startingEquipment.mainWeapon ?? "");
+      const combatLotKeys = Array.isArray(startingEquipment.combatLots)
+        ? Array.from(new Set(startingEquipment.combatLots.filter(Boolean)))
+        : [];
+
+      const itemNames = [];
+
+      const mainWeaponName = NARUTO25E_STARTING_EQUIPMENT.mainWeapons[mainWeaponKey];
+      if (mainWeaponName) itemNames.push(mainWeaponName);
+
+      for (const lotKey of combatLotKeys) {
+        const lotName = NARUTO25E_STARTING_EQUIPMENT.combatLots[lotKey];
+        if (lotName) itemNames.push(lotName);
+      }
+
+      itemNames.push(...NARUTO25E_STARTING_EQUIPMENT.fixed);
+
+      return Array.from(new Set(itemNames));
+    }
+
+    async _getStartingEquipmentDocumentsFromPack(itemNames) {
+      const pack = game.packs.get("naruto-25e.equipements-depart");
+
+      if (!pack) return [];
+
+      const index = await pack.getIndex({
+        fields: ["name", "type"]
+      });
+
+      const documents = [];
+
+      for (const itemName of itemNames) {
+        const entry = index.find((document) => document.name === itemName);
+
+        if (!entry) continue;
+
+        const document = await pack.getDocument(entry._id);
+        if (document) documents.push(document);
+      }
+
+      return documents;
+    }
+
+    async _getStartingEquipmentDocumentsFromJson(itemNames) {
+      const path = "systems/naruto-25e/data/equipements/equipements-depart.json";
+
+      try {
+        const response = await fetch(path);
+
+        if (!response.ok) {
+          console.warn(`Naruto 2.5e | Impossible de lire ${path} (${response.status}).`);
+          return [];
+        }
+
+        const json = await response.json();
+        const sourceItems = Array.isArray(json) ? json : [];
+
+        return sourceItems
+          .filter((item) => itemNames.includes(item.name))
+          .map((item) => foundry.utils.deepClone(item));
+      } catch (error) {
+        console.warn("Naruto 2.5e | Lecture JSON équipement de départ impossible.", error);
+        return [];
+      }
+    }
+
+    _hasCreationEquipmentAlreadyGranted() {
+      return this.items.some((item) => {
+        return item.getFlag?.("naruto-25e", "grantedAtCreation") === true;
+      });
+    }
+
+    async grantStartingEquipment() {
+      if (this.type !== "shinobi") return false;
+
+      const creation = this.system.progression?.creation ?? {};
+      const startingEquipment = creation.startingEquipment ?? {};
+
+      if (startingEquipment.granted || this._hasCreationEquipmentAlreadyGranted()) {
+        ui.notifications.info("Le paquetage de départ a déjà été attribué.");
+        return false;
+      }
+
+      const itemNames = this._getStartingEquipmentItemNames();
+
+      if (itemNames.length === 0) {
+        ui.notifications.warn("Aucun équipement de départ à attribuer.");
+        return false;
+      }
+
+      let sourceDocuments = await this._getStartingEquipmentDocumentsFromPack(itemNames);
+
+      const missingNames = itemNames.filter((itemName) => {
+        return !sourceDocuments.some((document) => document.name === itemName);
+      });
+
+      if (missingNames.length > 0) {
+        const jsonDocuments = await this._getStartingEquipmentDocumentsFromJson(missingNames);
+        sourceDocuments = [...sourceDocuments, ...jsonDocuments];
+      }
+
+      const missingAfterFallback = itemNames.filter((itemName) => {
+        return !sourceDocuments.some((document) => document.name === itemName);
+      });
+
+      if (missingAfterFallback.length > 0) {
+        ui.notifications.warn(`Équipement de départ introuvable : ${missingAfterFallback.join(", ")}.`);
+        return false;
+      }
+
+      const documentsToCreate = sourceDocuments.map((document) => {
+        const data = typeof document.toObject === "function"
+          ? document.toObject()
+          : foundry.utils.deepClone(document);
+
+        delete data._id;
+
+        data.flags = foundry.utils.mergeObject(data.flags ?? {}, {
+          "naruto-25e": {
+            grantedAtCreation: true,
+            creationPackage: "startingEquipment",
+            grantedAt: new Date().toISOString(),
+            grantedBy: game.user?.name ?? ""
+          }
+        }, {
+          inplace: false,
+          overwrite: true,
+          insertKeys: true,
+          insertValues: true
+        });
+
+        return data;
+      });
+
+      await this.createEmbeddedDocuments("Item", documentsToCreate);
+
+      await this.update({
+        "system.progression.creation.startingEquipment.granted": true,
+        "system.progression.creation.startingEquipment.grantedAt": new Date().toISOString(),
+        "system.progression.creation.startingEquipment.grantedBy": game.user?.name ?? ""
+      });
+
+      ui.notifications.info(`Paquetage de départ attribué à ${this.name}.`);
+
+      return true;
+    }
+
     async validateCreation() {
       if (this.type !== "shinobi") return;
 
@@ -564,6 +775,13 @@ export class Naruto25eActor extends Actor {
       });
 
       if (!confirmed) return;
+
+      const equipmentGranted = await this.grantStartingEquipment();
+
+      if (!equipmentGranted && !this.system.progression?.creation?.startingEquipment?.granted && !this._hasCreationEquipmentAlreadyGranted()) {
+        ui.notifications.warn("Validation interrompue : le paquetage de départ n’a pas pu être attribué.");
+        return;
+      }
 
       await this.update({
         "system.progression.creation.locked": true,

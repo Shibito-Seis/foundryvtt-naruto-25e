@@ -2,6 +2,53 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.31 — Shinobimancer éditable, kamon de clans et équipement sélectionnable
+
+### Ajouté
+
+- Préparation du Shinobimancer éditable sans refonte graphique.
+- Ajout de la structure de choix d’équipement de départ dans `progression.creation.startingEquipment`.
+- Ajout d’un choix d’arme principale à la création.
+- Ajout d’un choix de 2 lots d’armes de jet ou consommables ninja.
+- Ajout des armes de départ suivantes :
+  - Tantō ;
+  - Wakizashi ;
+  - Katana ;
+  - Ninjatō ;
+  - Senbon — lot de jet.
+- Ajout de l’attribution automatique du paquetage de départ lors de la validation finale.
+- Ajout de flags sur les items attribués à la création pour éviter les doublons.
+- Ajout de l’édition directe dans le Shinobimancer :
+  - identité ;
+  - portrait ;
+  - village ;
+  - héritage ;
+  - clan ;
+  - bases ;
+  - affinités ;
+  - spécialisations de Chakra ;
+  - compétences ;
+  - équipement.
+- Ajout des kamon SVG de clans via la convention `assets/clans/kamon_<clan>.svg`.
+- Ajout du choix du Nindō dans l’étape Identité.
+
+### Modifié
+
+- Le paquetage de départ n’est plus seulement une prévisualisation fixe.
+- Les pilules et kits deviennent des éléments fixes du paquetage.
+- Les armes et lots de combat deviennent des choix de création.
+- Le compendium `Équipements de départ` doit être réimporté après mise à jour du JSON.
+- Les cartes du Shinobimancer restent visuellement identiques mais deviennent interactives.
+- Les cartes de village, héritage, clan, affinités et équipement sont désormais cliquables.
+- Les Bases et Compétences utilisent des boutons `+` / `-` directement dans le Shinobimancer.
+- Les spécialisations de Chakra sont intégrées à l’étape Affinités.
+- Les affinités imposées par clan sont verrouillées visuellement dans les cartes.
+
+### Corrigé
+
+- Prévention de la validation finale si l’équipement de départ requis n’est pas sélectionné.
+- Prévention de la double attribution du paquetage si la création est déverrouillée puis revalidée.
+
 ## 0.1.30 — Shinobimancer : finalisation fonctionnelle du dossier
 
 ### Ajouté
