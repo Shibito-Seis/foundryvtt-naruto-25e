@@ -1437,6 +1437,10 @@ export class Naruto25eShinobimancerApplication extends Application {
 
     html.find(".shinobimancer-clan-card").on("click", async (event) => {
       event.preventDefault();
+      
+      if (event.currentTarget.classList.contains("shinobimancer-hidden-clan-card")) {
+        return;
+      }
 
       const clanKey = event.currentTarget?.dataset?.clan;
       if (!clanKey) return;
