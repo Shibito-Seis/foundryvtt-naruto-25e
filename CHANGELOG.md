@@ -2,6 +2,31 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.32.4.1 - Reprise sobre du prototype maquette Shinobimancer
+
+### Modifié
+
+- Reprise complète de la surcouche `styles/shinobimancer-maquette.css`.
+- Suppression des faux rouleaux CSS lourds de la première tentative.
+- Suppression des dégradés et ombres trop marqués.
+- Retour à un fond parchemin plus plat, basé sur `#ae9b79`.
+- Allègement du rendu général pour rester plus proche du PSD :
+  - panneaux plus plats ;
+  - bordures plus fines ;
+  - cartes moins texturées ;
+  - résumé permanent plus sobre ;
+  - barre d’étapes moins massive ;
+  - header et footer moins épais.
+
+### Notes
+
+- Cette version reste une surcouche CSS de test.
+- Les vrais rouleaux, l’étiquette suspendue et les détails dessinés seront portés plus tard par des assets dédiés.
+- Aucun changement de logique de création.
+- Aucun changement de template.
+
+---
+
 ## 0.1.32.4 - Prototype CSS maquette graphiste Shinobimancer
 
 ### Ajouté
