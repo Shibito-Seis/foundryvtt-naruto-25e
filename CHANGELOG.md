@@ -2,6 +2,34 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.32.4.2 - Skin maquette Shinobimancer sur base stable
+
+### Modifié
+
+- Reprise complète de `styles/shinobimancer-maquette.css`.
+- Le CSS de maquette devient une surcouche visuelle uniquement.
+- Conservation du layout fonctionnel porté par `styles/shinobimancer.css` :
+  - hauteur adaptive ;
+  - scroll interne ;
+  - footer visible ;
+  - colonnes fonctionnelles ;
+  - responsive existant.
+- Suppression des règles structurelles dangereuses du prototype précédent.
+- Application d’une palette plus proche du PSD :
+  - fond parchemin `#ae9b79` ;
+  - panneaux sobres ;
+  - bordures fines ;
+  - ombres supprimées ou fortement réduites ;
+  - cartes et boutons harmonisés.
+
+### Notes
+
+- Aucun changement de logique de création.
+- Aucun changement de template.
+- Les futurs rouleaux, l’étiquette suspendue et les détails dessinés seront portés par des assets dédiés.
+
+---
+
 ## 0.1.32.4.1 - Reprise sobre du prototype maquette Shinobimancer
 
 ### Modifié

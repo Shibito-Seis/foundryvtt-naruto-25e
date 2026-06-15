@@ -1,321 +1,138 @@
 /* ----------------------------------------- */
 /* Naruto 2.5e — Shinobimancer              */
-/* Prototype sobre maquette graphiste 0.1.32.4.1 */
+/* 0.1.32.4.2 — Skin maquette sur base stable */
 /* ----------------------------------------- */
 
 /*
-  Surcouche volontairement sobre.
-  Objectif : approcher la maquette PSD sans simuler lourdement les rouleaux.
-  Les vrais rouleaux / étiquette / éléments dessinés seront portés plus tard
-  par des assets dans assets/ui/shinobimancer/.
+  IMPORTANT :
+  Ce fichier ne recrée PAS le layout du Shinobimancer.
+  Le layout fonctionnel reste porté par styles/shinobimancer.css.
+
+  Ici, on ne fait qu'une surcouche visuelle :
+  couleurs, fonds, bordures, cartes, boutons, notices.
+
+  Les futurs assets graphiste iront dans :
+  assets/ui/shinobimancer/
 */
 
-.naruto-25e.shinobimancer-maquette-v2.window-app {
-  min-width: 1100px;
+/* ----------------------------------------- */
+/* Variables et fond général                 */
+/* ----------------------------------------- */
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-shell {
+  --shinobi-ink: #1c140d;
+  --shinobi-muted: rgba(28, 20, 13, 0.68);
+  --shinobi-paper: rgba(174, 155, 121, 0.28);
+  --shinobi-paper-strong: rgba(174, 155, 121, 0.42);
+  --shinobi-border: rgba(32, 22, 14, 0.42);
+  --shinobi-red: #8b2f22;
+  --shinobi-red-dark: #4d160f;
+  --shinobi-gold: #9f7a36;
+  --shinobi-amber: #9a661f;
+  --shinobi-green: #3f6b42;
+  --shinobi-blue: #405a66;
+
+  background: #ae9b79;
 }
 
 .naruto-25e.shinobimancer-maquette-v2.window-app .window-content {
-  padding: 0;
-  overflow: hidden;
   background: #ae9b79;
 }
 
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-shell {
-  --shinobi-ink: #17120d;
-  --shinobi-muted: rgba(23, 18, 13, 0.68);
-  --shinobi-paper: rgba(174, 155, 121, 0.32);
-  --shinobi-paper-strong: rgba(174, 155, 121, 0.46);
-  --shinobi-parchment: #ae9b79;
-  --shinobi-parchment-light: #c0ad88;
-  --shinobi-line: rgba(23, 18, 13, 0.46);
-  --shinobi-line-soft: rgba(23, 18, 13, 0.22);
-  --shinobi-red: #8a2d20;
-  --shinobi-red-dark: #4f160f;
-  --shinobi-disabled: rgba(23, 18, 13, 0.42);
-
-  position: relative;
-  min-height: 650px;
-  color: var(--shinobi-ink);
-  background: #ae9b79;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-shell::before {
-  content: "";
-  position: absolute;
-  inset: 0.45rem;
-  pointer-events: none;
-  border: 1px solid var(--shinobi-line);
-}
+/* ----------------------------------------- */
+/* Titres et séparateurs                     */
+/* ----------------------------------------- */
 
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-kicker {
   color: var(--shinobi-red-dark);
-  font-size: 0.68rem;
-  font-weight: 800;
   letter-spacing: 0.14em;
-  text-transform: uppercase;
 }
 
-.naruto-25e.shinobimancer-maquette-v2 h1,
-.naruto-25e.shinobimancer-maquette-v2 h2,
-.naruto-25e.shinobimancer-maquette-v2 h3,
-.naruto-25e.shinobimancer-maquette-v2 h4,
-.naruto-25e.shinobimancer-maquette-v2 p {
-  margin-top: 0;
-}
-
-/* ----------------------------------------- */
-/* Accueil / choix du mode                   */
-/* ----------------------------------------- */
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice {
-  padding: 0.9rem 1rem;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-hero {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: 4.5rem 1fr 6.5rem;
-  gap: 1rem;
-  align-items: center;
-  margin: 0 0 1rem;
-  padding: 1rem 1.15rem;
-  border: 1px solid var(--shinobi-line);
-  background: rgba(208, 190, 150, 0.34);
-  box-shadow: none;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-hero::before,
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-hero::after {
-  display: none;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-hero-seal {
-  width: 3.8rem;
-  height: 3.8rem;
-  border: 2px solid rgba(138, 45, 32, 0.65);
-  border-radius: 50%;
-  color: var(--shinobi-red);
-  background: transparent;
-  font-size: 1.65rem;
-  transform: none;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-hero-content h1 {
-  display: inline-block;
-  margin: 0 0 0.15rem;
-  padding-right: 1.5rem;
-  border-bottom: 1px solid var(--shinobi-red);
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-hero-content h1,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-topbar h1,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-page-header h2,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-panel-heading h3,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-summary-header h3 {
   color: var(--shinobi-red-dark);
-  font-size: 1.75rem;
-  line-height: 1.1;
 }
 
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-hero-content p {
-  margin: 0;
-  color: var(--shinobi-ink);
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-hero-portrait img {
-  width: 5.6rem;
-  height: 5.6rem;
-  border: 1px solid var(--shinobi-line);
-  border-radius: 0;
-  background: rgba(230, 220, 190, 0.45);
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice-layout {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: minmax(15rem, 0.95fr) minmax(34rem, 1.65fr);
-  gap: 0.9rem;
-  padding: 0;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice-cards {
-  grid-template-columns: repeat(2, minmax(14rem, 1fr));
-  gap: 0.9rem;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice-intro,
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice-card {
-  border: 1px solid var(--shinobi-line);
-  border-radius: 0.18rem;
-  background: rgba(174, 155, 121, 0.24);
-  box-shadow: none;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice-intro {
-  padding: 1rem;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice-card {
-  min-height: 17rem;
-  padding: 1rem;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice-card.is-recommended {
-  border-color: rgba(138, 45, 32, 0.72);
-  background: rgba(174, 155, 121, 0.3);
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-document-stamp {
-  margin-bottom: 1rem;
-  padding: 0.35rem 0.7rem;
-  border: 2px solid rgba(138, 45, 32, 0.7);
-  color: var(--shinobi-red-dark);
-  background: transparent;
-  transform: rotate(-3deg);
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-card-icon {
-  width: 3.2rem;
-  height: 3.2rem;
-  border: 2px solid var(--shinobi-line);
-  border-radius: 50%;
-  color: var(--shinobi-red);
-  background: transparent;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice-card h2 {
-  display: inline-block;
-  margin-bottom: 0.55rem;
-  padding-bottom: 0.25rem;
-  border-bottom: 1px solid var(--shinobi-red);
-  font-size: 1.2rem;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-card-badge {
-  border-color: rgba(138, 45, 32, 0.55);
-  color: var(--shinobi-red-dark);
-  background: transparent;
-}
-
-/* ----------------------------------------- */
-/* Fenêtre principale                        */
-/* ----------------------------------------- */
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main {
-  display: flex;
-  flex-direction: column;
-  padding: 0.85rem 1rem;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-topbar {
-  position: relative;
-  z-index: 1;
-  flex: 0 0 auto;
-  margin: 0 0 0.85rem;
-  padding: 0.85rem 1.1rem;
-  border: 1px solid var(--shinobi-line);
-  background: rgba(208, 190, 150, 0.34);
-  box-shadow: none;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-topbar::before,
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-topbar::after {
-  display: none;
-}
-
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-hero-content h1,
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-topbar h1 {
   display: inline-block;
-  margin: 0;
-  padding-right: 1.6rem;
+  padding-right: 1.5rem;
   border-bottom: 1px solid var(--shinobi-red);
-  color: var(--shinobi-red-dark);
-  font-size: 1.9rem;
-  line-height: 1.1;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-topbar-actor {
-  border: 1px solid var(--shinobi-line);
-  border-radius: 0.15rem;
-  background: rgba(174, 155, 121, 0.22);
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-topbar-actor img {
-  width: 3rem;
-  height: 3rem;
-  border: 1px solid var(--shinobi-line);
-  border-radius: 0;
-  background: rgba(230, 220, 190, 0.45);
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-layout {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: 12.2rem minmax(33rem, 1fr) 13.4rem;
-  gap: 0.85rem;
-  min-height: 0;
-  padding: 0;
-  background: transparent;
 }
 
 /* ----------------------------------------- */
-/* Barre d’étapes gauche                     */
+/* Grands panneaux                           */
+/* ----------------------------------------- */
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-hero,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-topbar,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice-intro,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice-card,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-panel,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-page-header,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-summary,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-footer {
+  border-color: var(--shinobi-border);
+  background: rgba(174, 155, 121, 0.26);
+  box-shadow: none;
+}
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-hero,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-topbar {
+  background: rgba(194, 174, 136, 0.36);
+}
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-page-header,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-panel {
+  background: rgba(174, 155, 121, 0.2);
+}
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-summary {
+  background: rgba(174, 155, 121, 0.24);
+}
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-footer {
+  background: rgba(194, 174, 136, 0.28);
+}
+
+/* ----------------------------------------- */
+/* Barre gauche                              */
 /* ----------------------------------------- */
 
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-sidebar {
-  padding: 0.75rem 0.55rem;
-  border: 1px solid var(--shinobi-line);
-  border-radius: 0.18rem;
-  background: rgba(174, 155, 121, 0.28);
+  border-color: var(--shinobi-border);
+  background: rgba(174, 155, 121, 0.22);
   box-shadow: none;
 }
 
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-sidebar::before {
-  left: 1.05rem;
-  width: 1px;
-  border: 0;
-  background: var(--shinobi-line);
+  background: rgba(32, 22, 14, 0.28);
 }
 
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-binding-title {
-  margin: 0 0 0.65rem 1.7rem;
-  padding: 0;
   color: var(--shinobi-red-dark);
-  font-size: 0.66rem;
-  font-weight: 800;
-  letter-spacing: 0.18em;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-step-list {
-  gap: 0.24rem;
 }
 
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-step {
-  grid-template-columns: 2rem 1fr;
-  gap: 0.45rem;
-  align-items: center;
-  min-height: 3.05rem;
-  padding: 0.28rem 0.34rem;
-  border: 1px solid transparent;
-  border-radius: 0.15rem;
   background: transparent;
-  opacity: 0.76;
 }
 
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-step:hover {
-  border-color: var(--shinobi-line-soft);
-  background: rgba(180, 160, 124, 0.25);
+  background: rgba(174, 155, 121, 0.22);
 }
 
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-step.is-active {
-  border-color: rgba(138, 45, 32, 0.72);
-  background: rgba(194, 174, 136, 0.34);
-  opacity: 1;
+  border-color: rgba(139, 47, 34, 0.7);
+  background: rgba(174, 155, 121, 0.32);
 }
 
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-step-seal {
-  width: 1.75rem;
-  height: 1.75rem;
-  border: 1px solid var(--shinobi-line);
-  border-radius: 50%;
+  border-color: rgba(32, 22, 14, 0.44);
   color: var(--shinobi-ink);
-  background: rgba(210, 194, 156, 0.65);
-  font-size: 0.85rem;
+  background: rgba(205, 188, 150, 0.48);
 }
 
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-step.is-active .shinobimancer-step-seal {
@@ -324,322 +141,115 @@
   background: var(--shinobi-red-dark);
 }
 
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-step-text strong {
-  font-size: 0.78rem;
-  line-height: 1.1;
-}
-
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-step-text span {
   color: var(--shinobi-muted);
-  font-size: 0.62rem;
-  line-height: 1.12;
 }
 
 /* ----------------------------------------- */
-/* Zone centrale                             */
+/* Cartes                                    */
 /* ----------------------------------------- */
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-content {
-  position: relative;
-  padding: 0;
-  min-width: 33rem;
-  background: transparent;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-content::before {
-  content: "Registre officiel de l’Académie de Konoha";
-  position: absolute;
-  top: 0.65rem;
-  right: 1rem;
-  z-index: 5;
-  width: 7rem;
-  padding: 0.35rem 0.4rem;
-  border: 1px solid var(--shinobi-line);
-  color: var(--shinobi-red-dark);
-  background: rgba(174, 155, 121, 0.86);
-  font-size: 0.52rem;
-  font-weight: 800;
-  letter-spacing: 0.05em;
-  line-height: 1.2;
-  text-align: center;
-  text-transform: uppercase;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-page-header {
-  margin: 0 0 0.65rem;
-  padding: 0.8rem 8.5rem 0.75rem 0.9rem;
-  border: 1px solid var(--shinobi-line);
-  border-radius: 0.18rem;
-  background: rgba(174, 155, 121, 0.22);
-  box-shadow: none;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-page-header h2 {
-  display: inline-block;
-  margin-bottom: 0.25rem;
-  padding-right: 1.1rem;
-  border-bottom: 1px solid var(--shinobi-red);
-  color: var(--shinobi-red-dark);
-  font-size: 1.35rem;
-  line-height: 1.1;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-page-header p {
-  margin-bottom: 0;
-  color: var(--shinobi-muted);
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-panel {
-  padding: 0.85rem;
-  border: 1px solid var(--shinobi-line);
-  border-radius: 0.18rem;
-  background: rgba(174, 155, 121, 0.22);
-  box-shadow: none;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-panel-heading {
-  margin-bottom: 0.75rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--shinobi-line-soft);
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-panel-heading h3 {
-  display: inline-block;
-  margin-bottom: 0;
-  padding-right: 1rem;
-  border-bottom: 1px solid var(--shinobi-red);
-  font-size: 1.05rem;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-status-pill {
-  border: 1px solid var(--shinobi-line);
-  border-radius: 999px;
-  color: var(--shinobi-red-dark);
-  background: transparent;
-  font-size: 0.72rem;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-identity-grid {
-  grid-template-columns: 8.5rem 1fr;
-  gap: 0.75rem;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-portrait-card {
-  padding: 0.35rem;
-  border: 1px solid var(--shinobi-line);
-  border-radius: 0.15rem;
-  background: transparent;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-portrait-card img {
-  border: 0;
-  border-radius: 0;
-  background: rgba(230, 220, 190, 0.28);
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-form-preview-large {
-  grid-template-columns: repeat(3, minmax(8rem, 1fr));
-  gap: 0.55rem;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-form-preview label {
-  gap: 0.16rem;
-  font-size: 0.72rem;
-  font-weight: 700;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-form-preview input,
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-form-preview select,
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-form-preview textarea,
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-hidden-clan-awareness {
-  min-height: 1.7rem;
-  border: 1px solid var(--shinobi-line);
-  border-radius: 0;
-  color: var(--shinobi-ink);
-  background: rgba(220, 205, 165, 0.34);
-  box-shadow: none;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-form-preview textarea {
-  min-height: 4rem;
-}
-
-/* ----------------------------------------- */
-/* Cartes / choix                            */
-/* ----------------------------------------- */
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-card-grid,
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-clan-grid {
-  gap: 0.7rem;
-}
 
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-data-card,
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-clan-card,
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-affinity-card,
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-equipment-card,
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-skill-pill {
-  border: 1px solid var(--shinobi-line);
-  border-radius: 0.15rem;
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-skill-pill,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice-card {
+  border-color: rgba(32, 22, 14, 0.36);
   background: rgba(174, 155, 121, 0.18);
   box-shadow: none;
 }
 
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-data-card:hover,
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-clan-card:hover,
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-affinity-card:hover,
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-equipment-card:hover {
-  border-color: rgba(138, 45, 32, 0.68);
-  background: rgba(174, 155, 121, 0.26);
-  filter: none;
-}
-
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice-card.is-recommended,
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-data-card.is-selected,
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-clan-card.is-selected,
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-affinity-card.is-selected,
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-equipment-card.is-selected {
-  border-color: rgba(138, 45, 32, 0.82);
+  border-color: rgba(139, 47, 34, 0.78);
   background: rgba(174, 155, 121, 0.3);
 }
 
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-data-card:not(.is-disabled):hover,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-clan-card:hover,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-affinity-card:not(.is-disabled):hover,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-equipment-card:hover,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-skill-pill.is-selectable:hover {
+  border-color: rgba(139, 47, 34, 0.72);
+  background: rgba(174, 155, 121, 0.26);
+  box-shadow: none;
+}
+
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-data-card.is-disabled,
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-clan-card.is-disabled,
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-affinity-card.is-disabled,
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-equipment-card.is-disabled {
-  opacity: 0.48;
-  filter: grayscale(0.35);
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-affinity-card.is-disabled {
+  opacity: 0.5;
+  filter: grayscale(0.28);
 }
 
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-card-emblem,
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-clan-emblem,
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-affinity-icon,
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-equipment-quantity {
-  border: 1px solid var(--shinobi-line);
-  background: transparent;
+  border-color: rgba(32, 22, 14, 0.42);
   color: var(--shinobi-red-dark);
+  background: rgba(205, 188, 150, 0.34);
 }
 
 /* ----------------------------------------- */
-/* Notices / alertes                         */
+/* Formulaires                               */
+/* ----------------------------------------- */
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-form-preview input,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-form-preview select,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-form-preview textarea,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-hidden-clan-awareness {
+  border-color: rgba(32, 22, 14, 0.38);
+  color: var(--shinobi-ink);
+  background: rgba(205, 188, 150, 0.28);
+  box-shadow: none;
+}
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-portrait-card {
+  border-color: rgba(32, 22, 14, 0.38);
+  background: rgba(174, 155, 121, 0.18);
+}
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-portrait-card .shinobimancer-mini-note {
+  background: rgba(174, 155, 121, 0.35);
+}
+
+/* ----------------------------------------- */
+/* Notices                                   */
 /* ----------------------------------------- */
 
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-notice {
-  border: 1px solid var(--shinobi-line-soft);
-  border-left: 3px solid rgba(70, 70, 70, 0.7);
-  border-radius: 0;
+  border-color: rgba(32, 22, 14, 0.28);
   background: rgba(174, 155, 121, 0.2);
   box-shadow: none;
 }
 
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-notice.is-info {
-  border-left-color: rgba(52, 74, 85, 0.75);
+  border-left-color: var(--shinobi-blue);
 }
 
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-notice.is-warning {
-  border-left-color: rgba(138, 86, 26, 0.8);
+  border-left-color: var(--shinobi-amber);
 }
 
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-notice.is-error {
-  border-left-color: rgba(138, 45, 32, 0.9);
+  border-left-color: var(--shinobi-red);
 }
 
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-notice.is-success {
-  border-left-color: rgba(52, 99, 58, 0.85);
+  border-left-color: var(--shinobi-green);
 }
 
 /* ----------------------------------------- */
-/* Résumé permanent                          */
+/* Boutons et badges                         */
 /* ----------------------------------------- */
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-summary {
-  min-width: 13rem;
-  padding: 0.75rem;
-  border: 1px solid var(--shinobi-line);
-  border-radius: 0.18rem;
-  background: rgba(174, 155, 121, 0.24);
-  box-shadow: none;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-summary-header h3 {
-  display: inline-block;
-  margin-bottom: 0.65rem;
-  padding-right: 1rem;
-  border-bottom: 1px solid var(--shinobi-red);
-  color: var(--shinobi-red-dark);
-  font-size: 1rem;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-summary-portrait {
-  padding: 0.55rem;
-  border: 1px solid var(--shinobi-line);
-  border-radius: 0;
-  background: transparent;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-summary-portrait img {
-  width: 4.7rem;
-  height: 4.7rem;
-  border: 1px solid var(--shinobi-line);
-  border-radius: 50%;
-  background: rgba(230, 220, 190, 0.28);
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-summary-list div {
-  border-bottom: 1px solid var(--shinobi-line-soft);
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-summary-list dt {
-  color: var(--shinobi-ink);
-  font-size: 0.63rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-summary-list dd {
-  color: var(--shinobi-ink);
-  font-size: 0.76rem;
-}
-
-/* ----------------------------------------- */
-/* Footer / boutons                          */
-/* ----------------------------------------- */
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-footer {
-  position: relative;
-  z-index: 1;
-  margin: 0.85rem 0 0;
-  padding: 0.75rem 1rem;
-  border: 1px solid var(--shinobi-line);
-  border-radius: 0;
-  background: rgba(208, 190, 150, 0.28);
-  box-shadow: none;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-footer::before,
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-footer::after {
-  display: none;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-footer-note::before {
-  content: "葉";
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.55rem;
-  height: 1.55rem;
-  margin-right: 0.45rem;
-  border: 1px solid var(--shinobi-line);
-  border-radius: 50%;
-  color: var(--shinobi-red-dark);
-  background: transparent;
-  font-weight: 800;
-}
 
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-button {
-  min-height: 2rem;
-  border: 1px solid var(--shinobi-line);
-  border-radius: 0.12rem;
+  border-color: rgba(32, 22, 14, 0.42);
   box-shadow: none;
-  font-weight: 800;
 }
 
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-button.is-primary {
@@ -649,33 +259,36 @@
 
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-button.is-secondary {
   color: var(--shinobi-ink);
-  background: rgba(210, 194, 156, 0.38);
+  background: rgba(205, 188, 150, 0.35);
 }
 
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-button:hover {
   filter: none;
-  border-color: rgba(138, 45, 32, 0.75);
+  border-color: rgba(139, 47, 34, 0.7);
+}
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-card-badge,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-selected-stamp,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-status-pill {
+  border-color: rgba(139, 47, 34, 0.55);
+  color: var(--shinobi-red-dark);
+  background: rgba(174, 155, 121, 0.18);
 }
 
 /* ----------------------------------------- */
-/* Responsive de sécurité                    */
+/* Résumé permanent                          */
 /* ----------------------------------------- */
 
-@media (max-width: 1130px) {
-  .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-layout {
-    grid-template-columns: 11.5rem minmax(30rem, 1fr) 12.5rem;
-    gap: 0.65rem;
-  }
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-summary-portrait {
+  border-color: rgba(32, 22, 14, 0.34);
+  background: rgba(174, 155, 121, 0.18);
+}
 
-  .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-form-preview-large {
-    grid-template-columns: repeat(2, minmax(9rem, 1fr));
-  }
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-summary-list div {
+  border-bottom-color: rgba(32, 22, 14, 0.18);
+}
 
-  .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-content::before {
-    display: none;
-  }
-
-  .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-page-header {
-    padding-right: 0.9rem;
-  }
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-affinity-tags span {
+  border-color: rgba(32, 22, 14, 0.28);
+  background: rgba(205, 188, 150, 0.35);
 }
