@@ -54,6 +54,24 @@
     }
   },
   {
+    "name": "Magen — Illusion démoniaque",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/control/hypnosis-mesmerism-eye.webp",
+    "system": {
+      "description": "Le Sharingan permet de projeter des illusions démoniaques propres au clan Uchiha. Ce pouvoir représente le déblocage de l’accès aux Magen et la capacité de base Illusion démoniaque.",
+      "clan": "uchiha",
+      "lineageRank": 4,
+      "powerType": "passive",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir passif. Débloque l’accès aux futures techniques Magen du Sharingan et représente la capacité de lignée active Illusion démoniaque, qui sera traitée comme technique/capacité de lignée dédiée.",
+      "prerequisites": {
+        "text": "Clan Uchiha. Sharingan maîtrisé et Lignée 4 requise.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
     "name": "Mangekyō Sharingan",
     "type": "pouvoirLignee",
     "img": "icons/magic/perception/eye-ringed-glow-angry-red.webp",
@@ -66,7 +84,133 @@
       "maintenanceCost": 10,
       "effect": "Active le Mangekyō Sharingan. Ne compte pas comme une utilisation oculaire dégradante tant qu’aucune technique propre au Mangekyō n’est lancée. Surclasse le Sharingan classique actif. Le bonus de +200 Chakra dépend du paramètre MJ du monde.",
       "prerequisites": {
-        "text": "Clan Uchiha, Lignée 5, éveil narratif du Mangekyō et validation MJ requise. Les pouvoirs d’œil droit/gauche et les techniques associées seront gérés séparément.",
+        "text": "Clan Uchiha, Lignée 5, éveil narratif du Mangekyō et validation MJ requise. Les pouvoirs d’œil droit/gauche et les techniques associées sont gérés séparément.",
+        "gmValidation": true
+      }
+    }
+  },
+  {
+    "name": "Tsukuyomi — Le Monde Illusoire",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/control/debuff-energy-hold-levitate-teal-blue.webp",
+    "system": {
+      "description": "Pouvoir de Mangekyō lié à la domination illusoire extrême. Tsukuyomi enferme la cible dans un monde spirituel contrôlé par l’utilisateur.",
+      "clan": "uchiha",
+      "lineageRank": 6,
+      "powerType": "active",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Fondation de données. Technique/capacité Mangekyō active à traiter dans les techniques de lignée Uchiha. Ne doit pas être accordée automatiquement hors choix d’œil validé.",
+      "prerequisites": {
+        "text": "Mangekyō Sharingan validé. Pouvoir d’œil correspondant requis selon le mode Uchiha choisi par le MJ.",
+        "gmValidation": true
+      }
+    }
+  },
+  {
+    "name": "Amaterasu — Flammes noires",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/fire/flame-burning-black.webp",
+    "system": {
+      "description": "Pouvoir de Mangekyō faisant naître des flammes noires quasi impossibles à éteindre sur la cible fixée par l’œil.",
+      "clan": "uchiha",
+      "lineageRank": 7,
+      "powerType": "active",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Fondation de données. Technique/capacité Mangekyō active à traiter dans les techniques de lignée Uchiha. Ne doit pas être accordée automatiquement hors choix d’œil validé.",
+      "prerequisites": {
+        "text": "Mangekyō Sharingan validé. Pouvoir d’œil Amaterasu requis.",
+        "gmValidation": true
+      }
+    }
+  },
+  {
+    "name": "Enton — Kagutsuchi",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/fire/flame-burning-black-orange.webp",
+    "system": {
+      "description": "Pouvoir de manipulation des flammes noires. Enton permet de modeler, déplacer ou exploiter les flammes d’Amaterasu.",
+      "clan": "uchiha",
+      "lineageRank": 7,
+      "powerType": "active",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Fondation de données. Enton nécessite Amaterasu dans l’autre œil selon la règle maison validée.",
+      "prerequisites": {
+        "text": "Mangekyō Sharingan validé. Enton choisi sur un œil et Amaterasu présent dans l’autre œil.",
+        "gmValidation": true
+      }
+    }
+  },
+  {
+    "name": "Kotoamatsukami — Allégeance",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/control/silhouette-aura-energy.webp",
+    "system": {
+      "description": "Pouvoir de Mangekyō lié à une influence mentale extrêmement subtile et profonde.",
+      "clan": "uchiha",
+      "lineageRank": 8,
+      "powerType": "active",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Fondation de données. Technique/capacité Mangekyō active à traiter dans les techniques de lignée Uchiha. Ne doit pas être accordée automatiquement hors choix d’œil validé.",
+      "prerequisites": {
+        "text": "Mangekyō Sharingan validé. Pouvoir d’œil correspondant requis selon le mode Uchiha choisi par le MJ.",
+        "gmValidation": true
+      }
+    }
+  },
+  {
+    "name": "Izanagi",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/control/energy-stream-link-white.webp",
+    "system": {
+      "description": "Technique interdite du Sharingan altérant brièvement la frontière entre réalité et illusion.",
+      "clan": "uchiha",
+      "lineageRank": 9,
+      "powerType": "active",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Fondation de données. Izanagi ne nécessite pas forcément le Mangekyō selon la règle maison validée. L’œil utilisé devient aveugle, sauf exception rare EMS/Rinnegan cadrée par le MJ.",
+      "prerequisites": {
+        "text": "Sharingan disponible. Œil sacrifiable requis. Validation MJ recommandée.",
+        "gmValidation": true
+      }
+    }
+  },
+  {
+    "name": "Izanami",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/control/debuff-chains-shackles-movement-blue.webp",
+    "system": {
+      "description": "Technique interdite du Sharingan enfermant une cible dans une boucle de perception et de destin.",
+      "clan": "uchiha",
+      "lineageRank": 9,
+      "powerType": "active",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Fondation de données. Izanami ne nécessite pas forcément le Mangekyō selon la règle maison validée. L’œil utilisé devient aveugle, sauf exception rare EMS/Rinnegan cadrée par le MJ.",
+      "prerequisites": {
+        "text": "Sharingan disponible. Œil sacrifiable requis. Validation MJ recommandée.",
+        "gmValidation": true
+      }
+    }
+  },
+  {
+    "name": "Susanō",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/defensive/shield-barrier-flaming-diamond-purple-orange.webp",
+    "system": {
+      "description": "Manifestation gigantesque du Chakra du Mangekyō, prenant la forme d’un gardien spirituel armé et protecteur.",
+      "clan": "uchiha",
+      "lineageRank": 10,
+      "powerType": "maintained",
+      "activationCost": 30,
+      "maintenanceCost": 10,
+      "effect": "Fondation de données. Susanō devra être traité comme technique/invocation avec préférences personnelles, progression et potentiellement fiche dédiée.",
+      "prerequisites": {
+        "text": "Mangekyō Sharingan validé et conditions MJ. Automatisation future dédiée.",
         "gmValidation": true
       }
     }
@@ -90,6 +234,168 @@
     }
   },
   {
+    "name": "Art du Poing Faible",
+    "type": "pouvoirLignee",
+    "img": "icons/skills/melee/unarmed-punch-fist-blue.webp",
+    "system": {
+      "description": "Le Hyūga apprend à exploiter le Byakugan pour frapper le réseau de Chakra et les tenketsu de l’adversaire.",
+      "clan": "hyuga",
+      "lineageRank": 2,
+      "powerType": "passive",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir passif conditionnel. Représente l’accès au style Jūken lorsque le Byakugan est actif. Les effets précis seront automatisés avec les techniques Hyūga.",
+      "prerequisites": {
+        "text": "Clan Hyūga. Byakugan et Lignée 2 requis.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Vision Spatiale",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/perception/orb-eye-scrying.webp",
+    "system": {
+      "description": "Le Byakugan affine la perception de l’espace, des volumes et des angles morts.",
+      "clan": "hyuga",
+      "lineageRank": 3,
+      "powerType": "active",
+      "activationCost": 30,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir actif. Durée et usage selon le texte papier. À automatiser plus tard avec les bonus de perception spatiale.",
+      "prerequisites": {
+        "text": "Clan Hyūga. Byakugan et Lignée 3 requis.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Intensité Spirituelle",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/holy/prayer-hands-glowing-yellow.webp",
+    "system": {
+      "description": "L’entraînement spirituel Hyūga renforce le corps, le mental et le Chakra.",
+      "clan": "hyuga",
+      "lineageRank": 4,
+      "powerType": "passive",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir passif. Bonus papier à appliquer plus tard automatiquement : +2 Vigueur, +1 Caractère, +50 Chakra.",
+      "prerequisites": {
+        "text": "Clan Hyūga. Lignée 4 requise.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Hakke Kūshō — Technique de la Paume Absolue",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/air/wind-vortex-swirl-blue.webp",
+    "system": {
+      "description": "Projection de Chakra du Jūken sous forme de frappe à distance.",
+      "clan": "hyuga",
+      "lineageRank": 5,
+      "powerType": "active",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir actif / technique de lignée. Résolution détaillée à traiter dans les techniques Hyūga.",
+      "prerequisites": {
+        "text": "Clan Hyūga. Byakugan, Jūken et Lignée 5 requis.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "359 Degrés",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/perception/eye-ringed-glow-angry-small-red.webp",
+    "system": {
+      "description": "Le champ de perception du Byakugan devient presque total, ne laissant qu’un angle mort minuscule.",
+      "clan": "hyuga",
+      "lineageRank": 6,
+      "powerType": "passive",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir passif. Améliore le champ de perception du Byakugan. Effets mécaniques détaillés à automatiser plus tard.",
+      "prerequisites": {
+        "text": "Clan Hyūga. Byakugan et Lignée 6 requis.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Hakke Rokujūyon Shō — Soixante-Quatre Paumes",
+    "type": "pouvoirLignee",
+    "img": "icons/skills/melee/hand-grip-staff-blue.webp",
+    "system": {
+      "description": "Enchaînement emblématique du Jūken visant une série de tenketsu pour entraver la circulation du Chakra.",
+      "clan": "hyuga",
+      "lineageRank": 7,
+      "powerType": "active",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir actif / technique de lignée. Résolution détaillée à traiter dans les techniques Hyūga.",
+      "prerequisites": {
+        "text": "Clan Hyūga. Byakugan, Jūken et Lignée 7 requis.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Force Mystique",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/life/heart-cross-strong-flame-green.webp",
+    "system": {
+      "description": "Renforcement supérieur du corps et de l’énergie interne du Hyūga.",
+      "clan": "hyuga",
+      "lineageRank": 8,
+      "powerType": "passive",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir passif. Bonus papier à appliquer plus tard automatiquement.",
+      "prerequisites": {
+        "text": "Clan Hyūga. Lignée 8 requise.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Hakkeshō Kaiten — Barrage Tournoyant de Tendō",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/defensive/shield-barrier-blue.webp",
+    "system": {
+      "description": "Défense tournoyante du Jūken, projetant le Chakra autour du corps pour repousser les attaques.",
+      "clan": "hyuga",
+      "lineageRank": 9,
+      "powerType": "active",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir actif / technique défensive de lignée. Résolution détaillée à traiter dans les techniques Hyūga.",
+      "prerequisites": {
+        "text": "Clan Hyūga. Byakugan, Jūken et Lignée 9 requis.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Tenseigan — Œil de la Réincarnation",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/perception/eye-ringed-glow-blue.webp",
+    "system": {
+      "description": "Dōjutsu supérieur exceptionnel lié au clan Hyūga et aux lignées oculaires mythiques.",
+      "clan": "hyuga",
+      "lineageRank": 10,
+      "powerType": "maintained",
+      "activationCost": 30,
+      "maintenanceCost": 10,
+      "effect": "Active le Tenseigan. Dōjutsu maintenu par cohérence avec le Byakugan et les dōjutsu supérieurs. N’accorde pas le bonus Chakra du Mangekyō.",
+      "prerequisites": {
+        "text": "Clan Hyūga, Lignée 10 et validation MJ hasTenseigan requise.",
+        "gmValidation": true
+      }
+    }
+  },
+  {
     "name": "Yūrengan",
     "type": "pouvoirLignee",
     "img": "icons/magic/perception/orb-eye-scrying.webp",
@@ -108,56 +414,686 @@
     }
   },
   {
+    "name": "Forteresse Mentale",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/defensive/shield-barrier-glowing-triangle-blue-yellow.webp",
+    "system": {
+      "description": "Le Katō développe une résistance mentale exceptionnelle, ancrée dans sa nature spirituelle.",
+      "clan": "kato",
+      "lineageRank": 2,
+      "powerType": "passive",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir passif. Bonus papier à appliquer plus tard automatiquement : +1 Caractère, +1 Vigueur, +50 Chakra.",
+      "prerequisites": {
+        "text": "Clan Katō. Lignée 2 requise.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Ikiryō — Forme Spectrale",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/death/ghost-silhouette-light-blue.webp",
+    "system": {
+      "description": "Le Katō projette son esprit hors de son corps sous une forme spectrale.",
+      "clan": "kato",
+      "lineageRank": 3,
+      "powerType": "active",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir actif. Projection spirituelle selon les règles papier. La résolution détaillée, les limites et risques corporels seront automatisés plus tard.",
+      "prerequisites": {
+        "text": "Clan Katō. Yūrengan et Lignée 3 requis.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Invisibilité Fantomatique",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/air/fog-gas-smoke-swirling-gray.webp",
+    "system": {
+      "description": "Le Katō devient difficile à percevoir, comme si sa présence glissait hors du monde matériel.",
+      "clan": "kato",
+      "lineageRank": 4,
+      "powerType": "passive",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir passif par défaut : +Lignée Camouflage. Si le réglage MJ Invisibilité Fantomatique Katō est en mode maintenu, l’item est converti à la synchronisation en activation 10 Chakra et entretien 5 Chakra par tour actif.",
+      "prerequisites": {
+        "text": "Clan Katō. Lignée 4 requise.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Zekkyou — Cri Silencieux",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/sonic/scream-wail-shout-teal.webp",
+    "system": {
+      "description": "Cri spirituel muet qui perturbe profondément l’initiative et les perceptions adverses.",
+      "clan": "kato",
+      "lineageRank": 5,
+      "powerType": "active",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir actif. Effet papier indiqué : pénalité d’initiative liée au GEN pendant un nombre de tours dépendant de la Lignée. Automatisation future.",
+      "prerequisites": {
+        "text": "Clan Katō. Lignée 5 requise.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Amplificateur",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/symbols/runes-star-pentagon-orange-purple.webp",
+    "system": {
+      "description": "Le Katō amplifie sa puissance spirituelle et la durée de ses manifestations.",
+      "clan": "kato",
+      "lineageRank": 6,
+      "powerType": "passive",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir passif. Bonus papier à appliquer plus tard automatiquement : +100 Chakra et amélioration de la durée de forme spectrale.",
+      "prerequisites": {
+        "text": "Clan Katō. Lignée 6 requise.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Possession Spectrale",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/control/possession-skull-spirit-blue.webp",
+    "system": {
+      "description": "Le Katō utilise sa forme spectrale pour tenter de posséder ou dominer temporairement une cible.",
+      "clan": "kato",
+      "lineageRank": 7,
+      "powerType": "active",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir actif. Possession spirituelle selon les règles papier. Automatisation future dédiée.",
+      "prerequisites": {
+        "text": "Clan Katō. Ikiryō et Lignée 7 requis.",
+        "gmValidation": true
+      }
+    }
+  },
+  {
+    "name": "Himei — Cri de la Banshee",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/sonic/explosion-shock-wave-teal.webp",
+    "system": {
+      "description": "Cri spirituel dévastateur, particulièrement dangereux contre les créatures liées aux Royaumes Parallèles.",
+      "clan": "kato",
+      "lineageRank": 9,
+      "powerType": "active",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir actif. Effet papier à traiter plus tard : dégâts spirituels importants, renforcés contre certaines créatures surnaturelles.",
+      "prerequisites": {
+        "text": "Clan Katō. Lignée 9 requise. Le rang 8 reste volontairement absent car non retrouvé dans la source actuelle.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Reika — Transformation Spirituelle",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/death/undead-ghost-scream-teal.webp",
+    "system": {
+      "description": "Transformation spirituelle supérieure du Katō, poussant la projection de l’âme à un niveau extrême.",
+      "clan": "kato",
+      "lineageRank": 10,
+      "powerType": "maintained",
+      "activationCost": 30,
+      "maintenanceCost": 10,
+      "effect": "Pouvoir maintenu par défaut. Transformation spirituelle supérieure à cadrer finement lors de l’automatisation des pouvoirs Katō.",
+      "prerequisites": {
+        "text": "Clan Katō. Lignée 10 requise. Validation MJ recommandée.",
+        "gmValidation": true
+      }
+    }
+  },
+  {
     "name": "Kikaichū — Colonie symbiotique",
     "type": "pouvoirLignee",
     "img": "icons/creatures/invertebrates/wasp-swarm-movement.webp",
     "system": {
-      "description": "Le corps de l’Aburame abrite une colonie de Kikaichū vivant en symbiose avec son Chakra. Cette colonie permet l’usage des techniques d’insectes et justifie la réserve dédiée.",
+      "description": "Le corps de l’Aburame abrite une colonie symbiotique de Kikaichū. Ces insectes vivent en lien permanent avec son Chakra et deviennent le socle de ses techniques de clan.",
       "clan": "aburame",
       "lineageRank": 1,
       "powerType": "passive",
       "activationCost": 0,
       "maintenanceCost": 0,
-      "effect": "Pouvoir passif. Représente la symbiose Kikaichū et l’accès aux techniques Aburame. La réserve Kikaichū reste gérée directement par la fiche.",
+      "effect": "Pouvoir passif. Active la réserve Kikaichū de la fiche et donne accès aux futures techniques liées aux insectes.",
       "prerequisites": {
         "text": "Clan Aburame. Lignée 1 requise.",
         "gmValidation": false
       }
     }
   },
-{
-  "name": "Pouvoir des Ombres",
-  "type": "pouvoirLignee",
-  "img": "icons/magic/unholy/silhouette-robe-evil-power.webp",
-  "system": {
-    "description": "Le clan Nara possède une affinité héréditaire avec la manipulation des ombres. Ce pouvoir passif représente le socle naturel nécessaire aux techniques Kage du clan.",
-    "clan": "nara",
-    "lineageRank": 1,
-    "powerType": "passive",
-    "activationCost": 0,
-    "maintenanceCost": 0,
-    "effect": "Pouvoir passif. Ne s’active pas, ne consomme pas d’utilisation de lignée et sert de prérequis narratif aux futures techniques Kage comme Kagemane et Kage Nui.",
-    "prerequisites": {
-      "text": "Clan Nara. Lignée 1 requise.",
-      "gmValidation": false
+  {
+    "name": "Empathie",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/nature/root-vine-entangled-hands.webp",
+    "system": {
+      "description": "L’Aburame développe une empathie instinctive avec sa colonie et les insectes proches, percevant leurs mouvements, signaux et réactions.",
+      "clan": "aburame",
+      "lineageRank": 2,
+      "powerType": "passive",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir passif. Représente l’amélioration du lien sensoriel avec les Kikaichū. Les bonus précis seront automatisés plus tard.",
+      "prerequisites": {
+        "text": "Clan Aburame. Lignée 2 requise.",
+        "gmValidation": false
+      }
     }
-  }
-},
+  },
+  {
+    "name": "Kaisan — Devenir la Multitude",
+    "type": "pouvoirLignee",
+    "img": "icons/creatures/invertebrates/beetle-swarm-movement.webp",
+    "system": {
+      "description": "L’Aburame disperse son corps ou sa présence à travers sa colonie, devenant symboliquement une multitude d’insectes.",
+      "clan": "aburame",
+      "lineageRank": 3,
+      "powerType": "active",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir actif. Désunification / dispersion en lien avec les Kikaichū selon les règles papier. Automatisation future dédiée.",
+      "prerequisites": {
+        "text": "Clan Aburame. Lignée 3 requise.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Ruche",
+    "type": "pouvoirLignee",
+    "img": "icons/creatures/invertebrates/hive-nest-bees.webp",
+    "system": {
+      "description": "La colonie Kikaichū de l’Aburame devient une véritable ruche interne, plus vaste, plus stable et plus puissante.",
+      "clan": "aburame",
+      "lineageRank": 4,
+      "powerType": "passive",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir passif. Bonus papier : +100 Chakra. Le traitement dépend du réglage MJ Ruche Aburame : soit +100 Chakra maximum général, soit +100 réserve Kikaichū uniquement sans augmenter le Chakra général.",
+      "prerequisites": {
+        "text": "Clan Aburame. Lignée 4 requise.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Ryūsei — Météore d’Insectes",
+    "type": "pouvoirLignee",
+    "img": "icons/creatures/invertebrates/wasp-swarm-attack.webp",
+    "system": {
+      "description": "L’Aburame concentre sa colonie en une attaque massive d’insectes, semblable à une pluie ou un météore vivant.",
+      "clan": "aburame",
+      "lineageRank": 5,
+      "powerType": "active",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir actif / technique de lignée. Résolution détaillée à traiter dans les techniques Aburame.",
+      "prerequisites": {
+        "text": "Clan Aburame. Lignée 5 requise.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Pouvoir des Ombres",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/unholy/orb-beam-pink.webp",
+    "system": {
+      "description": "Le Nara possède une affinité de lignée avec les ombres, lui permettant d’en faire un vecteur de contrôle et de contrainte.",
+      "clan": "nara",
+      "lineageRank": 1,
+      "powerType": "passive",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir passif. Sert de socle narratif et mécanique aux futures techniques Kage comme Kagemane et Kage Nui.",
+      "prerequisites": {
+        "text": "Clan Nara. Lignée 1 requise.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Stratège",
+    "type": "pouvoirLignee",
+    "img": "icons/sundries/documents/document-sealed-signatures-red.webp",
+    "system": {
+      "description": "Le Nara développe une capacité d’analyse tactique exceptionnelle, capable de lire le champ de bataille et les intentions adverses.",
+      "clan": "nara",
+      "lineageRank": 2,
+      "powerType": "passive",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir passif. Bonus papier à appliquer plus tard automatiquement : bonus de Lignée à Mental.",
+      "prerequisites": {
+        "text": "Clan Nara. Lignée 2 requise.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Kagemane — Manipulation des Ombres",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/unholy/hand-claw-glow-orange.webp",
+    "system": {
+      "description": "Technique emblématique du clan Nara. L’utilisateur étend son ombre pour lier celle de sa cible et contraindre ses mouvements.",
+      "clan": "nara",
+      "lineageRank": 3,
+      "powerType": "active",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir actif / technique de lignée. Automatisation future : proposer l’activation après réussite d’un jet de Kage approprié.",
+      "prerequisites": {
+        "text": "Clan Nara. Compétence Kage et Lignée 3 requises.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Profondeur mentale",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/control/silhouette-hold-change-blue.webp",
+    "system": {
+      "description": "L’esprit du Nara devient plus profond, plus froid et plus difficile à ébranler.",
+      "clan": "nara",
+      "lineageRank": 4,
+      "powerType": "passive",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir passif. Bonus papier à appliquer plus tard automatiquement : +3 Caractère.",
+      "prerequisites": {
+        "text": "Clan Nara. Lignée 4 requise.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Kage Nui — Entrelacement des Ombres",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/unholy/projectile-tentacle-black-purple.webp",
+    "system": {
+      "description": "Le Nara matérialise ou projette ses ombres sous forme d’entrelacements offensifs capables d’entraver ou de frapper.",
+      "clan": "nara",
+      "lineageRank": 5,
+      "powerType": "active",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir actif / technique de lignée. Automatisation future : proposer l’activation après réussite d’un jet de Kage approprié.",
+      "prerequisites": {
+        "text": "Clan Nara. Compétence Kage et Lignée 5 requises.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Nature Supérieure — Mokuton",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/nature/tree-spirit-green.webp",
+    "system": {
+      "description": "Le Senju possède l’accès héréditaire au Mokuton, nature supérieure née de l’union du Doton et du Suiton.",
+      "clan": "senju",
+      "lineageRank": 1,
+      "powerType": "passive",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir passif. Représente l’accès au Mokuton. Doton et Suiton sont imposés par la lignée à la création.",
+      "prerequisites": {
+        "text": "Clan Senju. Doton et Suiton requis. Lignée 1 requise.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Force Naturelle",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/nature/leaf-glow-triple-green.webp",
+    "system": {
+      "description": "Le corps du Senju se renforce au contact de son Chakra naturel et de son héritage vital.",
+      "clan": "senju",
+      "lineageRank": 2,
+      "powerType": "passive",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir passif. Bonus papier à appliquer plus tard automatiquement.",
+      "prerequisites": {
+        "text": "Clan Senju. Lignée 2 requise.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Jukai Shirei — Domination Végétale",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/nature/vines-thorned-entwined-teal.webp",
+    "system": {
+      "description": "Le Senju impose sa volonté à la végétation environnante, la commandant comme une extension de son Chakra.",
+      "clan": "senju",
+      "lineageRank": 3,
+      "powerType": "active",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir actif / technique de lignée Mokuton. Résolution détaillée à traiter dans les techniques Senju.",
+      "prerequisites": {
+        "text": "Clan Senju. Mokuton et Lignée 3 requis.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Vague de Chakra",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/nature/root-vine-barrier-wall-brown.webp",
+    "system": {
+      "description": "Le Senju libère une vague de Chakra dense, nourrie par sa vitalité et son affinité supérieure.",
+      "clan": "senju",
+      "lineageRank": 4,
+      "powerType": "active",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir actif. Résolution détaillée à traiter lors de l’automatisation des pouvoirs Senju.",
+      "prerequisites": {
+        "text": "Clan Senju. Lignée 4 requise.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Shichūrō — La Prison aux Quatre Piliers",
+    "type": "pouvoirLignee",
+    "img": "icons/environment/settlement/watchtower-wood.webp",
+    "system": {
+      "description": "Le Senju érige une prison de bois pour enfermer et contrôler une cible.",
+      "clan": "senju",
+      "lineageRank": 5,
+      "powerType": "active",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir actif / déblocage de technique Mokuton. La technique détaillée existe dans les techniques de lignée.",
+      "prerequisites": {
+        "text": "Clan Senju. Mokuton et Lignée 5 requis.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Énergie Mystique",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/life/ankh-gold-blue.webp",
+    "system": {
+      "description": "La vitalité Senju s’intensifie et sature le corps d’une énergie mystique rare.",
+      "clan": "senju",
+      "lineageRank": 6,
+      "powerType": "passive",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir passif. Bonus papier à appliquer plus tard automatiquement.",
+      "prerequisites": {
+        "text": "Clan Senju. Lignée 6 requise.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Jukai Gōhei — Fusion Végétale",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/nature/tree-twisted-glow-green.webp",
+    "system": {
+      "description": "Le Senju fusionne son Chakra avec la matière végétale pour renforcer ou remodeler ses créations Mokuton.",
+      "clan": "senju",
+      "lineageRank": 7,
+      "powerType": "active",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir actif / technique Mokuton. Résolution détaillée à traiter dans les techniques Senju.",
+      "prerequisites": {
+        "text": "Clan Senju. Mokuton et Lignée 7 requis.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Piliers Mythiques",
+    "type": "pouvoirLignee",
+    "img": "icons/environment/settlement/pillar-stone.webp",
+    "system": {
+      "description": "Le Senju invoque ou façonne des piliers de bois d’une puissance mythique, symboles de la domination Mokuton.",
+      "clan": "senju",
+      "lineageRank": 8,
+      "powerType": "active",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir actif / technique Mokuton. Résolution détaillée à traiter dans les techniques Senju.",
+      "prerequisites": {
+        "text": "Clan Senju. Mokuton et Lignée 8 requis.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Jukai Heki — Barrière Végétale",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/nature/root-vine-thorned-coil-green.webp",
+    "system": {
+      "description": "Le Senju déploie une barrière végétale défensive issue du Mokuton.",
+      "clan": "senju",
+      "lineageRank": 9,
+      "powerType": "active",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir actif / déblocage de technique Mokuton. La technique détaillée existe dans les techniques de lignée.",
+      "prerequisites": {
+        "text": "Clan Senju. Mokuton et Lignée 9 requis.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Jukai Kōtan — Naissance de la Forêt",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/nature/tree-spirit-green.webp",
+    "system": {
+      "description": "Technique suprême de création forestière Mokuton, capable de faire surgir une forêt entière sous l’impulsion du Chakra Senju.",
+      "clan": "senju",
+      "lineageRank": 10,
+      "powerType": "active",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir actif / déblocage de technique Mokuton. La technique détaillée existe dans les techniques de lignée.",
+      "prerequisites": {
+        "text": "Clan Senju. Mokuton et Lignée 10 requis.",
+        "gmValidation": false
+      }
+    }
+  },
   {
     "name": "Gardien du clan Inu",
     "type": "pouvoirLignee",
     "img": "icons/creatures/mammals/wolf-howl-moon-white.webp",
     "system": {
-      "description": "L’Inuzuka développe un lien instinctif avec son partenaire canin et les méthodes martiales du clan. Ce pouvoir représente l’accès au style de combat bestial et au futur compagnon ninken.",
+      "description": "L’Inuzuka est lié à un ninken, compagnon canin du clan Inu, dont la progression complète sera gérée par une future fiche dédiée.",
       "clan": "inuzuka",
       "lineageRank": 1,
       "powerType": "passive",
       "activationCost": 0,
       "maintenanceCost": 0,
-      "effect": "Pouvoir passif. Représente le lien Inuzuka avec le ninken et prépare les futures capacités de pistage, flair, transformation et combat bestial.",
+      "effect": "Pouvoir passif. Représente le lien avec le compagnon canin et les futures techniques de duo.",
       "prerequisites": {
         "text": "Clan Inuzuka. Lignée 1 requise.",
         "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Pisteur de Chikushōdō",
+    "type": "pouvoirLignee",
+    "img": "icons/creatures/mammals/wolf-profile-grey.webp",
+    "system": {
+      "description": "L’Inuzuka développe des instincts de pistage surnaturels, liés au monde animal et à Chikushōdō.",
+      "clan": "inuzuka",
+      "lineageRank": 2,
+      "powerType": "passive",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir passif. Bonus papier à appliquer plus tard automatiquement : bonus de Lignée à Survie.",
+      "prerequisites": {
+        "text": "Clan Inuzuka. Lignée 2 requise.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Jinjū Kongō — Forme Sauvage",
+    "type": "pouvoirLignee",
+    "img": "icons/creatures/mammals/wolf-howl-moon-blue.webp",
+    "system": {
+      "description": "L’Inuzuka adopte une forme sauvage, plus proche de l’animal, renforçant ses instincts et sa brutalité.",
+      "clan": "inuzuka",
+      "lineageRank": 3,
+      "powerType": "active",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir actif. Transformation à durée limitée selon les règles papier. Automatisation future dédiée.",
+      "prerequisites": {
+        "text": "Clan Inuzuka. Lignée 3 requise.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Empathie Animale",
+    "type": "pouvoirLignee",
+    "img": "icons/creatures/mammals/wolf-head-black.webp",
+    "system": {
+      "description": "L’Inuzuka comprend instinctivement les animaux et développe une communication profonde avec son ninken.",
+      "clan": "inuzuka",
+      "lineageRank": 4,
+      "powerType": "passive",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir passif. Communication et compréhension animale. Les effets mécaniques précis seront automatisés plus tard.",
+      "prerequisites": {
+        "text": "Clan Inuzuka. Lignée 4 requise.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Gatsuga — Furie Sauvage",
+    "type": "pouvoirLignee",
+    "img": "icons/skills/melee/strike-sword-slashing-red.webp",
+    "system": {
+      "description": "Technique offensive emblématique de l’Inuzuka, fondée sur une rotation sauvage et une attaque coordonnée avec le ninken.",
+      "clan": "inuzuka",
+      "lineageRank": 5,
+      "powerType": "active",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir actif / technique de lignée. Résolution détaillée à traiter dans les techniques Inuzuka.",
+      "prerequisites": {
+        "text": "Clan Inuzuka. Lignée 5 requise.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Flair",
+    "type": "pouvoirLignee",
+    "img": "icons/creatures/abilities/nose-animal-scent-brown.webp",
+    "system": {
+      "description": "L’odorat de l’Inuzuka atteint un niveau surnaturel, lui permettant de suivre des traces presque impossibles à percevoir.",
+      "clan": "inuzuka",
+      "lineageRank": 6,
+      "powerType": "passive",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir passif. Bonus papier à appliquer plus tard automatiquement : bonus de Lignée à Vigilance.",
+      "prerequisites": {
+        "text": "Clan Inuzuka. Lignée 6 requise.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Sōtōrō — Loup Monstrueux à Deux Têtes",
+    "type": "pouvoirLignee",
+    "img": "icons/creatures/mammals/wolf-howl-moon-forest.webp",
+    "system": {
+      "description": "L’Inuzuka et son ninken fusionnent ou se coordonnent au point de prendre la forme d’un loup monstrueux à deux têtes.",
+      "clan": "inuzuka",
+      "lineageRank": 7,
+      "powerType": "active",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir actif. Fusion ou transformation de duo avec le compagnon canin. Automatisation future liée à la future fiche compagnon.",
+      "prerequisites": {
+        "text": "Clan Inuzuka. Lignée 7 requise et compagnon ninken disponible.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Crocs & Fourrure",
+    "type": "pouvoirLignee",
+    "img": "icons/creatures/claws/claw-bear-paw-swipe-brown.webp",
+    "system": {
+      "description": "L’héritage bestial de l’Inuzuka renforce son corps, son endurance et son Chakra.",
+      "clan": "inuzuka",
+      "lineageRank": 8,
+      "powerType": "passive",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir passif. Bonus papier à appliquer plus tard automatiquement : +3 Vigueur, +3 Caractère, +100 Chakra.",
+      "prerequisites": {
+        "text": "Clan Inuzuka. Lignée 8 requise.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Appeler la Meute",
+    "type": "pouvoirLignee",
+    "img": "icons/creatures/mammals/wolf-pack-brown.webp",
+    "system": {
+      "description": "L’Inuzuka fait appel à la meute, invoquant ou coordonnant des alliés canins par le lien animal du clan.",
+      "clan": "inuzuka",
+      "lineageRank": 9,
+      "powerType": "active",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir actif. Appel de meute / voyage ou soutien via Chikushōdō selon les règles papier. Automatisation future.",
+      "prerequisites": {
+        "text": "Clan Inuzuka. Lignée 9 requise.",
+        "gmValidation": false
+      }
+    }
+  },
+  {
+    "name": "Totem",
+    "type": "pouvoirLignee",
+    "img": "icons/creatures/mammals/wolf-shadow-black.webp",
+    "system": {
+      "description": "Pouvoir ultime de l’Inuzuka, lié au totem animal, à l’identité bestiale du clan et à l’accomplissement du lien avec le ninken.",
+      "clan": "inuzuka",
+      "lineageRank": 10,
+      "powerType": "passive",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir de rang 10. Effet exact à préciser lors de l’automatisation Inuzuka ; conservé comme passif de progression pour l’instant.",
+      "prerequisites": {
+        "text": "Clan Inuzuka. Lignée 10 requise. Cadrage MJ recommandé.",
+        "gmValidation": true
       }
     }
   }

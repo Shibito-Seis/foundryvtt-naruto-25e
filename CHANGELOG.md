@@ -2,6 +2,40 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.32 - Pouvoirs de lignée des clans de test
+
+### Ajouté
+
+- Ajout des items `pouvoirLignee` manquants pour les 7 clans de test :
+  - Aburame ;
+  - Hyūga ;
+  - Katō ;
+  - Nara ;
+  - Senju ;
+  - Inuzuka ;
+  - Uchiha.
+- Ajout des pouvoirs de lignée Senju, dont `Nature Supérieure — Mokuton`.
+- Ajout des fondations de données pour les pouvoirs avancés Uchiha : Magen, Tsukuyomi, Amaterasu, Enton, Kotoamatsukami, Izanagi, Izanami et Susanō.
+- Ajout du réglage MJ `Ruche Aburame — bonus de Chakra` :
+  - option A : +100 Chakra maximum général ;
+  - option B : +100 réserve Kikaichū uniquement.
+- Ajout du réglage MJ `Invisibilité Fantomatique Katō` :
+  - option A : pouvoir passif ;
+  - option B : pouvoir maintenu avec activation 10 / entretien 5.
+
+### Modifié
+
+- Extension de la synchronisation automatique des pouvoirs de lignée depuis l’héritage et la Base Lignée.
+- Les pouvoirs de lignée gérés automatiquement couvrent désormais les progressions des clans de test non-Uchiha.
+- Le Tenseigan n’est accordé qu’aux Hyūga de Lignée 10 avec validation MJ.
+- Le Katō respecte le trou du rang 8 : aucun pouvoir inventé n’est ajouté à ce rang.
+- Les pouvoirs avancés Uchiha ne sont pas accordés automatiquement afin de préserver le futur système de choix par œil.
+
+### Notes
+
+- Cette version ajoute les données et la synchronisation des pouvoirs, mais n’automatise pas encore les effets complexes.
+- Les techniques de lignée détaillées, les bonus de compétences, le compagnon Inuzuka, la possession Katō, le Susanō et les pouvoirs Mangekyō avancés restent des chantiers séparés.
+
 ## 0.1.31.5 - Correction définitive anti-doublon paquetage
 
 ### Corrigé

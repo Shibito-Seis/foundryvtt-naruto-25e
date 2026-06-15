@@ -1208,6 +1208,51 @@ export class Naruto25eActor extends Actor {
     }
   }
 
+    _getAburameRucheChakraMode() {
+    try {
+      return game.settings?.get("naruto-25e", "aburameRucheChakraMode") ?? "general";
+    } catch (error) {
+      return "general";
+    }
+  }
+
+  _getKatoInvisibilityMode() {
+    try {
+      return game.settings?.get("naruto-25e", "katoInvisibilityMode") ?? "passive";
+    } catch (error) {
+      return "passive";
+    }
+  }
+
+  _hasClanKey(clanKey) {
+    const heritage = this.system?.heritage ?? {};
+    const mainClan = heritage.clan ?? "";
+    const secondaryClan = heritage.hybrid?.secondaryClan ?? "";
+
+    return mainClan === clanKey || secondaryClan === clanKey;
+  }
+
+  _hasAburameRuche() {
+    if (!this._hasClanKey("aburame")) return false;
+
+    const lineageValue = Math.max(0, Number(this.system?.bases?.lign?.value ?? 0));
+    return lineageValue >= 4;
+  }
+
+  _getAburameRucheGeneralChakraBonus() {
+    if (!this._hasAburameRuche()) return 0;
+    if (this._getAburameRucheChakraMode() !== "general") return 0;
+
+    return 100;
+  }
+
+  _getAburameRucheKikaichuReserveBonus() {
+    if (!this._hasAburameRuche()) return 0;
+    if (this._getAburameRucheChakraMode() !== "kikaichu") return 0;
+
+    return 100;
+  }
+
   _isMangekyoPowerName(name) {
     return name === "Mangekyō Sharingan";
   }
@@ -1364,6 +1409,9 @@ export class Naruto25eActor extends Actor {
         rawMax = Math.max(0, cor * 30 + esp * 30 + 50 + chakra.bonus + specializationChakraBonus);
       }
 
+      const aburameRucheGeneralChakraBonus = this._getAburameRucheGeneralChakraBonus();
+      rawMax = Math.max(0, rawMax + aburameRucheGeneralChakraBonus);
+
       chakra.rawMax = rawMax;
 
       const kikaichuAllocated = this._prepareKikaichuReserve(system, rawMax, lign);
@@ -1414,8 +1462,17 @@ export class Naruto25eActor extends Actor {
     const lign = Math.max(1, Number(lineageValue ?? 1));
     const rawMax = Math.max(0, Number(chakraRawMax ?? 0));
 
-    reserve.min = Math.min(rawMax, lign * 15);
-    reserve.max = Math.min(rawMax, lign * 25);
+    const rucheReserveBonus = this._getAburameRucheKikaichuReserveBonus();
+    const paperMin = lign * 15;
+    const paperMax = lign * 25;
+    const generalAllocationMax = Math.min(rawMax, paperMax);
+
+    reserve.min = Math.min(rawMax, paperMin);
+    reserve.bonus = rucheReserveBonus;
+    reserve.max = generalAllocationMax + rucheReserveBonus;
+    reserve.notes = rucheReserveBonus > 0
+      ? "Ruche : +100 Chakra maximum de réserve Kikaichū, sans augmenter le Chakra général."
+      : "";
 
     reserve.allocated = Math.clamp(
       Number(reserve.allocated ?? reserve.min),
@@ -1429,7 +1486,7 @@ export class Naruto25eActor extends Actor {
       reserve.allocated
     );
 
-    return reserve.allocated;
+    return Math.min(reserve.allocated, generalAllocationMax);
   }
 
 _prepareExperience(system) {
@@ -3706,117 +3763,140 @@ async decreaseBase(baseKey) {
     };
   }
 
-    _getCurrentLineagePowerDefinitions() {
+  _getCurrentLineagePowerDefinitions() {
+    if (this.type !== "shinobi") return [];
+
     const system = this.system ?? {};
     const heritage = system.heritage ?? {};
+    const gmOptions = heritage.gmOptions ?? {};
     const lineageValue = Math.max(0, Number(system.bases?.lign?.value ?? 0));
+    const definitions = [];
 
-    const mode = heritage.mode === "customClan"
-      ? "clan"
-      : heritage.mode ?? "clan";
+    const addPower = (clan, key, name) => {
+      if (!clan || !key || !name) return;
+
+      const exists = definitions.some((definition) => definition.name === name);
+      if (exists) return;
+
+      definitions.push({
+        clan,
+        key,
+        name
+      });
+    };
 
     const clanKeys = [];
 
-    const addClan = (clanKey) => {
-      if (!clanKey) return;
-      if (NARUTO25E.isCustomClanKey?.(clanKey)) return;
-      if (!clanKeys.includes(clanKey)) clanKeys.push(clanKey);
-    };
+    const mainClan = String(heritage.clan ?? "");
+    if (mainClan) clanKeys.push(mainClan);
 
-    if (mode === "clan" || mode === "hybridClan" || mode === "hybridVoie") {
-      addClan(heritage.clan);
+    if (heritage.mode === "hybridClan") {
+      const secondaryClan = String(heritage.hybrid?.secondaryClan ?? "");
+      if (secondaryClan) clanKeys.push(secondaryClan);
     }
 
-    if (mode === "hybridClan") {
-      addClan(heritage.hybrid?.secondaryClan);
-    }
+    const uniqueClanKeys = Array.from(new Set(clanKeys.filter(Boolean)));
 
-    const definitions = [];
-
-    for (const clanKey of clanKeys) {
+    for (const clanKey of uniqueClanKeys) {
       if (clanKey === "uchiha") {
         if (lineageValue >= 3) {
-          definitions.push({
-            key: "uchiha-sharingan-3",
-            name: "Sharingan — 3 tomoe",
-            clan: "uchiha",
-            minRank: 3
-          });
+          addPower("uchiha", "uchiha_sharingan_3", "Sharingan — 3 tomoe");
         } else if (lineageValue >= 2) {
-          definitions.push({
-            key: "uchiha-sharingan-2",
-            name: "Sharingan — 2 tomoe",
-            clan: "uchiha",
-            minRank: 2
-          });
+          addPower("uchiha", "uchiha_sharingan_2", "Sharingan — 2 tomoe");
         } else if (lineageValue >= 1) {
-          definitions.push({
-            key: "uchiha-sharingan-1",
-            name: "Sharingan — 1 tomoe",
-            clan: "uchiha",
-            minRank: 1
-          });
+          addPower("uchiha", "uchiha_sharingan_1", "Sharingan — 1 tomoe");
         }
 
-        if (lineageValue >= 5 && this._hasValidatedMangekyoSharingan()) {
-          definitions.push({
-            key: "uchiha-mangekyo-sharingan",
-            name: "Mangekyō Sharingan",
-            clan: "uchiha",
-            minRank: 5
-          });
+        if (lineageValue >= 4) {
+          addPower("uchiha", "uchiha_magen", "Magen — Illusion démoniaque");
+        }
+
+        if (lineageValue >= 5 && Boolean(gmOptions.hasMangekyoSharingan)) {
+          addPower("uchiha", "uchiha_mangekyo", "Mangekyō Sharingan");
         }
 
         continue;
       }
 
-      if (clanKey === "hyuga" && lineageValue >= 1) {
-        definitions.push({
-          key: "hyuga-byakugan",
-          name: "Byakugan",
-          clan: "hyuga",
-          minRank: 1
-        });
+      if (clanKey === "hyuga") {
+        if (lineageValue >= 1) addPower("hyuga", "hyuga_byakugan", "Byakugan");
+        if (lineageValue >= 2) addPower("hyuga", "hyuga_juken", "Art du Poing Faible");
+        if (lineageValue >= 3) addPower("hyuga", "hyuga_vision_spatiale", "Vision Spatiale");
+        if (lineageValue >= 4) addPower("hyuga", "hyuga_intensite_spirituelle", "Intensité Spirituelle");
+        if (lineageValue >= 5) addPower("hyuga", "hyuga_hakke_kusho", "Hakke Kūshō — Technique de la Paume Absolue");
+        if (lineageValue >= 6) addPower("hyuga", "hyuga_359_degres", "359 Degrés");
+        if (lineageValue >= 7) addPower("hyuga", "hyuga_64_paumes", "Hakke Rokujūyon Shō — Soixante-Quatre Paumes");
+        if (lineageValue >= 8) addPower("hyuga", "hyuga_force_mystique", "Force Mystique");
+        if (lineageValue >= 9) addPower("hyuga", "hyuga_kaiten", "Hakkeshō Kaiten — Barrage Tournoyant de Tendō");
+
+        if (lineageValue >= 10 && Boolean(gmOptions.hasTenseigan)) {
+          addPower("hyuga", "hyuga_tenseigan", "Tenseigan — Œil de la Réincarnation");
+        }
+
         continue;
       }
 
-      if (clanKey === "kato" && lineageValue >= 1) {
-        definitions.push({
-          key: "kato-yurengan",
-          name: "Yūrengan",
-          clan: "kato",
-          minRank: 1
-        });
+      if (clanKey === "kato") {
+        if (lineageValue >= 1) addPower("kato", "kato_yurengan", "Yūrengan");
+        if (lineageValue >= 2) addPower("kato", "kato_forteresse_mentale", "Forteresse Mentale");
+        if (lineageValue >= 3) addPower("kato", "kato_ikiryo", "Ikiryō — Forme Spectrale");
+        if (lineageValue >= 4) addPower("kato", "kato_invisibilite_fantomatique", "Invisibilité Fantomatique");
+        if (lineageValue >= 5) addPower("kato", "kato_zekkyou", "Zekkyou — Cri Silencieux");
+        if (lineageValue >= 6) addPower("kato", "kato_amplificateur", "Amplificateur");
+        if (lineageValue >= 7) addPower("kato", "kato_possession_spectrale", "Possession Spectrale");
+        if (lineageValue >= 9) addPower("kato", "kato_himei", "Himei — Cri de la Banshee");
+        if (lineageValue >= 10) addPower("kato", "kato_reika", "Reika — Transformation Spirituelle");
+
         continue;
       }
 
-      if (clanKey === "aburame" && lineageValue >= 1) {
-        definitions.push({
-          key: "aburame-kikaichu",
-          name: "Kikaichū — Colonie symbiotique",
-          clan: "aburame",
-          minRank: 1
-        });
+      if (clanKey === "aburame") {
+        if (lineageValue >= 1) addPower("aburame", "aburame_kikaichu", "Kikaichū — Colonie symbiotique");
+        if (lineageValue >= 2) addPower("aburame", "aburame_empathie", "Empathie");
+        if (lineageValue >= 3) addPower("aburame", "aburame_kaisan", "Kaisan — Devenir la Multitude");
+        if (lineageValue >= 4) addPower("aburame", "aburame_ruche", "Ruche");
+        if (lineageValue >= 5) addPower("aburame", "aburame_ryusei", "Ryūsei — Météore d’Insectes");
+
         continue;
       }
 
-      if (clanKey === "nara" && lineageValue >= 1) {
-        definitions.push({
-          key: "nara-pouvoir-des-ombres",
-          name: "Pouvoir des Ombres",
-          clan: "nara",
-          minRank: 1
-        });
+      if (clanKey === "nara") {
+        if (lineageValue >= 1) addPower("nara", "nara_pouvoir_ombres", "Pouvoir des Ombres");
+        if (lineageValue >= 2) addPower("nara", "nara_stratege", "Stratège");
+        if (lineageValue >= 3) addPower("nara", "nara_kagemane", "Kagemane — Manipulation des Ombres");
+        if (lineageValue >= 4) addPower("nara", "nara_profondeur_mentale", "Profondeur mentale");
+        if (lineageValue >= 5) addPower("nara", "nara_kage_nui", "Kage Nui — Entrelacement des Ombres");
+
         continue;
       }
 
-      if (clanKey === "inuzuka" && lineageValue >= 1) {
-        definitions.push({
-          key: "inuzuka-gardien-inu",
-          name: "Gardien du clan Inu",
-          clan: "inuzuka",
-          minRank: 1
-        });
+      if (clanKey === "senju") {
+        if (lineageValue >= 1) addPower("senju", "senju_mokuton", "Nature Supérieure — Mokuton");
+        if (lineageValue >= 2) addPower("senju", "senju_force_naturelle", "Force Naturelle");
+        if (lineageValue >= 3) addPower("senju", "senju_jukai_shirei", "Jukai Shirei — Domination Végétale");
+        if (lineageValue >= 4) addPower("senju", "senju_vague_chakra", "Vague de Chakra");
+        if (lineageValue >= 5) addPower("senju", "senju_shichuro", "Shichūrō — La Prison aux Quatre Piliers");
+        if (lineageValue >= 6) addPower("senju", "senju_energie_mystique", "Énergie Mystique");
+        if (lineageValue >= 7) addPower("senju", "senju_jukai_gohei", "Jukai Gōhei — Fusion Végétale");
+        if (lineageValue >= 8) addPower("senju", "senju_piliers_mythiques", "Piliers Mythiques");
+        if (lineageValue >= 9) addPower("senju", "senju_jukai_heki", "Jukai Heki — Barrière Végétale");
+        if (lineageValue >= 10) addPower("senju", "senju_jukai_kotan", "Jukai Kōtan — Naissance de la Forêt");
+
+        continue;
+      }
+
+      if (clanKey === "inuzuka") {
+        if (lineageValue >= 1) addPower("inuzuka", "inuzuka_gardien_inu", "Gardien du clan Inu");
+        if (lineageValue >= 2) addPower("inuzuka", "inuzuka_pisteur_chikushodo", "Pisteur de Chikushōdō");
+        if (lineageValue >= 3) addPower("inuzuka", "inuzuka_forme_sauvage", "Jinjū Kongō — Forme Sauvage");
+        if (lineageValue >= 4) addPower("inuzuka", "inuzuka_empathie_animale", "Empathie Animale");
+        if (lineageValue >= 5) addPower("inuzuka", "inuzuka_gatsuga", "Gatsuga — Furie Sauvage");
+        if (lineageValue >= 6) addPower("inuzuka", "inuzuka_flair", "Flair");
+        if (lineageValue >= 7) addPower("inuzuka", "inuzuka_sotoro", "Sōtōrō — Loup Monstrueux à Deux Têtes");
+        if (lineageValue >= 8) addPower("inuzuka", "inuzuka_crocs_fourrure", "Crocs & Fourrure");
+        if (lineageValue >= 9) addPower("inuzuka", "inuzuka_appeler_meute", "Appeler la Meute");
+        if (lineageValue >= 10) addPower("inuzuka", "inuzuka_totem", "Totem");
+
         continue;
       }
     }
@@ -3829,13 +3909,63 @@ async decreaseBase(baseKey) {
       "Sharingan — 1 tomoe",
       "Sharingan — 2 tomoe",
       "Sharingan — 3 tomoe",
+      "Magen — Illusion démoniaque",
       "Mangekyō Sharingan",
+
       "Byakugan",
+      "Art du Poing Faible",
+      "Vision Spatiale",
+      "Intensité Spirituelle",
+      "Hakke Kūshō — Technique de la Paume Absolue",
+      "359 Degrés",
+      "Hakke Rokujūyon Shō — Soixante-Quatre Paumes",
+      "Force Mystique",
+      "Hakkeshō Kaiten — Barrage Tournoyant de Tendō",
+      "Tenseigan — Œil de la Réincarnation",
+
       "Yūrengan",
+      "Forteresse Mentale",
+      "Ikiryō — Forme Spectrale",
+      "Invisibilité Fantomatique",
+      "Zekkyou — Cri Silencieux",
+      "Amplificateur",
+      "Possession Spectrale",
+      "Himei — Cri de la Banshee",
+      "Reika — Transformation Spirituelle",
+
       "Kikaichū — Colonie symbiotique",
-      "Affinité aux ombres",
+      "Empathie",
+      "Kaisan — Devenir la Multitude",
+      "Ruche",
+      "Ryūsei — Météore d’Insectes",
+
       "Pouvoir des Ombres",
-      "Gardien du clan Inu"
+      "Stratège",
+      "Kagemane — Manipulation des Ombres",
+      "Profondeur mentale",
+      "Kage Nui — Entrelacement des Ombres",
+
+      "Nature Supérieure — Mokuton",
+      "Force Naturelle",
+      "Jukai Shirei — Domination Végétale",
+      "Vague de Chakra",
+      "Shichūrō — La Prison aux Quatre Piliers",
+      "Énergie Mystique",
+      "Jukai Gōhei — Fusion Végétale",
+      "Piliers Mythiques",
+      "Jukai Heki — Barrière Végétale",
+      "Jukai Kōtan — Naissance de la Forêt",
+
+      "Gardien du clan Inu",
+      "Pisteur de Chikushōdō",
+      "Jinjū Kongō — Forme Sauvage",
+      "Empathie Animale",
+      "Gatsuga — Furie Sauvage",
+      "Flair",
+      "Sōtōrō — Loup Monstrueux à Deux Têtes",
+      "Crocs & Fourrure",
+      "Appeler la Meute",
+      "Totem"
     ]);
   }
 
@@ -3900,6 +4030,14 @@ async decreaseBase(baseKey) {
   for (const definition of desiredDefinitions) {
     const sourceData = await this._getLineagePowerSourceData(definition.name);
     if (!sourceData) continue;
+
+    if (definition.name === "Invisibilité Fantomatique" && this._getKatoInvisibilityMode() === "maintained") {
+      sourceData.system = sourceData.system ?? {};
+      sourceData.system.powerType = "maintained";
+      sourceData.system.activationCost = Math.max(10, Number(sourceData.system.activationCost ?? 0));
+      sourceData.system.maintenanceCost = Math.max(5, Number(sourceData.system.maintenanceCost ?? 0));
+      sourceData.system.effect = `${sourceData.system.effect ?? ""} Mode MJ actuel : pouvoir maintenu, activation 10 Chakra, entretien 5 Chakra par tour actif.`;
+    }
 
     sourceData.flags = foundry.utils.mergeObject(sourceData.flags ?? {}, {
       "naruto-25e": {

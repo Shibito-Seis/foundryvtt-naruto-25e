@@ -135,6 +135,46 @@ Hooks.once("init", async function () {
     }
   });
 
+    game.settings.register("naruto-25e", "aburameRucheChakraMode", {
+    name: "Ruche Aburame — bonus de Chakra",
+    hint: "Détermine comment le +100 Chakra du pouvoir Ruche est appliqué.",
+    scope: "world",
+    config: true,
+    restricted: true,
+    type: String,
+    choices: {
+      general: "Option A — +100 Chakra maximum général",
+      kikaichu: "Option B — +100 réserve Kikaichū uniquement"
+    },
+    default: "general",
+    onChange: () => {
+      for (const actor of game.actors ?? []) {
+        actor.prepareData();
+        actor.sheet?.render(false);
+      }
+    }
+  });
+
+  game.settings.register("naruto-25e", "katoInvisibilityMode", {
+    name: "Invisibilité Fantomatique Katō",
+    hint: "Détermine si Invisibilité Fantomatique est traitée comme un bonus passif ou comme un pouvoir maintenu.",
+    scope: "world",
+    config: true,
+    restricted: true,
+    type: String,
+    choices: {
+      passive: "Option A — passive, +Lignée Camouflage",
+      maintained: "Option B — maintenue, activation 10 / entretien 5"
+    },
+    default: "passive",
+    onChange: () => {
+      for (const actor of game.actors ?? []) {
+        actor.prepareData();
+        actor.sheet?.render(false);
+      }
+    }
+  });
+
     game.settings.register("naruto-25e", "autoImportDataOnReady", {
     name: "Auto-import des données système",
     hint: "Au lancement du monde, le MJ importe automatiquement les entrées JSON manquantes dans les compendiums système. L’import est non destructif : les entrées déjà présentes ne sont pas supprimées.",
