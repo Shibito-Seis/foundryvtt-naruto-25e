@@ -36,6 +36,13 @@
             "secondaryClan": "",
             "reason": ""
           },
+          "hiddenClan": {
+            "officialClan": "",
+            "realClan": "",
+            "awareness": "ignorant",
+            "unlocked": false,
+            "notes": ""
+          },
           "customClan": {
             "name": "",
             "summary": "",

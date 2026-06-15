@@ -464,12 +464,48 @@ function buildHeritageModeCards(actor) {
       available: Boolean(gmOptions.allowHybridVoie),
       description: "Clan principal accompagné d’une voie particulière.",
       note: gmOptions.allowHybridVoie ? "Autorisé par le MJ." : "Nécessite une autorisation MJ."
+    },
+    {
+      key: "hiddenClan",
+      label: "Clan caché / dissimulé",
+      selected: selectedMode === "hiddenClan",
+      available: true,
+      description: "Clan officiel visible et Réel Clan mécanique dissimulé aux observateurs.",
+      note: "Mode narratif avancé : le propriétaire et le MJ voient les deux lignées."
     }
   ];
 }
 
 function buildClanCards(actor) {
   const selectedClan = actor?.system?.heritage?.clan ?? "";
+
+  return SHINOBIMANCER_TEST_CLANS.map((preview) => {
+    const clan = NARUTO25E.clans?.[preview.key] ?? {};
+    const skillKey = clan.skillKey ?? "";
+    const skillLabel = skillKey
+      ? NARUTO25E.skillDefinitions?.[skillKey]?.label ?? skillKey
+      : "À définir";
+
+    return {
+      key: preview.key,
+      emblem: preview.emblem,
+      kamon: `systems/naruto-25e/assets/clans/kamon_${preview.key}.svg`,
+      tagline: preview.tagline,
+      feature: preview.feature,
+      warning: preview.warning,
+      label: clan.label ?? preview.key,
+      selected: selectedClan === preview.key,
+      available: true,
+      village: NARUTO25E.villages?.[clan.village]?.label ?? "Konoha",
+      skillLabel
+    };
+  });
+}
+
+function buildHiddenClanCards(actor, field = "officialClan") {
+  const heritage = actor?.system?.heritage ?? {};
+  const hiddenClan = heritage.hiddenClan ?? {};
+  const selectedClan = String(hiddenClan[field] ?? "");
 
   return SHINOBIMANCER_TEST_CLANS.map((preview) => {
     const clan = NARUTO25E.clans?.[preview.key] ?? {};
@@ -982,9 +1018,35 @@ export class Naruto25eShinobimancerApplication extends Application {
     context.baseRadarSvg = baseRadarSvg;
     context.baseCap = typeof this.actor?.getBaseCap === "function" ? this.actor.getBaseCap() : 3;
 
+    const heritage = system.heritage ?? {};
+    const hiddenClan = heritage.hiddenClan ?? {};
+    const hiddenClanAwareness = String(hiddenClan.awareness ?? "ignorant");
+    const hiddenClanState = NARUTO25E.getHiddenClanAwarenessState?.(hiddenClanAwareness) ?? {
+      label: "Dans l’ignorance",
+      summary: "Le personnage ignore totalement sa vraie lignée.",
+      maxCreationLineage: 0
+    };
+
     context.villageCards = buildVillageCards(this.actor);
     context.heritageModeCards = buildHeritageModeCards(this.actor);
     context.clanCards = buildClanCards(this.actor);
+    context.hiddenClanOfficialCards = buildHiddenClanCards(this.actor, "officialClan");
+    context.hiddenClanRealCards = buildHiddenClanCards(this.actor, "realClan");
+    context.hiddenClanMode = heritage.mode === "hiddenClan";
+    context.hiddenClanAwarenessStates = Object.entries(NARUTO25E.hiddenClanAwarenessStates ?? {}).map(([key, state]) => ({
+      key,
+      label: state.label,
+      summary: state.summary,
+      selected: key === hiddenClanAwareness
+    }));
+    context.hiddenClanSummary = {
+      officialClan: String(hiddenClan.officialClan ?? ""),
+      realClan: String(hiddenClan.realClan ?? ""),
+      awareness: hiddenClanAwareness,
+      awarenessLabel: hiddenClanState.label,
+      awarenessSummary: hiddenClanState.summary,
+      unlocked: Boolean(hiddenClan.unlocked)
+    };
     context.affinityCards = buildAffinityCards(this.actor);
     context.skillGroups = buildSkillPreview(this.actor);
     context.equipmentPreview = buildEquipmentPreview(this.actor);
@@ -1353,6 +1415,23 @@ export class Naruto25eShinobimancerApplication extends Application {
         updateData["system.heritage.hybrid.reason"] = "";
       }
 
+      if (mode === "hybridClan") {
+        updateData["system.heritage.voie"] = "";
+      }
+
+      if (mode === "hybridVoie") {
+        updateData["system.heritage.hybrid.secondaryClan"] = "";
+        updateData["system.heritage.hybrid.reason"] = "";
+      }
+
+      if (mode === "hiddenClan") {
+        updateData["system.heritage.clan"] = "";
+        updateData["system.heritage.voie"] = "";
+        updateData["system.heritage.hybrid.secondaryClan"] = "";
+        updateData["system.heritage.hybrid.reason"] = "";
+        updateData["system.heritage.hiddenClan.unlocked"] = false;
+      }
+
       await updateActorAndRender(updateData);
     });
 
@@ -1369,6 +1448,42 @@ export class Naruto25eShinobimancerApplication extends Application {
         "system.heritage.voie": "",
         "system.heritage.hybrid.secondaryClan": "",
         "system.heritage.hybrid.reason": ""
+      });
+    });
+
+    html.find(".shinobimancer-hidden-clan-card").on("click", async (event) => {
+      event.preventDefault();
+
+      if (!canEditCreation()) return;
+
+      const clanKey = event.currentTarget?.dataset?.clan;
+      const role = event.currentTarget?.dataset?.hiddenClanRole;
+
+      if (!clanKey || !role) return;
+
+      if (!["officialClan", "realClan"].includes(role)) return;
+
+      const updateData = {
+        [`system.heritage.hiddenClan.${role}`]: clanKey
+      };
+
+      if (role === "officialClan") {
+        updateData["system.identity.clan"] = clanKey;
+      }
+
+      await updateActorAndRender(updateData);
+    });
+
+    html.find(".shinobimancer-hidden-clan-awareness").on("change", async (event) => {
+      event.preventDefault();
+
+      if (!canEditCreation()) return;
+
+      const awareness = event.currentTarget?.value ?? "ignorant";
+
+      await updateActorAndRender({
+        "system.heritage.hiddenClan.awareness": awareness,
+        "system.heritage.hiddenClan.unlocked": false
       });
     });
 

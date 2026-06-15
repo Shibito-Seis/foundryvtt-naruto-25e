@@ -129,6 +129,126 @@ export class Naruto25eActor extends Actor {
       return Boolean(this.system.nindo?.unlockedByGM);
     }
 
+    _getNormalizedHeritageMode(heritage = this.system?.heritage ?? {}) {
+      const mode = heritage.mode === "customClan"
+        ? "clan"
+        : heritage.mode ?? "clan";
+
+      return NARUTO25E.heritageModes?.[mode] ? mode : "clan";
+    }
+
+    _getHiddenClanData(heritage = this.system?.heritage ?? {}) {
+      const hiddenClan = heritage.hiddenClan ?? {};
+      const awareness = String(hiddenClan.awareness ?? "ignorant");
+      const state = NARUTO25E.getHiddenClanAwarenessState?.(awareness) ?? {
+        label: "Dans l’ignorance",
+        maxCreationLineage: 0,
+        requiresUnlockAbove: 0
+      };
+
+      return {
+        officialClan: String(hiddenClan.officialClan ?? ""),
+        realClan: String(hiddenClan.realClan ?? ""),
+        awareness,
+        state,
+        unlocked: Boolean(hiddenClan.unlocked),
+        notes: String(hiddenClan.notes ?? "")
+      };
+    }
+
+    _getHiddenClanLineageCap() {
+      const heritage = this.system?.heritage ?? {};
+      const mode = this._getNormalizedHeritageMode(heritage);
+
+      if (mode !== "hiddenClan") return null;
+
+      const hiddenClan = this._getHiddenClanData(heritage);
+
+      if (hiddenClan.unlocked) return null;
+
+      return Math.max(0, Number(hiddenClan.state.maxCreationLineage ?? 0));
+    }
+
+    _getEffectiveLineageValue() {
+      const rawLineage = Math.max(0, Number(this.system?.bases?.lign?.value ?? 0));
+      const hiddenCap = this._getHiddenClanLineageCap();
+
+      if (hiddenCap === null) return rawLineage;
+
+      return Math.min(rawLineage, hiddenCap);
+    }
+
+    _getMechanicalClanKeys(options = {}) {
+      const includeDormantHiddenClan = Boolean(options.includeDormantHiddenClan);
+      const heritage = this.system?.heritage ?? {};
+      const mode = this._getNormalizedHeritageMode(heritage);
+      const clanKeys = [];
+
+      const addClan = (clanKey) => {
+        const key = String(clanKey ?? "");
+        if (!key) return;
+        if (NARUTO25E.isCustomClanKey?.(key)) return;
+        if (!NARUTO25E.clans?.[key]) return;
+        if (!clanKeys.includes(key)) clanKeys.push(key);
+      };
+
+      if (mode === "clan" || mode === "hybridClan" || mode === "hybridVoie") {
+        addClan(heritage.clan);
+      }
+
+      if (mode === "hybridClan") {
+        addClan(heritage.hybrid?.secondaryClan);
+      }
+
+      if (mode === "hiddenClan") {
+        const hiddenClan = this._getHiddenClanData(heritage);
+        const hiddenCap = this._getHiddenClanLineageCap();
+
+        /*
+          Si le clan caché est dans l’ignorance ou au courant sans développement,
+          il existe dans les données, mais ne déclenche pas encore de mécaniques.
+          includeDormantHiddenClan sert seulement aux affichages/validations spécifiques.
+        */
+        if (hiddenClan.unlocked || hiddenCap === null || hiddenCap > 0 || includeDormantHiddenClan) {
+          addClan(hiddenClan.realClan);
+        }
+      }
+
+      return clanKeys;
+    }
+
+    _getSocialClanKey() {
+      const heritage = this.system?.heritage ?? {};
+      const mode = this._getNormalizedHeritageMode(heritage);
+
+      if (mode === "hiddenClan") {
+        return this._getHiddenClanData(heritage).officialClan;
+      }
+
+      return String(heritage.clan ?? "");
+    }
+
+    _hasMechanicalClan(clanKey, options = {}) {
+      return this._getMechanicalClanKeys(options).includes(clanKey);
+    }
+
+    _hasValidatedRinnegan() {
+      return Boolean(this.system.heritage?.gmOptions?.hasRinnegan);
+    }
+
+    _hasValidatedTenseigan() {
+      return Boolean(this.system.heritage?.gmOptions?.hasTenseigan);
+    }
+
+    _hasValidatedEternalMangekyoSharingan() {
+      return Boolean(this.system.heritage?.gmOptions?.hasEternalMangekyoSharingan);
+    }
+
+    _hasSenjuCellsForRinnegan() {
+      return Boolean(this.system.heritage?.gmOptions?.hasSenjuCells)
+        || this._hasMechanicalClan("senju", { includeDormantHiddenClan: false });
+    }
+
     getCreationValidationSummary() {
       if (this.type !== "shinobi") {
         return {
@@ -179,9 +299,7 @@ export class Naruto25eActor extends Actor {
       const villageKey = heritage.village ?? "";
       const village = NARUTO25E.villages?.[villageKey];
 
-      const mode = heritage.mode === "customClan"
-        ? "clan"
-        : heritage.mode ?? "clan";
+      const mode = this._getNormalizedHeritageMode(heritage);
       const clanKey = heritage.clan ?? "";
       const voieKey = heritage.voie ?? "";
       const secondaryClanKey = heritage.hybrid?.secondaryClan ?? "";
@@ -189,6 +307,10 @@ export class Naruto25eActor extends Actor {
       const clan = NARUTO25E.clans?.[clanKey];
       const voie = NARUTO25E.voies?.[voieKey];
       const secondaryClan = NARUTO25E.clans?.[secondaryClanKey];
+
+      const hiddenClan = this._getHiddenClanData(heritage);
+      const officialHiddenClan = NARUTO25E.clans?.[hiddenClan.officialClan];
+      const realHiddenClan = NARUTO25E.clans?.[hiddenClan.realClan];
 
       const gmOptions = heritage.gmOptions ?? {};
 
@@ -348,23 +470,55 @@ export class Naruto25eActor extends Actor {
         }
       }
 
-      const mainClanKey = clanKey;
-      const secondaryKey = secondaryClanKey;
+      if (mode === "hiddenClan") {
+        if (!hiddenClan.officialClan || !officialHiddenClan) {
+          addError("Aucun clan officiel/social n’est sélectionné pour le Clan caché.");
+        } else if (officialHiddenClan.village !== villageKey) {
+          addError(`Le clan officiel ${officialHiddenClan.label} n’est pas compatible avec le village sélectionné.`);
+        }
 
-      const hasClan = (key) => mainClanKey === key || secondaryKey === key;
+        if (!hiddenClan.realClan || !realHiddenClan) {
+          addError("Aucun Réel Clan n’est sélectionné pour le Clan caché.");
+        } else if (realHiddenClan.village !== villageKey) {
+          addError(`Le Réel Clan ${realHiddenClan.label} n’est pas compatible avec le village sélectionné.`);
+        }
+
+        if (
+          hiddenClan.officialClan
+          && hiddenClan.realClan
+          && hiddenClan.officialClan === hiddenClan.realClan
+        ) {
+          addError("Le clan officiel et le Réel Clan doivent être différents pour un Clan caché.");
+        }
+
+        const rawLineage = Math.max(0, Number(system.bases?.lign?.value ?? 0));
+        const hiddenCap = this._getHiddenClanLineageCap();
+
+        if (hiddenCap !== null && rawLineage > hiddenCap) {
+          addError(`La Lignée cachée est verrouillée : le score de Lignée ne peut pas dépasser ${hiddenCap} tant que la progression réelle n’est pas débloquée par le MJ.`);
+        }
+      }
+
+      const mechanicalClanKeys = this._getMechanicalClanKeys({ includeDormantHiddenClan: false });
+      const hasClan = (key) => mechanicalClanKeys.includes(key);
 
       if (hasClan("kato")) {
         const existingKatoActor = (game.actors ?? []).find((actor) => {
           if (!actor || actor.id === this.id) return false;
           if (actor.type !== "shinobi") return false;
 
-          const actorHeritage = actor.system?.heritage ?? {};
           const actorCreation = actor.system?.progression?.creation ?? {};
+          if (!Boolean(actorCreation.locked)) return false;
+
+          if (typeof actor._getMechanicalClanKeys === "function") {
+            return actor._getMechanicalClanKeys({ includeDormantHiddenClan: false }).includes("kato");
+          }
+
+          const actorHeritage = actor.system?.heritage ?? {};
           const actorClan = actorHeritage.clan ?? "";
           const actorSecondaryClan = actorHeritage.hybrid?.secondaryClan ?? "";
 
-          return Boolean(actorCreation.locked)
-            && (actorClan === "kato" || actorSecondaryClan === "kato");
+          return actorClan === "kato" || actorSecondaryClan === "kato";
         });
 
         if (existingKatoActor) {
@@ -489,6 +643,12 @@ export class Naruto25eActor extends Actor {
           return `${clanLabel} / ${voie?.label ?? "Voie ?"}`;
         }
 
+        if (mode === "hiddenClan") {
+          const officialLabel = officialHiddenClan?.label ?? "Clan officiel ?";
+          const realLabel = realHiddenClan?.label ?? "Réel Clan ?";
+          return `Clan officiel ${officialLabel} / Réel Clan ${realLabel}`;
+        }
+
         return "Héritage non défini";
       })();
 
@@ -516,7 +676,7 @@ export class Naruto25eActor extends Actor {
         affinityLabels.push(`${getAffinityLabel(secondaryAffinity)} secondaire`);
       }
 
-      if (mode === "clan" || mode === "hybridClan" || mode === "hybridVoie") {
+      if (mechanicalClanKeys.length > 0) {
         if (hasClan("uchiha")) {
           addWarning("Uchiha : les pouvoirs du Mangekyō peuvent nécessiter une validation narrative, une santé oculaire suivie et des choix d’œil cohérents.");
         }
@@ -1225,18 +1385,13 @@ export class Naruto25eActor extends Actor {
   }
 
   _hasClanKey(clanKey) {
-    const heritage = this.system?.heritage ?? {};
-    const mainClan = heritage.clan ?? "";
-    const secondaryClan = heritage.hybrid?.secondaryClan ?? "";
-
-    return mainClan === clanKey || secondaryClan === clanKey;
+    return this._hasMechanicalClan(clanKey);
   }
 
   _hasAburameRuche() {
-    if (!this._hasClanKey("aburame")) return false;
+    if (!this._hasMechanicalClan("aburame")) return false;
 
-    const lineageValue = Math.max(0, Number(this.system?.bases?.lign?.value ?? 0));
-    return lineageValue >= 4;
+    return this._getEffectiveLineageValue() >= 4;
   }
 
   _getAburameRucheGeneralChakraBonus() {
@@ -1649,6 +1804,14 @@ async increaseBase(baseKey) {
   const current = Number(base.value ?? 1);
   const cap = this.getBaseCap();
   const next = current + 1;
+  if (baseKey === "lign") {
+    const hiddenCap = this._getHiddenClanLineageCap();
+
+    if (hiddenCap !== null && next > hiddenCap) {
+      ui.notifications.warn(`Lignée cachée verrouillée : la Base Lignée ne peut pas dépasser ${hiddenCap} avant déblocage narratif MJ.`);
+      return;
+    }
+  }
 
   if (next > cap) {
     ui.notifications.warn(`Impossible d’augmenter ${base.label ?? baseKey} : plafond de rang atteint (${cap}).`);
@@ -1936,11 +2099,34 @@ async decreaseBase(baseKey) {
     if (!system.heritage) return;
 
     const heritage = system.heritage;
-    const mode = heritage.mode === "customClan"
-      ? "clan"
-      : heritage.mode ?? "clan";
+    const mode = this._getNormalizedHeritageMode(heritage);
 
     const grantedSkillKeys = new Set();
+    if (!heritage.hiddenClan) {
+      heritage.hiddenClan = {
+        officialClan: "",
+        realClan: "",
+        awareness: "ignorant",
+        unlocked: false,
+        notes: ""
+      };
+    }
+
+    heritage.hiddenClan.officialClan = String(heritage.hiddenClan.officialClan ?? "");
+    heritage.hiddenClan.realClan = String(heritage.hiddenClan.realClan ?? "");
+    heritage.hiddenClan.awareness = String(heritage.hiddenClan.awareness ?? "ignorant");
+    heritage.hiddenClan.unlocked = Boolean(heritage.hiddenClan.unlocked);
+    heritage.hiddenClan.notes = String(heritage.hiddenClan.notes ?? "");
+
+    heritage.hiddenClan.state = NARUTO25E.getHiddenClanAwarenessState?.(heritage.hiddenClan.awareness) ?? {
+      label: "Dans l’ignorance",
+      summary: "Le personnage ignore totalement sa vraie lignée. La Base Lignée est forcée à 0.",
+      maxCreationLineage: 0,
+      requiresUnlockAbove: 0
+    };
+
+    heritage.hiddenClan.effectiveLineageCap = this._getHiddenClanLineageCap();
+    heritage.hiddenClan.effectiveLineageValue = this._getEffectiveLineageValue();
 
     const addClanMandatorySkill = (clanKey) => {
       if (!clanKey || NARUTO25E.isCustomClanKey?.(clanKey)) return;
@@ -1954,12 +2140,8 @@ async decreaseBase(baseKey) {
       }
     };
 
-    if (mode === "clan" || mode === "hybridClan" || mode === "hybridVoie") {
-      addClanMandatorySkill(heritage.clan);
-    }
-
-    if (mode === "hybridClan") {
-      addClanMandatorySkill(heritage.hybrid?.secondaryClan);
+    for (const clanKey of this._getMechanicalClanKeys()) {
+      addClanMandatorySkill(clanKey);
     }
 
     if (NARUTO25E.isCustomClanKey?.(heritage.clan)) {
@@ -2035,6 +2217,34 @@ async decreaseBase(baseKey) {
 
       if (primaryTrack) heritage.tracks.push(primaryTrack);
     }
+
+    if (mode === "hiddenClan") {
+      const hiddenClan = this._getHiddenClanData(heritage);
+      const officialTrack = buildClanTrack(hiddenClan.officialClan, "Clan officiel");
+      const realTrack = buildClanTrack(hiddenClan.realClan, "Réel Clan");
+
+      if (officialTrack) {
+        officialTrack.isSocialOnly = true;
+        officialTrack.note = "Clan officiel/social : aucune mécanique de lignée par défaut.";
+        heritage.tracks.push(officialTrack);
+      }
+
+      if (realTrack) {
+        realTrack.isHiddenRealClan = true;
+        realTrack.hiddenAwareness = hiddenClan.awareness;
+        realTrack.hiddenAwarenessLabel = hiddenClan.state.label;
+        realTrack.hiddenUnlocked = hiddenClan.unlocked;
+        realTrack.hiddenLineageCap = this._getHiddenClanLineageCap();
+        realTrack.unlockedRanks = Math.min(this._getEffectiveLineageValue(), realTrack.maxRank);
+
+        for (const rank of realTrack.ranks) {
+          rank.unlocked = this._getEffectiveLineageValue() >= rank.rank;
+          rank.isCurrent = this._getEffectiveLineageValue() === rank.rank;
+        }
+
+        heritage.tracks.push(realTrack);
+      }
+    }
   }
 
   _prepareChakraAffinities(system) {
@@ -2054,9 +2264,7 @@ async decreaseBase(baseKey) {
 
     const affinities = system.chakra.affinities;
     const heritage = system.heritage ?? {};
-    const mode = heritage.mode === "customClan"
-      ? "clan"
-      : heritage.mode ?? "clan";
+    const mode = this._getNormalizedHeritageMode(heritage);
 
     if (!heritage.affinities) {
       heritage.affinities = {
@@ -2126,14 +2334,8 @@ async decreaseBase(baseKey) {
       }
     };
 
-    if (mode === "clan" || mode === "hybridClan" || mode === "hybridVoie") {
-      if (!NARUTO25E.isCustomClanKey?.(heritage.clan)) {
-        addClanAffinities(heritage.clan);
-      }
-    }
-
-    if (mode === "hybridClan") {
-      addClanAffinities(heritage.hybrid?.secondaryClan);
+    for (const clanKey of this._getMechanicalClanKeys()) {
+      addClanAffinities(clanKey);
     }
 
     if (NARUTO25E.isCustomClanKey?.(heritage.clan)) {
@@ -3763,13 +3965,13 @@ async decreaseBase(baseKey) {
     };
   }
 
-  _getCurrentLineagePowerDefinitions() {
+    _getCurrentLineagePowerDefinitions() {
     if (this.type !== "shinobi") return [];
 
     const system = this.system ?? {};
     const heritage = system.heritage ?? {};
     const gmOptions = heritage.gmOptions ?? {};
-    const lineageValue = Math.max(0, Number(system.bases?.lign?.value ?? 0));
+    const lineageValue = this._getEffectiveLineageValue();
     const definitions = [];
 
     const addPower = (clan, key, name) => {
@@ -3785,21 +3987,15 @@ async decreaseBase(baseKey) {
       });
     };
 
-    const clanKeys = [];
+    const clanKeys = this._getMechanicalClanKeys();
 
-    const mainClan = String(heritage.clan ?? "");
-    if (mainClan) clanKeys.push(mainClan);
-
-    if (heritage.mode === "hybridClan") {
-      const secondaryClan = String(heritage.hybrid?.secondaryClan ?? "");
-      if (secondaryClan) clanKeys.push(secondaryClan);
-    }
-
-    const uniqueClanKeys = Array.from(new Set(clanKeys.filter(Boolean)));
-
-    for (const clanKey of uniqueClanKeys) {
+    for (const clanKey of clanKeys) {
       if (clanKey === "uchiha") {
-        if (lineageValue >= 3) {
+        const hasRinnegan = Boolean(gmOptions.hasRinnegan);
+
+        if (hasRinnegan) {
+          addPower("uchiha", "uchiha-rinnegan", "Rinnegan");
+        } else if (lineageValue >= 3) {
           addPower("uchiha", "uchiha_sharingan_3", "Sharingan — 3 tomoe");
         } else if (lineageValue >= 2) {
           addPower("uchiha", "uchiha_sharingan_2", "Sharingan — 2 tomoe");
@@ -3811,8 +4007,13 @@ async decreaseBase(baseKey) {
           addPower("uchiha", "uchiha_magen", "Magen — Illusion démoniaque");
         }
 
-        if (lineageValue >= 5 && Boolean(gmOptions.hasMangekyoSharingan)) {
+        if (lineageValue >= 5 && Boolean(gmOptions.hasMangekyoSharingan) && !hasRinnegan) {
           addPower("uchiha", "uchiha_mangekyo", "Mangekyō Sharingan");
+        }
+
+        if (lineageValue >= 9) {
+          addPower("uchiha", "uchiha_izanagi", "Izanagi");
+          addPower("uchiha", "uchiha_izanami", "Izanami");
         }
 
         continue;
@@ -3911,6 +4112,9 @@ async decreaseBase(baseKey) {
       "Sharingan — 3 tomoe",
       "Magen — Illusion démoniaque",
       "Mangekyō Sharingan",
+      "Rinnegan",
+      "Izanagi",
+      "Izanami",
 
       "Byakugan",
       "Art du Poing Faible",

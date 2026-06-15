@@ -371,6 +371,41 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
       selected: heritage.hybrid?.secondaryClan === key
     }));
 
+  const hiddenClan = heritage.hiddenClan ?? {};
+  const hiddenClanAwareness = String(hiddenClan.awareness ?? "ignorant");
+  const hiddenClanState = NARUTO25E.getHiddenClanAwarenessState?.(hiddenClanAwareness) ?? {
+    label: "Dans l’ignorance",
+    summary: "Le personnage ignore totalement sa vraie lignée.",
+    maxCreationLineage: 0
+  };
+
+  const canSeeHiddenClan =
+    Boolean(game.user?.isGM)
+    || Boolean(this.actor.isOwner);
+
+  context.hiddenClanOfficialClans = Object.entries(NARUTO25E.clans)
+    .filter(([, clan]) => clan.village === selectedVillage)
+    .map(([key, clan]) => ({
+      key,
+      label: clan.label,
+      selected: hiddenClan.officialClan === key
+    }));
+
+  context.hiddenClanRealClans = Object.entries(NARUTO25E.clans)
+    .filter(([, clan]) => clan.village === selectedVillage)
+    .map(([key, clan]) => ({
+      key,
+      label: clan.label,
+      selected: hiddenClan.realClan === key
+    }));
+
+  context.hiddenClanAwarenessStates = Object.entries(NARUTO25E.hiddenClanAwarenessStates ?? {}).map(([key, state]) => ({
+    key,
+    label: state.label,
+    summary: state.summary,
+    selected: hiddenClanAwareness === key
+  }));
+
   context.customClanChoiceOptions = [
     ...Object.entries(NARUTO25E.skillDefinitions)
       .filter(([, skill]) => skill.category !== "clan" && !skill.ownedByDefault)
@@ -413,6 +448,8 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
   const clan = NARUTO25E.clans[heritage.clan];
   const voie = NARUTO25E.voies[heritage.voie];
   const secondaryClan = NARUTO25E.clans[heritage.hybrid?.secondaryClan];
+  const officialHiddenClan = NARUTO25E.clans[hiddenClan.officialClan];
+  const realHiddenClan = NARUTO25E.clans[hiddenClan.realClan];
 
   let heritageMainLabel = "Aucun héritage sélectionné";
 
@@ -433,6 +470,13 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     if (secondaryClan) heritageMainLabel += ` / ${secondaryClan.label}`;
   } else if (modeKey === "hybridVoie" && voie) {
     heritageMainLabel = `${getPrimaryClanLabel()} / ${voie.label}`;
+  } else if (modeKey === "hiddenClan") {
+    const officialLabel = officialHiddenClan?.label ?? "Clan officiel ?";
+    const realLabel = realHiddenClan?.label ?? "Réel Clan ?";
+
+    heritageMainLabel = canSeeHiddenClan
+      ? `Clan officiel ${officialLabel} / Réel Clan ${realLabel}`
+      : `Clan ${officialLabel}`;
   }
 
   context.heritageSummary = {
@@ -617,14 +661,20 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
 
     const mode = heritage.mode ?? "clan";
 
-    const heritageClanKeys = [
-      heritage.clan,
-      heritage.hybrid?.secondaryClan
-    ].filter(Boolean);
+    const mechanicalClanKeys = typeof this.actor._getMechanicalClanKeys === "function"
+      ? this.actor._getMechanicalClanKeys({ includeDormantHiddenClan: false })
+      : [
+          heritage.clan,
+          heritage.hybrid?.secondaryClan
+        ].filter(Boolean);
 
-    const hasUchihaLineage = heritageClanKeys.includes("uchiha");
-    const hasHyugaLineage = heritageClanKeys.includes("hyuga");
-    const hasSenjuLineage = heritageClanKeys.includes("senju");
+    const displayedClanKey = typeof this.actor._getSocialClanKey === "function"
+      ? this.actor._getSocialClanKey()
+      : String(heritage.clan ?? "");
+
+    const hasUchihaLineage = mechanicalClanKeys.includes("uchiha");
+    const hasHyugaLineage = mechanicalClanKeys.includes("hyuga");
+    const hasSenjuLineage = mechanicalClanKeys.includes("senju");
 
     const hasMangekyoSharingan = Boolean(gmOptions.hasMangekyoSharingan);
     const hasEternalMangekyoSharingan =
@@ -723,6 +773,23 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
       isVoieMode: mode === "voie",
       isHybridClanMode: mode === "hybridClan",
       isHybridVoieMode: mode === "hybridVoie",
+      isHiddenClanMode: mode === "hiddenClan",
+      canSeeHiddenClan,
+      hiddenClan: {
+        officialClan: String(hiddenClan.officialClan ?? ""),
+        officialClanLabel: officialHiddenClan?.label ?? "—",
+        realClan: String(hiddenClan.realClan ?? ""),
+        realClanLabel: realHiddenClan?.label ?? "—",
+        awareness: hiddenClanAwareness,
+        awarenessLabel: hiddenClanState.label,
+        awarenessSummary: hiddenClanState.summary,
+        unlocked: Boolean(hiddenClan.unlocked),
+        effectiveLineageCap: this.actor.system.heritage?.hiddenClan?.effectiveLineageCap ?? null,
+        effectiveLineageValue: this.actor.system.heritage?.hiddenClan?.effectiveLineageValue ?? Number(this.actor.system.bases?.lign?.value ?? 0),
+        notes: String(hiddenClan.notes ?? "")
+      },
+      mechanicalClanKeys,
+      displayedClanKey,
       isCustomClanMode: NARUTO25E.isCustomClanKey?.(heritage.clan),
       allowHybridClan: Boolean(gmOptions.allowHybridClan),
       allowHybridVoie: Boolean(gmOptions.allowHybridVoie),
@@ -775,14 +842,16 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
         canEditRightEye: !rightEyePlayerValidated || game.user.isGM,
         canEditLeftEye: rightEyePlayerValidated && (!leftEyePlayerValidated || game.user.isGM)
       },
-      clanDisabled: mode === "voie",
-      voieDisabled: mode === "clan" || mode === "hybridClan",
+      clanDisabled: mode === "voie" || mode === "hiddenClan",
+      voieDisabled: mode === "clan" || mode === "hybridClan" || mode === "hiddenClan",
       hybridDisabled:
         mode !== "hybridClan" ||
         !gmOptions.allowHybridClan
     };
 
-  const lineageValue = Number(this.actor.system.bases?.lign?.value ?? 1);
+  const lineageValue = typeof this.actor._getEffectiveLineageValue === "function"
+    ? this.actor._getEffectiveLineageValue()
+    : Number(this.actor.system.bases?.lign?.value ?? 1);
 
   const buildClanTrackForSheet = (clanKey, role) => {
     if (!clanKey) return null;
@@ -803,10 +872,20 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
         clanKey === "uchiha"
         && NARUTO25E.requiresMangekyoForUchihaRank?.(rank);
 
+      const requiresTenseigan =
+        clanKey === "hyuga"
+        && rank === 10;
+
       const narrativeLocked =
         rankUnlockedByLineage
-        && requiresMangekyo
-        && !hasMangekyoSharingan;
+        && (
+          (requiresMangekyo && !hasMangekyoSharingan)
+          || (requiresTenseigan && !hasTenseigan)
+        );
+
+      const lockReason = requiresTenseigan
+        ? "Rang atteint par la Base Lignée, mais le Tenseigan reste verrouillé tant que le MJ ne valide pas l’éveil."
+        : "Rang atteint par la Base Lignée, mais capacité verrouillée tant que le Mangekyō Sharingan n’est pas validé par le MJ.";
 
       ranks.push({
         rank,
@@ -814,6 +893,8 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
         unlockedByLineage: rankUnlockedByLineage,
         narrativeLocked,
         requiresMangekyo,
+        requiresTenseigan,
+        lockReason,
         current: lineageValue === rank,
         label: `Rang ${rank}`,
         features,
@@ -850,6 +931,29 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     const primaryTrack = buildClanTrackForSheet(heritage.clan, "Clan principal");
 
     if (primaryTrack) context.lineageTracks.push(primaryTrack);
+  }
+
+  if (heritage.mode === "hiddenClan") {
+    const officialTrack = buildClanTrackForSheet(hiddenClan.officialClan, "Clan officiel");
+    const realTrack = buildClanTrackForSheet(hiddenClan.realClan, "Réel Clan");
+
+    if (officialTrack && canSeeHiddenClan) {
+      officialTrack.isSocialOnly = true;
+      officialTrack.note = "Clan officiel/social : affiché sur la fiche, sans impact mécanique par défaut.";
+      context.lineageTracks.push(officialTrack);
+    }
+
+    if (realTrack && canSeeHiddenClan) {
+      realTrack.isHiddenRealClan = true;
+      realTrack.note = hiddenClanState.summary;
+      context.lineageTracks.push(realTrack);
+    }
+
+    if (officialTrack && !canSeeHiddenClan) {
+      officialTrack.isSocialOnly = true;
+      officialTrack.note = "Clan officiel/social.";
+      context.lineageTracks.push(officialTrack);
+    }
   }
 
   context.heritageMandatorySkills = [];
@@ -895,6 +999,10 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
 
   if (heritage.mode === "hybridClan") {
     addMandatorySkillDisplay(heritage.hybrid?.secondaryClan, "Clan secondaire");
+  }
+
+  if (heritage.mode === "hiddenClan" && canSeeHiddenClan) {
+    addMandatorySkillDisplay(hiddenClan.realClan, "Réel Clan");
   }
 
   if (NARUTO25E.isCustomClanKey?.(heritage.clan)) {
@@ -1251,8 +1359,42 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     updateData["system.heritage.hybrid.secondaryClan"] = "";
   }
 
+  if (mode === "hiddenClan") {
+    updateData["system.heritage.clan"] = "";
+    updateData["system.heritage.voie"] = "";
+    updateData["system.heritage.hybrid.secondaryClan"] = "";
+    updateData["system.heritage.hybrid.reason"] = "";
+  }
+
   await this.actor.update(updateData);
 });
+
+  html.find(".hidden-clan-field").on("change", async (event) => {
+    event.preventDefault();
+
+    if (!this.actor.isOwner && !game.user?.isGM) {
+      ui.notifications.warn("Tu n’as pas les droits nécessaires pour modifier cette lignée cachée.");
+      this.render(false);
+      return;
+    }
+
+    const field = event.currentTarget.dataset.field;
+    if (!field) return;
+
+    const value = event.currentTarget.type === "checkbox"
+      ? event.currentTarget.checked
+      : event.currentTarget.value;
+
+    await this.actor.update({
+      [`system.heritage.hiddenClan.${field}`]: value
+    });
+
+    if (game.user?.isGM && typeof this.actor.syncLineagePowersFromHeritage === "function") {
+      await this.actor.syncLineagePowersFromHeritage({ notify: false });
+    }
+
+    this.render(false);
+  });
 
   html.find(".uchiha-eye-power-choice").on("change", async (event) => {
     event.preventDefault();
@@ -1415,10 +1557,12 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     const heritage = this.actor.system.heritage ?? {};
     const gmOptions = heritage.gmOptions ?? {};
 
-    const clanKeys = [
-      heritage.clan,
-      heritage.hybrid?.secondaryClan
-    ].filter(Boolean);
+    const clanKeys = typeof this.actor._getMechanicalClanKeys === "function"
+      ? this.actor._getMechanicalClanKeys({ includeDormantHiddenClan: true })
+      : [
+          heritage.clan,
+          heritage.hybrid?.secondaryClan
+        ].filter(Boolean);
 
     const hasUchihaLineage = clanKeys.includes("uchiha");
     const hasHyugaLineage = clanKeys.includes("hyuga");
@@ -1515,6 +1659,20 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     }
 
     await this.actor.update(updateData);
+
+    const shouldSyncLineagePowers = [
+      "hasMangekyoSharingan",
+      "hasEternalMangekyoSharingan",
+      "hasRinnegan",
+      "hasTenseigan",
+      "hasSenjuCells"
+    ].includes(field);
+
+    if (shouldSyncLineagePowers && typeof this.actor.syncLineagePowersFromHeritage === "function") {
+      await this.actor.syncLineagePowersFromHeritage({ notify: false });
+    }
+
+    this.render(false);
   });
 
   html.find(".rank-promote").on("click", async (event) => {

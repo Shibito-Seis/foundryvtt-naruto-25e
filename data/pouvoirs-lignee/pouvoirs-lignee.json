@@ -198,6 +198,24 @@
     }
   },
   {
+    "name": "Rinnegan",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/perception/eye-ringed-glow-purple.webp",
+    "system": {
+      "description": "Dōjutsu supérieur issu de l’évolution ultime de l’héritage Uchiha combiné à une puissance vitale de type Senju. Le Rinnegan représente un éveil oculaire permanent : il ne s’active pas, ne se désactive pas, et remplace l’état oculaire inférieur comme forme dominante.",
+      "clan": "uchiha",
+      "lineageRank": 10,
+      "powerType": "passive",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Pouvoir permanent. Le Rinnegan est toujours actif et ne consomme pas d’entretien. Par défaut, cette version représente l’éveil complet des deux yeux. Il remplace le Sharingan et le Mangekyō comme dōjutsu affiché/actif, tout en conservant les pouvoirs acquis. Les pouvoirs détaillés du Rinnegan seront traités dans une mise à jour dédiée.",
+      "prerequisites": {
+        "text": "Lignée Uchiha, Mangekyō Sharingan ou EMS, cellules Senju ou hybridation Uchiha/Senju, et validation MJ hasRinnegan. Cas particuliers à un seul œil ou Rinne Sharingan à traiter plus tard.",
+        "gmValidation": true
+      }
+    }
+  },
+  {
     "name": "Susanō",
     "type": "pouvoirLignee",
     "img": "icons/magic/defensive/shield-barrier-flaming-diamond-purple-orange.webp",

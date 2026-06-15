@@ -2043,7 +2043,121 @@
             {{/each}}
           </select>
         </label>
+        {{#if heritageState.isHiddenClanMode}}
+          {{#if heritageState.canSeeHiddenClan}}
+            <label>
+              Clan officiel / social
+              <select
+                class="hidden-clan-field"
+                data-field="officialClan"
+                {{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}
+              >
+                <option value="">Aucun clan officiel</option>
+                {{#each hiddenClanOfficialClans as |clan|}}
+                  <option value="{{clan.key}}" {{#if clan.selected}}selected{{/if}}>
+                    {{clan.label}}
+                  </option>
+                {{/each}}
+              </select>
+            </label>
+
+            <label>
+              Réel Clan
+              <select
+                class="hidden-clan-field"
+                data-field="realClan"
+                {{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}
+              >
+                <option value="">Aucun réel clan</option>
+                {{#each hiddenClanRealClans as |clan|}}
+                  <option value="{{clan.key}}" {{#if clan.selected}}selected{{/if}}>
+                    {{clan.label}}
+                  </option>
+                {{/each}}
+              </select>
+            </label>
+
+            <label>
+              État de connaissance
+              <select
+                class="hidden-clan-field"
+                data-field="awareness"
+                {{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}
+              >
+                {{#each hiddenClanAwarenessStates as |state|}}
+                  <option value="{{state.key}}" {{#if state.selected}}selected{{/if}}>
+                    {{state.label}}
+                  </option>
+                {{/each}}
+              </select>
+            </label>
+
+            {{#if isGM}}
+              <label class="checkbox-row">
+                <input
+                  type="checkbox"
+                  class="hidden-clan-field"
+                  data-field="unlocked"
+                  {{#if heritageState.hiddenClan.unlocked}}checked{{/if}}
+                />
+                MJ : lignée réelle débloquée
+              </label>
+            {{/if}}
+          {{/if}}
+        {{/if}}
       </div>
+
+      {{#if heritageState.isHiddenClanMode}}
+        <section class="lineage-section">
+          <h3>Clan caché / dissimulé</h3>
+
+          {{#if heritageState.canSeeHiddenClan}}
+            <div class="creation-preview-card">
+              <p>
+                <strong>Clan officiel :</strong>
+                {{heritageState.hiddenClan.officialClanLabel}}
+              </p>
+
+              <p>
+                <strong>Réel Clan :</strong>
+                {{heritageState.hiddenClan.realClanLabel}}
+              </p>
+
+              <p>
+                <strong>État :</strong>
+                {{heritageState.hiddenClan.awarenessLabel}}
+              </p>
+
+              <p class="hint">
+                {{heritageState.hiddenClan.awarenessSummary}}
+              </p>
+
+              {{#if heritageState.hiddenClan.unlocked}}
+                <p class="creation-ok">
+                  Lignée réelle débloquée : la progression normale peut reprendre.
+                </p>
+              {{else}}
+                <p class="warning-text">
+                  Lignée réelle verrouillée : progression limitée par l’état narratif actuel.
+                </p>
+              {{/if}}
+
+              <label>
+                Notes de lignée cachée
+                <textarea
+                  class="hidden-clan-field"
+                  data-field="notes"
+                  {{#unless permissionsState.canEditLockedCreationFields}}disabled{{/unless}}
+                >{{heritageState.hiddenClan.notes}}</textarea>
+              </label>
+            </div>
+          {{else}}
+            <p class="hint">
+              Cette fiche affiche uniquement le clan officiel connu. Les informations de lignée réelle sont réservées au propriétaire et au MJ.
+            </p>
+          {{/if}}
+        </section>
+      {{/if}}
 
         <label>
           Raison / origine de l’hybridation
@@ -2341,8 +2455,11 @@
 
               <div class="naruto-lineage-ranks">
                 {{#each track.ranks as |rank|}}
-                    <div class="naruto-lineage-rank {{#if rank.unlocked}}is-unlocked{{else}}is-locked{{/if}} {{#if rank.narrativeLocked}}is-narrative-locked{{/if}} {{#if rank.current}}is-current{{/if}} {{#if rank.narrativeLocked}}<span class="naruto-tag narrative-locked">Validation MJ requise</span>{{/if}}">
+                    <div class="naruto-lineage-rank {{#if rank.unlocked}}is-unlocked{{else}}is-locked{{/if}} {{#if rank.narrativeLocked}}is-narrative-locked{{/if}} {{#if rank.current}}is-current{{/if}}">
                     <div class="naruto-lineage-rank-header">
+                      {{#if rank.narrativeLocked}}
+                        <span class="naruto-tag narrative-locked">Validation MJ requise</span>
+                      {{/if}}
                       <strong>Rang {{rank.rank}}</strong>
 
                       <span class="naruto-tag {{#if rank.unlocked}}unlocked{{else}}locked{{/if}}">
@@ -2356,7 +2473,7 @@
 
                     {{#if rank.narrativeLocked}}
                       <p class="naruto-lineage-lock-warning">
-                        Rang atteint par la Base Lignée, mais capacité verrouillée tant que le Mangekyō Sharingan n’est pas validé par le MJ.
+                        {{rank.lockReason}}
                       </p>
                     {{/if}}
 

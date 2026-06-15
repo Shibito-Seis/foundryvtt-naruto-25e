@@ -265,6 +265,111 @@
             <span class="shinobimancer-status-pill">7 clans initiaux</span>
           </div>
 
+          {{#if hiddenClanMode}}
+            <div class="shinobimancer-notice is-warning">
+              <strong>Clan caché / dissimulé</strong>
+              <span>Choisis d’abord le clan officiel visible socialement, puis le Réel Clan qui portera la mécanique de Lignée.</span>
+            </div>
+
+            <section class="shinobimancer-panel">
+              <div class="shinobimancer-panel-heading">
+                <div>
+                  <p class="shinobimancer-kicker">Identité sociale</p>
+                  <h3>Clan officiel / social</h3>
+                </div>
+              </div>
+
+              <div class="shinobimancer-clan-grid">
+                {{#each hiddenClanOfficialCards as |clan|}}
+                  <article
+                    class="shinobimancer-clan-card shinobimancer-hidden-clan-card {{#if clan.selected}}is-selected{{/if}}"
+                    data-clan="{{clan.key}}"
+                    data-hidden-clan-role="officialClan"
+                  >
+                    <div class="shinobimancer-clan-emblem">
+                      <img src="{{clan.kamon}}" alt="{{clan.label}}" />
+                    </div>
+
+                    <div class="shinobimancer-clan-body">
+                      <p class="shinobimancer-card-eyebrow">{{clan.village}} · couverture sociale</p>
+                      <h4>{{clan.label}}</h4>
+                      <p>{{clan.tagline}}</p>
+
+                      <div class="shinobimancer-clan-feature">
+                        Ce clan est affiché publiquement, mais n’accorde aucune mécanique de Lignée par défaut.
+                      </div>
+
+                      {{#if clan.selected}}
+                        <span class="shinobimancer-selected-stamp">Clan officiel</span>
+                      {{/if}}
+                    </div>
+                  </article>
+                {{/each}}
+              </div>
+            </section>
+
+            <section class="shinobimancer-panel">
+              <div class="shinobimancer-panel-heading">
+                <div>
+                  <p class="shinobimancer-kicker">Héritage réel</p>
+                  <h3>Réel Clan</h3>
+                </div>
+              </div>
+
+              <div class="shinobimancer-clan-grid">
+                {{#each hiddenClanRealCards as |clan|}}
+                  <article
+                    class="shinobimancer-clan-card shinobimancer-hidden-clan-card {{#if clan.selected}}is-selected{{/if}}"
+                    data-clan="{{clan.key}}"
+                    data-hidden-clan-role="realClan"
+                  >
+                    <div class="shinobimancer-clan-emblem">
+                      <img src="{{clan.kamon}}" alt="{{clan.label}}" />
+                    </div>
+
+                    <div class="shinobimancer-clan-body">
+                      <p class="shinobimancer-card-eyebrow">{{clan.village}} · vraie lignée</p>
+                      <h4>{{clan.label}}</h4>
+                      <p>{{clan.tagline}}</p>
+
+                      <div class="shinobimancer-clan-feature">
+                        Ce clan reçoit la Base Lignée et les pouvoirs mécaniques, selon l’état narratif choisi.
+                      </div>
+
+                      {{#if clan.selected}}
+                        <span class="shinobimancer-selected-stamp">Réel Clan</span>
+                      {{/if}}
+                    </div>
+                  </article>
+                {{/each}}
+              </div>
+            </section>
+
+            <section class="shinobimancer-panel">
+              <div class="shinobimancer-panel-heading">
+                <div>
+                  <p class="shinobimancer-kicker">Éveil narratif</p>
+                  <h3>État de connaissance de la vraie lignée</h3>
+                </div>
+              </div>
+
+              <label>
+                État de connaissance
+                <select class="shinobimancer-hidden-clan-awareness" {{#if creationLocked}}disabled{{/if}}>
+                  {{#each hiddenClanAwarenessStates as |state|}}
+                    <option value="{{state.key}}" {{#if state.selected}}selected{{/if}}>
+                      {{state.label}}
+                    </option>
+                  {{/each}}
+                </select>
+              </label>
+
+              <div class="shinobimancer-notice is-info">
+                <strong>{{hiddenClanSummary.awarenessLabel}}</strong>
+                <span>{{hiddenClanSummary.awarenessSummary}}</span>
+              </div>
+            </section>
+          {{else}}
           <div class="shinobimancer-clan-grid">
             {{#each clanCards as |clan|}}
               <article class="shinobimancer-clan-card {{#if clan.selected}}is-selected{{/if}}" data-clan="{{clan.key}}">
@@ -294,6 +399,7 @@
             <strong>Extensible</strong>
             <span>La grille est pensée pour accueillir les 25 clans plus tard, une fois les 7 clans test validés.</span>
           </div>
+          {{/if}}
         </section>
       {{/if}}
 

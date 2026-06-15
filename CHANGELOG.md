@@ -2,6 +2,35 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.32.1 - Rattrapage héritage caché et dōjutsu avancés
+
+### Ajouté
+
+- Ajout des fondations du mode d’héritage `Clan caché / dissimulé`.
+- Ajout de la structure de données `hiddenClan` :
+  - clan officiel/social ;
+  - réel clan mécanique ;
+  - état de connaissance de la lignée ;
+  - déblocage narratif MJ ;
+  - notes.
+- Ajout des états de lignée cachée :
+  - `Dans l’ignorance` ;
+  - `Au courant, pas développé` ;
+  - `Je sais qui je suis`.
+- Ajout de l’item `Rinnegan` comme pouvoir de lignée Uchiha permanent.
+
+### Modifié
+
+- Préparation de la logique permettant de distinguer le clan affiché/social du clan réellement utilisé par les mécaniques de Lignée.
+- Préparation du Rinnegan comme dōjutsu permanent, non activable et non désactivable.
+- Préparation de la correction d’affichage du Tenseigan pour reprendre la logique des rangs verrouillés par validation MJ.
+
+### Notes
+
+- Le Rinnegan est traité dans cette version comme un éveil complet des deux yeux.
+- Le cas d’un seul œil éveillé, du Rinne Sharingan ou d’un Rinnegan conservant explicitement une forme de Sharingan sera traité plus tard.
+- Cette version ne refond pas encore l’onglet Jutsu, les techniques de lignée, le Susanō complet ou les pouvoirs détaillés du Rinnegan.
+
 ## 0.1.32 - Pouvoirs de lignée des clans de test
 
 ### Ajouté

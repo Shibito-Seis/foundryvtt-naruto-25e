@@ -470,7 +470,36 @@ NARUTO25E.heritageModes = {
   clan: "Clan",
   voie: "Voie",
   hybridClan: "Clan hybride",
-  hybridVoie: "Voie hybridée"
+  hybridVoie: "Voie hybridée",
+  hiddenClan: "Clan caché / dissimulé"
+};
+
+NARUTO25E.hiddenClanAwarenessStates = {
+  ignorant: {
+    label: "Dans l’ignorance",
+    summary: "Le personnage ignore totalement sa vraie lignée. La Base Lignée est forcée à 0.",
+    maxCreationLineage: 0,
+    requiresUnlockAbove: 0
+  },
+  awareUndeveloped: {
+    label: "Au courant, pas développé",
+    summary: "Le personnage connaît son vrai clan, mais n’a pas encore développé son héritage. La Base Lignée est forcée à 0.",
+    maxCreationLineage: 0,
+    requiresUnlockAbove: 0
+  },
+  selfKnown: {
+    label: "Je sais qui je suis",
+    summary: "Le personnage connaît et assume son vrai clan. À la création, la Base Lignée peut monter à 1 maximum avant déblocage narratif.",
+    maxCreationLineage: 1,
+    requiresUnlockAbove: 1
+  }
+};
+
+NARUTO25E.getHiddenClanAwarenessState = function (awarenessKey) {
+  const key = String(awarenessKey ?? "ignorant");
+
+  return NARUTO25E.hiddenClanAwarenessStates[key]
+    ?? NARUTO25E.hiddenClanAwarenessStates.ignorant;
 };
 
 NARUTO25E.clans = {
