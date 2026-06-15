@@ -806,7 +806,7 @@ export class Naruto25eShinobimancerChoiceApplication extends Application {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       id: "naruto-25e-shinobimancer-choice",
-      classes: ["naruto-25e", "shinobimancer", "shinobimancer-choice-window"],
+      classes: ["naruto-25e", "shinobimancer", "shinobimancer-choice-window", "shinobimancer-maquette-v2"],
       title: "Création du Shinobi",
       template: "systems/naruto-25e/templates/apps/shinobimancer-choice.hbs",
       width: 1000,
@@ -917,7 +917,7 @@ export class Naruto25eShinobimancerApplication extends Application {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       id: "naruto-25e-shinobimancer",
-      classes: ["naruto-25e", "shinobimancer", "shinobimancer-window"],
+      classes: ["naruto-25e", "shinobimancer", "shinobimancer-window", "shinobimancer-maquette-v2"],
       title: "Shinobimancer",
       template: "systems/naruto-25e/templates/apps/shinobimancer.hbs",
       width: 1160,

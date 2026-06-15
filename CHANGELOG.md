@@ -2,6 +2,35 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.32.4 - Prototype CSS maquette graphiste Shinobimancer
+
+### Ajouté
+
+- Ajout d’un fichier CSS isolé `styles/shinobimancer-maquette.css`.
+- Ajout d’une classe de test `shinobimancer-maquette-v2` sur :
+  - la fenêtre de choix Shinobimancer / fiche manuelle ;
+  - la fenêtre principale du Shinobimancer.
+- Préparation du dossier d’assets futur :
+  - `assets/ui/shinobimancer/`.
+- Ajout d’une première surcouche visuelle inspirée de la maquette graphiste :
+  - fond parchemin plus proche du PSD ;
+  - couleur de base `#ae9b79` ;
+  - panneaux plus administratifs ;
+  - barre d’étapes plus compacte ;
+  - simulation CSS du rouleau supérieur ;
+  - simulation CSS du rouleau inférieur ;
+  - simulation CSS de l’étiquette de registre ;
+  - cartes et champs harmonisés avec la nouvelle direction graphique.
+
+### Notes
+
+- Aucun asset graphique définitif n’est encore requis.
+- Cette version ne modifie pas la logique de création.
+- Cette version ne modifie pas les templates.
+- Cette version sert uniquement à tester la direction graphique dans Foundry avant réception des exports propres de la graphiste.
+
+---
+
 ## 0.1.32.2 + 0.1.32.3 - Correctif Clan caché / dissimulé
 
 ### Corrigé
