@@ -177,6 +177,14 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
   const next = current + 1;
   const nextCost = this.actor.getBaseUpgradeCost(key);
 
+  const hiddenLineageCap = key === "lign" && typeof this.actor._getHiddenClanLineageCap === "function"
+    ? this.actor._getHiddenClanLineageCap()
+    : null;
+
+  const effectiveLineage = key === "lign" && typeof this.actor._getEffectiveLineageValue === "function"
+    ? this.actor._getEffectiveLineageValue()
+    : current;
+
   return {
     key,
     label: base.label,
@@ -187,7 +195,10 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     xpSpent: Number(base.xpSpent ?? 0),
     nextCost,
     canIncrease: next <= context.baseCap && nextCost !== null,
-    canDecrease: current > 1
+    canDecrease: current > 1,
+    hiddenLineageCap,
+    effectiveLineage,
+    hasHiddenEffectiveValue: key === "lign" && hiddenLineageCap !== null && effectiveLineage !== current
   };
 });
 
@@ -662,7 +673,7 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     const mode = heritage.mode ?? "clan";
 
     const mechanicalClanKeys = typeof this.actor._getMechanicalClanKeys === "function"
-      ? this.actor._getMechanicalClanKeys({ includeDormantHiddenClan: false })
+      ? this.actor._getMechanicalClanKeys({ purpose: "requirements" })
       : [
           heritage.clan,
           heritage.hybrid?.secondaryClan

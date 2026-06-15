@@ -331,6 +331,14 @@ function buildBaseRows(actor) {
       ? `${nextCost} XP`
       : "Coût non défini";
 
+    const hiddenLineageCap = key === "lign" && typeof actor?._getHiddenClanLineageCap === "function"
+      ? actor._getHiddenClanLineageCap()
+      : null;
+
+    const effectiveLineage = key === "lign" && typeof actor?._getEffectiveLineageValue === "function"
+      ? actor._getEffectiveLineageValue()
+      : value;
+
     return {
       key,
       label: base.label ?? NARUTO25E.baseLabels?.[key] ?? key,
@@ -341,7 +349,10 @@ function buildBaseRows(actor) {
       absoluteMax,
       nextCost,
       nextCostLabel,
-      percent: Math.clamp((total / 14) * 100, 0, 100)
+      percent: Math.clamp((total / 14) * 100, 0, 100),
+      hiddenLineageCap,
+      effectiveLineage,
+      hasHiddenEffectiveValue: key === "lign" && hiddenLineageCap !== null && effectiveLineage !== value
     };
   });
 }
@@ -1437,7 +1448,7 @@ export class Naruto25eShinobimancerApplication extends Application {
 
     html.find(".shinobimancer-clan-card").on("click", async (event) => {
       event.preventDefault();
-      
+
       if (event.currentTarget.classList.contains("shinobimancer-hidden-clan-card")) {
         return;
       }

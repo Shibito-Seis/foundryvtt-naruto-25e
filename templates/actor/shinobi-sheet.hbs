@@ -1507,6 +1507,15 @@
               {{/if}}
             </span>
           </div>
+
+          {{#if base.hasHiddenEffectiveValue}}
+            <div class="creation-warnings">
+              <strong>Lignée effective verrouillée</strong>
+              <p>
+                Lignée effective : {{base.effectiveLineage}} malgré une Base brute de {{base.value}}.
+              </p>
+            </div>
+          {{/if}}
         </div>
       {{/each}}
     </div>

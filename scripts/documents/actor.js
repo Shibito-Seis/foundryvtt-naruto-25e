@@ -179,6 +179,7 @@ export class Naruto25eActor extends Actor {
     }
 
     _getMechanicalClanKeys(options = {}) {
+      const purpose = String(options.purpose ?? "powers");
       const includeDormantHiddenClan = Boolean(options.includeDormantHiddenClan);
       const heritage = this.system?.heritage ?? {};
       const mode = this._getNormalizedHeritageMode(heritage);
@@ -205,11 +206,17 @@ export class Naruto25eActor extends Actor {
         const hiddenCap = this._getHiddenClanLineageCap();
 
         /*
-          Si le clan caché est dans l’ignorance ou au courant sans développement,
-          il existe dans les données, mais ne déclenche pas encore de mécaniques.
-          includeDormantHiddenClan sert seulement aux affichages/validations spécifiques.
+          En Clan caché, le Réel Clan est toujours le clan mécanique
+          pour les obligations de création : affinités, compétences,
+          validations, restrictions et avertissements.
+
+          En revanche, pour l'attribution des pouvoirs de lignée,
+          le Réel Clan ne produit des pouvoirs que si la Lignée effective
+          est supérieure à 0, ou si le déblocage narratif MJ est actif.
         */
-        if (hiddenClan.unlocked || hiddenCap === null || hiddenCap > 0 || includeDormantHiddenClan) {
+        if (purpose === "requirements" || includeDormantHiddenClan) {
+          addClan(hiddenClan.realClan);
+        } else if (hiddenClan.unlocked || hiddenCap === null || hiddenCap > 0) {
           addClan(hiddenClan.realClan);
         }
       }
@@ -246,7 +253,7 @@ export class Naruto25eActor extends Actor {
 
     _hasSenjuCellsForRinnegan() {
       return Boolean(this.system.heritage?.gmOptions?.hasSenjuCells)
-        || this._hasMechanicalClan("senju", { includeDormantHiddenClan: false });
+        || this._hasMechanicalClan("senju", { purpose: "requirements" });
     }
 
     getCreationValidationSummary() {
@@ -492,14 +499,19 @@ export class Naruto25eActor extends Actor {
         }
 
         const rawLineage = Math.max(0, Number(system.bases?.lign?.value ?? 0));
+        const effectiveLineage = this._getEffectiveLineageValue();
         const hiddenCap = this._getHiddenClanLineageCap();
 
-        if (hiddenCap !== null && rawLineage > hiddenCap) {
+        if (hiddenCap !== null && hiddenCap > 0 && rawLineage > hiddenCap) {
           addError(`La Lignée cachée est verrouillée : le score de Lignée ne peut pas dépasser ${hiddenCap} tant que la progression réelle n’est pas débloquée par le MJ.`);
+        }
+
+        if (hiddenCap === 0 && effectiveLineage === 0) {
+          addWarning("Lignée cachée non éveillée : la Base Lignée brute reste à 1 sur la fiche, mais la Lignée effective est traitée comme 0. Aucun pouvoir de rang 1 n’est accordé.");
         }
       }
 
-      const mechanicalClanKeys = this._getMechanicalClanKeys({ includeDormantHiddenClan: false });
+      const mechanicalClanKeys = this._getMechanicalClanKeys({ purpose: "requirements" });
       const hasClan = (key) => mechanicalClanKeys.includes(key);
 
       if (hasClan("kato")) {
@@ -511,7 +523,7 @@ export class Naruto25eActor extends Actor {
           if (!Boolean(actorCreation.locked)) return false;
 
           if (typeof actor._getMechanicalClanKeys === "function") {
-            return actor._getMechanicalClanKeys({ includeDormantHiddenClan: false }).includes("kato");
+            return actor._getMechanicalClanKeys({ purpose: "requirements" }).includes("kato");
           }
 
           const actorHeritage = actor.system?.heritage ?? {};
@@ -1385,11 +1397,11 @@ export class Naruto25eActor extends Actor {
   }
 
   _hasClanKey(clanKey) {
-    return this._hasMechanicalClan(clanKey);
+    return this._hasMechanicalClan(clanKey, { purpose: "requirements" });
   }
 
   _hasAburameRuche() {
-    if (!this._hasMechanicalClan("aburame")) return false;
+    if (!this._hasMechanicalClan("aburame", { purpose: "powers" })) return false;
 
     return this._getEffectiveLineageValue() >= 4;
   }
@@ -2140,7 +2152,7 @@ async decreaseBase(baseKey) {
       }
     };
 
-    for (const clanKey of this._getMechanicalClanKeys()) {
+    for (const clanKey of this._getMechanicalClanKeys({ purpose: "requirements" })) {
       addClanMandatorySkill(clanKey);
     }
 
@@ -2334,7 +2346,7 @@ async decreaseBase(baseKey) {
       }
     };
 
-    for (const clanKey of this._getMechanicalClanKeys()) {
+    for (const clanKey of this._getMechanicalClanKeys({ purpose: "requirements" })) {
       addClanAffinities(clanKey);
     }
 
@@ -3987,7 +3999,7 @@ async decreaseBase(baseKey) {
       });
     };
 
-    const clanKeys = this._getMechanicalClanKeys();
+    const clanKeys = this._getMechanicalClanKeys({ purpose: "powers" });
 
     for (const clanKey of clanKeys) {
       if (clanKey === "uchiha") {

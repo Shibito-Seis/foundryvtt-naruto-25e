@@ -2,6 +2,36 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.32.2 + 0.1.32.3 - Correctif Clan caché / dissimulé
+
+### Corrigé
+
+- Correction du mode `Clan caché / dissimulé` :
+  - le Réel Clan impose désormais correctement ses obligations mécaniques ;
+  - les affinités forcées du Réel Clan s’appliquent même si la lignée est encore dormante ;
+  - les compétences obligatoires du Réel Clan s’appliquent correctement ;
+  - le clan officiel/social reste sans impact mécanique direct par défaut.
+- Correction de la validation de création :
+  - les états `Dans l’ignorance` et `Au courant, pas développé` ne bloquent plus la validation lorsque la Base Lignée brute vaut 1 ;
+  - la Lignée effective est traitée comme 0 tant que l’héritage réel n’est pas éveillé ;
+  - aucun pouvoir de rang 1 n’est accordé si la Lignée effective vaut 0.
+- Correction du Shinobimancer :
+  - les cartes de Clan caché ne déclenchent plus le choix de clan classique ;
+  - le mode `Clan caché / dissimulé` reste actif après sélection du clan officiel ou du Réel Clan.
+
+### Modifié
+
+- Clarification de la séparation entre :
+  - obligations mécaniques du Réel Clan ;
+  - pouvoirs de lignée réellement éveillés ;
+  - affichage social du clan officiel.
+- Ajout d’un affichage de la Lignée effective lorsque celle-ci diffère de la Base Lignée brute.
+
+### Notes
+
+- La Base Lignée reste techniquement à 1 minimum dans la fiche, mais le système utilise une Lignée effective de 0 pour les lignées cachées non éveillées.
+- Cette version ne modifie pas encore le fonctionnement détaillé des pouvoirs Mangekyō par œil.
+
 ## 0.1.32.1 - Rattrapage héritage caché et dōjutsu avancés
 
 ### Ajouté
