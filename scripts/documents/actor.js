@@ -670,6 +670,21 @@ export class Naruto25eActor extends Actor {
       });
     }
 
+    _hasExpectedStartingEquipmentInventoryItems() {
+      const expectedNames = this._getStartingEquipmentItemNames();
+      const inventoryItems = this.system.inventory?.items ?? [];
+
+      if (expectedNames.length === 0) return false;
+
+      const existingNames = new Set(
+        inventoryItems
+          .map((item) => String(item.name ?? "").trim())
+          .filter(Boolean)
+      );
+
+      return expectedNames.every((itemName) => existingNames.has(itemName));
+    }
+
     _getCreationInventoryEntryFromDocument(itemDocument, options = {}) {
       const inventoryItem = this._getInventoryItemDataFromDocument(itemDocument);
 
@@ -708,34 +723,32 @@ export class Naruto25eActor extends Actor {
       const startingEquipment = creation.startingEquipment ?? {};
       const existingEmbeddedItems = this._getCreationGrantedEmbeddedItems();
       const hasCustomInventoryItems = this._hasCreationInventoryItemsAlreadyGranted();
+      const hasExpectedInventoryItems = this._hasExpectedStartingEquipmentInventoryItems();
 
-      if (hasCustomInventoryItems && existingEmbeddedItems.length > 0) {
-        if (!startingEquipment.granted) {
-          await this.update({
-            "system.progression.creation.startingEquipment.granted": true,
-            "system.progression.creation.startingEquipment.grantedAt": startingEquipment.grantedAt || new Date().toISOString(),
-            "system.progression.creation.startingEquipment.grantedBy": startingEquipment.grantedBy || game.user?.name || ""
-          });
-        }
+      const markStartingEquipmentGranted = async () => {
+        if (startingEquipment.granted) return;
 
-        ui.notifications.info("Le paquetage de départ a déjà été attribué.");
-        return true;
-      }
+        await this.update({
+          "system.progression.creation.startingEquipment.granted": true,
+          "system.progression.creation.startingEquipment.grantedAt": startingEquipment.grantedAt || new Date().toISOString(),
+          "system.progression.creation.startingEquipment.grantedBy": startingEquipment.grantedBy || game.user?.name || ""
+        });
+      };
 
-      if (hasCustomInventoryItems && existingEmbeddedItems.length === 0) {
-        if (!startingEquipment.granted) {
-          await this.update({
-            "system.progression.creation.startingEquipment.granted": true,
-            "system.progression.creation.startingEquipment.grantedAt": startingEquipment.grantedAt || new Date().toISOString(),
-            "system.progression.creation.startingEquipment.grantedBy": startingEquipment.grantedBy || game.user?.name || ""
-          });
-        }
+      if (hasCustomInventoryItems || hasExpectedInventoryItems) {
+        await markStartingEquipmentGranted();
 
         ui.notifications.info("Le paquetage de départ est déjà présent dans l’inventaire.");
+        console.info("Naruto 2.5e | Paquetage déjà détecté dans l’inventaire custom, aucune attribution supplémentaire.", {
+          actor: this.name,
+          hasCustomInventoryItems,
+          hasExpectedInventoryItems,
+          embeddedCount: existingEmbeddedItems.length
+        });
         return true;
       }
 
-      if (startingEquipment.granted && existingEmbeddedItems.length === 0 && !hasCustomInventoryItems) {
+      if (startingEquipment.granted && existingEmbeddedItems.length === 0 && !hasCustomInventoryItems && !hasExpectedInventoryItems) {
         ui.notifications.warn("Le paquetage est marqué comme déjà attribué, mais aucun item n’a été trouvé. Déverrouillage de sécurité : aucune nouvelle attribution automatique.");
         console.warn("Naruto 2.5e | Paquetage marqué attribué sans miroir trouvé.", {
           actor: this.name,
@@ -3574,7 +3587,9 @@ async decreaseBase(baseKey) {
 
       return {
         id: item.id ?? foundry.utils.randomID(16),
-        name: item.name ?? "Objet sans nom",
+        sourceItemId: item.sourceItemId ?? "",
+        sourceItemUuid: item.sourceItemUuid ?? "",
+        name: item.name ?? "Objet",
         type,
         quantity: Math.max(1, Number(item.quantity ?? 1)),
         equipped: Boolean(item.equipped),
@@ -3585,8 +3600,15 @@ async decreaseBase(baseKey) {
           type: item.useEffect?.type ?? "",
           resource: item.useEffect?.resource ?? "",
           amount: Math.max(0, Number(item.useEffect?.amount ?? 0)),
+          consumeOnUse: item.useEffect?.consumeOnUse !== false,
           text: item.useEffect?.text ?? ""
         },
+        creationGranted: Boolean(item.creationGranted),
+        grantedAtCreation: Boolean(item.grantedAtCreation),
+        creationPackage: item.creationPackage ?? "",
+        grantedAt: item.grantedAt ?? "",
+        grantedBy: item.grantedBy ?? "",
+        flags: foundry.utils.deepClone(item.flags ?? {}),
         sort: Number(item.sort ?? index)
       };
     }).sort((a, b) => {

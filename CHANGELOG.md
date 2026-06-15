@@ -2,6 +2,29 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.31.5 - Correction définitive anti-doublon paquetage
+
+### Corrigé
+
+- Correction de l’anti-doublon du paquetage de départ après déverrouillage et revalidation.
+- Les métadonnées du paquetage sont désormais conservées lors de la préparation de l’inventaire custom :
+  - `sourceItemId` ;
+  - `sourceItemUuid` ;
+  - `creationGranted` ;
+  - `grantedAtCreation` ;
+  - `creationPackage` ;
+  - `grantedAt` ;
+  - `grantedBy` ;
+  - `flags`.
+- Ajout d’une sécurité par noms d’items :
+  - si tous les objets attendus du paquetage sont déjà présents dans `system.inventory.items`, le paquetage n’est pas attribué une seconde fois.
+- Correction du cas où les embedded Items existent déjà mais où le miroir custom était recréé à tort.
+
+### Notes
+
+- Cette version ne supprime pas automatiquement les doublons déjà créés sur les acteurs existants.
+- Les doublons déjà présents doivent être nettoyés manuellement si nécessaire.
+
 ## 0.1.31.4 - Portrait PJ guidé et sécurité paquetage
 
 ### Ajouté
