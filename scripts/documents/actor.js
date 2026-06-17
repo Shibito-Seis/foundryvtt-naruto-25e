@@ -1549,8 +1549,7 @@ export class Naruto25eActor extends Actor {
       || tags.includes("bonus")
       || tags.includes("passive")
       || tags.includes("unlock")
-      || tags.includes("interception")
-      || tags.includes("immunity");
+      || tags.includes("interception");
 
     const data = {
       name: feature.label,

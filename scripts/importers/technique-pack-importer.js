@@ -147,8 +147,7 @@ function getGeneratedLineagePowerDataFromConfig(existingSourceData = []) {
         || tags.includes("bonus")
         || tags.includes("passive")
         || tags.includes("unlock")
-        || tags.includes("interception")
-        || tags.includes("immunity");
+        || tags.includes("interception");
 
       generated.push({
         name,

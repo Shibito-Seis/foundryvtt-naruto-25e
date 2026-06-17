@@ -66,57 +66,89 @@ const SHINOBIMANCER_STEPS = [
   }
 ];
 
-const SHINOBIMANCER_TEST_CLANS = [
-  {
-    key: "uchiha",
+const SHINOBIMANCER_CLAN_PREVIEWS = {
+  uchiha: {
     emblem: "写",
     tagline: "Dōjutsu, feu et destin tragique.",
     feature: "Katon, Sharingan, Mangekyō sous validation MJ.",
     warning: "Les pouvoirs du Mangekyō demandent une validation narrative et une santé oculaire suivie."
   },
-  {
-    key: "senju",
+  senju: {
     emblem: "木",
     tagline: "Vitalité, puissance naturelle et Mokuton.",
     feature: "Mokuton, Doton et Suiton imposés par la lignée.",
     warning: "Mokuton impose des contraintes fortes sur les affinités et compétences de départ."
   },
-  {
-    key: "hyuga",
+  hyuga: {
     emblem: "眼",
     tagline: "Byakugan, Jūken et perception absolue.",
     feature: "Byakugan, Jūken, vision du réseau de Chakra.",
     warning: "Le style de combat Hyūga structure fortement la création."
   },
-  {
-    key: "kato",
+  kato: {
     emblem: "幽",
     tagline: "Esprit, perception et projection spirituelle.",
     feature: "Yūrengan, Ikiryō et pouvoirs spirituels.",
-    warning: "Les pouvoirs avancés seront détaillés progressivement."
+    warning: "Le clan Katō reste limité à un seul Shinobi joueur validé dans le monde."
   },
-  {
-    key: "nara",
+  nara: {
     emblem: "影",
     tagline: "Ombres, stratégie et contrôle du terrain.",
     feature: "Pouvoir des Ombres, Kagemane, Kage Nui.",
     warning: "Pouvoir des Ombres est passif ; Kagemane et Kage Nui seront automatisés plus tard."
   },
-  {
-    key: "aburame",
+  aburame: {
     emblem: "虫",
     tagline: "Essaim, symbiose et gestion du Chakra.",
     feature: "Kikaichū, réserve d’insectes et techniques d’essaim.",
     warning: "Une partie du Chakra brut peut être allouée à la colonie Kikaichū."
   },
-  {
-    key: "inuzuka",
+  inuzuka: {
     emblem: "牙",
     tagline: "Instinct, pistage et compagnon canin.",
     feature: "Gardien du clan Inu, flair, forme sauvage.",
     warning: "La fiche complète de compagnon viendra dans une version ultérieure."
   }
-];
+};
+
+function getShinobimancerClanKeys() {
+  return Object.keys(NARUTO25E.clans ?? {}).filter((clanKey) => {
+    return Boolean(NARUTO25E.clans?.[clanKey]);
+  });
+}
+
+function getClanSkillLabel(clan = {}) {
+  const skillKey = String(clan.skillKey ?? "");
+
+  if (!skillKey) return "Aucune compétence obligatoire";
+
+  return NARUTO25E.skillDefinitions?.[skillKey]?.label ?? skillKey;
+}
+
+function getClanPreviewData(clanKey, clan = {}) {
+  const preview = SHINOBIMANCER_CLAN_PREVIEWS[clanKey] ?? {};
+  const clanLabel = clan.label ?? clanKey;
+  const lineageCap = NARUTO25E.getClanLineageCap?.(clanKey) ?? NARUTO25E.clanLineageCaps?.[clanKey] ?? 10;
+  const features = Array.isArray(NARUTO25E.clanLineageFeatures?.[clanKey])
+    ? NARUTO25E.clanLineageFeatures[clanKey]
+    : [];
+
+  const featureNames = features
+    .slice(0, 3)
+    .map((feature) => feature.label)
+    .filter(Boolean);
+
+  const generatedFeature = featureNames.length > 0
+    ? `Lignée max ${lineageCap} · ${featureNames.join(", ")}`
+    : `Lignée max ${lineageCap} · Pouvoirs de lignée préparés côté fiche.`;
+
+  return {
+    emblem: preview.emblem ?? clanLabel.slice(0, 1),
+    tagline: preview.tagline ?? `${clanLabel} — clan jouable de Konoha.`,
+    feature: preview.feature ?? generatedFeature,
+    warning: preview.warning ?? "Les effets complexes de combat, techniques, blessures ou transformations seront automatisés dans les chantiers dédiés."
+  };
+}
 
 const SHINOBIMANCER_AFFINITY_FALLBACKS = [
   { key: "katon", label: "Katon", icon: "火", tone: "Feu", description: "Puissance offensive, pression et techniques destructrices." },
@@ -490,50 +522,45 @@ function buildHeritageModeCards(actor) {
 function buildClanCards(actor) {
   const selectedClan = actor?.system?.heritage?.clan ?? "";
 
-  return SHINOBIMANCER_TEST_CLANS.map((preview) => {
-    const clan = NARUTO25E.clans?.[preview.key] ?? {};
-    const skillKey = clan.skillKey ?? "";
-    const skillLabel = skillKey
-      ? NARUTO25E.skillDefinitions?.[skillKey]?.label ?? skillKey
-      : "À définir";
+  return getShinobimancerClanKeys().map((clanKey) => {
+    const clan = NARUTO25E.clans?.[clanKey] ?? {};
+    const skillLabel = getClanSkillLabel(clan);
+    const preview = getClanPreviewData(clanKey, clan);
 
     return {
-      key: preview.key,
+      key: clanKey,
       emblem: preview.emblem,
-      kamon: `systems/naruto-25e/assets/clans/kamon_${preview.key}.svg`,
+      kamon: `systems/naruto-25e/assets/clans/kamon_${clanKey}.svg`,
       tagline: preview.tagline,
       feature: preview.feature,
       warning: preview.warning,
-      label: clan.label ?? preview.key,
-      selected: selectedClan === preview.key,
+      label: clan.label ?? clanKey,
+      selected: selectedClan === clanKey,
       available: true,
       village: NARUTO25E.villages?.[clan.village]?.label ?? "Konoha",
       skillLabel
     };
   });
 }
-
 function buildHiddenClanCards(actor, field = "officialClan") {
   const heritage = actor?.system?.heritage ?? {};
   const hiddenClan = heritage.hiddenClan ?? {};
   const selectedClan = String(hiddenClan[field] ?? "");
 
-  return SHINOBIMANCER_TEST_CLANS.map((preview) => {
-    const clan = NARUTO25E.clans?.[preview.key] ?? {};
-    const skillKey = clan.skillKey ?? "";
-    const skillLabel = skillKey
-      ? NARUTO25E.skillDefinitions?.[skillKey]?.label ?? skillKey
-      : "À définir";
+  return getShinobimancerClanKeys().map((clanKey) => {
+    const clan = NARUTO25E.clans?.[clanKey] ?? {};
+    const skillLabel = getClanSkillLabel(clan);
+    const preview = getClanPreviewData(clanKey, clan);
 
     return {
-      key: preview.key,
+      key: clanKey,
       emblem: preview.emblem,
-      kamon: `systems/naruto-25e/assets/clans/kamon_${preview.key}.svg`,
+      kamon: `systems/naruto-25e/assets/clans/kamon_${clanKey}.svg`,
       tagline: preview.tagline,
       feature: preview.feature,
       warning: preview.warning,
-      label: clan.label ?? preview.key,
-      selected: selectedClan === preview.key,
+      label: clan.label ?? clanKey,
+      selected: selectedClan === clanKey,
       available: true,
       village: NARUTO25E.villages?.[clan.village]?.label ?? "Konoha",
       skillLabel
@@ -834,7 +861,7 @@ export class Naruto25eShinobimancerChoiceApplication extends Application {
         title: "Utiliser le Shinobimancer",
         eyebrow: "Création guidée",
         icon: "fa-solid fa-scroll",
-        text: "Ouvre l’assistant de création visuel. Cette pré-version sert surtout à poser la maquette, la barre d’étapes et l’ambiance générale.",
+        text: "Ouvre l’assistant de création visuel avec les clans jouables étendus, les obligations de création et le résumé de dossier.",
         buttonLabel: "Entrer dans le Shinobimancer",
         recommended: true
       },

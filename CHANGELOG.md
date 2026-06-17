@@ -2,6 +2,44 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.35 - Clans jouables étendus dans le Shinobimancer
+
+### Ajouté
+
+- Ajout des 25 clans jouables dans la grille de sélection du Shinobimancer.
+- Les cartes de clans du Shinobimancer sont maintenant générées depuis `NARUTO25E.clans` au lieu d’une liste limitée aux 7 clans de test.
+- Le mode `Clan caché / dissimulé` utilise aussi la liste complète des clans jouables pour :
+  - le clan officiel / social ;
+  - le Réel Clan mécanique.
+
+### Modifié
+
+- Mise à jour des textes du Shinobimancer :
+  - retrait des mentions `Clans de test` ;
+  - retrait des mentions `7 clans initiaux` ;
+  - mise à jour de l’écran de choix Shinobimancer / fiche manuelle.
+- Mise à jour du tampon de version visible dans l’écran de choix du Shinobimancer.
+- Les cartes de clans affichent une prévisualisation générique pour les clans étendus, avec :
+  - village ;
+  - compétence obligatoire éventuelle ;
+  - plafond de Lignée ;
+  - premiers pouvoirs de lignée disponibles.
+
+### Corrigé
+
+- Retrait de `immunity` comme critère automatique de typage passif pour les pouvoirs de lignée générés depuis `config.js`.
+- Une immunité n’est plus automatiquement considérée comme passive :
+  - les immunités permanentes peuvent rester passives si leur type l’indique ;
+  - les immunités temporaires ou déclenchées restent des pouvoirs actifs.
+
+### Notes
+
+- Cette version ne code pas l’automatisation complète des effets complexes de clans.
+- Les effets liés au combat, aux transformations, aux blessures, aux états, aux techniques et aux objets spéciaux restent prévus pour les chantiers dédiés.
+- Le Shakujo Kagayaki reste noté comme futur objet spécial avec 5 augmentations / spécialisations de rang.
+- L’audit complet des passifs des 7 clans historiques sera traité plus tard, au moment des chantiers Combat / Actions, Techniques et Santé / Blessures / États.
+
+
 ## 0.1.34.1 - Correctif typage passif et Mangekyō Amaterasu
 
 ### Corrigé
@@ -19,8 +57,8 @@ Toutes les modifications notables de ce système seront listées ici.
   - les déblocages ;
   - les bonus ;
   - les passifs ;
-  - les pouvoirs marqués `passive`, `unlock`, `interception` ou `immunity`
-  sont maintenant générés comme `passive` plutôt que comme pouvoirs activables.
+  - les pouvoirs marqués `passive`, `unlock` ou `interception`
+  sont générés comme `passive` plutôt que comme pouvoirs activables.
 
 ### Modifié
 
