@@ -103,6 +103,185 @@ export class Naruto25eShinobiSheet extends ActorSheet {
     }, 150);
   }
 
+  _getUchihaSheetEffectiveLineageValue() {
+    if (typeof this.actor._getEffectiveLineageValue === "function") {
+      return this.actor._getEffectiveLineageValue();
+    }
+
+    return Number(this.actor.system?.bases?.lign?.value ?? 1);
+  }
+
+  _getUchihaSheetEyeMinimumLineage(eyeKey) {
+    return eyeKey === "right" ? 6 : 7;
+  }
+
+  _isUchihaSheetEyeChoiceUnlocked(eyeKey, lineageValue = null) {
+    const effectiveLineage = lineageValue === null
+      ? this._getUchihaSheetEffectiveLineageValue()
+      : Number(lineageValue ?? 0);
+
+    return effectiveLineage >= this._getUchihaSheetEyeMinimumLineage(eyeKey);
+  }
+
+  _getUchihaSheetEyePowerChoiceOptions(eyeKey) {
+    const heritage = this.actor.system?.heritage ?? {};
+    const mangekyo = heritage.uchiha?.mangekyo ?? {};
+    const rightEyePower = String(mangekyo.rightEyePower ?? "");
+    const leftEyePower = String(mangekyo.leftEyePower ?? "");
+    const rightEyePlayerValidated = Boolean(mangekyo.rightEyePlayerValidated);
+
+    return Object.entries(NARUTO25E.uchihaEyePowers ?? {})
+      .map(([key, power]) => {
+        let disabled = false;
+        let reason = "";
+
+        if (eyeKey === "right" && key === "enton") {
+          disabled = true;
+          reason = "Enton ne peut pas être le premier pouvoir d’œil débloqué. Il nécessite Amaterasu sur l’œil droit.";
+        }
+
+        const validation = NARUTO25E.canSelectUchihaEyePower?.({
+          powerKey: key,
+          eyeKey,
+          rightEyePower,
+          leftEyePower,
+          rightEyePlayerValidated
+        }) ?? { valid: true, reason: "" };
+
+        if (!validation.valid) {
+          disabled = true;
+          reason = validation.reason;
+        }
+
+        return {
+          key,
+          label: power.label,
+          summary: power.summary,
+          disabled,
+          reason
+        };
+      })
+      .filter((option) => !option.disabled);
+  }
+
+  async _maybePromptUchihaMangekyoEyeChoice() {
+    if (!this.actor || this.actor.type !== "shinobi") return;
+    if (!this.actor.isOwner && !game.user?.isGM) return;
+
+    if (this._naruto25eMangekyoEyePromptOpen) return;
+
+    const heritage = this.actor.system?.heritage ?? {};
+    const mangekyo = heritage.uchiha?.mangekyo ?? {};
+    const uchihaPowerMode = NARUTO25E.getUchihaPowerMode?.() ?? "classic";
+
+    if (uchihaPowerMode !== "original") return;
+
+    const hasUchihaLineage = typeof this.actor._hasMechanicalClan === "function"
+      ? this.actor._hasMechanicalClan("uchiha", { purpose: "powers" })
+      : heritage.clan === "uchiha";
+
+    if (!hasUchihaLineage) return;
+
+    const lineageValue = this._getUchihaSheetEffectiveLineageValue();
+    const rightEyePower = String(mangekyo.rightEyePower ?? "");
+    const leftEyePower = String(mangekyo.leftEyePower ?? "");
+    const rightPromptedAt = Number(mangekyo.rightEyeChoicePromptedAtLineage ?? 0);
+    const leftPromptedAt = Number(mangekyo.leftEyeChoicePromptedAtLineage ?? 0);
+
+    let eyeKey = "";
+
+    if (
+      this._isUchihaSheetEyeChoiceUnlocked("right", lineageValue)
+      && !rightEyePower
+      && rightPromptedAt < lineageValue
+    ) {
+      eyeKey = "right";
+    } else if (
+      this._isUchihaSheetEyeChoiceUnlocked("left", lineageValue)
+      && rightEyePower
+      && !leftEyePower
+      && leftPromptedAt < lineageValue
+    ) {
+      eyeKey = "left";
+    }
+
+    if (!eyeKey) return;
+
+    const eyeLabel = eyeKey === "right" ? "œil droit" : "œil gauche";
+    const minimumLineage = this._getUchihaSheetEyeMinimumLineage(eyeKey);
+    const options = this._getUchihaSheetEyePowerChoiceOptions(eyeKey);
+
+    if (options.length === 0) return;
+
+    const optionRows = options.map((option, index) => {
+      const checked = index === 0 ? "checked" : "";
+      const safeKey = foundry.utils.escapeHTML?.(option.key) ?? option.key;
+      const safeLabel = foundry.utils.escapeHTML?.(option.label) ?? option.label;
+      const safeSummary = foundry.utils.escapeHTML?.(option.summary ?? "") ?? (option.summary ?? "");
+
+      return `
+        <label class="naruto-defense-choice">
+          <input type="radio" name="eyePower" value="${safeKey}" ${checked} />
+          <span>
+            <strong>${safeLabel}</strong>
+            <br />
+            <small>${safeSummary}</small>
+          </span>
+        </label>
+      `;
+    }).join("");
+
+    this._naruto25eMangekyoEyePromptOpen = true;
+
+    new Dialog({
+      title: `Mangekyō — choix du ${eyeLabel}`,
+      content: `
+        <form class="naruto-defense-dialog">
+          <p>
+            La Lignée effective de ${this.actor.name} atteint le rang ${lineageValue}.
+            Le ${eyeLabel} est débloqué à partir de Lignée ${minimumLineage}.
+          </p>
+          <p class="hint">
+            Choisir un pouvoir ici confirme le choix côté joueur. Le MJ devra encore le valider pour l’accorder mécaniquement.
+          </p>
+          ${optionRows}
+        </form>
+      `,
+      buttons: {
+        choose: {
+          label: "Choisir et confirmer",
+          callback: async (html) => {
+            const selectedPower = String(html.find('input[name="eyePower"]:checked').val() ?? "");
+            if (!selectedPower) return;
+
+            await this.actor.update({
+              [`system.heritage.uchiha.mangekyo.${eyeKey}EyePower`]: selectedPower,
+              [`system.heritage.uchiha.mangekyo.${eyeKey}EyePlayerValidated`]: true,
+              [`system.heritage.uchiha.mangekyo.${eyeKey}EyeGmValidated`]: false,
+              [`system.heritage.uchiha.mangekyo.${eyeKey}EyeChoicePromptedAtLineage`]: lineageValue
+            });
+
+            ui.notifications.info(`Pouvoir du ${eyeLabel} choisi et confirmé côté joueur.`);
+          }
+        },
+        later: {
+          label: "Choisir plus tard",
+          callback: async () => {
+            await this.actor.update({
+              [`system.heritage.uchiha.mangekyo.${eyeKey}EyeChoicePromptedAtLineage`]: lineageValue
+            });
+
+            ui.notifications.info(`Choix du ${eyeLabel} remis à plus tard.`);
+          }
+        }
+      },
+      default: "choose",
+      close: () => {
+        this._naruto25eMangekyoEyePromptOpen = false;
+      }
+    }).render(true);
+  }
+
   async getData(options = {}) {
   const context = await super.getData(options);
 
@@ -719,17 +898,68 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     const leftEyeGmValidated = Boolean(mangekyo.leftEyeGmValidated);
     const rightEyeState = mangekyo.rightEyeState ?? "healthy";
     const leftEyeState = mangekyo.leftEyeState ?? "healthy";
+    const rightEyeChoicePromptedAtLineage = Number(mangekyo.rightEyeChoicePromptedAtLineage ?? 0);
+    const leftEyeChoicePromptedAtLineage = Number(mangekyo.leftEyeChoicePromptedAtLineage ?? 0);
     const mangekyoUses = Number(mangekyo.uses ?? 0);
 
+    const lineageValue = typeof this.actor._getEffectiveLineageValue === "function"
+      ? this.actor._getEffectiveLineageValue()
+      : Number(this.actor.system.bases?.lign?.value ?? 1);
+
+    const rightEyeMinimumLineage = 6;
+    const leftEyeMinimumLineage = 7;
+    const rightEyeChoiceUnlocked = lineageValue >= rightEyeMinimumLineage;
+    const leftEyeChoiceUnlocked = lineageValue >= leftEyeMinimumLineage;
+
+    const validateUchihaEyePowerForSheet = (powerKey, eyeKey) => {
+      if (!powerKey) return { valid: true, reason: "" };
+
+      if (eyeKey === "right" && !rightEyeChoiceUnlocked) {
+        return {
+          valid: false,
+          reason: "L’œil droit du Mangekyō se débloque à Lignée 6."
+        };
+      }
+
+      if (eyeKey === "left" && !leftEyeChoiceUnlocked) {
+        return {
+          valid: false,
+          reason: "L’œil gauche du Mangekyō se débloque à Lignée 7."
+        };
+      }
+
+      if (eyeKey === "right" && powerKey === "enton") {
+        return {
+          valid: false,
+          reason: "Enton ne peut pas être choisi sur le premier œil débloqué. Il nécessite Amaterasu sur l’œil droit."
+        };
+      }
+
+      const validation = NARUTO25E.canSelectUchihaEyePower?.({
+        powerKey,
+        eyeKey,
+        rightEyePower,
+        leftEyePower,
+        rightEyePlayerValidated
+      }) ?? { valid: true, reason: "" };
+
+      return validation;
+    };
+
     const buildUchihaEyePowerOptions = (eyeKey) => {
+      const eyeUnlocked = eyeKey === "right" ? rightEyeChoiceUnlocked : leftEyeChoiceUnlocked;
+
       return Object.entries(NARUTO25E.uchihaEyePowers ?? {}).map(([key, power]) => {
-        const validation = NARUTO25E.canSelectUchihaEyePower?.({
-          powerKey: key,
-          eyeKey,
-          rightEyePower,
-          leftEyePower,
-          rightEyePlayerValidated
-        }) ?? { valid: true, reason: "" };
+        let validation = validateUchihaEyePowerForSheet(key, eyeKey);
+
+        if (!eyeUnlocked) {
+          validation = {
+            valid: false,
+            reason: eyeKey === "right"
+              ? "Disponible à Lignée 6."
+              : "Disponible à Lignée 7."
+          };
+        }
 
         return {
           key,
@@ -749,21 +979,8 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
       }));
     };
 
-    const rightEyeValidation = NARUTO25E.canSelectUchihaEyePower?.({
-      powerKey: rightEyePower,
-      eyeKey: "right",
-      rightEyePower,
-      leftEyePower,
-      rightEyePlayerValidated
-    }) ?? { valid: true, reason: "" };
-
-    const leftEyeValidation = NARUTO25E.canSelectUchihaEyePower?.({
-      powerKey: leftEyePower,
-      eyeKey: "left",
-      rightEyePower,
-      leftEyePower,
-      rightEyePlayerValidated
-    }) ?? { valid: true, reason: "" };
+    const rightEyeValidation = validateUchihaEyePowerForSheet(rightEyePower, "right");
+    const leftEyeValidation = validateUchihaEyePowerForSheet(leftEyePower, "left");
 
     const mangekyoUsageState = NARUTO25E.getMangekyoUsageState?.(
       mangekyoUses,
@@ -841,6 +1058,12 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
         leftEyeState,
         rightEyeStateLabel: NARUTO25E.getUchihaEyeStateData?.(rightEyeState)?.label ?? "Sain",
         leftEyeStateLabel: NARUTO25E.getUchihaEyeStateData?.(leftEyeState)?.label ?? "Sain",
+        rightEyeChoicePromptedAtLineage,
+        leftEyeChoicePromptedAtLineage,
+        rightEyeMinimumLineage,
+        leftEyeMinimumLineage,
+        rightEyeChoiceUnlocked,
+        leftEyeChoiceUnlocked,
         rightEyePowerOptions: buildUchihaEyePowerOptions("right"),
         leftEyePowerOptions: buildUchihaEyePowerOptions("left"),
         rightEyeStateOptions: buildUchihaEyeStateOptions(rightEyeState),
@@ -850,8 +1073,10 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
         leftEyeChoiceLocked: !rightEyePlayerValidated,
         uses: mangekyoUses,
         usageState: mangekyoUsageState,
-        canEditRightEye: !rightEyePlayerValidated || game.user.isGM,
-        canEditLeftEye: rightEyePlayerValidated && (!leftEyePlayerValidated || game.user.isGM)
+        canEditRightEye: rightEyeChoiceUnlocked && (!rightEyePlayerValidated || game.user.isGM),
+        canEditLeftEye: leftEyeChoiceUnlocked && rightEyePlayerValidated && (!leftEyePlayerValidated || game.user.isGM),
+        canValidateRightEyeAsPlayer: rightEyeChoiceUnlocked && Boolean(rightEyePower),
+        canValidateLeftEyeAsPlayer: leftEyeChoiceUnlocked && rightEyePlayerValidated && Boolean(leftEyePower)
       },
       clanDisabled: mode === "voie" || mode === "hiddenClan",
       voieDisabled: mode === "clan" || mode === "hybridClan" || mode === "hiddenClan",
@@ -860,9 +1085,6 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
         !gmOptions.allowHybridClan
     };
 
-  const lineageValue = typeof this.actor._getEffectiveLineageValue === "function"
-    ? this.actor._getEffectiveLineageValue()
-    : Number(this.actor.system.bases?.lign?.value ?? 1);
 
   const buildClanTrackForSheet = (clanKey, role) => {
     if (!clanKey) return null;
@@ -1302,6 +1524,10 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
 
   this._maybeOpenShinobimancerChoice();
 
+  window.setTimeout(() => {
+    this._maybePromptUchihaMangekyoEyeChoice();
+  }, 250);
+
   if (!this.isEditable) return;
 
   html.find(".base-increase").on("click", async (event) => {
@@ -1419,6 +1645,22 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     const leftEyePower = eye === "left" ? powerKey : mangekyo.leftEyePower ?? "";
     const rightEyePlayerValidated = Boolean(mangekyo.rightEyePlayerValidated);
 
+    const lineageValue = this._getUchihaSheetEffectiveLineageValue();
+
+    if (!this._isUchihaSheetEyeChoiceUnlocked(eye, lineageValue)) {
+      ui.notifications.warn(
+        eye === "right"
+          ? "L’œil droit du Mangekyō se débloque à Lignée 6."
+          : "L’œil gauche du Mangekyō se débloque à Lignée 7."
+      );
+      return;
+    }
+
+    if (eye === "right" && powerKey === "enton") {
+      ui.notifications.warn("Enton ne peut pas être choisi sur le premier œil débloqué.");
+      return;
+    }
+
     const validation = NARUTO25E.canSelectUchihaEyePower?.({
       powerKey,
       eyeKey: eye,
@@ -1499,6 +1741,18 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     const heritage = this.actor.system.heritage ?? {};
     const mangekyo = heritage.uchiha?.mangekyo ?? {};
     const playerValidated = Boolean(mangekyo[`${eye}EyePlayerValidated`]);
+
+    const lineageValue = this._getUchihaSheetEffectiveLineageValue();
+
+    if (checked && !this._isUchihaSheetEyeChoiceUnlocked(eye, lineageValue)) {
+      ui.notifications.warn(
+        eye === "right"
+          ? "L’œil droit du Mangekyō se débloque à Lignée 6."
+          : "L’œil gauche du Mangekyō se débloque à Lignée 7."
+      );
+      event.currentTarget.checked = false;
+      return;
+    }
 
     if (checked && !playerValidated) {
       ui.notifications.warn("Le joueur doit d’abord confirmer ce choix.");

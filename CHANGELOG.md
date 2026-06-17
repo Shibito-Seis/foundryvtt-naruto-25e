@@ -2,6 +2,37 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.33.2 - Correctif rangs Mangekyō par œil
+
+### Ajouté
+
+- Ajout d’une fenêtre automatique de choix du pouvoir d’œil Mangekyō au moment où le rang de Lignée requis est atteint :
+  - Lignée 6 : choix de l’œil droit ;
+  - Lignée 7 : choix de l’œil gauche.
+- Ajout de l’option `Choisir plus tard` dans cette fenêtre.
+- Ajout des marqueurs de suivi :
+  - `rightEyeChoicePromptedAtLineage` ;
+  - `leftEyeChoicePromptedAtLineage`.
+- Ajout du pouvoir de lignée `Amaterasu — Flammes noires instables`.
+
+### Modifié
+
+- Les pouvoirs d’œil Mangekyō ne sont plus synchronisables dès Lignée 5 :
+  - Lignée 5 donne seulement accès au Mangekyō Sharingan validé ;
+  - l’œil droit ne peut accorder son pouvoir qu’à partir de Lignée 6 ;
+  - l’œil gauche ne peut accorder son pouvoir qu’à partir de Lignée 7.
+- Enton / Kagutsuchi ne peut plus être choisi comme premier pouvoir d’œil.
+- Enton / Kagutsuchi reste réservé au second œil et nécessite Amaterasu sur l’autre œil.
+- Si le personnage possède Amaterasu + Enton et que l’œil Amaterasu devient aveugle :
+  - Enton est retiré ;
+  - Amaterasu est conservé sous forme instable.
+- Si l’œil Enton devient aveugle, Amaterasu reste conservé normalement.
+
+### Corrigé
+
+- Correction du cas où un Uchiha Lignée 5 avec Mangekyō validé pouvait recevoir immédiatement des pouvoirs d’œil.
+- Correction du cas où Enton pouvait être préparé sur l’œil droit avant que l’autre œil puisse fournir Amaterasu.
+
 ## 0.1.33.1 - Correctif sync Lignée et santé oculaire interdite
 
 ### Corrigé

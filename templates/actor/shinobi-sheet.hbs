@@ -1681,8 +1681,9 @@
                     <strong>Règles importantes</strong>
                     <ul>
                       <li>Amaterasu, Tsukuyomi, Kamui et Kotoamatsukami ne sont pas automatiques.</li>
-                      <li>Chaque œil du Mangekyō possède son propre pouvoir.</li>
-                      <li>Enton / Kagutsuchi nécessite Amaterasu dans l’autre œil.</li>
+                      <li>L’œil droit débloque son choix à Lignée 6.</li>
+                      <li>L’œil gauche débloque son choix à Lignée 7.</li>
+                      <li>Enton / Kagutsuchi ne peut pas être le premier pouvoir d’œil : il nécessite Amaterasu sur l’œil droit.</li>
                       <li>Izanagi et Izanami ne nécessitent pas le Mangekyō, mais sacrifient l’œil utilisé.</li>
                       <li>Le Susanō reste un pouvoir supérieur à part, destiné à une future fiche/progression dédiée.</li>
                     </ul>
@@ -1709,6 +1710,15 @@
                     <div class="uchiha-eye-grid">
                       <div class="uchiha-eye-card">
                         <h5>Œil droit</h5>
+                        <p class="hint">
+                          Débloqué à Lignée {{heritageState.mangekyo.rightEyeMinimumLineage}}.
+                        </p>
+
+                        {{#unless heritageState.mangekyo.rightEyeChoiceUnlocked}}
+                          <p class="warning-text">
+                            L’œil droit n’est pas encore disponible.
+                          </p>
+                        {{/unless}}
 
                         <label>
                           Pouvoir
@@ -1735,7 +1745,7 @@
                             type="button"
                             class="uchiha-eye-player-validate"
                             data-eye="right"
-                            {{#unless heritageState.mangekyo.rightEyePower}}disabled{{/unless}}
+                            {{#unless heritageState.mangekyo.canValidateRightEyeAsPlayer}}disabled{{/unless}}
                           >
                             Confirmer PJ
                           </button>
@@ -1776,6 +1786,15 @@
 
                       <div class="uchiha-eye-card">
                         <h5>Œil gauche</h5>
+                        <p class="hint">
+                          Débloqué à Lignée {{heritageState.mangekyo.leftEyeMinimumLineage}}.
+                        </p>
+
+                        {{#unless heritageState.mangekyo.leftEyeChoiceUnlocked}}
+                          <p class="warning-text">
+                            L’œil gauche n’est pas encore disponible.
+                          </p>
+                        {{/unless}}
 
                         {{#if heritageState.mangekyo.leftEyeChoiceLocked}}
                           <p class="hint">
@@ -1808,7 +1827,7 @@
                             type="button"
                             class="uchiha-eye-player-validate"
                             data-eye="left"
-                            {{#unless heritageState.mangekyo.leftEyePower}}disabled{{/unless}}
+                            {{#unless heritageState.mangekyo.canValidateLeftEyeAsPlayer}}disabled{{/unless}}
                           >
                             Confirmer PJ
                           </button>

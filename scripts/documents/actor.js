@@ -3169,7 +3169,9 @@ async decreaseBase(baseKey) {
           "system.heritage.uchiha.mangekyo.rightEyePower",
           "system.heritage.uchiha.mangekyo.leftEyePower",
           "system.heritage.uchiha.mangekyo.rightEyePlayerValidated",
-          "system.heritage.uchiha.mangekyo.leftEyePlayerValidated"
+          "system.heritage.uchiha.mangekyo.leftEyePlayerValidated",
+          "system.heritage.uchiha.mangekyo.rightEyeChoicePromptedAtLineage",
+          "system.heritage.uchiha.mangekyo.leftEyeChoicePromptedAtLineage"
         ]);
 
         const lockedMangekyoResettableGmPaths = new Set([
@@ -4001,6 +4003,7 @@ async decreaseBase(baseKey) {
 
       const itemNames = {
         amaterasu: "Amaterasu — Flammes noires",
+        amaterasuUnstable: "Amaterasu — Flammes noires instables",
         enton: "Enton — Kagutsuchi",
         tsukuyomi: "Tsukuyomi — Le Monde Illusoire",
         kamui: "Kamui",
@@ -4015,6 +4018,18 @@ async decreaseBase(baseKey) {
       const state = String(stateKey ?? "healthy");
 
       return state !== "blind";
+    }
+
+    _getUchihaMangekyoEyeMinimumLineage(eyeKey) {
+      return eyeKey === "right" ? 6 : 7;
+    }
+
+    _isUchihaMangekyoEyeChoiceUnlocked(eyeKey, lineageValue = null) {
+      const effectiveLineage = lineageValue === null
+        ? this._getEffectiveLineageValue()
+        : Number(lineageValue ?? 0);
+
+      return effectiveLineage >= this._getUchihaMangekyoEyeMinimumLineage(eyeKey);
     }
 
     _hasEffectiveMangekyoSharinganForEyePowers() {
@@ -4033,6 +4048,7 @@ async decreaseBase(baseKey) {
 
       if (!this._hasEffectiveMangekyoSharinganForEyePowers()) return [];
 
+      const lineageValue = this._getEffectiveLineageValue();
       const mangekyo = this.system.heritage?.uchiha?.mangekyo ?? {};
       const rightEyePower = String(mangekyo.rightEyePower ?? "");
       const leftEyePower = String(mangekyo.leftEyePower ?? "");
@@ -4058,13 +4074,26 @@ async decreaseBase(baseKey) {
         return eyeKey === "right" ? "left" : "right";
       };
 
-      const isEyeFullyValidated = (eyeKey) => {
+      const isEyeChoiceUnlocked = (eyeKey) => {
+        return this._isUchihaMangekyoEyeChoiceUnlocked(eyeKey, lineageValue);
+      };
+
+      const isEyeChoiceValidatedIgnoringState = (eyeKey) => {
         const currentEye = eyeData[eyeKey];
         if (!currentEye) return false;
+        if (!isEyeChoiceUnlocked(eyeKey)) return false;
         if (!currentEye.powerKey) return false;
         if (!currentEye.playerValidated) return false;
         if (!currentEye.gmValidated) return false;
-        if (!this._isUchihaEyeStateUsableForMangekyo(currentEye.state)) return false;
+
+        /*
+          Enton est le pouvoir de contrôle des flammes noires.
+          Il ne peut pas être le premier pouvoir débloqué.
+          Dans notre progression, le premier œil est l’œil droit au rang 6.
+        */
+        if (eyeKey === "right" && currentEye.powerKey === "enton") {
+          return false;
+        }
 
         const selectionValidation = NARUTO25E.canSelectUchihaEyePower?.({
           powerKey: currentEye.powerKey,
@@ -4076,6 +4105,14 @@ async decreaseBase(baseKey) {
 
         if (!selectionValidation.valid) return false;
 
+        return true;
+      };
+
+      const isEyeFullyValidated = (eyeKey) => {
+        const currentEye = eyeData[eyeKey];
+        if (!isEyeChoiceValidatedIgnoringState(eyeKey)) return false;
+        if (!this._isUchihaEyeStateUsableForMangekyo(currentEye.state)) return false;
+
         const powerData = NARUTO25E.getUchihaEyePowerData?.(currentEye.powerKey);
         const requiredOtherEyePower = String(powerData?.requiresOtherEyePower ?? "");
 
@@ -4084,6 +4121,7 @@ async decreaseBase(baseKey) {
           const otherEye = eyeData[otherEyeKey];
 
           if (!otherEye) return false;
+          if (!isEyeChoiceUnlocked(otherEyeKey)) return false;
           if (otherEye.powerKey !== requiredOtherEyePower) return false;
           if (!otherEye.playerValidated) return false;
           if (!otherEye.gmValidated) return false;
@@ -4093,12 +4131,50 @@ async decreaseBase(baseKey) {
         return true;
       };
 
+      const isEntonEyeValidatedAndUsable = (eyeKey) => {
+        const eye = eyeData[eyeKey];
+
+        return Boolean(eye)
+          && eye.powerKey === "enton"
+          && isEyeChoiceUnlocked(eyeKey)
+          && eye.playerValidated
+          && eye.gmValidated
+          && this._isUchihaEyeStateUsableForMangekyo(eye.state);
+      };
+
       const definitions = [];
 
       for (const eyeKey of ["right", "left"]) {
+        const currentEye = eyeData[eyeKey];
+        if (!currentEye?.powerKey) continue;
+
+        /*
+          Cas spécial validé :
+          Amaterasu + Enton.
+          Si l’œil Amaterasu devient aveugle, Enton est perdu,
+          mais l’autre œil peut encore produire un Amaterasu basique instable.
+        */
+        if (
+          currentEye.powerKey === "amaterasu"
+          && isEyeChoiceValidatedIgnoringState(eyeKey)
+          && !this._isUchihaEyeStateUsableForMangekyo(currentEye.state)
+        ) {
+          const otherEyeKey = getOtherEye(eyeKey);
+
+          if (isEntonEyeValidatedAndUsable(otherEyeKey)) {
+            definitions.push({
+              clan: "uchiha",
+              key: `uchiha_mangekyo_${eyeKey}_amaterasu_unstable`,
+              name: "Amaterasu — Flammes noires instables"
+            });
+          }
+
+          continue;
+        }
+
         if (!isEyeFullyValidated(eyeKey)) continue;
 
-        const powerKey = eyeData[eyeKey].powerKey;
+        const powerKey = currentEye.powerKey;
         const itemName = this._getUchihaEyePowerItemName(powerKey);
 
         if (!itemName) continue;
@@ -4288,6 +4364,7 @@ async decreaseBase(baseKey) {
       "Mangekyō Sharingan",
       "Tsukuyomi — Le Monde Illusoire",
       "Amaterasu — Flammes noires",
+      "Amaterasu — Flammes noires instables",
       "Enton — Kagutsuchi",
       "Kotoamatsukami — Allégeance",
       "Kamui",

@@ -126,6 +126,24 @@
     }
   },
   {
+    "name": "Amaterasu — Flammes noires instables",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/fire/flame-burning-black.webp",
+    "system": {
+      "description": "Version résiduelle et moins fiable d’Amaterasu lorsque le personnage possédait la combinaison Amaterasu + Enton, mais que l’œil porteur d’Amaterasu est devenu aveugle. Les flammes noires peuvent encore être produites sous une forme basique, mais le contrôle avancé d’Enton est perdu.",
+      "clan": "uchiha",
+      "lineageRank": 7,
+      "powerType": "active",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Fondation de données. Amaterasu instable remplace Amaterasu stable uniquement si l’œil Amaterasu est aveugle alors que l’autre œil possédait Enton validé et utilisable. Enton n’est pas conservé dans ce cas.",
+      "prerequisites": {
+        "text": "Ancienne combinaison Amaterasu + Enton validée. Œil Amaterasu devenu aveugle. Œil Enton encore utilisable. Effet précis à cadrer avec le MJ.",
+        "gmValidation": true
+      }
+    }
+  },
+  {
     "name": "Enton — Kagutsuchi",
     "type": "pouvoirLignee",
     "img": "icons/magic/fire/flame-burning-black-orange.webp",

@@ -59,6 +59,8 @@
     "leftEyeGmValidated": false,
     "rightEyeState": "healthy",
     "leftEyeState": "healthy",
+    "rightEyeChoicePromptedAtLineage": 0,
+    "leftEyeChoicePromptedAtLineage": 0,
     "uses": 0,
     "notes": ""
   }
