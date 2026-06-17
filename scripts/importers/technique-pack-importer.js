@@ -1,3 +1,4 @@
+import { NARUTO25E } from "../config.js";
 const TECHNIQUE_SOURCES = [
   {
     pack: "naruto-25e.techniques-communes",
@@ -117,6 +118,59 @@ function normalizeLineagePowerData(data) {
   );
 }
 
+function getGeneratedLineagePowerDataFromConfig(existingSourceData = []) {
+  const existingNames = new Set(
+    existingSourceData
+      .map((entry) => String(entry.name ?? ""))
+      .filter(Boolean)
+  );
+
+  const generated = [];
+
+  for (const [clanKey, features] of Object.entries(NARUTO25E.clanLineageFeatures ?? {})) {
+    for (const feature of features ?? []) {
+      const name = String(feature.label ?? "");
+      if (!name || existingNames.has(name)) continue;
+
+      const rank = Math.max(1, Number(feature.rank ?? 1));
+      const tags = Array.isArray(feature.tags) ? feature.tags : [];
+      const typeLabel = String(feature.type ?? "").toLowerCase();
+      const isPassive =
+        typeLabel.includes("passif")
+        || typeLabel.includes("bonus")
+        || tags.includes("bonus");
+
+      generated.push({
+        name,
+        type: "pouvoirLignee",
+        img: "icons/svg/aura.svg",
+        system: {
+          description: feature.summary ?? "",
+          clan: clanKey,
+          lineageRank: rank,
+          powerType: isPassive ? "passive" : "active",
+          activationCost: 0,
+          maintenanceCost: 0,
+          effect: feature.mechanical ?? "Fondation de données. Effet détaillé à automatiser plus tard.",
+          prerequisites: {
+            text: `Clan ${NARUTO25E.clans?.[clanKey]?.label ?? clanKey}. Lignée ${rank} requise.`,
+            gmValidation: tags.includes("mj-only")
+          }
+        },
+        flags: {
+          "naruto-25e": {
+            generatedFromLineageFeature: true,
+            sourceClan: clanKey,
+            sourceRank: rank
+          }
+        }
+      });
+    }
+  }
+
+  return generated;
+}
+
 function getStartingEquipmentDefaults() {
   return {
     type: "equipement",
@@ -225,7 +279,15 @@ export async function importNaruto25eTechniquePacks(options = {}) {
     await unlockPack(pack);
 
     const deleted = clear ? await clearPack(pack) : 0;
-    const sourceData = await readTechniqueSource(source);
+    let sourceData = await readTechniqueSource(source);
+
+    if (source.pack === "naruto-25e.pouvoirs-lignee") {
+      sourceData = [
+        ...sourceData,
+        ...getGeneratedLineagePowerDataFromConfig(sourceData)
+      ];
+    }
+
     const documents = sourceData.map(source.normalize);
 
     if (documents.length > 0) {
@@ -298,7 +360,15 @@ export async function autoImportMissingNaruto25eDataPacks(options = {}) {
 
     await unlockPack(pack);
 
-    const sourceData = await readTechniqueSource(source);
+    let sourceData = await readTechniqueSource(source);
+
+    if (source.pack === "naruto-25e.pouvoirs-lignee") {
+      sourceData = [
+        ...sourceData,
+        ...getGeneratedLineagePowerDataFromConfig(sourceData)
+      ];
+    }
+
     const documents = sourceData.map(source.normalize);
 
     const index = await pack.getIndex({

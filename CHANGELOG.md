@@ -2,6 +2,59 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.34 - Clans jouables étendus : phase mécanique
+
+### Ajouté
+
+- Ajout de la phase mécanique d’intégration des 25 clans jouables.
+- Ajout des données de création mécaniques pour les clans restants :
+  - Akaba ;
+  - Akimichi ;
+  - Ao ;
+  - Eshimuro ;
+  - Ishida ;
+  - Kagayaki ;
+  - Kenta ;
+  - Kurama ;
+  - Morino ;
+  - Sarutobi ;
+  - Shimadoku ;
+  - Shimura ;
+  - Takeda ;
+  - Utatane.
+- Complétion des données mécaniques déjà amorcées pour :
+  - Aniki ;
+  - Munefuda ;
+  - Yamanaka.
+- Ajout d’un système générique de lecture des pouvoirs de lignée depuis `NARUTO25E.clanLineageFeatures`.
+- Ajout d’un fallback permettant de créer un item `pouvoirLignee` depuis `config.js` si le pouvoir n’est pas trouvé dans le compendium ou dans le JSON.
+- Ajout de la génération automatique des pouvoirs de lignée issus de `config.js` lors de l’import du compendium `Pouvoirs de lignée`.
+- Ajout d’une première couche de bonus passifs simples de lignée :
+  - bonus de Vigueur maximum ;
+  - bonus de Caractère maximum ;
+  - bonus de Chakra maximum ;
+  - bonus de compétence fixe ou égal à la Lignée.
+
+### Modifié
+
+- La synchronisation des pouvoirs de lignée n’est plus limitée aux clans codés à la main.
+- Les clans non encore présents dans le Shinobimancer peuvent être rendus fonctionnels mécaniquement depuis la fiche si leur clé de clan est renseignée.
+- Les 7 clans tests existants restent protégés par leurs chemins spécifiques :
+  - Aburame ;
+  - Hyūga ;
+  - Inuzuka ;
+  - Katō ;
+  - Nara ;
+  - Senju ;
+  - Uchiha.
+
+### Notes
+
+- Cette version ne rend pas encore les 25 clans sélectionnables proprement dans le Shinobimancer.
+- Les clans nouvellement intégrés sont fonctionnels mécaniquement côté fiche, synchronisation et compendium.
+- Les effets complexes de combat, transformations, immunités, réserves spéciales et techniques détaillées restent à automatiser dans les futurs chantiers Inventaire, Combat, Actions et Techniques.
+- Les rangs ou pouvoirs non nommés explicitement dans la source sont conservés sous forme de fondation mécanique minimale, sans inventer de règle complète.
+
 ## 0.1.33.2 - Correctif rangs Mangekyō par œil
 
 ### Ajouté

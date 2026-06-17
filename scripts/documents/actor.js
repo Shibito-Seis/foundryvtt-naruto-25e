@@ -36,6 +36,7 @@ export class Naruto25eActor extends Actor {
     this._prepareHeritage(system);
     this._prepareChakraAffinities(system);
     this._finalizeSkillOwnership(system);
+    this._prepareLineagePassiveBonuses(system);
     this._prepareChakraSpecializations(system);
     this._prepareResources(system);
     this._prepareCombat(system);
@@ -1500,6 +1501,75 @@ export class Naruto25eActor extends Actor {
     );
   }
 
+  _slugifyLineagePowerKey(value) {
+    return String(value ?? "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/œ/g, "oe")
+      .replace(/æ/g, "ae")
+      .replace(/[^a-z0-9]+/g, "_")
+      .replace(/^_+|_+$/g, "");
+  }
+
+  _getLineageFeatureByName(powerName) {
+    const wantedName = String(powerName ?? "");
+
+    for (const [clanKey, features] of Object.entries(NARUTO25E.clanLineageFeatures ?? {})) {
+      for (const feature of features ?? []) {
+        if (feature.label !== wantedName) continue;
+
+        return {
+          clanKey,
+          feature
+        };
+      }
+    }
+
+    return null;
+  }
+
+  _getLineagePowerSourceDataFromConfig(powerName) {
+    const match = this._getLineageFeatureByName(powerName);
+    if (!match) return null;
+
+    const { clanKey, feature } = match;
+    const rank = Math.max(1, Number(feature.rank ?? 1));
+    const tags = Array.isArray(feature.tags) ? feature.tags : [];
+    const isPassive =
+      String(feature.type ?? "").toLowerCase().includes("passif")
+      || String(feature.type ?? "").toLowerCase().includes("bonus")
+      || tags.includes("bonus");
+
+    const data = {
+      name: feature.label,
+      type: "pouvoirLignee",
+      img: "icons/svg/aura.svg",
+      system: {
+        description: feature.summary ?? "",
+        clan: clanKey,
+        lineageRank: rank,
+        powerType: isPassive ? "passive" : "active",
+        activationCost: 0,
+        maintenanceCost: 0,
+        effect: feature.mechanical ?? "Fondation de données. Effet détaillé à automatiser plus tard.",
+        prerequisites: {
+          text: `Clan ${NARUTO25E.clans?.[clanKey]?.label ?? clanKey}. Lignée ${rank} requise.`,
+          gmValidation: tags.includes("mj-only")
+        }
+      },
+      flags: {
+        "naruto-25e": {
+          generatedFromLineageFeature: true,
+          sourceClan: clanKey,
+          sourceRank: rank
+        }
+      }
+    };
+
+    return this._normalizeLineagePowerSourceData(data);
+  }
+
   async _getLineagePowerSourceDataFromJson(powerName) {
     const path = "systems/naruto-25e/data/pouvoirs-lignee/pouvoirs-lignee.json";
 
@@ -1532,30 +1602,142 @@ export class Naruto25eActor extends Actor {
     }
   }
 
+  _getUnlockedLineageFeatures() {
+    if (this.type !== "shinobi") return [];
+
+    const lineageValue = this._getEffectiveLineageValue();
+    const clanKeys = this._getMechanicalClanKeys({ purpose: "powers" });
+    const features = [];
+
+    for (const clanKey of clanKeys) {
+      const clanFeatures = NARUTO25E.clanLineageFeatures?.[clanKey] ?? [];
+
+      for (const feature of clanFeatures) {
+        const rank = Number(feature.rank ?? 0);
+        if (rank <= 0) continue;
+        if (lineageValue < rank) continue;
+
+        features.push({
+          clan: clanKey,
+          ...feature
+        });
+      }
+    }
+
+    return features;
+  }
+
+  _getLineagePassiveBonuses(system = this.system) {
+    const bonuses = {
+      resources: {
+        vigueurMax: 0,
+        caractereMax: 0,
+        chakraMax: 0
+      },
+      skills: {},
+      special: []
+    };
+
+    const lineageValue = this._getEffectiveLineageValue();
+    const features = this._getUnlockedLineageFeatures();
+
+    for (const feature of features) {
+      const featureBonuses = feature.bonuses ?? {};
+      const resourceBonuses = featureBonuses.resources ?? {};
+      const skillBonuses = featureBonuses.skills ?? {};
+
+      bonuses.resources.vigueurMax += Number(resourceBonuses.vigueurMax ?? 0);
+      bonuses.resources.caractereMax += Number(resourceBonuses.caractereMax ?? 0);
+      bonuses.resources.chakraMax += Number(resourceBonuses.chakraMax ?? 0);
+
+      if (resourceBonuses.chakraPerLineage) {
+        bonuses.resources.chakraMax += Number(resourceBonuses.chakraPerLineage ?? 0) * lineageValue;
+      }
+
+      for (const [skillKey, value] of Object.entries(skillBonuses)) {
+        if (!NARUTO25E.skillDefinitions?.[skillKey]) continue;
+
+        const amount = value === "lineage"
+          ? lineageValue
+          : Number(value ?? 0);
+
+        bonuses.skills[skillKey] = Number(bonuses.skills[skillKey] ?? 0) + amount;
+      }
+
+      if (Array.isArray(featureBonuses.special)) {
+        bonuses.special.push(...featureBonuses.special);
+      }
+    }
+
+    return bonuses;
+  }
+
+  _prepareLineagePassiveBonuses(system) {
+    if (!system.resources) system.resources = {};
+    if (!system.skills) return;
+
+    const bonuses = this._getLineagePassiveBonuses(system);
+
+    system.resources.lineageBonuses = bonuses.resources;
+    system.resources.lineageSpecialBonuses = bonuses.special;
+
+    for (const [skillKey, skill] of Object.entries(system.skills)) {
+      const definition = NARUTO25E.skillDefinitions?.[skillKey];
+      if (!definition) continue;
+
+      const lineageBonus = Number(bonuses.skills?.[skillKey] ?? 0);
+      const baseKey = definition.base;
+      const baseValue = this._getBaseEffective(system, baseKey);
+
+      skill.lineageBonus = lineageBonus;
+      skill.total = Number(skill.natural ?? 1)
+        + baseValue
+        + Number(skill.bonus ?? 0)
+        + lineageBonus;
+    }
+  }
+
   _prepareResources(system) {
     const cor = this._getBaseEffective(system, "cor");
     const esp = this._getBaseEffective(system, "esp");
     const lign = this._getBaseEffective(system, "lign");
 
     const chakraBonuses = system.chakra?.specializationBonuses ?? {};
+    const lineageResourceBonuses = system.resources?.lineageBonuses ?? {};
 
     const vigueur = system.resources?.vigueur;
     if (vigueur) {
       const bonus = Number(vigueur.bonus ?? 0);
-      vigueur.max = Math.max(0, 2 + cor + bonus + Number(chakraBonuses.vigueurMax ?? 0));
+      vigueur.max = Math.max(
+        0,
+        2
+        + cor
+        + bonus
+        + Number(chakraBonuses.vigueurMax ?? 0)
+        + Number(lineageResourceBonuses.vigueurMax ?? 0)
+      );
       vigueur.value = this._clampNumber(vigueur.value, 0, vigueur.max);
     }
 
     const caractere = system.resources?.caractere;
     if (caractere) {
       const bonus = Number(caractere.bonus ?? 0);
-      caractere.max = Math.max(0, 2 + esp + bonus + Number(chakraBonuses.caractereMax ?? 0));
+      caractere.max = Math.max(
+        0,
+        2
+        + esp
+        + bonus
+        + Number(chakraBonuses.caractereMax ?? 0)
+        + Number(lineageResourceBonuses.caractereMax ?? 0)
+      );
       caractere.value = this._clampNumber(caractere.value, 0, caractere.max);
     }
 
     const chakra = system.resources?.chakra;
     if (chakra) {
-      const specializationChakraBonus = Number(chakraBonuses.chakraMax ?? 0);
+      const specializationChakraBonus =
+        Number(chakraBonuses.chakraMax ?? 0)
+        + Number(lineageResourceBonuses.chakraMax ?? 0);
       const passiveRegenPercent = 1 + Number(chakraBonuses.passiveRegenPercent ?? 0);
 
       chakra.bonus = Number(chakra.bonus ?? 0);
@@ -4350,13 +4532,29 @@ async decreaseBase(baseKey) {
 
         continue;
       }
+
+      const lineageFeatures = NARUTO25E.clanLineageFeatures?.[clanKey] ?? [];
+
+      for (const feature of lineageFeatures) {
+        const rank = Number(feature.rank ?? 0);
+        const name = String(feature.label ?? "");
+
+        if (rank <= 0 || !name) continue;
+        if (lineageValue < rank) continue;
+
+        addPower(
+          clanKey,
+          `${clanKey}_${this._slugifyLineagePowerKey(name)}`,
+          name
+        );
+      }
     }
 
     return definitions;
   }
 
   _getManagedLineagePowerNames() {
-    return new Set([
+    const names = new Set([
       "Sharingan — 1 tomoe",
       "Sharingan — 2 tomoe",
       "Sharingan — 3 tomoe",
@@ -4428,6 +4626,14 @@ async decreaseBase(baseKey) {
       "Appeler la Meute",
       "Totem"
     ]);
+
+    for (const features of Object.values(NARUTO25E.clanLineageFeatures ?? {})) {
+      for (const feature of features ?? []) {
+        if (feature?.label) names.add(feature.label);
+      }
+    }
+
+    return names;
   }
 
   async _getLineagePowerSourceData(powerName) {
@@ -4450,7 +4656,10 @@ async decreaseBase(baseKey) {
       console.warn(`Naruto 2.5e | Compendium pouvoirs-lignee introuvable, tentative JSON : ${powerName}.`);
     }
 
-    return this._getLineagePowerSourceDataFromJson(powerName);
+    const jsonData = await this._getLineagePowerSourceDataFromJson(powerName);
+    if (jsonData) return jsonData;
+
+    return this._getLineagePowerSourceDataFromConfig(powerName);
   }
 
   async syncLineagePowersFromHeritage({ notify = false } = {}) {

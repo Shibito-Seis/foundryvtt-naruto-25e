@@ -990,6 +990,170 @@ NARUTO25E.clanCreationData = {
   }
 };
 
+Object.assign(NARUTO25E.clanCreationData, {
+  akaba: {
+    summary: "Clan guerrier endurant, spécialisé dans la résistance et la pression de combat.",
+    lore: "Les Akaba incarnent une tradition martiale robuste, tournée vers la confrontation, le courage et la tenue de ligne.",
+    creationAdvice: "Bon choix pour un personnage solide, frontal, capable d’encaisser et de soutenir l’équipe en combat.",
+    mandatorySkills: ["intimidation"],
+    mandatoryAffinities: [],
+    startingFeatures: ["Corps du Guerrier"],
+    futureUnlocks: ["Blessure A", "interceptions supplémentaires", "pression d’initiative", "bonus de Parade", "Fureur du Lion"],
+    narrativeWarnings: ["Style orienté combat direct et intimidation."],
+    recommendedBuilds: ["Combattant robuste", "Intercepteur", "Frontliner", "Chef de mêlée"],
+    previewTags: ["Résistance", "Interception", "Intimidation", "Mêlée"]
+  },
+
+  akimichi: {
+    summary: "Clan à la vitalité massive, lié à la croissance corporelle et aux pilules sacrées.",
+    lore: "Les Akimichi sont connus pour leur puissance physique, leur contrôle calorique et leurs arts secrets liés aux pilules.",
+    creationAdvice: "Très bon choix pour un tank physique, un combattant massif ou un personnage centré sur la Vigueur.",
+    mandatorySkills: [],
+    mandatoryAffinities: [],
+    startingFeatures: ["Endurance Singulière"],
+    futureUnlocks: ["Blessures supplémentaires", "bonus de Vigueur", "techniques de croissance", "pilules sacrées", "immunité physique temporaire"],
+    narrativeWarnings: ["Les pilules sacrées et la croissance géante demandent un cadrage MJ."],
+    recommendedBuilds: ["Tank", "Briseur", "Combattant massif", "Utilisateur de pilules"],
+    previewTags: ["Vigueur", "Croissance", "Pilules", "Tank"]
+  },
+
+  ao: {
+    summary: "Clan de lignée instable, capable d’assimiler temporairement des pouvoirs par ingestion de sang.",
+    lore: "La lignée Ao fonctionne comme un mimétisme héréditaire dangereux, dépendant du sang et de la stabilité physique du personnage.",
+    creationAdvice: "À réserver aux tables prêtes à gérer un pouvoir très spécial, variable et supervisé par le MJ.",
+    mandatorySkills: [],
+    mandatoryAffinities: [],
+    startingFeatures: ["Assimilation du Sang"],
+    futureUnlocks: ["Copie d’un pouvoir de lignée", "remplacement de pouvoir", "gestion de compétence copiée", "risques narratifs"],
+    narrativeWarnings: ["Clan fortement MJ-dépendant. La copie de pouvoir doit toujours être arbitrée."],
+    recommendedBuilds: ["Caméléon de lignée", "Sujet expérimental", "Shinobi instable"],
+    previewTags: ["Copie", "Sang", "Variable", "MJ"]
+  },
+
+  eshimuro: {
+    summary: "Lignée secrète de réceptacles sacrés, liée au Fūin et à l’emprisonnement de créatures.",
+    lore: "Les Eshimuro portent en eux des sceaux capables d’emprisonner des entités et d’altérer leur signature de chakra.",
+    creationAdvice: "Très bon choix pour un personnage mystique, scellé, dangereux et narrativement lourd.",
+    mandatorySkills: ["fuin"],
+    mandatoryAffinities: [],
+    startingFeatures: ["Shinseina Yōki — Réceptacle Sacré"],
+    futureUnlocks: ["Chakra supplémentaire", "signature de royaume", "pouvoir SPE de créature", "Kongō Fūsa", "extraction"],
+    narrativeWarnings: ["Le contenu de la créature scellée doit être validé par le MJ."],
+    recommendedBuilds: ["Réceptacle", "Fūin mystique", "Prison vivante", "Spécialiste des royaumes"],
+    previewTags: ["Fūin", "Réceptacle", "Créature", "Chakra"]
+  },
+
+  ishida: {
+    summary: "Clan lié aux visions, aux songes, au calme spirituel et aux protections de Yumedō.",
+    mandatorySkills: [],
+    mandatoryAffinities: [],
+    startingFeatures: ["Shikyo — Vision des Futures"],
+    futureUnlocks: ["vision de mort", "bonus Caractère", "dissipation d’illusions", "barrière spirituelle", "voyage spectral", "prédiction"],
+    narrativeWarnings: ["Les pouvoirs de vision et de prédiction doivent rester sous contrôle MJ."],
+    recommendedBuilds: ["Oracle", "Défenseur spirituel", "Anti-genjutsu", "Mystique de Yumedō"],
+    previewTags: ["Yumedō", "Vision", "Gensou", "Caractère"]
+  },
+
+  kagayaki: {
+    summary: "Clan solaire lié au Katon, à la radiance, aux barrières sacrées et aux soins purificateurs.",
+    mandatorySkills: ["katon"],
+    mandatoryAffinities: ["katon"],
+    startingFeatures: ["Shakujo — Bâton Sacré"],
+    futureUnlocks: ["Radiance", "soins", "barrière divine", "immunité au feu", "Nova", "Renaissance Divine"],
+    narrativeWarnings: ["Plusieurs pouvoirs mélangent soin, feu sacré et anti-créatures des royaumes parallèles."],
+    recommendedBuilds: ["Soigneur solaire", "Katon sacré", "Protecteur", "Anti-démon"],
+    previewTags: ["Katon", "Soin", "Barrière", "Solaire"]
+  },
+
+  kenta: {
+    summary: "Clan des masques, de la contrefaçon et des états psychophysiques extrêmes.",
+    mandatorySkills: [],
+    mandatoryAffinities: [],
+    startingFeatures: ["Masque physique"],
+    futureUnlocks: ["masques", "vigueur", "rage", "vitalité", "contrefaçon", "protection psychique"],
+    narrativeWarnings: ["Les masques et états de rage doivent être surveillés pour éviter les abus."],
+    recommendedBuilds: ["Infiltrateur masqué", "Combattant instable", "Tank psychique"],
+    previewTags: ["Masques", "Physique", "Psychique", "Contrefaçon"]
+  },
+
+  kurama: {
+    summary: "Clan genjutsu à la psyché multiple, capable d’illusions dangereusement réalistes.",
+    mandatorySkills: ["gensou"],
+    mandatoryAffinities: [],
+    startingFeatures: ["Un et Multiple"],
+    futureUnlocks: ["résistance psychique", "Gensou renforcé", "Cauchemar éveillé", "double maléfique", "illusions dans l’illusion"],
+    narrativeWarnings: ["La santé mentale, le double maléfique et Jigokudō sont des enjeux narratifs importants."],
+    recommendedBuilds: ["Genjutsu", "Illusionniste", "Contrôleur mental", "Personnage fragmenté"],
+    previewTags: ["Gensou", "Illusions", "Psychique", "Jigokudō"]
+  },
+
+  morino: {
+    summary: "Clan d’interrogateurs et de résistants mentaux, spécialisé dans l’intimidation et la vigilance.",
+    mandatorySkills: ["intimidation"],
+    mandatoryAffinities: [],
+    startingFeatures: ["Chokan — Vigilance de l’Esprit"],
+    futureUnlocks: ["immunité à la surprise", "aura menaçante", "feindre la mort", "langage silencieux", "présence immobile"],
+    narrativeWarnings: ["Clan très lié à la Police Centrale et aux méthodes d’interrogatoire."],
+    recommendedBuilds: ["Interrogateur", "Intimidateur", "Sentinelle", "Tank mental"],
+    previewTags: ["Intimidation", "Vigilance", "Mental", "Police"]
+  },
+
+  sarutobi: {
+    summary: "Clan polyvalent lié au feu, à la démolition et à la tradition martiale de Kashin.",
+    mandatorySkills: [],
+    mandatoryAffinities: [],
+    startingFeatures: ["Force de Kashin"],
+    futureUnlocks: ["démineur", "poudre à canon", "feu intérieur", "brasier protecteur"],
+    narrativeWarnings: ["Très bon clan de base polyvalent sans sous-système lourd."],
+    recommendedBuilds: ["Polyvalent", "Katon", "Démolition", "Protecteur"],
+    previewTags: ["Kashin", "Feu", "Explosifs", "Polyvalence"]
+  },
+
+  shimadoku: {
+    summary: "Clan reptilien et toxique lié aux contrats sacrés, au poison et au remodelage physique.",
+    mandatorySkills: ["kuchiyose"],
+    mandatoryAffinities: [],
+    startingFeatures: ["Contrat Sacré"],
+    futureUnlocks: ["immunité aux poisons", "mue céleste", "sang empoisonné", "remodelage physique"],
+    narrativeWarnings: ["Les contrats Dokuja/Kabutomushi et le sang empoisonné devront être cadrés."],
+    recommendedBuilds: ["Invocateur reptilien", "Poison", "Survivant", "Contrôleur physique"],
+    previewTags: ["Kuchiyose", "Poison", "Reptile", "Mue"]
+  },
+
+  shimura: {
+    summary: "Clan secret de Fūin, de sceaux de contrainte, de protection et de destruction.",
+    mandatorySkills: ["fuin"],
+    mandatoryAffinities: [],
+    startingFeatures: ["In’go"],
+    futureUnlocks: ["sceaux", "renforcement", "silence", "clairvoyance", "paralysie", "scellement destructeur"],
+    narrativeWarnings: ["Les sceaux Shimura sont politiquement et moralement sensibles."],
+    recommendedBuilds: ["Fūin", "Contrôleur", "Agent secret", "Scelleur"],
+    previewTags: ["Fūin", "Sceaux", "Secret", "Contrôle"]
+  },
+
+  takeda: {
+    summary: "Clan armé d’une arme céleste, prédateur des créatures de Jigokudō.",
+    mandatorySkills: ["armesExotiques"],
+    mandatoryAffinities: [],
+    startingFeatures: ["Arme Céleste — Houtai"],
+    futureUnlocks: ["arme éveillée", "sixième sens", "châtiment", "anti-Jigokudō", "forme cannibale", "momie", "Léviathan"],
+    narrativeWarnings: ["Très marqué par les ennemis de Jigokudō et les armes sacrées."],
+    recommendedBuilds: ["Arme sacrée", "Chasseur de démons", "Combattant monstrueux"],
+    previewTags: ["Arme", "Jigokudō", "Châtiment", "Prédateur"]
+  },
+
+  utatane: {
+    summary: "Clan d’armurerie vivante, de Sōgu et d’armes invoquées.",
+    mandatorySkills: ["kuchiyose"],
+    mandatoryAffinities: [],
+    startingFeatures: ["Tenbuki — Armes célestes"],
+    futureUnlocks: ["armurerie humaine", "onde de choc", "interception armée", "déverrouillage sacré", "garde impériale"],
+    narrativeWarnings: ["Le stockage d’armes et les armes célestes nécessiteront une UX inventaire plus tard."],
+    recommendedBuilds: ["Arsenal vivant", "Kuchiyose d’armes", "Combattant armé"],
+    previewTags: ["Kuchiyose", "Armes", "Sōgu", "Fūin"]
+  }
+});
+
 NARUTO25E.getClanCreationData = function (clanKey) {
   return NARUTO25E.clanCreationData?.[clanKey] ?? {
     summary: "",
@@ -1930,6 +2094,166 @@ NARUTO25E.clanLineageFeatures = {
     }
   ]
 };
+
+Object.assign(NARUTO25E.clanLineageFeatures, {
+  akaba: [
+    { rank: 1, label: "Corps du Guerrier", type: "Capacité de lignée", summary: "Le corps de l’Akaba encaisse les blessures graves.", mechanical: "Blessure A.", bonuses: { special: ["Blessure A"] }, tags: ["clan", "akaba", "vigueur"] },
+    { rank: 2, label: "Enchaînements Successifs", type: "Bonus de lignée", summary: "L’Akaba enchaîne les défenses et réactions.", mechanical: "+1 Interception TAI/ARM, puis +2 à partir de Lignée 6.", tags: ["clan", "akaba", "interception"] },
+    { rank: 3, label: "Kyoukan — Clameur du Lion", type: "Pouvoir actif", summary: "Cri de guerre intimidant qui perturbe l’initiative adverse.", mechanical: "Sur Intimidation réussi : malus d’initiative aux adversaires identifiés. Automatisation future.", tags: ["clan", "akaba", "intimidation", "initiative"] },
+    { rank: 4, label: "Instinct du Combattant", type: "Bonus de lignée", summary: "Instinct défensif renforcé.", mechanical: "Bonus de Lignée à Parade.", bonuses: { skills: { parade: "lineage" } }, tags: ["clan", "akaba", "parade"] },
+    { rank: 5, label: "Eikou — La Fureur du Lion", type: "Pouvoir actif", summary: "Fureur martiale renforçant initiative et dégâts.", mechanical: "+Lignée initiative/dégâts corps à corps/armes, doublé contre créatures des Royaumes Parallèles. Automatisation future.", tags: ["clan", "akaba", "damage", "initiative"] }
+  ],
+
+  akimichi: [
+    { rank: 1, label: "Endurance Singulière", type: "Capacité de lignée", summary: "Le corps Akimichi supporte des blessures extrêmes.", mechanical: "Blessure A sur Vigueur.", bonuses: { special: ["Blessure A — Vigueur"] }, tags: ["clan", "akimichi", "vigueur"] },
+    { rank: 2, label: "Régulation Calorique", type: "Bonus de lignée", summary: "Contrôle calorique renforçant la vitalité.", mechanical: "+2 Vigueur, limite d’overdose augmentée.", bonuses: { resources: { vigueurMax: 2 } }, tags: ["clan", "akimichi", "vigueur"] },
+    { rank: 3, label: "Nikudan Sensha — L’Obus Humain", type: "Technique de lignée", summary: "Attaque roulante massive.", mechanical: "Sur Armes Simples réussi : COR × 3 dégâts. Automatisation future.", tags: ["clan", "akimichi", "attack"] },
+    { rank: 4, label: "Trois Pilules Sacrées", type: "Capacité de lignée", summary: "Accès aux pilules sacrées Akimichi.", mechanical: "Débloque les trois pilules sacrées. Automatisation future avec consommables.", tags: ["clan", "akimichi", "pills"] },
+    { rank: 5, label: "Baika — La Croissance Divine", type: "Pouvoir actif", summary: "Croissance corporelle gigantesque.", mechanical: "Sur Henge réussi : taille +2 m × Lignée, +Lignée Vigueur et dégâts. Automatisation future.", tags: ["clan", "akimichi", "giant"] },
+    { rank: 6, label: "Endurance Souveraine", type: "Capacité de lignée", summary: "Endurance supérieure.", mechanical: "Blessure B sur Vigueur.", bonuses: { special: ["Blessure B — Vigueur"] }, tags: ["clan", "akimichi", "vigueur"] },
+    { rank: 7, label: "Chōdan Bakugeki — Impact Destructeur du Papillon", type: "Technique de lignée", summary: "Impact destructeur massif.", mechanical: "Sur Armes Simples réussi : (COR + ARM) × 3 dégâts. Automatisation future.", tags: ["clan", "akimichi", "damage"] },
+    { rank: 8, label: "Répartition Calorique Extrême", type: "Bonus de lignée", summary: "Répartition calorique parfaite.", mechanical: "+3 Vigueur, +2 Caractère, limite d’overdose augmentée.", bonuses: { resources: { vigueurMax: 3, caractereMax: 2 } }, tags: ["clan", "akimichi", "vigueur", "caractere"] },
+    { rank: 9, label: "Perfection", type: "Capacité de lignée", summary: "Sommet de maîtrise corporelle Akimichi.", mechanical: "Fondation de données. Effet à préciser.", tags: ["clan", "akimichi"] },
+    { rank: 10, label: "Aura — Immunité aux dégâts physiques", type: "Pouvoir actif", summary: "Aura défensive extrême.", mechanical: "Immunité temporaire aux dégâts physiques, Lignée/tour/mois. Automatisation future.", tags: ["clan", "akimichi", "immunity"] }
+  ],
+
+  aniki: [
+    { rank: 1, label: "Maître de l’Encre Vivante", type: "Capacité de lignée", summary: "Maîtrise de l’encre vivante.", mechanical: "Débloque Jutsu — Sumi.", tags: ["clan", "aniki", "sumi"] },
+    { rank: 2, label: "Aniki — Lignée 2", type: "Bonus de lignée", summary: "Renforcement physique lié à l’encre.", mechanical: "+2 Vigueur.", bonuses: { resources: { vigueurMax: 2 } }, tags: ["clan", "aniki", "vigueur"] },
+    { rank: 3, label: "Unification / Désunification — Encre", type: "Capacité de lignée", summary: "Désunification sous forme d’encre.", mechanical: "Accès à Unification / Désunification sous forme d’encre. Automatisation future.", tags: ["clan", "aniki", "sumi", "ud"] },
+    { rank: 4, label: "Nezumi — Invocation de souris", type: "Capacité de lignée", summary: "Invocation et réseau de souris.", mechanical: "Bonus Vigilance ou Collecter des Informations. Automatisation future.", tags: ["clan", "aniki", "summon", "perception"] },
+    { rank: 5, label: "Gokusha", type: "Pouvoir actif", summary: "Prison personnelle ou sur rouleau.", mechanical: "Prison d’une cible/arme/objet/jutsu élémentaire. Automatisation future.", tags: ["clan", "aniki", "prison"] }
+  ],
+
+  ao: [
+    { rank: 1, label: "Assimilation du Sang", type: "Capacité de lignée", summary: "L’Ao peut copier un pouvoir de lignée par ingestion de sang.", mechanical: "Copie un pouvoir de même niveau et le conserve jusqu’à remplacement. Si le pouvoir donne une compétence, elle démarre à 1 puis disparaît si remplacée.", tags: ["clan", "ao", "blood", "copy"] }
+  ],
+
+  eshimuro: [
+    { rank: 1, label: "Shinseina Yōki — Réceptacle Sacré", type: "Capacité de lignée", summary: "Réceptacle sacré contenant une créature ou une puissance de royaume.", mechanical: "LIGN × 50 Chakra supplémentaire et signature liée au royaume de la première créature. Peut emprisonner des créatures et gagner un pouvoir SPE. Automatisation future.", bonuses: { resources: { chakraPerLineage: 50 } }, tags: ["clan", "eshimuro", "fuin", "chakra"] }
+  ],
+
+  ishida: [
+    { rank: 1, label: "Shikyo — Vision des Futures", type: "Pouvoir passif", summary: "Vision de la cause future du décès d’une cible touchée.", mechanical: "Au contact, révèle la cause future du décès. Arbitrage MJ.", tags: ["clan", "ishida", "vision"] },
+    { rank: 2, label: "Calme comme les Vents", type: "Bonus de lignée", summary: "Calme spirituel exceptionnel.", mechanical: "+2 Caractère.", bonuses: { resources: { caractereMax: 2 } }, tags: ["clan", "ishida", "caractere"] },
+    { rank: 3, label: "Kan’pa — Dissipation des Illusions", type: "Pouvoir actif", summary: "Kaï multiple contre les illusions.", mechanical: "Sur Gensou réussi : dissipation d’illusions en groupe. Automatisation future.", tags: ["clan", "ishida", "anti-genjutsu"] },
+    { rank: 4, label: "Gardien des Connaissances", type: "Bonus de lignée", summary: "Lecture des influences illusoires.", mechanical: "Bonus de Lignée à Mental, voit si une cible est sous genjutsu.", bonuses: { skills: { mental: "lineage" } }, tags: ["clan", "ishida", "mental"] },
+    { rank: 5, label: "Kyuuhogo — Barrière Spirituelle de Yumedō", type: "Pouvoir actif", summary: "Barrière spirituelle protectrice.", mechanical: "Barrière de Caractère, empêche les intrusions non invitées. Automatisation future.", tags: ["clan", "ishida", "barrier"] },
+    { rank: 6, label: "Solide comme la Pierre", type: "Bonus de lignée", summary: "Solidité spirituelle et vitale.", mechanical: "+3 Caractère, +1 Vigueur, +100 Chakra.", bonuses: { resources: { caractereMax: 3, vigueurMax: 1, chakraMax: 100 } }, tags: ["clan", "ishida", "resources"] },
+    { rank: 7, label: "Voix des Songes", type: "Bonus de lignée", summary: "Voix apaisante et puissance de Gensou.", mechanical: "Bonus de Lignée à Gensou.", bonuses: { skills: { gensou: "lineage" } }, tags: ["clan", "ishida", "gensou"] },
+    { rank: 8, label: "Allégeance à Yumedō", type: "Pouvoir actif", summary: "Ordre spirituel issu de Yumedō.", mechanical: "Obéissance immédiate à l’ordre donné. Automatisation future.", tags: ["clan", "ishida", "control"] },
+    { rank: 9, label: "Maboroshi — Voyage Spectral", type: "Pouvoir actif", summary: "Désincarnation spectrale.", mechanical: "La cible se désincarne, traverse la matière et ne peut attaquer. Automatisation future.", tags: ["clan", "ishida", "spectral"] },
+    { rank: 10, label: "Takusen", type: "Pouvoir actif", summary: "Voyage libre dans Yumedō et prédiction majeure.", mechanical: "Voyage dans Yumedō et prédiction d’un lieu/objet/personne. Arbitrage MJ.", tags: ["clan", "ishida", "prophecy"] }
+  ],
+
+  kagayaki: [
+    { rank: 1, label: "Shakujo — Bâton Sacré", type: "Capacité de lignée", summary: "Objet sacré de clan.", mechanical: "Bâton sacré avec augmentations. Automatisation future.", tags: ["clan", "kagayaki", "weapon"] },
+    { rank: 2, label: "Radiance", type: "Bonus de lignée", summary: "Radiance médicale et sacrée.", mechanical: "Bonus de Lignée à Médecine.", bonuses: { skills: { medecine: "lineage" } }, tags: ["clan", "kagayaki", "medicine"] },
+    { rank: 3, label: "Ikarishin — Flamme Purificatrice", type: "Pouvoir actif", summary: "Soin purificateur ou attaque contre créatures maléfiques.", mechanical: "Soigne un cran ou inflige LIGN × 4 dégâts aux créatures maléfiques. Automatisation future.", tags: ["clan", "kagayaki", "healing", "katon"] },
+    { rank: 4, label: "Vision du Combat", type: "Bonus de lignée", summary: "Lecture défensive des affrontements.", mechanical: "Interceptions défensives ARM. Automatisation future.", tags: ["clan", "kagayaki", "interception"] },
+    { rank: 5, label: "Kekkai — Barrière Divine", type: "Pouvoir actif", summary: "Sanctuaire protecteur.", mechanical: "Bonus d’Esquive d’équipe et blocage des créatures des royaumes parallèles. Automatisation future.", tags: ["clan", "kagayaki", "barrier"] },
+    { rank: 7, label: "Byakugō — Les Cent Guérisons", type: "Pouvoir actif", summary: "Radiance multiple de soin.", mechanical: "Soigne plusieurs états légers. Automatisation future.", tags: ["clan", "kagayaki", "healing"] },
+    { rank: 8, label: "Immunité au Feu", type: "Capacité de lignée", summary: "Immunité aux flammes et au Katon.", mechanical: "Immunité au feu, aux jutsu Katon et dérivés. Automatisation future.", tags: ["clan", "kagayaki", "katon", "immunity"] },
+    { rank: 9, label: "Nova", type: "Pouvoir actif", summary: "Explosion solaire gravitationnelle.", mechanical: "Sur Katon réussi : NIN × 3 dégâts et malus d’initiative. Automatisation future.", tags: ["clan", "kagayaki", "katon", "damage"] },
+    { rank: 10, label: "Sōzō Saisei — Renaissance Divine", type: "Pouvoir actif", summary: "Renaissance et guérison complète.", mechanical: "Guérison complète d’une cible. Automatisation future.", tags: ["clan", "kagayaki", "healing", "mythic"] }
+  ],
+
+  kenta: [
+    { rank: 1, label: "Masque Physique", type: "Capacité de lignée", summary: "Résistance physique accrue.", mechanical: "Blessure A physique.", bonuses: { special: ["Blessure A — Physique"] }, tags: ["clan", "kenta", "mask"] },
+    { rank: 2, label: "Masque d’Observation", type: "Bonus de lignée", summary: "Perception physique et analyse.", mechanical: "Bonus de Lignée à Physique.", bonuses: { skills: { physique: "lineage" } }, tags: ["clan", "kenta", "physique"] },
+    { rank: 3, label: "Fukumen — Masque de Simulacre", type: "Pouvoir actif", summary: "Imitation parfaite d’un individu.", mechanical: "Sur Mental réussi, prend l’apparence et les manières d’un individu. Automatisation future.", tags: ["clan", "kenta", "disguise"] },
+    { rank: 4, label: "Masque de Robustesse", type: "Bonus de lignée", summary: "Robustesse accrue.", mechanical: "+4 Vigueur.", bonuses: { resources: { vigueurMax: 4 } }, tags: ["clan", "kenta", "vigueur"] },
+    { rank: 5, label: "Masuku — Masque de Rage", type: "Pouvoir actif", summary: "Masque de rage meurtrière.", mechanical: "+LIGN × 2 dégâts ou +LIGN initiative, avec risque en cas d’échec. Automatisation future.", tags: ["clan", "kenta", "rage"] },
+    { rank: 6, label: "Masque Psychique", type: "Capacité de lignée", summary: "Résistance psychique accrue.", mechanical: "Blessure B psychique.", bonuses: { special: ["Blessure B — Psychique"] }, tags: ["clan", "kenta", "psychic"] },
+    { rank: 7, label: "Tsura — Masque de Vitalité", type: "Pouvoir actif", summary: "Ignore les malus d’état de santé.", mechanical: "Décale une blessure et ignore les malus de santé. Automatisation future.", tags: ["clan", "kenta", "health"] },
+    { rank: 8, label: "Masque de Contrefaçon", type: "Bonus de lignée", summary: "Perfection de la contrefaçon.", mechanical: "Bonus de Lignée à Faux Semblants.", bonuses: { skills: { fauxSemblants: "lineage" } }, tags: ["clan", "kenta", "deception"] },
+    { rank: 9, label: "Numen — Masque de Protection", type: "Pouvoir actif", summary: "Masque protecteur.", mechanical: "+LIGN × 2 Vigueur/Caractère temporaire. Automatisation future.", tags: ["clan", "kenta", "protection"] },
+    { rank: 10, label: "Gakure — Masque Invincible", type: "Pouvoir actif", summary: "Immunité psychique temporaire extrême.", mechanical: "Immunité totale aux dégâts psychiques, chakra divisé par deux à chaque round. Automatisation future.", tags: ["clan", "kenta", "immunity"] }
+  ],
+
+  kurama: [
+    { rank: 1, label: "Un et Multiple", type: "Capacité de lignée", summary: "Psyché multiple résistante.", mechanical: "Blessure A psychique.", bonuses: { special: ["Blessure A — Psychique"] }, tags: ["clan", "kurama", "psychic"] },
+    { rank: 2, label: "Empire Mental", type: "Bonus de lignée", summary: "Puissance de Gensou.", mechanical: "Bonus de Lignée à Gensou.", bonuses: { skills: { gensou: "lineage" } }, tags: ["clan", "kurama", "gensou"] },
+    { rank: 3, label: "Akumu — Le Cauchemar Éveillé", type: "Pouvoir actif", summary: "Illusion de groupe réaliste.", mechanical: "Sur Yūryoku contre Mental. Automatisation future.", tags: ["clan", "kurama", "illusion"] }
+  ],
+
+  morino: [
+    { rank: 1, label: "Chokan — La Vigilance de l’Esprit", type: "Pouvoir passif", summary: "Le Morino ne se laisse jamais surprendre.", mechanical: "Démarre toujours une confrontation avec une action retardée et n’est pas Surpris.", tags: ["clan", "morino", "vigilance"] },
+    { rank: 2, label: "Aura Menaçante", type: "Bonus de lignée", summary: "Aura d’intimidation permanente.", mechanical: "Bonus de Lignée à Intimidation.", bonuses: { skills: { intimidation: "lineage" } }, tags: ["clan", "morino", "intimidation"] },
+    { rank: 3, label: "Shibito — Feindre la Mort", type: "Pouvoir actif", summary: "Feint la mort et masque les signes vitaux.", mechanical: "Sur Physique, le chakra, le pouls et la chaleur ne sont plus perceptibles. Automatisation future.", tags: ["clan", "morino", "stealth"] },
+    { rank: 4, label: "Langage du Silence", type: "Capacité de lignée", summary: "Communication silencieuse codifiée.", mechanical: "Fondation de données. Effet social/infiltration à préciser.", tags: ["clan", "morino", "silence"] },
+    { rank: 5, label: "Tatazumu", type: "Capacité de lignée", summary: "Présence immobile et maîtrise de soi.", mechanical: "Fondation de données. Effet à préciser.", tags: ["clan", "morino"] }
+  ],
+
+  munefuda: [
+    { rank: 1, label: "Nature Supérieure — Jiton", type: "Capacité de lignée", summary: "Accès au Jiton.", mechanical: "Débloque Jiton comme compétence de clan.", tags: ["clan", "munefuda", "jiton"] },
+    { rank: 2, label: "Fort comme la Foudre", type: "Bonus de lignée", summary: "Corps renforcé par magnétisme.", mechanical: "+1 Vigueur, +1 Caractère.", bonuses: { resources: { vigueurMax: 1, caractereMax: 1 } }, tags: ["clan", "munefuda", "resources"] },
+    { rank: 3, label: "Raichikyū", type: "Technique de lignée", summary: "Perturbation magnétique.", mechanical: "Effet EMP / magnétisation. Automatisation future.", tags: ["clan", "munefuda", "jiton", "emp"] },
+    { rank: 4, label: "Courber les Étoiles", type: "Pouvoir actif", summary: "Manipulation magnétique avancée.", mechanical: "Fondation de données. Automatisation future.", tags: ["clan", "munefuda", "jiton"] },
+    { rank: 5, label: "Jiki — Sceau Magnétique", type: "Pouvoir actif", summary: "Sceau magnétique.", mechanical: "Fondation de données. Automatisation future.", tags: ["clan", "munefuda", "jiton", "seal"] }
+  ],
+
+  sarutobi: [
+    { rank: 1, label: "Force de Kashin", type: "Capacité de lignée", summary: "Force martiale liée au feu et à Kashin.", mechanical: "Fondation de données.", tags: ["clan", "sarutobi"] },
+    { rank: 2, label: "Démineur", type: "Capacité de lignée", summary: "Expertise de démolition et désamorçage.", mechanical: "Fondation de données. Probable lien Science des Explosifs/Pièges.", tags: ["clan", "sarutobi", "explosive"] },
+    { rank: 3, label: "Haisekishō — Nuage de poudre à canon", type: "Technique de lignée", summary: "Nuage de poudre à canon.", mechanical: "Fondation de technique. Automatisation future.", tags: ["clan", "sarutobi", "katon"] },
+    { rank: 4, label: "Feu intérieur", type: "Bonus de lignée", summary: "Volonté brûlante.", mechanical: "Fondation de données.", tags: ["clan", "sarutobi"] },
+    { rank: 5, label: "Bashōsen — Brasier protecteur", type: "Technique de lignée", summary: "Brasier protecteur.", mechanical: "Fondation de technique. Automatisation future.", tags: ["clan", "sarutobi", "katon", "defense"] }
+  ],
+
+  shimadoku: [
+    { rank: 1, label: "Contrat Sacré", type: "Capacité de lignée", summary: "Contrat Kuchiyose Dokuja ou Kabutomushi.", mechanical: "Débloque Kuchiyose lié au clan. Automatisation future.", tags: ["clan", "shimadoku", "kuchiyose"] },
+    { rank: 2, label: "Sang Froid", type: "Capacité de lignée", summary: "Immunité aux poisons.", mechanical: "Immunité aux poisons BIO et CHIM.", tags: ["clan", "shimadoku", "poison"] },
+    { rank: 3, label: "Bakuga — Mue Céleste", type: "Pouvoir actif", summary: "Mue régénératrice.", mechanical: "Soigne instantanément des blessures selon Lignée. Automatisation future.", tags: ["clan", "shimadoku", "healing"] },
+    { rank: 4, label: "Constitution Reptilienne", type: "Bonus de lignée", summary: "Corps reptilien toxique.", mechanical: "+50 Chakra, +2 Vigueur, sang empoisonné.", bonuses: { resources: { chakraMax: 50, vigueurMax: 2 } }, tags: ["clan", "shimadoku", "poison", "resources"] },
+    { rank: 5, label: "Kaizō — Remodelage Physique", type: "Pouvoir actif", summary: "Membres flexibles et enserrement.", mechanical: "Solidité et extension corporelle. Automatisation future.", tags: ["clan", "shimadoku", "body"] }
+  ],
+
+  shimura: [
+    { rank: 1, label: "In’go", type: "Capacité de lignée", summary: "Sceau fondamental Shimura.", mechanical: "Débloque Fūin comme compétence obligatoire.", tags: ["clan", "shimura", "fuin"] },
+    { rank: 2, label: "Sceau de Renforcement", type: "Bonus de lignée", summary: "Renforcement par sceau.", mechanical: "+1 Vigueur, +2 Caractère.", bonuses: { resources: { vigueurMax: 1, caractereMax: 2 } }, tags: ["clan", "shimura", "seal"] },
+    { rank: 3, label: "Kan — Silence", type: "Pouvoir actif", summary: "Sceau empêchant la divulgation d’informations.", mechanical: "Sur toucher, interdit de parler d’un sujet sous peine de dégâts. Automatisation future.", tags: ["clan", "shimura", "seal", "silence"] },
+    { rank: 4, label: "Sceau de Clairvoyance", type: "Bonus de lignée", summary: "Clairvoyance par sceau.", mechanical: "Bonus de Lignée à Sentinelle.", bonuses: { skills: { sentinelle: "lineage" } }, tags: ["clan", "shimura", "sentinelle"] },
+    { rank: 5, label: "Mahi — Paralysie", type: "Pouvoir actif", summary: "Sceau de paralysie.", mechanical: "Malus d’initiative sur toucher. Automatisation future.", tags: ["clan", "shimura", "paralysis"] },
+    { rank: 6, label: "Sceau de Combativité", type: "Bonus de lignée", summary: "Sceau renforçant corps et esprit.", mechanical: "+2 Vigueur, +2 Caractère.", bonuses: { resources: { vigueurMax: 2, caractereMax: 2 } }, tags: ["clan", "shimura", "resources"] },
+    { rank: 7, label: "En’go — Protéger", type: "Pouvoir actif", summary: "Sceau forçant une cible à protéger le personnage.", mechanical: "Contrôle protecteur sur toucher. Automatisation future.", tags: ["clan", "shimura", "control"] },
+    { rank: 8, label: "Ura Shishō — Quatre Symboles Renversés", type: "Pouvoir actif", summary: "Sceau de disparition de matière.", mechanical: "Sphère scellant toute matière vers un royaume parallèle. Automatisation future.", tags: ["clan", "shimura", "seal"] },
+    { rank: 9, label: "Tojiru — Fermer", type: "Pouvoir actif", summary: "Scelle la réserve de chakra.", mechanical: "Scelle Lignée × 50 Chakra sur toucher. Automatisation future.", tags: ["clan", "shimura", "chakra-seal"] },
+    { rank: 10, label: "Kaimetsu — Destruction", type: "Pouvoir actif", summary: "Destruction dérivée d’Ura Shishō.", mechanical: "Lignée × 6 dégâts, sphère autour du personnage ou de la cible. Automatisation future.", tags: ["clan", "shimura", "damage"] }
+  ],
+
+  takeda: [
+    { rank: 1, label: "Arme Céleste — Houtai", type: "Capacité de lignée", summary: "Arme éveillée liée au clan.", mechanical: "Choisit une arme et l’augmente d’un niveau par point de Lignée.", tags: ["clan", "takeda", "weapon"] },
+    { rank: 2, label: "Instincts Carnassiers", type: "Bonus de lignée", summary: "Instinct prédateur.", mechanical: "Bonus de Lignée à Sixième Sens.", bonuses: { skills: { sixiemeSens: "lineage" } }, tags: ["clan", "takeda", "sense"] },
+    { rank: 3, label: "Ten’batsu — Rétribution Divine", type: "Pouvoir actif", summary: "Châtiment de l’arme céleste.", mechanical: "Attaque Lignée/semaine, LIGN × 4 dégâts. Automatisation future.", tags: ["clan", "takeda", "damage"] },
+    { rank: 4, label: "Faim Dévorante", type: "Capacité de lignée", summary: "Prédation contre les êtres de Jigokudō.", mechanical: "Dégâts ×2 contre êtres de Jigokudō, immunité pouvoir spécial Jigokudō/clans affiliés.", tags: ["clan", "takeda", "jigokudo"] },
+    { rank: 5, label: "Ueru — Forme Cannibale", type: "Pouvoir actif", summary: "Forme monstrueuse cannibale.", mechanical: "+LIGN déplacement, dégâts, Caractère et Vigueur. Automatisation future.", tags: ["clan", "takeda", "form"] },
+    { rank: 6, label: "Célérité Défensive", type: "Bonus de lignée", summary: "Défense accélérée.", mechanical: "Bonus de Lignée à Parade.", bonuses: { skills: { parade: "lineage" } }, tags: ["clan", "takeda", "parade"] },
+    { rank: 7, label: "Momie", type: "Pouvoir actif", summary: "Protection momifiée.", mechanical: "LIGN + ARM Vigueur, empêche Houtai pendant l’effet. Automatisation future.", tags: ["clan", "takeda", "defense"] },
+    { rank: 10, label: "Léviathan", type: "Pouvoir actif", summary: "Fusion monstrueuse avec l’épée de Gakidō.", mechanical: "Effet type sceau maudit niveau 5. Automatisation future.", tags: ["clan", "takeda", "monster"] }
+  ],
+
+  utatane: [
+    { rank: 1, label: "Tenbuki — Armes célestes", type: "Capacité de lignée", summary: "Création d’armes éveillées.", mechanical: "Nouvelle compétence Kuchiyose — Tenbuki. Automatisation future.", tags: ["clan", "utatane", "weapon", "kuchiyose"] },
+    { rank: 2, label: "Armurerie humaine", type: "Capacité de lignée", summary: "Fūin d’invocation sur le corps.", mechanical: "Stockage personnel, projectiles virtuellement infinis. Automatisation future.", tags: ["clan", "utatane", "inventory"] },
+    { rank: 3, label: "Sōgu: Kaimetsu — Onde de choc", type: "Pouvoir actif", summary: "Onde de choc armée.", mechanical: "Armes Simples ou Exotiques, +ARM dégâts, projection. Automatisation future.", tags: ["clan", "utatane", "damage"] },
+    { rank: 4, label: "Interception illusoire", type: "Bonus de lignée", summary: "Interception armée supplémentaire.", mechanical: "+1 interception armée.", tags: ["clan", "utatane", "interception"] },
+    { rank: 5, label: "Kaijō — Déverrouillage sacré", type: "Pouvoir actif", summary: "Désactivation de sceaux et notes célestes.", mechanical: "Déverrouille notes célestes, Fūin et rouleaux si GEN > niveau. Automatisation future.", tags: ["clan", "utatane", "unlock"] },
+    { rank: 6, label: "Garde Impériale", type: "Bonus de lignée", summary: "Défense armée parfaite.", mechanical: "Bonus de Lignée à Parade.", bonuses: { skills: { parade: "lineage" } }, tags: ["clan", "utatane", "parade"] },
+    { rank: 7, label: "Sōgu: Tensasai — Tempête d’acier", type: "Pouvoir actif", summary: "Tempête d’armes invoquées.", mechanical: "Fondation de données. Automatisation future.", tags: ["clan", "utatane", "weapon"] }
+  ],
+
+  yamanaka: [
+    { rank: 1, label: "Ancrage émotionnel", type: "Capacité de lignée", summary: "Résistance émotionnelle et mentale renforcée.", mechanical: "Débloque Résistances Émotionnelles comme compétence obligatoire de clan.", tags: ["clan", "yamanaka", "emotion"] },
+    { rank: 3, label: "Shintenshin", type: "Pouvoir actif", summary: "Permutation d’esprit.", mechanical: "Sur Kawarimi réussi + cible immobile, prend le contrôle du corps. Automatisation future.", tags: ["clan", "yamanaka", "mind-transfer"] },
+    { rank: 4, label: "Blessure 4 Esprit", type: "Capacité de lignée", summary: "Résistance spirituelle supérieure.", mechanical: "Blessure 4 Esprit.", bonuses: { special: ["Blessure 4 — Esprit"] }, tags: ["clan", "yamanaka", "spirit"] },
+    { rank: 5, label: "Shikou", type: "Pouvoir actif", summary: "Télépathie ou lecture de pensées.", mechanical: "Communication télépathique ou lecture de pensées sur contact. Automatisation future.", tags: ["clan", "yamanaka", "telepathy"] },
+    { rank: 6, label: "Sentir le Chakra", type: "Bonus de lignée", summary: "Perception du chakra accrue.", mechanical: "Bonus de Lignée à Sentinelle.", bonuses: { skills: { sentinelle: "lineage" } }, tags: ["clan", "yamanaka", "chakra-sense"] },
+    { rank: 7, label: "Shinten Kugutsu", type: "Pouvoir actif", summary: "Transfert d’esprit vers objet ou corps.", mechanical: "Permutation d’esprit vers un objet inanimé ou transfert d’une cible vers un objet. Automatisation future.", tags: ["clan", "yamanaka", "mind-puppet"] },
+    { rank: 8, label: "Blessure 5 Esprit", type: "Capacité de lignée", summary: "Résistance spirituelle majeure.", mechanical: "Blessure 5 Esprit.", bonuses: { special: ["Blessure 5 — Esprit"] }, tags: ["clan", "yamanaka", "spirit"] },
+    { rank: 10, label: "Shinten Nagori", type: "Pouvoir actif", summary: "Voyage mental et lecture des souvenirs.", mechanical: "Lecture de pensées/souvenirs, création de souvenirs mineurs. Automatisation future.", tags: ["clan", "yamanaka", "memory"] }
+  ]
+});
 
 NARUTO25E.uchihaOriginalLineageFeatures = [
   {
