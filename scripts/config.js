@@ -1424,15 +1424,43 @@ NARUTO25E.canSelectUchihaEyePower = function ({
     };
   }
 
-  if (eyeKey === "left" && !rightEyePlayerValidated) {
+  const normalizedEyeKey = String(eyeKey ?? "");
+  const currentRightEyePower = normalizedEyeKey === "right"
+    ? String(powerKey ?? "")
+    : String(rightEyePower ?? "");
+  const currentLeftEyePower = normalizedEyeKey === "left"
+    ? String(powerKey ?? "")
+    : String(leftEyePower ?? "");
+
+  if (normalizedEyeKey === "left" && !rightEyePlayerValidated) {
     return {
       valid: false,
       reason: "L’œil gauche ne peut être choisi qu’après confirmation PJ de l’œil droit."
     };
   }
 
+  if (normalizedEyeKey === "right" && powerKey === "enton") {
+    return {
+      valid: false,
+      reason: "Enton / Kagutsuchi ne peut pas être choisi sur le premier œil. Il nécessite Amaterasu dans l’autre œil."
+    };
+  }
+
+  if (
+    powerKey === "amaterasu"
+    && currentRightEyePower === "amaterasu"
+    && currentLeftEyePower === "amaterasu"
+  ) {
+    return {
+      valid: false,
+      reason: "Amaterasu ne peut pas être choisi sur les deux yeux. Le second œil doit plutôt choisir Enton / Kagutsuchi pour contrôler les flammes noires."
+    };
+  }
+
   if (power.requiresOtherEyePower) {
-    const otherEyePower = eyeKey === "right" ? leftEyePower : rightEyePower;
+    const otherEyePower = normalizedEyeKey === "right"
+      ? currentLeftEyePower
+      : currentRightEyePower;
 
     if (otherEyePower !== power.requiresOtherEyePower) {
       const requiredPower = NARUTO25E.getUchihaEyePowerData(power.requiresOtherEyePower);
@@ -2098,7 +2126,7 @@ NARUTO25E.clanLineageFeatures = {
 Object.assign(NARUTO25E.clanLineageFeatures, {
   akaba: [
     { rank: 1, label: "Corps du Guerrier", type: "Capacité de lignée", summary: "Le corps de l’Akaba encaisse les blessures graves.", mechanical: "Blessure A.", bonuses: { special: ["Blessure A"] }, tags: ["clan", "akaba", "vigueur"] },
-    { rank: 2, label: "Enchaînements Successifs", type: "Bonus de lignée", summary: "L’Akaba enchaîne les défenses et réactions.", mechanical: "+1 Interception TAI/ARM, puis +2 à partir de Lignée 6.", tags: ["clan", "akaba", "interception"] },
+    { rank: 2, label: "Enchaînements Successifs", type: "Pouvoir passif", summary: "L’Akaba enchaîne naturellement les réactions défensives et offensives.", mechanical: "+1 interception supplémentaire TAI/ARM. À partir de Lignée 6 : +2 interceptions supplémentaires TAI/ARM. Automatisation future dans Combat / Actions.", bonuses: { special: ["Interception supplémentaire TAI/ARM", "Interception supplémentaire TAI/ARM améliorée à Lignée 6"] }, tags: ["clan", "akaba", "interception", "passive"] },
     { rank: 3, label: "Kyoukan — Clameur du Lion", type: "Pouvoir actif", summary: "Cri de guerre intimidant qui perturbe l’initiative adverse.", mechanical: "Sur Intimidation réussi : malus d’initiative aux adversaires identifiés. Automatisation future.", tags: ["clan", "akaba", "intimidation", "initiative"] },
     { rank: 4, label: "Instinct du Combattant", type: "Bonus de lignée", summary: "Instinct défensif renforcé.", mechanical: "Bonus de Lignée à Parade.", bonuses: { skills: { parade: "lineage" } }, tags: ["clan", "akaba", "parade"] },
     { rank: 5, label: "Eikou — La Fureur du Lion", type: "Pouvoir actif", summary: "Fureur martiale renforçant initiative et dégâts.", mechanical: "+Lignée initiative/dégâts corps à corps/armes, doublé contre créatures des Royaumes Parallèles. Automatisation future.", tags: ["clan", "akaba", "damage", "initiative"] }
@@ -2147,10 +2175,10 @@ Object.assign(NARUTO25E.clanLineageFeatures, {
   ],
 
   kagayaki: [
-    { rank: 1, label: "Shakujo — Bâton Sacré", type: "Capacité de lignée", summary: "Objet sacré de clan.", mechanical: "Bâton sacré avec augmentations. Automatisation future.", tags: ["clan", "kagayaki", "weapon"] },
+    { rank: 1, label: "Shakujo — Bâton Sacré", type: "Déblocage passif", summary: "Objet sacré de clan lié à la lignée Kagayaki.", mechanical: "Débloque le Shakujo, bâton sacré du clan. Objet spécial à prévoir plus tard avec 5 augmentations / spécialisations de rang. Pas d’activation automatique.", bonuses: { special: ["Déblocage — Shakujo", "Objet spécial — 5 augmentations à prévoir"] }, tags: ["clan", "kagayaki", "weapon", "unlock", "passive"] },
     { rank: 2, label: "Radiance", type: "Bonus de lignée", summary: "Radiance médicale et sacrée.", mechanical: "Bonus de Lignée à Médecine.", bonuses: { skills: { medecine: "lineage" } }, tags: ["clan", "kagayaki", "medicine"] },
     { rank: 3, label: "Ikarishin — Flamme Purificatrice", type: "Pouvoir actif", summary: "Soin purificateur ou attaque contre créatures maléfiques.", mechanical: "Soigne un cran ou inflige LIGN × 4 dégâts aux créatures maléfiques. Automatisation future.", tags: ["clan", "kagayaki", "healing", "katon"] },
-    { rank: 4, label: "Vision du Combat", type: "Bonus de lignée", summary: "Lecture défensive des affrontements.", mechanical: "Interceptions défensives ARM. Automatisation future.", tags: ["clan", "kagayaki", "interception"] },
+    { rank: 4, label: "Vision du Combat", type: "Pouvoir passif", summary: "Lecture défensive des affrontements.", mechanical: "+1 interception défensive ARM. Automatisation future dans Combat / Actions.", bonuses: { special: ["Interception défensive ARM supplémentaire"] }, tags: ["clan", "kagayaki", "interception", "passive"] },
     { rank: 5, label: "Kekkai — Barrière Divine", type: "Pouvoir actif", summary: "Sanctuaire protecteur.", mechanical: "Bonus d’Esquive d’équipe et blocage des créatures des royaumes parallèles. Automatisation future.", tags: ["clan", "kagayaki", "barrier"] },
     { rank: 7, label: "Byakugō — Les Cent Guérisons", type: "Pouvoir actif", summary: "Radiance multiple de soin.", mechanical: "Soigne plusieurs états légers. Automatisation future.", tags: ["clan", "kagayaki", "healing"] },
     { rank: 8, label: "Immunité au Feu", type: "Capacité de lignée", summary: "Immunité aux flammes et au Katon.", mechanical: "Immunité au feu, aux jutsu Katon et dérivés. Automatisation future.", tags: ["clan", "kagayaki", "katon", "immunity"] },

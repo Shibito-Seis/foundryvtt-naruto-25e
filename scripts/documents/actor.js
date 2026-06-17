@@ -1536,10 +1536,21 @@ export class Naruto25eActor extends Actor {
     const { clanKey, feature } = match;
     const rank = Math.max(1, Number(feature.rank ?? 1));
     const tags = Array.isArray(feature.tags) ? feature.tags : [];
+    const typeLabel = String(feature.type ?? "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
+
     const isPassive =
-      String(feature.type ?? "").toLowerCase().includes("passif")
-      || String(feature.type ?? "").toLowerCase().includes("bonus")
-      || tags.includes("bonus");
+      typeLabel.includes("passif")
+      || typeLabel.includes("bonus")
+      || typeLabel.includes("capacite")
+      || typeLabel.includes("deblocage")
+      || tags.includes("bonus")
+      || tags.includes("passive")
+      || tags.includes("unlock")
+      || tags.includes("interception")
+      || tags.includes("immunity");
 
     const data = {
       name: feature.label,

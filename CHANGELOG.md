@@ -2,6 +2,39 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.34.1 - Correctif typage passif et Mangekyō Amaterasu
+
+### Corrigé
+
+- Correction de la règle de sélection Mangekyō en mode `Pouvoirs Uchiha originaux` :
+  - Amaterasu ne peut plus être choisi sur les deux yeux ;
+  - Amaterasu + Enton / Kagutsuchi reste la combinaison attendue pour produire puis contrôler les flammes noires ;
+  - les doublons des autres pouvoirs Mangekyō restent autorisés selon validation MJ :
+    - Kamui + Kamui ;
+    - Tsukuyomi + Tsukuyomi ;
+    - Kotoamatsukami + Kotoamatsukami ;
+    - Pouvoir Mangekyō original + Pouvoir Mangekyō original.
+- Correction du typage automatique des pouvoirs de lignée générés depuis `config.js` :
+  - les capacités de lignée ;
+  - les déblocages ;
+  - les bonus ;
+  - les passifs ;
+  - les pouvoirs marqués `passive`, `unlock`, `interception` ou `immunity`
+  sont maintenant générés comme `passive` plutôt que comme pouvoirs activables.
+
+### Modifié
+
+- Clarification du pouvoir Akaba `Enchaînements Successifs` comme passif d’interceptions supplémentaires.
+- Clarification du pouvoir Kagayaki `Shakujo — Bâton Sacré` comme déblocage passif d’objet spécial.
+- Clarification du pouvoir Kagayaki `Vision du Combat` comme passif d’interception défensive ARM supplémentaire.
+
+### Notes
+
+- Cette version ne code pas encore le système complet de blessures supplémentaires.
+- `Blessure A`, `Blessure B` et les autres paliers spéciaux sont conservés comme données préparatoires pour le futur chantier Santé / Blessures / États.
+- Cette version ne code pas encore l’overdose des pilules.
+- Le Shakujo devra devenir plus tard un objet spécial avec 5 augmentations / spécialisations de rang.
+
 ## 0.1.34 - Clans jouables étendus : phase mécanique
 
 ### Ajouté

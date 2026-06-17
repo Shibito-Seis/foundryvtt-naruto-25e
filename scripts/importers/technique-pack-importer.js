@@ -134,11 +134,21 @@ function getGeneratedLineagePowerDataFromConfig(existingSourceData = []) {
 
       const rank = Math.max(1, Number(feature.rank ?? 1));
       const tags = Array.isArray(feature.tags) ? feature.tags : [];
-      const typeLabel = String(feature.type ?? "").toLowerCase();
+      const typeLabel = String(feature.type ?? "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+
       const isPassive =
         typeLabel.includes("passif")
         || typeLabel.includes("bonus")
-        || tags.includes("bonus");
+        || typeLabel.includes("capacite")
+        || typeLabel.includes("deblocage")
+        || tags.includes("bonus")
+        || tags.includes("passive")
+        || tags.includes("unlock")
+        || tags.includes("interception")
+        || tags.includes("immunity");
 
       generated.push({
         name,
