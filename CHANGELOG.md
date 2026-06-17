@@ -2,6 +2,49 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.33 - Lignée avancée et Mangekyō fonctionnel
+
+### Ajouté
+
+- Ajout de la synchronisation réelle des pouvoirs de Mangekyō choisis par œil.
+- Ajout de l’attribution automatique des pouvoirs d’œil uniquement lorsque le choix est :
+  - renseigné ;
+  - confirmé par le joueur ;
+  - validé par le MJ ;
+  - porté par un œil utilisable.
+- Ajout des pouvoirs de lignée manquants :
+  - `Kamui` ;
+  - `Pouvoir Mangekyō original`.
+
+### Modifié
+
+- Les pouvoirs d’œil Mangekyō ne sont plus seulement des choix d’interface : ils peuvent maintenant accorder ou retirer leurs items `pouvoirLignee`.
+- La règle `Enton / Kagutsuchi` est renforcée :
+  - Enton nécessite Amaterasu dans l’autre œil ;
+  - Amaterasu doit être confirmé par le joueur et validé par le MJ ;
+  - l’œil porteur d’Amaterasu doit être utilisable.
+- Le Rinnegan, l’EMS et les états d’œil ne valident jamais automatiquement un pouvoir d’œil.
+- La synchronisation des pouvoirs de lignée réagit désormais aussi aux changements :
+  - de pouvoir choisi par œil ;
+  - de validation PJ/MJ ;
+  - d’état d’œil ;
+  - de Rinnegan ;
+  - de Tenseigan ;
+  - de lignée cachée réelle ou débloquée.
+
+### Corrigé
+
+- Correction du cas où les boutons de validation Mangekyō modifiaient les données sans déclencher d’attribution mécanique réelle.
+- Correction du cas où un pouvoir Mangekyō invalidé, non validé MJ ou porté par un œil aveugle pouvait rester conceptuellement présent sans être correctement resynchronisé.
+- Les joueurs peuvent maintenant choisir et confirmer leurs pouvoirs d’œil après validation de la création, sans pouvoir s’accorder eux-mêmes la validation MJ.
+
+### Notes
+
+- Cette version ne crée pas encore les techniques détaillées Uchiha dans `techniques-lignees.json`.
+- Les pouvoirs accordés sont des items `pouvoirLignee`.
+- Les effets précis de Kamui et des pouvoirs originaux restent à cadrer avec le MJ.
+- Le Shinobimancer reste limité à la création initiale et ne gère pas les éveils Mangekyō.
+
 ## 0.1.32.4.2 - Skin maquette Shinobimancer sur base stable
 
 ### Modifié

@@ -162,6 +162,42 @@
     }
   },
   {
+    "name": "Kamui",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/movement/portal-vortex-purple.webp",
+    "system": {
+      "description": "Pouvoir de Mangekyō lié à la manipulation de l’espace. Selon l’œil et le cadrage MJ, Kamui peut représenter une absorption, un transfert, une distorsion spatiale ou une forme d’intangibilité contrôlée.",
+      "clan": "uchiha",
+      "lineageRank": 6,
+      "powerType": "active",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Fondation de données. Technique/capacité Mangekyō active à détailler plus tard dans les techniques de lignée Uchiha. Ne doit être accordée que si Kamui est choisi sur un œil et validé par le joueur puis par le MJ.",
+      "prerequisites": {
+        "text": "Mangekyō Sharingan validé. Pouvoir d’œil Kamui requis. Effet précis à cadrer avec le MJ.",
+        "gmValidation": true
+      }
+    }
+  },
+  {
+    "name": "Pouvoir Mangekyō original",
+    "type": "pouvoirLignee",
+    "img": "icons/magic/perception/eye-ringed-glow-angry-red.webp",
+    "system": {
+      "description": "Pouvoir de Mangekyō créé spécifiquement pour le personnage. Son thème, ses limites, ses coûts et ses effets doivent être définis avec le MJ avant usage.",
+      "clan": "uchiha",
+      "lineageRank": 6,
+      "powerType": "active",
+      "activationCost": 0,
+      "maintenanceCost": 0,
+      "effect": "Fondation de données générique pour un pouvoir de Mangekyō original. Sert de marqueur mécanique tant que la technique ou l’effet détaillé n’a pas encore été créé.",
+      "prerequisites": {
+        "text": "Mangekyō Sharingan validé. Pouvoir original choisi sur un œil, confirmé par le joueur puis validé par le MJ.",
+        "gmValidation": true
+      }
+    }
+  },
+  {
     "name": "Izanagi",
     "type": "pouvoirLignee",
     "img": "icons/magic/control/energy-stream-link-white.webp",

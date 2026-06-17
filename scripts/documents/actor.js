@@ -3165,7 +3165,26 @@ async decreaseBase(baseKey) {
           "system.identity.nindoText"
         ];
 
-        if (lockedPrefixes.some((prefix) => path.startsWith(prefix))) {
+        const lockedMangekyoPlayerPaths = new Set([
+          "system.heritage.uchiha.mangekyo.rightEyePower",
+          "system.heritage.uchiha.mangekyo.leftEyePower",
+          "system.heritage.uchiha.mangekyo.rightEyePlayerValidated",
+          "system.heritage.uchiha.mangekyo.leftEyePlayerValidated"
+        ]);
+
+        const lockedMangekyoResettableGmPaths = new Set([
+          "system.heritage.uchiha.mangekyo.rightEyeGmValidated",
+          "system.heritage.uchiha.mangekyo.leftEyeGmValidated"
+        ]);
+
+        const isAllowedLockedMangekyoUpdate =
+          lockedMangekyoPlayerPaths.has(path)
+          || (
+            lockedMangekyoResettableGmPaths.has(path)
+            && foundry.utils.getProperty(changed, path) === false
+          );
+
+        if (lockedPrefixes.some((prefix) => path.startsWith(prefix)) && !isAllowedLockedMangekyoUpdate) {
           deletePath(path);
         }
 
@@ -3977,6 +3996,123 @@ async decreaseBase(baseKey) {
     };
   }
 
+    _getUchihaEyePowerItemName(powerKey) {
+      const key = String(powerKey ?? "");
+
+      const itemNames = {
+        amaterasu: "Amaterasu — Flammes noires",
+        enton: "Enton — Kagutsuchi",
+        tsukuyomi: "Tsukuyomi — Le Monde Illusoire",
+        kamui: "Kamui",
+        kotoamatsukami: "Kotoamatsukami — Allégeance",
+        custom: "Pouvoir Mangekyō original"
+      };
+
+      return itemNames[key] ?? "";
+    }
+
+    _isUchihaEyeStateUsableForMangekyo(stateKey) {
+      const state = String(stateKey ?? "healthy");
+
+      return state !== "blind";
+    }
+
+    _hasEffectiveMangekyoSharinganForEyePowers() {
+      const hasUchihaLineage = this._hasMechanicalClan("uchiha", { purpose: "powers" });
+      const lineageValue = this._getEffectiveLineageValue();
+      const hasMangekyo = Boolean(this.system.heritage?.gmOptions?.hasMangekyoSharingan);
+
+      return hasUchihaLineage && lineageValue >= 5 && hasMangekyo;
+    }
+
+    _getValidatedUchihaMangekyoEyePowerDefinitions() {
+      if (this.type !== "shinobi") return [];
+
+      const uchihaPowerMode = NARUTO25E.getUchihaPowerMode?.() ?? "classic";
+      if (uchihaPowerMode !== "original") return [];
+
+      if (!this._hasEffectiveMangekyoSharinganForEyePowers()) return [];
+
+      const mangekyo = this.system.heritage?.uchiha?.mangekyo ?? {};
+      const rightEyePower = String(mangekyo.rightEyePower ?? "");
+      const leftEyePower = String(mangekyo.leftEyePower ?? "");
+
+      const eyeData = {
+        right: {
+          eye: "right",
+          powerKey: rightEyePower,
+          playerValidated: Boolean(mangekyo.rightEyePlayerValidated),
+          gmValidated: Boolean(mangekyo.rightEyeGmValidated),
+          state: String(mangekyo.rightEyeState ?? "healthy")
+        },
+        left: {
+          eye: "left",
+          powerKey: leftEyePower,
+          playerValidated: Boolean(mangekyo.leftEyePlayerValidated),
+          gmValidated: Boolean(mangekyo.leftEyeGmValidated),
+          state: String(mangekyo.leftEyeState ?? "healthy")
+        }
+      };
+
+      const getOtherEye = (eyeKey) => {
+        return eyeKey === "right" ? "left" : "right";
+      };
+
+      const isEyeFullyValidated = (eyeKey) => {
+        const currentEye = eyeData[eyeKey];
+        if (!currentEye) return false;
+        if (!currentEye.powerKey) return false;
+        if (!currentEye.playerValidated) return false;
+        if (!currentEye.gmValidated) return false;
+        if (!this._isUchihaEyeStateUsableForMangekyo(currentEye.state)) return false;
+
+        const selectionValidation = NARUTO25E.canSelectUchihaEyePower?.({
+          powerKey: currentEye.powerKey,
+          eyeKey,
+          rightEyePower,
+          leftEyePower,
+          rightEyePlayerValidated: Boolean(eyeData.right.playerValidated)
+        }) ?? { valid: true, reason: "" };
+
+        if (!selectionValidation.valid) return false;
+
+        const powerData = NARUTO25E.getUchihaEyePowerData?.(currentEye.powerKey);
+        const requiredOtherEyePower = String(powerData?.requiresOtherEyePower ?? "");
+
+        if (requiredOtherEyePower) {
+          const otherEyeKey = getOtherEye(eyeKey);
+          const otherEye = eyeData[otherEyeKey];
+
+          if (!otherEye) return false;
+          if (otherEye.powerKey !== requiredOtherEyePower) return false;
+          if (!otherEye.playerValidated) return false;
+          if (!otherEye.gmValidated) return false;
+          if (!this._isUchihaEyeStateUsableForMangekyo(otherEye.state)) return false;
+        }
+
+        return true;
+      };
+
+      const definitions = [];
+
+      for (const eyeKey of ["right", "left"]) {
+        if (!isEyeFullyValidated(eyeKey)) continue;
+
+        const powerKey = eyeData[eyeKey].powerKey;
+        const itemName = this._getUchihaEyePowerItemName(powerKey);
+
+        if (!itemName) continue;
+
+        definitions.push({
+          clan: "uchiha",
+          key: `uchiha_mangekyo_${eyeKey}_${powerKey}`,
+          name: itemName
+        });
+      }
+
+      return definitions;
+    }
+
     _getCurrentLineagePowerDefinitions() {
     if (this.type !== "shinobi") return [];
 
@@ -4021,6 +4157,18 @@ async decreaseBase(baseKey) {
 
         if (lineageValue >= 5 && Boolean(gmOptions.hasMangekyoSharingan) && !hasRinnegan) {
           addPower("uchiha", "uchiha_mangekyo", "Mangekyō Sharingan");
+        }
+
+        if (lineageValue >= 5 && Boolean(gmOptions.hasMangekyoSharingan)) {
+          const validatedEyePowerDefinitions = this._getValidatedUchihaMangekyoEyePowerDefinitions();
+
+          for (const eyePowerDefinition of validatedEyePowerDefinitions) {
+            addPower(
+              eyePowerDefinition.clan,
+              eyePowerDefinition.key,
+              eyePowerDefinition.name
+            );
+          }
         }
 
         if (lineageValue >= 9) {
@@ -4124,6 +4272,12 @@ async decreaseBase(baseKey) {
       "Sharingan — 3 tomoe",
       "Magen — Illusion démoniaque",
       "Mangekyō Sharingan",
+      "Tsukuyomi — Le Monde Illusoire",
+      "Amaterasu — Flammes noires",
+      "Enton — Kagutsuchi",
+      "Kotoamatsukami — Allégeance",
+      "Kamui",
+      "Pouvoir Mangekyō original",
       "Rinnegan",
       "Izanagi",
       "Izanami",
