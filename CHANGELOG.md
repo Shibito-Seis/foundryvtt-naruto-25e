@@ -2,6 +2,24 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.33.1 - Correctif sync Lignée et santé oculaire interdite
+
+### Corrigé
+
+- Correction des doublons de pouvoirs de lignée lors des synchronisations automatiques.
+- Correction des doublons plus fréquents en mode `Clan caché / dissimulé`, notamment lorsque le Réel Clan réattribue plusieurs rangs de Lignée.
+- Correction du doublon possible du `Mangekyō Sharingan` lors de la validation MJ.
+- Ajout d’un verrou interne empêchant plusieurs synchronisations concurrentes de créer les mêmes pouvoirs en parallèle.
+- Ajout d’un nettoyage automatique des doublons de pouvoirs de lignée déjà présents sur la fiche lors de la prochaine synchronisation MJ.
+- `Izanagi` dépend désormais de l’état de l’œil droit.
+- `Izanami` dépend désormais de l’état de l’œil gauche.
+- `Izanagi` et `Izanami` ne sont plus accordés si l’œil correspondant est aveugle.
+
+### Notes
+
+- `Izanagi` et `Izanami` restent des pouvoirs généraux Uchiha : ils ne deviennent pas des choix Mangekyō.
+- Les exceptions rares liées à l’EMS, au Rinnegan ou à une décision MJ seront traitées plus tard si nécessaire.
+
 ## 0.1.33 - Lignée avancée et Mangekyō fonctionnel
 
 ### Ajouté

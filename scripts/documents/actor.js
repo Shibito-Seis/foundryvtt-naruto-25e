@@ -4172,8 +4172,22 @@ async decreaseBase(baseKey) {
         }
 
         if (lineageValue >= 9) {
-          addPower("uchiha", "uchiha_izanagi", "Izanagi");
-          addPower("uchiha", "uchiha_izanami", "Izanami");
+          const mangekyo = heritage.uchiha?.mangekyo ?? {};
+          const rightEyeUsable = this._isUchihaEyeStateUsableForMangekyo?.(
+            mangekyo.rightEyeState ?? "healthy"
+          ) ?? String(mangekyo.rightEyeState ?? "healthy") !== "blind";
+
+          const leftEyeUsable = this._isUchihaEyeStateUsableForMangekyo?.(
+            mangekyo.leftEyeState ?? "healthy"
+          ) ?? String(mangekyo.leftEyeState ?? "healthy") !== "blind";
+
+          if (rightEyeUsable) {
+            addPower("uchiha", "uchiha_izanagi", "Izanagi");
+          }
+
+          if (leftEyeUsable) {
+            addPower("uchiha", "uchiha_izanami", "Izanami");
+          }
         }
 
         continue;
@@ -4366,117 +4380,191 @@ async decreaseBase(baseKey) {
     if (this.type !== "shinobi") return;
     if (!game.user?.isGM) return;
 
-    const desiredDefinitions = this._getCurrentLineagePowerDefinitions();
-    const desiredNames = new Set(desiredDefinitions.map((definition) => definition.name));
-    const managedNames = this._getManagedLineagePowerNames();
+    if (this._naruto25eLineageSyncInProgress) {
+      this._naruto25eLineageSyncPending = true;
+      return;
+    }
 
-    const currentManagedItems = this.items.filter((item) => {
-      return item.type === "pouvoirLignee" && managedNames.has(item.name);
-    });
+    this._naruto25eLineageSyncInProgress = true;
 
-    const itemsToDelete = currentManagedItems.filter((item) => !desiredNames.has(item.name));
+    let totalDeleted = 0;
+    let totalCreated = 0;
+    let totalUpdated = 0;
 
-    if (itemsToDelete.length > 0) {
-      const deletedIds = itemsToDelete.map((item) => item.id);
-      const activePowers = this._getActiveLineagePowers();
-      const remainingActivePowers = activePowers.filter((power) => !deletedIds.includes(power.itemId));
+    try {
+      do {
+        this._naruto25eLineageSyncPending = false;
 
-      await this.deleteEmbeddedDocuments("Item", deletedIds);
+        const desiredDefinitions = this._getCurrentLineagePowerDefinitions();
+        const desiredNames = new Set(desiredDefinitions.map((definition) => definition.name));
+        const managedNames = this._getManagedLineagePowerNames();
 
-      if (remainingActivePowers.length !== activePowers.length) {
-        await this.update({
-          "system.resources.activeLineagePowers": remainingActivePowers
+        const currentManagedItems = this.items.filter((item) => {
+          return item.type === "pouvoirLignee" && managedNames.has(item.name);
         });
-      }
+
+        const activePowers = this._getActiveLineagePowers();
+        const activePowerIds = new Set(activePowers.map((power) => power.itemId));
+
+        const managedItemsByName = new Map();
+
+        for (const item of currentManagedItems) {
+          const items = managedItemsByName.get(item.name) ?? [];
+          items.push(item);
+          managedItemsByName.set(item.name, items);
+        }
+
+        const duplicateItemsToDelete = [];
+
+        for (const [name, items] of managedItemsByName.entries()) {
+          if (items.length <= 1) continue;
+
+          const keptItem =
+            items.find((item) => activePowerIds.has(item.id))
+            ?? items.find((item) => Boolean(item.flags?.["naruto-25e"]?.autoLineagePower))
+            ?? items[0];
+
+          for (const item of items) {
+            if (item.id === keptItem.id) continue;
+            duplicateItemsToDelete.push(item);
+          }
+
+          console.warn(`Naruto 2.5e | Doublons de pouvoir de lignée détectés sur ${this.name} : ${name}. Conservation de ${keptItem.id}.`);
+        }
+
+        const duplicateItemIds = new Set(duplicateItemsToDelete.map((item) => item.id));
+
+        const undesiredItemsToDelete = currentManagedItems.filter((item) => {
+          if (duplicateItemIds.has(item.id)) return false;
+          return !desiredNames.has(item.name);
+        });
+
+        const itemsToDelete = [
+          ...duplicateItemsToDelete,
+          ...undesiredItemsToDelete
+        ];
+
+        const deletedIds = itemsToDelete.map((item) => item.id);
+
+        if (deletedIds.length > 0) {
+          const deletedIdSet = new Set(deletedIds);
+          const remainingActivePowers = activePowers.filter((power) => {
+            return !deletedIdSet.has(power.itemId);
+          });
+
+          await this.deleteEmbeddedDocuments("Item", deletedIds);
+          totalDeleted += deletedIds.length;
+
+          if (remainingActivePowers.length !== activePowers.length) {
+            await this.update({
+              "system.resources.activeLineagePowers": remainingActivePowers
+            });
+          }
+        }
+
+        const deletedIdSet = new Set(deletedIds);
+        const currentPowerItems = this.items.filter((item) => {
+          return item.type === "pouvoirLignee" && !deletedIdSet.has(item.id);
+        });
+
+        const currentItemsByName = new Map();
+
+        for (const item of currentPowerItems) {
+          if (currentItemsByName.has(item.name)) continue;
+          currentItemsByName.set(item.name, item);
+        }
+
+        const documentsToCreate = [];
+        const documentsToUpdate = [];
+        const passivePowerIdsToDeactivate = new Set();
+
+        for (const definition of desiredDefinitions) {
+          const sourceData = await this._getLineagePowerSourceData(definition.name);
+          if (!sourceData) continue;
+
+          if (definition.name === "Invisibilité Fantomatique" && this._getKatoInvisibilityMode() === "maintained") {
+            sourceData.system = sourceData.system ?? {};
+            sourceData.system.powerType = "maintained";
+            sourceData.system.activationCost = Math.max(10, Number(sourceData.system.activationCost ?? 0));
+            sourceData.system.maintenanceCost = Math.max(5, Number(sourceData.system.maintenanceCost ?? 0));
+            sourceData.system.effect = `${sourceData.system.effect ?? ""} Mode MJ actuel : pouvoir maintenu, activation 10 Chakra, entretien 5 Chakra par tour actif.`;
+          }
+
+          sourceData.flags = foundry.utils.mergeObject(sourceData.flags ?? {}, {
+            "naruto-25e": {
+              autoLineagePower: true,
+              lineagePowerKey: definition.key,
+              lineagePowerClan: definition.clan
+            }
+          }, {
+            inplace: false
+          });
+
+          const existingItem = currentItemsByName.get(definition.name);
+
+          if (existingItem) {
+            documentsToUpdate.push({
+              _id: existingItem.id,
+              img: sourceData.img,
+              "system.description": sourceData.system?.description ?? "",
+              "system.clan": sourceData.system?.clan ?? "",
+              "system.lineageRank": Math.max(1, Number(sourceData.system?.lineageRank ?? 1)),
+              "system.powerType": sourceData.system?.powerType ?? "maintained",
+              "system.activationCost": Math.max(0, Number(sourceData.system?.activationCost ?? 0)),
+              "system.maintenanceCost": Math.max(0, Number(sourceData.system?.maintenanceCost ?? 0)),
+              "system.consumesLineageUse": sourceData.system?.powerType !== "passive",
+              "system.effect": sourceData.system?.effect ?? "",
+              "system.prerequisites": sourceData.system?.prerequisites ?? {
+                text: "",
+                gmValidation: false
+              },
+              flags: sourceData.flags
+            });
+
+            if (sourceData.system?.powerType === "passive") {
+              passivePowerIdsToDeactivate.add(existingItem.id);
+            }
+
+            continue;
+          }
+
+          sourceData.system = sourceData.system ?? {};
+          sourceData.system.consumesLineageUse = sourceData.system.powerType !== "passive";
+
+          documentsToCreate.push(sourceData);
+        }
+
+        if (documentsToUpdate.length > 0) {
+          await this.updateEmbeddedDocuments("Item", documentsToUpdate);
+          totalUpdated += documentsToUpdate.length;
+        }
+
+        if (documentsToCreate.length > 0) {
+          await this.createEmbeddedDocuments("Item", documentsToCreate);
+          totalCreated += documentsToCreate.length;
+        }
+
+        if (passivePowerIdsToDeactivate.size > 0) {
+          const currentActivePowers = this._getActiveLineagePowers();
+          const remainingActivePowers = currentActivePowers.filter((power) => {
+            return !passivePowerIdsToDeactivate.has(power.itemId);
+          });
+
+          if (remainingActivePowers.length !== currentActivePowers.length) {
+            await this.update({
+              "system.resources.activeLineagePowers": remainingActivePowers
+            });
+          }
+        }
+      } while (this._naruto25eLineageSyncPending);
+    } finally {
+      this._naruto25eLineageSyncInProgress = false;
+      this._naruto25eLineageSyncPending = false;
     }
 
-  const currentPowerItems = this.items.filter((item) => item.type === "pouvoirLignee");
-  const currentNames = new Set(currentPowerItems.map((item) => item.name));
-
-  const documentsToCreate = [];
-  const documentsToUpdate = [];
-  const passivePowerIdsToDeactivate = new Set();
-
-  for (const definition of desiredDefinitions) {
-    const sourceData = await this._getLineagePowerSourceData(definition.name);
-    if (!sourceData) continue;
-
-    if (definition.name === "Invisibilité Fantomatique" && this._getKatoInvisibilityMode() === "maintained") {
-      sourceData.system = sourceData.system ?? {};
-      sourceData.system.powerType = "maintained";
-      sourceData.system.activationCost = Math.max(10, Number(sourceData.system.activationCost ?? 0));
-      sourceData.system.maintenanceCost = Math.max(5, Number(sourceData.system.maintenanceCost ?? 0));
-      sourceData.system.effect = `${sourceData.system.effect ?? ""} Mode MJ actuel : pouvoir maintenu, activation 10 Chakra, entretien 5 Chakra par tour actif.`;
+    if (notify && (totalDeleted > 0 || totalCreated > 0 || totalUpdated > 0)) {
+      ui.notifications.info(`${this.name} : pouvoirs de lignée synchronisés.`);
     }
-
-    sourceData.flags = foundry.utils.mergeObject(sourceData.flags ?? {}, {
-      "naruto-25e": {
-        autoLineagePower: true,
-        lineagePowerKey: definition.key,
-        lineagePowerClan: definition.clan
-      }
-    }, {
-      inplace: false
-    });
-
-    const existingItem = currentPowerItems.find((item) => item.name === definition.name);
-
-    if (existingItem) {
-      documentsToUpdate.push({
-        _id: existingItem.id,
-        img: sourceData.img,
-        "system.description": sourceData.system?.description ?? "",
-        "system.clan": sourceData.system?.clan ?? "",
-        "system.lineageRank": Math.max(1, Number(sourceData.system?.lineageRank ?? 1)),
-        "system.powerType": sourceData.system?.powerType ?? "maintained",
-        "system.activationCost": Math.max(0, Number(sourceData.system?.activationCost ?? 0)),
-        "system.maintenanceCost": Math.max(0, Number(sourceData.system?.maintenanceCost ?? 0)),
-        "system.consumesLineageUse": sourceData.system?.powerType !== "passive",
-        "system.effect": sourceData.system?.effect ?? "",
-        "system.prerequisites": sourceData.system?.prerequisites ?? {
-          text: "",
-          gmValidation: false
-        },
-        flags: sourceData.flags
-      });
-
-      if (sourceData.system?.powerType === "passive") {
-        passivePowerIdsToDeactivate.add(existingItem.id);
-      }
-
-      continue;
-    }
-
-    sourceData.system = sourceData.system ?? {};
-    sourceData.system.consumesLineageUse = sourceData.system.powerType !== "passive";
-
-    documentsToCreate.push(sourceData);
-  }
-
-  if (documentsToUpdate.length > 0) {
-    await this.updateEmbeddedDocuments("Item", documentsToUpdate);
-  }
-
-  if (documentsToCreate.length > 0) {
-    await this.createEmbeddedDocuments("Item", documentsToCreate);
-  }
-
-  if (passivePowerIdsToDeactivate.size > 0) {
-    const activePowers = this._getActiveLineagePowers();
-    const remainingActivePowers = activePowers.filter((power) => {
-      return !passivePowerIdsToDeactivate.has(power.itemId);
-    });
-
-    if (remainingActivePowers.length !== activePowers.length) {
-      await this.update({
-        "system.resources.activeLineagePowers": remainingActivePowers
-      });
-    }
-  }
-
-  if (notify && (itemsToDelete.length > 0 || documentsToCreate.length > 0 || documentsToUpdate.length > 0)) {
-    ui.notifications.info(`${this.name} : pouvoirs de lignée synchronisés.`);
-  }
   }
 
     isLineagePowerActive(itemOrId) {
