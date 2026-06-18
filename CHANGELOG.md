@@ -2,6 +2,17 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.36.6 - Correctif nom asset rouleau haut Shinobimancer
+
+### Corrigé
+
+- Renommage de l’asset haut rogné :
+  - `scroll-top-tag.png` devient `scroll-top.png`.
+- Correction du décalage entre le chemin CSS et le fichier réellement présent dans l’archive.
+- `scroll-top.png` et `scroll-bottom.png` sont désormais les noms canoniques des rouleaux haut et bas du Shinobimancer.
+
+---
+
 ## 0.1.36.5 - Test header/footer assets rognés Shinobimancer
 
 ### Modifié
