@@ -132,29 +132,33 @@
                 </select>
               </label>
 
-              <label>
-                Nindō prédéfini
-                <select data-shinobimancer-field="system.nindo.preset" {{#if creationLocked}}disabled{{/if}}>
-                  <option value="">— Aucun —</option>
-                  {{#each nindoPresets as |preset|}}
-                    <option value="{{preset.key}}" {{#if preset.selected}}selected{{/if}}>
-                      {{preset.label}}
-                    </option>
-                  {{/each}}
-                </select>
-              </label>
+              {{#if nindoPresetMode}}
+                <label>
+                  Nindō prédéfini
+                  <select data-shinobimancer-field="system.nindo.preset" {{#if creationLocked}}disabled{{/if}}>
+                    <option value="">— Aucun —</option>
+                    {{#each nindoPresets as |preset|}}
+                      <option value="{{preset.key}}" {{#if preset.selected}}selected{{/if}}>
+                        {{preset.label}}
+                      </option>
+                    {{/each}}
+                  </select>
+                </label>
 
-              {{#if selectedNindoPreset}}
-                <div class="shinobimancer-nindo-description is-wide">
-                  <strong>{{selectedNindoPreset.name}}</strong>
-                  <p>{{selectedNindoPreset.description}}</p>
-                </div>
+                {{#if selectedNindoPreset}}
+                  <div class="shinobimancer-nindo-description is-wide">
+                    <strong>{{selectedNindoPreset.name}}</strong>
+                    <p>{{selectedNindoPreset.description}}</p>
+                  </div>
+                {{/if}}
               {{/if}}
 
-              <label class="is-wide">
-                Nindō / devise personnelle
-                <textarea data-shinobimancer-field="system.identity.nindoText" placeholder="Formule, promesse ou voie personnelle du Shinobi." {{#if creationLocked}}disabled{{/if}}>{{identity.nindo}}</textarea>
-              </label>
+              {{#if nindoCustomMode}}
+                <label class="is-wide">
+                  Nindō / devise personnelle
+                  <textarea data-shinobimancer-field="system.identity.nindoText" placeholder="Formule, promesse ou voie personnelle du Shinobi." {{#if creationLocked}}disabled{{/if}}>{{identity.nindo}}</textarea>
+                </label>
+              {{/if}}
 
               <label class="is-wide">
                 Notes de création
@@ -229,7 +233,7 @@
           <div class="shinobimancer-card-grid is-two-columns">
             {{#each heritageModeCards as |mode|}}
               <article
-                class="shinobimancer-data-card shinobimancer-heritage-card {{#if mode.selected}}is-selected{{/if}} {{#unless mode.available}}is-disabled{{/unless}}"
+                class="shinobimancer-data-card shinobimancer-heritage-card {{#if mode.selected}}is-selected{{/if}} {{mode.cssClass}}"
                 data-heritage-mode="{{mode.key}}"
                 data-available="{{#if mode.available}}true{{else}}false{{/if}}"
               >
@@ -258,6 +262,17 @@
                       data-heritage-request-action="request"
                     >
                       Demander au MJ
+                    </button>
+                  {{/if}}
+
+                  {{#if mode.canAuthorizeDirectly}}
+                    <button
+                      type="button"
+                      class="shinobimancer-button is-primary shinobimancer-heritage-request-action"
+                      data-heritage-request-mode="{{mode.key}}"
+                      data-heritage-request-action="authorize"
+                    >
+                      Autoriser ce mode
                     </button>
                   {{/if}}
 

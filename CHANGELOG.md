@@ -2,6 +2,34 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.36.2 - Stabilisation Shinobimancer héritage et Nindō
+
+### Ajouté
+
+- Ajout d’une purge ciblée des caches Handlebars liés au Shinobimancer.
+- Ajout d’un bouton MJ `Autoriser ce mode` pour les héritages hybrides sans demande joueur préalable.
+- Ajout d’états visuels dédiés aux demandes MJ :
+  - demande en attente ;
+  - demande acceptée ;
+  - demande refusée.
+
+### Modifié
+
+- Les cartes `Clan hybride` et `Voie hybridée` ne sont plus visuellement grisées lorsqu’une action de demande ou d’autorisation est disponible.
+- Les cartes refusées restent grisées et affichent un état `Demande refusée ✕`.
+- L’étape 4 de la barre latérale affiche désormais `Clan / Voie`.
+- L’affichage du Nindō dans le Shinobimancer est clarifié :
+  - le mode `Nindō prédéfini` affiche seulement la sélection prédéfinie et sa description ;
+  - le mode `Nindō personnalisé` affiche seulement le champ de devise personnelle.
+- Passer en `Nindō personnalisé` vide le prédéfini sélectionné.
+- Choisir un prédéfini vide la devise personnelle pour éviter les états mixtes.
+
+### Notes
+
+- Cette version ne modifie pas la validation mécanique des héritages hybrides.
+- Cette version ne modifie pas les règles de Nindō, seulement l’interface de création.
+- La purge de cache est limitée aux entrées contenant `shinobimancer`.
+
 ## 0.1.36.1 - Demandes MJ pour héritages hybrides
 
 ### Ajouté

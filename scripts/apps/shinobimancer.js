@@ -26,7 +26,7 @@ const SHINOBIMANCER_STEPS = [
     key: "clan",
     number: 4,
     label: "Clan / Voie",
-    shortLabel: "Clan",
+    shortLabel: "Clan / Voie",
     description: "Choix détaillé du clan, de la voie ou de l’hybridation."
   },
   {
@@ -395,6 +395,26 @@ function getAdjacentStep(stepKey, direction = 1) {
   return SHINOBIMANCER_STEPS[nextIndex]?.key ?? "identity";
 }
 
+function purgeShinobimancerTemplateCache() {
+  const matchesShinobimancer = (key) => {
+    return String(key ?? "").includes("shinobimancer");
+  };
+
+  for (const key of Object.keys(globalThis._templateCache ?? {})) {
+    if (matchesShinobimancer(key)) delete globalThis._templateCache[key];
+  }
+
+  for (const key of Object.keys(Handlebars.partials ?? {})) {
+    if (matchesShinobimancer(key)) delete Handlebars.partials[key];
+  }
+
+  const foundryTemplateCache = foundry.applications?.handlebars?.templateCache ?? {};
+
+  for (const key of Object.keys(foundryTemplateCache)) {
+    if (matchesShinobimancer(key)) delete foundryTemplateCache[key];
+  }
+}
+
 async function updateShinobimancerCreationState(actor, updateData = {}) {
   if (!actor || actor.type !== "shinobi") {
     ui.notifications.warn("Aucun acteur Shinobi valide n’est associé au Shinobimancer.");
@@ -565,15 +585,61 @@ function buildHybridAuthorizationState(actor, modeKey, allowed) {
   const request = getHeritageModeRequestData(actor, modeKey);
   const isGm = Boolean(game.user?.isGM);
   const isHybridRequestMode = ["hybridClan", "hybridVoie"].includes(modeKey);
+  const creationLocked = Boolean(actor?.system?.progression?.creation?.locked);
+  const canEditCreation = Boolean(actor?.isOwner || game.user?.isGM) && !creationLocked;
+
+  const canRequestAuthorization =
+    isHybridRequestMode
+    && canEditCreation
+    && !isGm
+    && !allowed
+    && request.isNone;
+
+  const canAuthorizeDirectly =
+    isHybridRequestMode
+    && canEditCreation
+    && isGm
+    && !allowed
+    && request.isNone;
+
+  const canAcceptRequest =
+    isHybridRequestMode
+    && canEditCreation
+    && isGm
+    && !allowed
+    && request.isPending;
+
+  const canRefuseRequest =
+    isHybridRequestMode
+    && canEditCreation
+    && isGm
+    && !allowed
+    && request.isPending;
+
+  const canResetRequest =
+    isHybridRequestMode
+    && canEditCreation
+    && isGm
+    && !request.isNone;
 
   let statusLabel = allowed ? "Disponible" : "Verrouillé";
   let requestText = "";
+  let cssClass = "";
+
+  if (!allowed && !canRequestAuthorization && !canAuthorizeDirectly && !request.isPending && !request.isAccepted) {
+    cssClass = "is-disabled";
+  }
+
+  if (canRequestAuthorization || canAuthorizeDirectly) {
+    cssClass = "has-request-controls";
+  }
 
   if (request.isPending) {
     statusLabel = "Demande en attente";
     requestText = request.requestedByName
       ? `Demande envoyée par ${request.requestedByName}.`
       : "Demande envoyée au MJ.";
+    cssClass = "has-request-controls is-request-pending";
   }
 
   if (request.isAccepted) {
@@ -581,13 +647,15 @@ function buildHybridAuthorizationState(actor, modeKey, allowed) {
     requestText = request.resolvedByName
       ? `Demande acceptée par ${request.resolvedByName}.`
       : "Demande acceptée par le MJ.";
+    cssClass = allowed ? "is-request-accepted" : "has-request-controls is-request-accepted";
   }
 
   if (request.isRefused) {
-    statusLabel = "Demande refusée";
+    statusLabel = "Demande refusée ✕";
     requestText = request.resolvedByName
       ? `Demande refusée par ${request.resolvedByName}.`
       : "Demande refusée par le MJ.";
+    cssClass = "is-disabled is-request-refused";
   }
 
   return {
@@ -598,10 +666,12 @@ function buildHybridAuthorizationState(actor, modeKey, allowed) {
     requestAccepted: request.isAccepted,
     requestRefused: request.isRefused,
     hasRequestState: !request.isNone,
-    canRequestAuthorization: isHybridRequestMode && !isGm && !allowed && request.isNone,
-    canAcceptRequest: isHybridRequestMode && isGm && !allowed && request.isPending,
-    canRefuseRequest: isHybridRequestMode && isGm && !allowed && request.isPending,
-    canResetRequest: isHybridRequestMode && isGm && !request.isNone
+    cssClass,
+    canRequestAuthorization,
+    canAuthorizeDirectly,
+    canAcceptRequest,
+    canRefuseRequest,
+    canResetRequest
   };
 }
 
@@ -636,6 +706,7 @@ function buildHeritageModeCards(actor) {
       note: "Mode standard de création.",
       requestStatusLabel: "Disponible",
       requestText: "",
+      cssClass: "",
       canRequestAuthorization: false,
       canAcceptRequest: false,
       canRefuseRequest: false,
@@ -650,6 +721,7 @@ function buildHeritageModeCards(actor) {
       note: "Mode actif : affiche les Voies jouables à l’étape Clan / Voie.",
       requestStatusLabel: "Disponible",
       requestText: "",
+      cssClass: "",
       canRequestAuthorization: false,
       canAcceptRequest: false,
       canRefuseRequest: false,
@@ -682,6 +754,7 @@ function buildHeritageModeCards(actor) {
       note: "Mode narratif avancé : le propriétaire et le MJ voient les deux lignées.",
       requestStatusLabel: "Disponible",
       requestText: "",
+      cssClass: "",
       canRequestAuthorization: false,
       canAcceptRequest: false,
       canRefuseRequest: false,
@@ -1021,6 +1094,8 @@ export class Naruto25eShinobimancerChoiceApplication extends Application {
   }
 
   getData(options = {}) {
+    purgeShinobimancerTemplateCache();
+
     const context = super.getData(options);
     const creation = this.actor?.system?.progression?.creation ?? {};
     const validation = getActorCreationSummary(this.actor);
@@ -1150,6 +1225,8 @@ export class Naruto25eShinobimancerApplication extends Application {
   }
 
   getData(options = {}) {
+    purgeShinobimancerTemplateCache();
+
     const context = super.getData(options);
     const validation = getActorCreationSummary(this.actor);
     const creationSummary = validation.summary ?? {};
@@ -1285,6 +1362,11 @@ export class Naruto25eShinobimancerApplication extends Application {
     context.equipmentPreview = buildEquipmentPreview(this.actor);
     const nindo = system.nindo ?? {};
     const nindoChoiceMode = nindo.choiceMode ?? "preset";
+    const nindoPresetMode = nindoChoiceMode === "preset";
+    const nindoCustomMode = !nindoPresetMode;
+
+    context.nindoPresetMode = nindoPresetMode;
+    context.nindoCustomMode = nindoCustomMode;
 
     context.nindoChoiceModes = Object.entries(NARUTO25E.nindoChoiceModes ?? {}).map(([key, label]) => ({
       key,
@@ -1296,9 +1378,12 @@ export class Naruto25eShinobimancerApplication extends Application {
       key,
       label: preset.name ?? key,
       description: preset.description ?? "",
-      selected: key === (nindo.preset ?? "")
+      selected: nindoPresetMode && key === (nindo.preset ?? "")
     }));
-    const selectedNindoPreset = NARUTO25E.nindoPresets?.[nindo.preset ?? ""];
+
+    const selectedNindoPreset = nindoPresetMode
+      ? NARUTO25E.nindoPresets?.[nindo.preset ?? ""]
+      : null;
 
     context.selectedNindoPreset = selectedNindoPreset
       ? {
@@ -1595,6 +1680,31 @@ export class Naruto25eShinobimancerApplication extends Application {
         return;
       }
 
+      if (field === "system.nindo.choiceMode") {
+        const updateData = {
+          [field]: value
+        };
+
+        if (value !== "preset") {
+          updateData["system.nindo.preset"] = "";
+        }
+
+        if (value === "preset") {
+          updateData["system.identity.nindoText"] = "";
+        }
+
+        await updateActorAndRender(updateData);
+        return;
+      }
+
+      if (field === "system.nindo.preset") {
+        await updateActorAndRender({
+          [field]: value,
+          "system.identity.nindoText": ""
+        });
+        return;
+      }
+
       await updateActorAndRender({
         [field]: value
       });
@@ -1629,7 +1739,7 @@ export class Naruto25eShinobimancerApplication extends Application {
       const action = String(event.currentTarget?.dataset?.heritageRequestAction ?? "");
 
       if (!["hybridClan", "hybridVoie"].includes(mode)) return;
-      if (!["request", "accept", "refuse", "reset"].includes(action)) return;
+      if (!["request", "authorize", "accept", "refuse", "reset"].includes(action)) return;
 
       const allowField = mode === "hybridClan"
         ? "allowHybridClan"
@@ -1659,6 +1769,21 @@ export class Naruto25eShinobimancerApplication extends Application {
 
       if (!game.user?.isGM) {
         ui.notifications.warn("Seul le MJ peut répondre à cette demande.");
+        return;
+      }
+
+      if (action === "authorize") {
+        updateData[`system.heritage.gmOptions.${allowField}`] = true;
+        updateData[`system.heritage.requests.${mode}.status`] = "accepted";
+        updateData[`system.heritage.requests.${mode}.requestedAt`] = "";
+        updateData[`system.heritage.requests.${mode}.requestedBy`] = "";
+        updateData[`system.heritage.requests.${mode}.requestedByName`] = "";
+        updateData[`system.heritage.requests.${mode}.resolvedAt`] = now;
+        updateData[`system.heritage.requests.${mode}.resolvedBy`] = game.user?.id ?? "";
+        updateData[`system.heritage.requests.${mode}.resolvedByName`] = game.user?.name ?? "";
+
+        await updateActorAndRender(updateData);
+        ui.notifications.info("Mode autorisé par le MJ.");
         return;
       }
 
