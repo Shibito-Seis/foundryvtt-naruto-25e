@@ -538,6 +538,73 @@ function renderBaseRadarSvg(baseRows, options = {}) {
   `;
 }
 
+function getHeritageModeRequestData(actor, modeKey) {
+  const heritage = actor?.system?.heritage ?? {};
+  const request = foundry.utils.getProperty(heritage, `requests.${modeKey}`) ?? {};
+  const status = String(request.status ?? "none");
+  const normalizedStatus = ["none", "pending", "accepted", "refused"].includes(status)
+    ? status
+    : "none";
+
+  return {
+    status: normalizedStatus,
+    requestedAt: String(request.requestedAt ?? ""),
+    requestedBy: String(request.requestedBy ?? ""),
+    requestedByName: String(request.requestedByName ?? ""),
+    resolvedAt: String(request.resolvedAt ?? ""),
+    resolvedBy: String(request.resolvedBy ?? ""),
+    resolvedByName: String(request.resolvedByName ?? ""),
+    isNone: normalizedStatus === "none",
+    isPending: normalizedStatus === "pending",
+    isAccepted: normalizedStatus === "accepted",
+    isRefused: normalizedStatus === "refused"
+  };
+}
+
+function buildHybridAuthorizationState(actor, modeKey, allowed) {
+  const request = getHeritageModeRequestData(actor, modeKey);
+  const isGm = Boolean(game.user?.isGM);
+  const isHybridRequestMode = ["hybridClan", "hybridVoie"].includes(modeKey);
+
+  let statusLabel = allowed ? "Disponible" : "Verrouillé";
+  let requestText = "";
+
+  if (request.isPending) {
+    statusLabel = "Demande en attente";
+    requestText = request.requestedByName
+      ? `Demande envoyée par ${request.requestedByName}.`
+      : "Demande envoyée au MJ.";
+  }
+
+  if (request.isAccepted) {
+    statusLabel = "Demande acceptée";
+    requestText = request.resolvedByName
+      ? `Demande acceptée par ${request.resolvedByName}.`
+      : "Demande acceptée par le MJ.";
+  }
+
+  if (request.isRefused) {
+    statusLabel = "Demande refusée";
+    requestText = request.resolvedByName
+      ? `Demande refusée par ${request.resolvedByName}.`
+      : "Demande refusée par le MJ.";
+  }
+
+  return {
+    requestStatus: request.status,
+    requestStatusLabel: statusLabel,
+    requestText,
+    requestPending: request.isPending,
+    requestAccepted: request.isAccepted,
+    requestRefused: request.isRefused,
+    hasRequestState: !request.isNone,
+    canRequestAuthorization: isHybridRequestMode && !isGm && !allowed && request.isNone,
+    canAcceptRequest: isHybridRequestMode && isGm && !allowed && request.isPending,
+    canRefuseRequest: isHybridRequestMode && isGm && !allowed && request.isPending,
+    canResetRequest: isHybridRequestMode && isGm && !request.isNone
+  };
+}
+
 function buildVillageCards(actor) {
   const selectedVillage = actor?.system?.heritage?.village ?? "konoha";
 
@@ -556,6 +623,8 @@ function buildVillageCards(actor) {
 function buildHeritageModeCards(actor) {
   const selectedMode = actor?.system?.heritage?.mode ?? "clan";
   const gmOptions = actor?.system?.heritage?.gmOptions ?? {};
+  const allowHybridClan = Boolean(gmOptions.allowHybridClan);
+  const allowHybridVoie = Boolean(gmOptions.allowHybridVoie);
 
   return [
     {
@@ -564,31 +633,45 @@ function buildHeritageModeCards(actor) {
       selected: selectedMode === "clan",
       available: true,
       description: "Création classique autour d’un clan principal.",
-      note: "Mode actif pour la 0.1.31."
+      note: "Mode standard de création.",
+      requestStatusLabel: "Disponible",
+      requestText: "",
+      canRequestAuthorization: false,
+      canAcceptRequest: false,
+      canRefuseRequest: false,
+      canResetRequest: false
     },
     {
       key: "voie",
       label: "Voie",
       selected: selectedMode === "voie",
-      available: false,
+      available: true,
       description: "Création fondée sur une voie plutôt qu’un clan.",
-      note: "Les voies seront branchées avec le chantier Voies / Hybridations."
+      note: "Mode actif : affiche les Voies jouables à l’étape Clan / Voie.",
+      requestStatusLabel: "Disponible",
+      requestText: "",
+      canRequestAuthorization: false,
+      canAcceptRequest: false,
+      canRefuseRequest: false,
+      canResetRequest: false
     },
     {
       key: "hybridClan",
       label: "Clan hybride",
       selected: selectedMode === "hybridClan",
-      available: Boolean(gmOptions.allowHybridClan),
+      available: allowHybridClan,
       description: "Clan principal et clan secondaire sous validation MJ.",
-      note: gmOptions.allowHybridClan ? "Autorisé par le MJ." : "Nécessite une autorisation MJ."
+      note: allowHybridClan ? "Autorisé par le MJ." : "Nécessite une autorisation MJ.",
+      ...buildHybridAuthorizationState(actor, "hybridClan", allowHybridClan)
     },
     {
       key: "hybridVoie",
       label: "Voie hybridée",
       selected: selectedMode === "hybridVoie",
-      available: Boolean(gmOptions.allowHybridVoie),
+      available: allowHybridVoie,
       description: "Clan principal accompagné d’une voie particulière.",
-      note: gmOptions.allowHybridVoie ? "Autorisé par le MJ." : "Nécessite une autorisation MJ."
+      note: allowHybridVoie ? "Autorisé par le MJ." : "Nécessite une autorisation MJ.",
+      ...buildHybridAuthorizationState(actor, "hybridVoie", allowHybridVoie)
     },
     {
       key: "hiddenClan",
@@ -596,7 +679,13 @@ function buildHeritageModeCards(actor) {
       selected: selectedMode === "hiddenClan",
       available: true,
       description: "Clan officiel visible et Réel Clan mécanique dissimulé aux observateurs.",
-      note: "Mode narratif avancé : le propriétaire et le MJ voient les deux lignées."
+      note: "Mode narratif avancé : le propriétaire et le MJ voient les deux lignées.",
+      requestStatusLabel: "Disponible",
+      requestText: "",
+      canRequestAuthorization: false,
+      canAcceptRequest: false,
+      canRefuseRequest: false,
+      canResetRequest: false
     }
   ];
 }
@@ -1530,16 +1619,121 @@ export class Naruto25eShinobimancerApplication extends Application {
       });
     });
 
+        html.find(".shinobimancer-heritage-request-action").on("click", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      if (!canEditCreation()) return;
+
+      const mode = String(event.currentTarget?.dataset?.heritageRequestMode ?? "");
+      const action = String(event.currentTarget?.dataset?.heritageRequestAction ?? "");
+
+      if (!["hybridClan", "hybridVoie"].includes(mode)) return;
+      if (!["request", "accept", "refuse", "reset"].includes(action)) return;
+
+      const allowField = mode === "hybridClan"
+        ? "allowHybridClan"
+        : "allowHybridVoie";
+
+      const now = new Date().toISOString();
+      const updateData = {};
+
+      if (action === "request") {
+        if (game.user?.isGM) {
+          ui.notifications.warn("Le MJ peut autoriser directement ce mode.");
+          return;
+        }
+
+        updateData[`system.heritage.requests.${mode}.status`] = "pending";
+        updateData[`system.heritage.requests.${mode}.requestedAt`] = now;
+        updateData[`system.heritage.requests.${mode}.requestedBy`] = game.user?.id ?? "";
+        updateData[`system.heritage.requests.${mode}.requestedByName`] = game.user?.name ?? "";
+        updateData[`system.heritage.requests.${mode}.resolvedAt`] = "";
+        updateData[`system.heritage.requests.${mode}.resolvedBy`] = "";
+        updateData[`system.heritage.requests.${mode}.resolvedByName`] = "";
+
+        await updateActorAndRender(updateData);
+        ui.notifications.info("Demande envoyée au MJ.");
+        return;
+      }
+
+      if (!game.user?.isGM) {
+        ui.notifications.warn("Seul le MJ peut répondre à cette demande.");
+        return;
+      }
+
+      if (action === "accept") {
+        updateData[`system.heritage.gmOptions.${allowField}`] = true;
+        updateData[`system.heritage.requests.${mode}.status`] = "accepted";
+        updateData[`system.heritage.requests.${mode}.resolvedAt`] = now;
+        updateData[`system.heritage.requests.${mode}.resolvedBy`] = game.user?.id ?? "";
+        updateData[`system.heritage.requests.${mode}.resolvedByName`] = game.user?.name ?? "";
+
+        await updateActorAndRender(updateData);
+        ui.notifications.info("Demande acceptée.");
+        return;
+      }
+
+      if (action === "refuse") {
+        updateData[`system.heritage.gmOptions.${allowField}`] = false;
+        updateData[`system.heritage.requests.${mode}.status`] = "refused";
+        updateData[`system.heritage.requests.${mode}.resolvedAt`] = now;
+        updateData[`system.heritage.requests.${mode}.resolvedBy`] = game.user?.id ?? "";
+        updateData[`system.heritage.requests.${mode}.resolvedByName`] = game.user?.name ?? "";
+
+        await updateActorAndRender(updateData);
+        ui.notifications.info("Demande refusée.");
+        return;
+      }
+
+      if (action === "reset") {
+        updateData[`system.heritage.gmOptions.${allowField}`] = false;
+        updateData[`system.heritage.requests.${mode}.status`] = "none";
+        updateData[`system.heritage.requests.${mode}.requestedAt`] = "";
+        updateData[`system.heritage.requests.${mode}.requestedBy`] = "";
+        updateData[`system.heritage.requests.${mode}.requestedByName`] = "";
+        updateData[`system.heritage.requests.${mode}.resolvedAt`] = "";
+        updateData[`system.heritage.requests.${mode}.resolvedBy`] = "";
+        updateData[`system.heritage.requests.${mode}.resolvedByName`] = "";
+
+        const currentMode = String(this.actor.system?.heritage?.mode ?? "clan");
+
+        if (mode === "hybridClan" && currentMode === "hybridClan") {
+          updateData["system.heritage.mode"] = "clan";
+          updateData["system.heritage.hybrid.secondaryClan"] = "";
+          updateData["system.heritage.hybrid.reason"] = "";
+        }
+
+        if (mode === "hybridVoie" && currentMode === "hybridVoie") {
+          updateData["system.heritage.mode"] = "voie";
+          updateData["system.heritage.hybrid.secondaryClan"] = "";
+          updateData["system.heritage.hybrid.reason"] = "";
+        }
+
+        await updateActorAndRender(updateData);
+        ui.notifications.info("Demande réinitialisée.");
+      }
+    });
+
     html.find(".shinobimancer-heritage-card").on("click", async (event) => {
       event.preventDefault();
 
       const mode = event.currentTarget?.dataset?.heritageMode;
       if (!mode) return;
 
+      if (event.target?.closest?.(".shinobimancer-heritage-request-action")) {
+        return;
+      }
+
       const cardIsAvailable = event.currentTarget?.dataset?.available === "true";
 
       if (!cardIsAvailable) {
-        ui.notifications.warn("Ce mode d’héritage n’est pas encore disponible dans le Shinobimancer.");
+        if (["hybridClan", "hybridVoie"].includes(String(mode))) {
+          ui.notifications.warn("Ce mode d’héritage nécessite une autorisation MJ.");
+        } else {
+          ui.notifications.warn("Ce mode d’héritage n’est pas encore disponible dans le Shinobimancer.");
+        }
+
         return;
       }
 

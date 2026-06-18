@@ -238,10 +238,61 @@
                 </div>
 
                 <div>
-                  <p class="shinobimancer-card-eyebrow">{{#if mode.available}}Disponible{{else}}Verrouillé{{/if}}</p>
+                  <p class="shinobimancer-card-eyebrow">{{mode.requestStatusLabel}}</p>
                   <h4>{{mode.label}}</h4>
                   <p>{{mode.description}}</p>
                   <span class="shinobimancer-mini-note">{{mode.note}}</span>
+
+                  {{#if mode.requestText}}
+                    <div class="shinobimancer-notice is-info">
+                      <strong>Demande MJ</strong>
+                      <span>{{mode.requestText}}</span>
+                    </div>
+                  {{/if}}
+
+                  {{#if mode.canRequestAuthorization}}
+                    <button
+                      type="button"
+                      class="shinobimancer-button is-secondary shinobimancer-heritage-request-action"
+                      data-heritage-request-mode="{{mode.key}}"
+                      data-heritage-request-action="request"
+                    >
+                      Demander au MJ
+                    </button>
+                  {{/if}}
+
+                  {{#if mode.canAcceptRequest}}
+                    <button
+                      type="button"
+                      class="shinobimancer-button is-primary shinobimancer-heritage-request-action"
+                      data-heritage-request-mode="{{mode.key}}"
+                      data-heritage-request-action="accept"
+                    >
+                      Demande acceptée
+                    </button>
+                  {{/if}}
+
+                  {{#if mode.canRefuseRequest}}
+                    <button
+                      type="button"
+                      class="shinobimancer-button is-secondary shinobimancer-heritage-request-action"
+                      data-heritage-request-mode="{{mode.key}}"
+                      data-heritage-request-action="refuse"
+                    >
+                      Demande refusée
+                    </button>
+                  {{/if}}
+
+                  {{#if mode.canResetRequest}}
+                    <button
+                      type="button"
+                      class="shinobimancer-button is-secondary shinobimancer-heritage-request-action"
+                      data-heritage-request-mode="{{mode.key}}"
+                      data-heritage-request-action="reset"
+                    >
+                      Réinitialiser la demande
+                    </button>
+                  {{/if}}
                 </div>
               </article>
             {{/each}}
@@ -249,7 +300,7 @@
 
           <div class="shinobimancer-notice is-warning">
             <strong>Validation MJ</strong>
-            <span>Les modes hybrides et le clan caché restent soumis aux options MJ. Le Réel Clan porte les obligations mécaniques quand le mode Clan caché est utilisé.</span>
+            <span>Les modes hybrides doivent être demandés au MJ depuis cette étape. Le MJ peut accepter, refuser ou réinitialiser la demande directement dans le Shinobimancer.</span>
           </div>
         </section>
       {{/if}}

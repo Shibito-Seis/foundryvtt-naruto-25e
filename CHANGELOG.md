@@ -2,6 +2,35 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.36.1 - Demandes MJ pour héritages hybrides
+
+### Ajouté
+
+- Ajout d’un cycle de demande MJ dans l’étape `Héritage` du Shinobimancer pour :
+  - `Clan hybride` ;
+  - `Voie hybridée`.
+- Côté joueur :
+  - ajout d’un bouton `Demander au MJ` sur les modes hybrides verrouillés ;
+  - affichage de l’état de demande : en attente, acceptée ou refusée.
+- Côté MJ :
+  - ajout des boutons `Demande acceptée` et `Demande refusée` quand une demande est en attente ;
+  - ajout d’un bouton discret de réinitialisation de demande.
+- L’acceptation MJ active automatiquement l’option correspondante :
+  - `allowHybridClan` pour `Clan hybride` ;
+  - `allowHybridVoie` pour `Voie hybridée`.
+
+### Modifié
+
+- Les modes `Clan hybride` et `Voie hybridée` restent verrouillés tant qu’ils ne sont pas autorisés par le MJ.
+- Un clic sur une carte hybride verrouillée affiche désormais un message indiquant qu’une autorisation MJ est requise.
+- La réinitialisation MJ retire l’autorisation du mode concerné et permet au joueur de refaire une demande.
+
+### Notes
+
+- Cette version ne modifie pas les règles de validation mécanique des héritages hybrides.
+- Les données de demande sont stockées dans `system.heritage.requests`.
+- Aucun changement n’est apporté à `actor.js`, la validation existante des options MJ est conservée.
+
 ## 0.1.36 - Voies jouables dans le Shinobimancer
 
 ### Ajouté
@@ -33,7 +62,6 @@ Toutes les modifications notables de ce système seront listées ici.
 - Kugutsu reste visible mais verrouillée tant que Suna n’est pas disponible à la création.
 - Cette version ne code pas encore les mécaniques détaillées propres aux voies.
 - Les effets de combat, d’ouverture des portes, de marionnettes, de techniques avancées et de spécialisations restent prévus pour les chantiers Combat / Actions et Techniques.
-
 
 ## 0.1.35 - Clans jouables étendus dans le Shinobimancer
 
@@ -71,7 +99,6 @@ Toutes les modifications notables de ce système seront listées ici.
 - Les effets liés au combat, aux transformations, aux blessures, aux états, aux techniques et aux objets spéciaux restent prévus pour les chantiers dédiés.
 - Le Shakujo Kagayaki reste noté comme futur objet spécial avec 5 augmentations / spécialisations de rang.
 - L’audit complet des passifs des 7 clans historiques sera traité plus tard, au moment des chantiers Combat / Actions, Techniques et Santé / Blessures / États.
-
 
 ## 0.1.34.1 - Correctif typage passif et Mangekyō Amaterasu
 
