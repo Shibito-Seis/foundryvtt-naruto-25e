@@ -2,6 +2,17 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.36.4 - Correctif noms assets rouleaux Shinobimancer
+
+### Corrigé
+
+- Correction des noms des assets rouleaux Shinobimancer :
+  - `scroll-top-tag.png.png` devient `scroll-top-tag.png` ;
+  - `scroll-bottom.png.png` devient `scroll-bottom.png`.
+- Les chemins CSS pointent désormais vers des fichiers réellement présents dans l’archive.
+
+---
+
 ## 0.1.36.3.1 - Correctif noms assets rouleaux Shinobimancer
 
 ### Corrigé
