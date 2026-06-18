@@ -2,6 +2,30 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.36.3 - Test assets rouleaux Shinobimancer
+
+### Ajouté
+
+- Ajout d’un premier test d’intégration des assets graphiste :
+  - `assets/ui/shinobimancer/scroll-top-tag.png` ;
+  - `assets/ui/shinobimancer/scroll-bottom.png`.
+
+### Modifié
+
+- Le CSS de maquette applique désormais les rouleaux comme fonds décoratifs de `.shinobimancer-shell`.
+- Les assets suivent la fenêtre Foundry lorsqu’elle est déplacée.
+- Les assets restent indépendants du corps scrollable du Shinobimancer.
+- Les fonds du header, du footer et des panneaux sont légèrement allégés pour laisser apparaître les PNG.
+
+### Notes
+
+- Aucun changement de logique.
+- Aucun changement de template.
+- Aucun changement du layout stable porté par `styles/shinobimancer.css`.
+- Ce test sert uniquement à vérifier le placement visuel des assets avant découpe ou ajustements plus fins.
+
+---
+
 ## 0.1.36.2 - Stabilisation Shinobimancer héritage et Nindō
 
 ### Ajouté

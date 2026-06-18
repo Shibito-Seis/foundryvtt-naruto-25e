@@ -292,3 +292,68 @@
   border-color: rgba(32, 22, 14, 0.28);
   background: rgba(205, 188, 150, 0.35);
 }
+
+/* ----------------------------------------- */
+/* Naruto 2.5e — Shinobimancer              */
+/* 0.1.36.3 — Test assets rouleaux           */
+/* ----------------------------------------- */
+
+/*
+  Test d'intégration des PNG graphiste.
+
+  Important :
+  - les images sont posées comme décors de .shinobimancer-shell ;
+  - elles suivent donc la fenêtre quand le joueur la déplace ;
+  - elles ne sont pas liées au viewport ;
+  - elles ne modifient pas le layout stable ;
+  - elles ne bloquent aucun clic.
+*/
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-shell {
+  background-color: #ae9b79;
+  background-image:
+    url("../assets/ui/shinobimancer/scroll-top-tag.png"),
+    url("../assets/ui/shinobimancer/scroll-bottom.png");
+  background-repeat: no-repeat, no-repeat;
+  background-position: center top, center bottom;
+  background-size: 100% 100%, 100% 100%;
+}
+
+/*
+  Les panneaux haut / bas restent fonctionnels, mais leur fond devient
+  plus discret pour laisser apparaître les assets.
+  On ne touche pas aux dimensions, au flex, au grid, ni au scroll.
+*/
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-hero,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-topbar,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-footer {
+  background: rgba(174, 155, 121, 0.08);
+}
+
+/*
+  Les bordures haut / bas sont allégées pour ne pas concurrencer
+  les traits dessinés des rouleaux.
+*/
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-hero,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-topbar {
+  border-bottom-color: rgba(32, 22, 14, 0.18);
+}
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-footer {
+  border-top-color: rgba(32, 22, 14, 0.18);
+}
+
+/*
+  Les panneaux internes gardent un fond léger pour rester lisibles,
+  mais pas assez opaque pour étouffer complètement le décor.
+*/
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice-intro,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice-card,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-panel,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-page-header,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-summary {
+  background: rgba(174, 155, 121, 0.18);
+}
