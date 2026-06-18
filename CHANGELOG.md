@@ -2,6 +2,39 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.36 - Voies jouables dans le Shinobimancer
+
+### Ajouté
+
+- Ajout des Voies dans l’étape `Clan / Voie` du Shinobimancer.
+- Ajout de cartes de Voies pour :
+  - Shōkan-shi - Voie du Genjutsu ;
+  - Ninpō - Voie du Ninjutsu ;
+  - Kriegsiter - Voie des Armes ;
+  - Kugutsu - Voie du Marionnettiste ;
+  - Hachimon - Voie du Taijutsu.
+- Ajout de l’affichage conditionnel de l’étape `Clan / Voie` selon le mode d’héritage choisi :
+  - `Clan` affiche uniquement les clans ;
+  - `Voie` affiche uniquement les voies ;
+  - `Clan hybride` affiche un clan principal et un clan secondaire ;
+  - `Voie hybridée` affiche un clan principal et une voie ;
+  - `Clan caché / dissimulé` conserve le clan officiel/social et le Réel Clan.
+
+### Modifié
+
+- Le clic sur une carte de clan respecte désormais le mode d’héritage courant au lieu de forcer systématiquement le mode `Clan`.
+- Le mode `Voie hybridée` conserve le clan principal lorsqu’une voie est sélectionnée.
+- Le mode `Clan hybride` permet de sélectionner un clan secondaire distinct du clan principal.
+- Le compteur d’arme principale du paquetage de départ affiche maintenant `0 / 1` avant sélection puis `1 / 1` après sélection.
+- Mise à jour du texte de l’écran de choix Shinobimancer / fiche manuelle pour mentionner les voies.
+
+### Notes
+
+- Kugutsu reste visible mais verrouillée tant que Suna n’est pas disponible à la création.
+- Cette version ne code pas encore les mécaniques détaillées propres aux voies.
+- Les effets de combat, d’ouverture des portes, de marionnettes, de techniques avancées et de spécialisations restent prévus pour les chantiers Combat / Actions et Techniques.
+
+
 ## 0.1.35 - Clans jouables étendus dans le Shinobimancer
 
 ### Ajouté

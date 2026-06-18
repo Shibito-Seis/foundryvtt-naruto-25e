@@ -258,11 +258,11 @@
         <section class="shinobimancer-panel">
           <div class="shinobimancer-panel-heading">
             <div>
-              <p class="shinobimancer-kicker">Registre des clans</p>
-              <h3>Clans jouables du Shinobimancer</h3>
+              <p class="shinobimancer-kicker">Registre d’héritage</p>
+              <h3>Clan / Voie</h3>
             </div>
 
-            <span class="shinobimancer-status-pill">25 clans jouables</span>
+            <span class="shinobimancer-status-pill">{{summary.heritageMode}}</span>
           </div>
 
           {{#if hiddenClanMode}}
@@ -369,36 +369,261 @@
                 <span>{{hiddenClanSummary.awarenessSummary}}</span>
               </div>
             </section>
-          {{else}}
-          <div class="shinobimancer-clan-grid">
-            {{#each clanCards as |clan|}}
-              <article class="shinobimancer-clan-card {{#if clan.selected}}is-selected{{/if}}" data-clan="{{clan.key}}">
-                <div class="shinobimancer-clan-emblem">
-                  <img src="{{clan.kamon}}" alt="{{clan.label}}" />
-                </div>
+          {{/if}}
 
-                <div class="shinobimancer-clan-body">
-                  <p class="shinobimancer-card-eyebrow">{{clan.village}} · {{clan.skillLabel}}</p>
-                  <h4>{{clan.label}}</h4>
-                  <p>{{clan.tagline}}</p>
+          {{#if clanOnlyMode}}
+            <div class="shinobimancer-notice is-info">
+              <strong>Clan</strong>
+              <span>Choisis le clan principal du Shinobi. Les obligations de création seront appliquées automatiquement par la fiche.</span>
+            </div>
 
-                  <div class="shinobimancer-clan-feature">
-                    {{clan.feature}}
+            <div class="shinobimancer-clan-grid">
+              {{#each clanCards as |clan|}}
+                <article
+                  class="shinobimancer-clan-card {{#if clan.selected}}is-selected{{/if}} {{#unless clan.available}}is-disabled{{/unless}}"
+                  data-clan="{{clan.key}}"
+                  data-clan-role="mainClan"
+                  data-available="{{#if clan.available}}true{{else}}false{{/if}}"
+                >
+                  <div class="shinobimancer-clan-emblem">
+                    <img src="{{clan.kamon}}" alt="{{clan.label}}" />
                   </div>
 
-                  <div class="shinobimancer-notice is-warning">
-                    <strong>Avertissement</strong>
-                    <span>{{clan.warning}}</span>
-                  </div>
-                </div>
-              </article>
-            {{/each}}
-          </div>
+                  <div class="shinobimancer-clan-body">
+                    <p class="shinobimancer-card-eyebrow">{{clan.village}} · {{clan.skillLabel}}</p>
+                    <h4>{{clan.label}}</h4>
+                    <p>{{clan.tagline}}</p>
 
-          <div class="shinobimancer-notice is-info">
-            <strong>Clans étendus</strong>
-            <span>Les 25 clans jouables déclarés dans le système sont maintenant proposés à la création. Les effets complexes restent automatisés plus tard par les chantiers Inventaire, Combat, Techniques et Santé.</span>
-          </div>
+                    <div class="shinobimancer-clan-feature">
+                      {{clan.feature}}
+                    </div>
+
+                    <div class="shinobimancer-notice is-warning">
+                      <strong>Avertissement</strong>
+                      <span>{{clan.warning}}</span>
+                    </div>
+
+                    {{#if clan.selected}}
+                      <span class="shinobimancer-selected-stamp">Sélectionné</span>
+                    {{/if}}
+                  </div>
+                </article>
+              {{/each}}
+            </div>
+          {{/if}}
+
+          {{#if voieOnlyMode}}
+            <div class="shinobimancer-notice is-info">
+              <strong>Voie</strong>
+              <span>Choisis une voie de progression. Les clans sont masqués dans ce mode pour éviter toute confusion.</span>
+            </div>
+
+            <div class="shinobimancer-clan-grid">
+              {{#each voieCards as |voie|}}
+                <article
+                  class="shinobimancer-clan-card shinobimancer-voie-card {{#if voie.selected}}is-selected{{/if}} {{#unless voie.available}}is-disabled{{/unless}}"
+                  data-voie="{{voie.key}}"
+                  data-available="{{#if voie.available}}true{{else}}false{{/if}}"
+                >
+                  <div class="shinobimancer-clan-emblem">
+                    <span>{{voie.emblem}}</span>
+                  </div>
+
+                  <div class="shinobimancer-clan-body">
+                    <p class="shinobimancer-card-eyebrow">{{voie.village}} · {{voie.status}}</p>
+                    <h4>{{voie.label}}</h4>
+                    <p>{{voie.tagline}}</p>
+
+                    <div class="shinobimancer-clan-feature">
+                      {{voie.feature}}
+                    </div>
+
+                    <div class="shinobimancer-notice is-warning">
+                      <strong>Avertissement</strong>
+                      <span>{{voie.warning}}</span>
+                    </div>
+
+                    {{#if voie.selected}}
+                      <span class="shinobimancer-selected-stamp">Sélectionnée</span>
+                    {{/if}}
+                  </div>
+                </article>
+              {{/each}}
+            </div>
+          {{/if}}
+
+          {{#if hybridClanMode}}
+            <div class="shinobimancer-notice is-warning">
+              <strong>Clan hybride</strong>
+              <span>Ce mode reste soumis à validation MJ. Choisis un clan principal, puis un clan secondaire différent.</span>
+            </div>
+
+            <section class="shinobimancer-panel">
+              <div class="shinobimancer-panel-heading">
+                <div>
+                  <p class="shinobimancer-kicker">Clan principal</p>
+                  <h3>Héritage dominant</h3>
+                </div>
+              </div>
+
+              <div class="shinobimancer-clan-grid">
+                {{#each clanCards as |clan|}}
+                  <article
+                    class="shinobimancer-clan-card {{#if clan.selected}}is-selected{{/if}}"
+                    data-clan="{{clan.key}}"
+                    data-clan-role="mainClan"
+                    data-available="true"
+                  >
+                    <div class="shinobimancer-clan-emblem">
+                      <img src="{{clan.kamon}}" alt="{{clan.label}}" />
+                    </div>
+
+                    <div class="shinobimancer-clan-body">
+                      <p class="shinobimancer-card-eyebrow">{{clan.village}} · {{clan.skillLabel}}</p>
+                      <h4>{{clan.label}}</h4>
+                      <p>{{clan.tagline}}</p>
+
+                      <div class="shinobimancer-clan-feature">
+                        {{clan.feature}}
+                      </div>
+
+                      {{#if clan.selected}}
+                        <span class="shinobimancer-selected-stamp">Clan principal</span>
+                      {{/if}}
+                    </div>
+                  </article>
+                {{/each}}
+              </div>
+            </section>
+
+            <section class="shinobimancer-panel">
+              <div class="shinobimancer-panel-heading">
+                <div>
+                  <p class="shinobimancer-kicker">Clan secondaire</p>
+                  <h3>Héritage secondaire</h3>
+                </div>
+              </div>
+
+              <div class="shinobimancer-clan-grid">
+                {{#each secondaryClanCards as |clan|}}
+                  <article
+                    class="shinobimancer-clan-card {{#if clan.selected}}is-selected{{/if}} {{#unless clan.available}}is-disabled{{/unless}}"
+                    data-clan="{{clan.key}}"
+                    data-clan-role="secondaryClan"
+                    data-available="{{#if clan.available}}true{{else}}false{{/if}}"
+                  >
+                    <div class="shinobimancer-clan-emblem">
+                      <img src="{{clan.kamon}}" alt="{{clan.label}}" />
+                    </div>
+
+                    <div class="shinobimancer-clan-body">
+                      <p class="shinobimancer-card-eyebrow">{{clan.village}} · {{clan.skillLabel}}</p>
+                      <h4>{{clan.label}}</h4>
+                      <p>{{clan.tagline}}</p>
+
+                      <div class="shinobimancer-clan-feature">
+                        {{#if clan.available}}
+                          {{clan.feature}}
+                        {{else}}
+                          Le clan secondaire doit être différent du clan principal.
+                        {{/if}}
+                      </div>
+
+                      {{#if clan.selected}}
+                        <span class="shinobimancer-selected-stamp">Clan secondaire</span>
+                      {{/if}}
+                    </div>
+                  </article>
+                {{/each}}
+              </div>
+            </section>
+          {{/if}}
+
+          {{#if hybridVoieMode}}
+            <div class="shinobimancer-notice is-warning">
+              <strong>Voie hybridée</strong>
+              <span>Ce mode reste soumis à validation MJ. Choisis un clan principal, puis une voie.</span>
+            </div>
+
+            <section class="shinobimancer-panel">
+              <div class="shinobimancer-panel-heading">
+                <div>
+                  <p class="shinobimancer-kicker">Clan principal</p>
+                  <h3>Base de l’héritage</h3>
+                </div>
+              </div>
+
+              <div class="shinobimancer-clan-grid">
+                {{#each clanCards as |clan|}}
+                  <article
+                    class="shinobimancer-clan-card {{#if clan.selected}}is-selected{{/if}}"
+                    data-clan="{{clan.key}}"
+                    data-clan-role="mainClan"
+                    data-available="true"
+                  >
+                    <div class="shinobimancer-clan-emblem">
+                      <img src="{{clan.kamon}}" alt="{{clan.label}}" />
+                    </div>
+
+                    <div class="shinobimancer-clan-body">
+                      <p class="shinobimancer-card-eyebrow">{{clan.village}} · {{clan.skillLabel}}</p>
+                      <h4>{{clan.label}}</h4>
+                      <p>{{clan.tagline}}</p>
+
+                      <div class="shinobimancer-clan-feature">
+                        {{clan.feature}}
+                      </div>
+
+                      {{#if clan.selected}}
+                        <span class="shinobimancer-selected-stamp">Clan principal</span>
+                      {{/if}}
+                    </div>
+                  </article>
+                {{/each}}
+              </div>
+            </section>
+
+            <section class="shinobimancer-panel">
+              <div class="shinobimancer-panel-heading">
+                <div>
+                  <p class="shinobimancer-kicker">Voie</p>
+                  <h3>Orientation hybridée</h3>
+                </div>
+              </div>
+
+              <div class="shinobimancer-clan-grid">
+                {{#each voieCards as |voie|}}
+                  <article
+                    class="shinobimancer-clan-card shinobimancer-voie-card {{#if voie.selected}}is-selected{{/if}} {{#unless voie.available}}is-disabled{{/unless}}"
+                    data-voie="{{voie.key}}"
+                    data-available="{{#if voie.available}}true{{else}}false{{/if}}"
+                  >
+                    <div class="shinobimancer-clan-emblem">
+                      <span>{{voie.emblem}}</span>
+                    </div>
+
+                    <div class="shinobimancer-clan-body">
+                      <p class="shinobimancer-card-eyebrow">{{voie.village}} · {{voie.status}}</p>
+                      <h4>{{voie.label}}</h4>
+                      <p>{{voie.tagline}}</p>
+
+                      <div class="shinobimancer-clan-feature">
+                        {{voie.feature}}
+                      </div>
+
+                      <div class="shinobimancer-notice is-warning">
+                        <strong>Avertissement</strong>
+                        <span>{{voie.warning}}</span>
+                      </div>
+
+                      {{#if voie.selected}}
+                        <span class="shinobimancer-selected-stamp">Voie sélectionnée</span>
+                      {{/if}}
+                    </div>
+                  </article>
+                {{/each}}
+              </div>
+            </section>
           {{/if}}
         </section>
       {{/if}}
@@ -730,7 +955,7 @@
           <section class="shinobimancer-panel">
             <div class="shinobimancer-panel-heading">
               <div>
-                <p class="shinobimancer-kicker">Choix 1 / 1</p>
+                <p class="shinobimancer-kicker">Choix {{equipmentPreview.selectedMainWeaponCount}} / {{equipmentPreview.requiredMainWeaponCount}}</p>
                 <h3>Arme principale</h3>
               </div>
             </div>

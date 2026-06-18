@@ -111,6 +111,88 @@ const SHINOBIMANCER_CLAN_PREVIEWS = {
   }
 };
 
+const SHINOBIMANCER_VOIE_PREVIEWS = {
+  shokanShi: {
+    emblem: "幻",
+    tagline: "Voie du Genjutsu, illusions et contrôle perceptif.",
+    feature: "Orientation Genjutsu, manipulation mentale et tromperie sensorielle.",
+    warning: "Les techniques détaillées de Genjutsu seront automatisées dans le chantier Techniques."
+  },
+  ninpo: {
+    emblem: "忍",
+    tagline: "Voie du Ninjutsu, polyvalence et techniques shinobi.",
+    feature: "Orientation Ninjutsu, affinités, contrôle du Chakra et techniques variées.",
+    warning: "Les effets détaillés des techniques Ninpō seront automatisés plus tard."
+  },
+  kriegsiter: {
+    emblem: "武",
+    tagline: "Voie des Armes, discipline martiale et maîtrise de l’équipement.",
+    feature: "Orientation Armes, combat armé et spécialisation martiale.",
+    warning: "Les actions de combat avancées seront automatisées dans le chantier Combat / Actions."
+  },
+  kugutsu: {
+    emblem: "傀",
+    tagline: "Voie du Marionnettiste, pantins, fils de Chakra et préparation.",
+    feature: "Voie liée à Suna. Visible mais verrouillée tant que Suna n’est pas jouable.",
+    warning: "Kugutsu reste verrouillée pour l’instant, car Suna n’est pas encore disponible à la création."
+  },
+  hachimon: {
+    emblem: "門",
+    tagline: "Voie du Taijutsu, dépassement physique et portes internes.",
+    feature: "Orientation Taijutsu, corps, effort extrême et puissance physique.",
+    warning: "Les ouvertures de portes et leurs conséquences seront automatisées dans le chantier Combat / Santé."
+  }
+};
+
+function getShinobimancerVoieKeys() {
+  return Object.keys(NARUTO25E.voies ?? {}).filter((voieKey) => {
+    return Boolean(NARUTO25E.voies?.[voieKey]);
+  });
+}
+
+function getVoiePreviewData(voieKey, voie = {}) {
+  const preview = SHINOBIMANCER_VOIE_PREVIEWS[voieKey] ?? {};
+  const voieLabel = voie.label ?? voieKey;
+
+  return {
+    emblem: preview.emblem ?? voieLabel.slice(0, 1),
+    tagline: preview.tagline ?? `${voieLabel} — voie de progression shinobi.`,
+    feature: preview.feature ?? "Voie jouable préparée côté création.",
+    warning: preview.warning ?? "Les effets complexes de cette voie seront automatisés dans les chantiers dédiés."
+  };
+}
+
+function buildVoieCards(actor) {
+  const heritage = actor?.system?.heritage ?? {};
+  const selectedVoie = String(heritage.voie ?? "");
+  const villageKey = String(heritage.village ?? "konoha");
+
+  return getShinobimancerVoieKeys().map((voieKey) => {
+    const voie = NARUTO25E.voies?.[voieKey] ?? {};
+    const preview = getVoiePreviewData(voieKey, voie);
+    const voieVillage = String(voie.village ?? "any");
+    const villageAllowed = voieVillage === "any" || voieVillage === villageKey;
+    const selectable = Boolean(voie.selectable) && villageAllowed;
+    const villageLabel = voieVillage === "any"
+      ? "Tous villages"
+      : NARUTO25E.villages?.[voieVillage]?.label ?? voieVillage;
+
+    return {
+      key: voieKey,
+      emblem: preview.emblem,
+      tagline: preview.tagline,
+      feature: preview.feature,
+      warning: preview.warning,
+      label: voie.label ?? voieKey,
+      selected: selectedVoie === voieKey,
+      available: selectable,
+      village: villageLabel,
+      status: selectable ? "Disponible" : "Verrouillée",
+      tags: Array.isArray(voie.tags) ? voie.tags : []
+    };
+  });
+}
+
 function getShinobimancerClanKeys() {
   return Object.keys(NARUTO25E.clans ?? {}).filter((clanKey) => {
     return Boolean(NARUTO25E.clans?.[clanKey]);
@@ -519,16 +601,21 @@ function buildHeritageModeCards(actor) {
   ];
 }
 
-function buildClanCards(actor) {
-  const selectedClan = actor?.system?.heritage?.clan ?? "";
+function buildClanCards(actor, options = {}) {
+  const selectedPath = String(options.selectedPath ?? "heritage.clan");
+  const cardRole = String(options.role ?? "mainClan");
+  const excludedClan = String(options.excludeClan ?? "");
+  const selectedClan = String(foundry.utils.getProperty(actor?.system ?? {}, selectedPath) ?? "");
 
   return getShinobimancerClanKeys().map((clanKey) => {
     const clan = NARUTO25E.clans?.[clanKey] ?? {};
     const skillLabel = getClanSkillLabel(clan);
     const preview = getClanPreviewData(clanKey, clan);
+    const available = !excludedClan || clanKey !== excludedClan;
 
     return {
       key: clanKey,
+      role: cardRole,
       emblem: preview.emblem,
       kamon: `systems/naruto-25e/assets/clans/kamon_${clanKey}.svg`,
       tagline: preview.tagline,
@@ -536,7 +623,7 @@ function buildClanCards(actor) {
       warning: preview.warning,
       label: clan.label ?? clanKey,
       selected: selectedClan === clanKey,
-      available: true,
+      available,
       village: NARUTO25E.villages?.[clan.village]?.label ?? "Konoha",
       skillLabel
     };
@@ -816,6 +903,8 @@ function buildEquipmentPreview(actor) {
     }),
     fixed: SHINOBIMANCER_STARTING_EQUIPMENT.fixed.map(normalizeCard),
     selectedMainWeapon,
+    selectedMainWeaponCount: selectedMainWeapon ? 1 : 0,
+    requiredMainWeaponCount: 1,
     selectedCombatLots,
     selectedCombatLotCount: selectedCombatLots.length,
     requiredCombatLotCount: 2
@@ -1065,12 +1154,29 @@ export class Naruto25eShinobimancerApplication extends Application {
       maxCreationLineage: 0
     };
 
+    const heritageMode = String(heritage.mode ?? "clan");
+
     context.villageCards = buildVillageCards(this.actor);
     context.heritageModeCards = buildHeritageModeCards(this.actor);
-    context.clanCards = buildClanCards(this.actor);
+    context.clanCards = buildClanCards(this.actor, {
+      selectedPath: "heritage.clan",
+      role: "mainClan"
+    });
+    context.secondaryClanCards = buildClanCards(this.actor, {
+      selectedPath: "heritage.hybrid.secondaryClan",
+      role: "secondaryClan",
+      excludeClan: String(heritage.clan ?? "")
+    });
     context.hiddenClanOfficialCards = buildHiddenClanCards(this.actor, "officialClan");
     context.hiddenClanRealCards = buildHiddenClanCards(this.actor, "realClan");
-    context.hiddenClanMode = heritage.mode === "hiddenClan";
+    context.voieCards = buildVoieCards(this.actor);
+
+    context.heritageMode = heritageMode;
+    context.clanOnlyMode = heritageMode === "clan";
+    context.voieOnlyMode = heritageMode === "voie";
+    context.hybridClanMode = heritageMode === "hybridClan";
+    context.hybridVoieMode = heritageMode === "hybridVoie";
+    context.hiddenClanMode = heritageMode === "hiddenClan";
     context.hiddenClanAwarenessStates = Object.entries(NARUTO25E.hiddenClanAwarenessStates ?? {}).map(([key, state]) => ({
       key,
       label: state.label,
@@ -1476,6 +1582,8 @@ export class Naruto25eShinobimancerApplication extends Application {
     html.find(".shinobimancer-clan-card").on("click", async (event) => {
       event.preventDefault();
 
+      if (!canEditCreation()) return;
+
       if (event.currentTarget.classList.contains("shinobimancer-hidden-clan-card")) {
         return;
       }
@@ -1483,14 +1591,74 @@ export class Naruto25eShinobimancerApplication extends Application {
       const clanKey = event.currentTarget?.dataset?.clan;
       if (!clanKey) return;
 
-      await updateActorAndRender({
-        "system.heritage.mode": "clan",
-        "system.heritage.clan": clanKey,
-        "system.identity.clan": clanKey,
-        "system.heritage.voie": "",
-        "system.heritage.hybrid.secondaryClan": "",
-        "system.heritage.hybrid.reason": ""
-      });
+      const available = event.currentTarget?.dataset?.available !== "false";
+      if (!available) {
+        ui.notifications.warn("Ce choix de clan n’est pas disponible dans ce rôle.");
+        return;
+      }
+
+      const role = String(event.currentTarget?.dataset?.clanRole ?? "mainClan");
+      const currentMode = String(this.actor.system?.heritage?.mode ?? "clan");
+      const updateData = {};
+
+      if (role === "secondaryClan") {
+        updateData["system.heritage.mode"] = "hybridClan";
+        updateData["system.heritage.hybrid.secondaryClan"] = clanKey;
+        updateData["system.heritage.voie"] = "";
+      } else {
+        updateData["system.heritage.clan"] = clanKey;
+        updateData["system.identity.clan"] = clanKey;
+
+        if (currentMode === "hybridVoie") {
+          updateData["system.heritage.mode"] = "hybridVoie";
+          updateData["system.heritage.hybrid.secondaryClan"] = "";
+          updateData["system.heritage.hybrid.reason"] = "";
+        } else if (currentMode === "hybridClan") {
+          updateData["system.heritage.mode"] = "hybridClan";
+          updateData["system.heritage.voie"] = "";
+        } else {
+          updateData["system.heritage.mode"] = "clan";
+          updateData["system.heritage.voie"] = "";
+          updateData["system.heritage.hybrid.secondaryClan"] = "";
+          updateData["system.heritage.hybrid.reason"] = "";
+        }
+      }
+
+      await updateActorAndRender(updateData);
+    });
+
+    html.find(".shinobimancer-voie-card").on("click", async (event) => {
+      event.preventDefault();
+
+      if (!canEditCreation()) return;
+
+      const voieKey = event.currentTarget?.dataset?.voie;
+      if (!voieKey) return;
+
+      const available = event.currentTarget?.dataset?.available === "true";
+      if (!available) {
+        ui.notifications.warn("Cette voie n’est pas disponible pour ce village ou cette version.");
+        return;
+      }
+
+      const currentMode = String(this.actor.system?.heritage?.mode ?? "clan");
+      const updateData = {
+        "system.heritage.voie": voieKey
+      };
+
+      if (currentMode === "hybridVoie") {
+        updateData["system.heritage.mode"] = "hybridVoie";
+        updateData["system.heritage.hybrid.secondaryClan"] = "";
+        updateData["system.heritage.hybrid.reason"] = "";
+      } else {
+        updateData["system.heritage.mode"] = "voie";
+        updateData["system.heritage.clan"] = "";
+        updateData["system.identity.clan"] = "";
+        updateData["system.heritage.hybrid.secondaryClan"] = "";
+        updateData["system.heritage.hybrid.reason"] = "";
+      }
+
+      await updateActorAndRender(updateData);
     });
 
     html.find(".shinobimancer-hidden-clan-card").on("click", async (event) => {
