@@ -2,6 +2,31 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.36.7 - Cadre dossier central Shinobimancer
+
+### Modifié
+
+- Ajout d’un wrapper visuel `shinobimancer-dossier-frame` autour du contenu principal et du résumé permanent.
+- Les rouleaux haut/bas encadrent désormais la zone dossier centrale :
+  - contenu principal ;
+  - résumé permanent.
+- La colonne d’étapes reste indépendante des rouleaux haut/bas, en préparation de son futur asset dédié.
+- Le header principal `.shinobimancer-topbar` est neutralisé visuellement dans la fenêtre principale.
+- Le titre fonctionnel est désormais porté par le corps principal via `.shinobimancer-page-header`.
+- Le footer principal reste fonctionnel, mais s’aligne maintenant sur la zone dossier plutôt que sur toute la fenêtre.
+- Stabilisation du footer de l’écran de choix : il reste en bas de la fenêtre, tandis que le corps de choix devient scrollable.
+
+### Notes
+
+- Aucun changement de logique de création.
+- Aucun changement JavaScript.
+- Les assets utilisés restent :
+  - `assets/ui/shinobimancer/scroll-top.png` ;
+  - `assets/ui/shinobimancer/scroll-bottom.png`.
+- L’asset de rouleau d’étapes gauche et l’étiquette séparée seront intégrés plus tard.
+
+---
+
 ## 0.1.36.6 - Correctif nom asset rouleau haut Shinobimancer
 
 ### Corrigé
