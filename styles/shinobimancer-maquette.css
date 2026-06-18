@@ -295,65 +295,110 @@
 
 /* ----------------------------------------- */
 /* Naruto 2.5e — Shinobimancer              */
-/* 0.1.36.3 — Test assets rouleaux           */
+/* 0.1.36.5 — Header/footer assets rognés    */
 /* ----------------------------------------- */
 
 /*
-  Test d'intégration des PNG graphiste.
+  Test d'intégration des PNG graphiste rognés.
 
-  Important :
-  - les images sont posées comme décors de .shinobimancer-shell ;
-  - elles suivent donc la fenêtre quand le joueur la déplace ;
-  - elles ne sont pas liées au viewport ;
-  - elles ne modifient pas le layout stable ;
-  - elles ne bloquent aucun clic.
+  Objectif :
+  - scroll-top.png devient la peau visuelle du header ;
+  - scroll-bottom.png devient la peau visuelle du footer ;
+  - les conteneurs .shinobimancer-hero, .shinobimancer-topbar et .shinobimancer-footer restent en place ;
+  - on ne touche pas au layout stable : grilles, scrolls, hauteurs globales et boutons restent portés par shinobimancer.css.
 */
 
+/* Base : pas de décor global pleine page. */
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-shell {
   background-color: #ae9b79;
-  background-image:
-    url("../assets/ui/shinobimancer/scroll-top-tag.png"),
-    url("../assets/ui/shinobimancer/scroll-bottom.png");
-  background-repeat: no-repeat, no-repeat;
-  background-position: center top, center bottom;
-  background-size: 100% 100%, 100% 100%;
+  background-image: none;
 }
 
-/*
-  Les panneaux haut / bas restent fonctionnels, mais leur fond devient
-  plus discret pour laisser apparaître les assets.
-  On ne touche pas aux dimensions, au flex, au grid, ni au scroll.
-*/
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-hero,
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-topbar,
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-footer {
-  background: rgba(174, 155, 121, 0.08);
-}
-
-/*
-  Les bordures haut / bas sont allégées pour ne pas concurrencer
-  les traits dessinés des rouleaux.
-*/
+/* ----------------------------------------- */
+/* Header principal / accueil                */
+/* ----------------------------------------- */
 
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-hero,
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-topbar {
-  border-bottom-color: rgba(32, 22, 14, 0.18);
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-footer {
-  border-top-color: rgba(32, 22, 14, 0.18);
+  background-color: transparent;
+  background-image: url("../assets/ui/shinobimancer/scroll-top.png");
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-size: min(920px, calc(100% - 2rem)) auto;
+  border-bottom-color: transparent;
+  box-shadow: none;
 }
 
 /*
-  Les panneaux internes gardent un fond léger pour rester lisibles,
-  mais pas assez opaque pour étouffer complètement le décor.
+  Le contenu du header reste le contenu Foundry réel :
+  titre, acteur, portrait, boutons éventuels.
+  On le garde visible au-dessus de l'asset.
 */
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-hero > *,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-topbar > * {
+  position: relative;
+  z-index: 1;
+}
 
+/*
+  Comme le rouleau contient déjà le grand titre graphique,
+  on atténue le bloc texte technique sans le supprimer.
+  Cela permet de tester l'asset comme vrai header sans casser le template.
+*/
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-hero-content h1,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-topbar h1 {
+  border-bottom-color: rgba(139, 47, 34, 0.35);
+  text-shadow: 0 1px 0 rgba(174, 155, 121, 0.55);
+}
+
+/* Encadré acteur : on le garde lisible et cliquable. */
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-topbar-actor,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-hero-portrait img {
+  background: rgba(174, 155, 121, 0.42);
+  border-color: rgba(32, 22, 14, 0.45);
+}
+
+/* ----------------------------------------- */
+/* Footer                                    */
+/* ----------------------------------------- */
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-footer {
+  background-color: transparent;
+  background-image: url("../assets/ui/shinobimancer/scroll-bottom.png");
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: min(920px, calc(100% - 2rem)) auto;
+  border-top-color: transparent;
+  box-shadow: none;
+}
+
+/* Les boutons et notes restent au-dessus du rouleau bas. */
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-footer > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Les boutons doivent rester très lisibles sur le rouleau. */
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-footer .shinobimancer-button.is-secondary {
+  background: rgba(205, 188, 150, 0.62);
+}
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-footer .shinobimancer-button.is-primary {
+  background: var(--shinobi-red-dark);
+}
+
+/* ----------------------------------------- */
+/* Panneaux internes                         */
+/* ----------------------------------------- */
+
+/*
+  On garde les zones internes lisibles.
+  Les rouleaux remplacent surtout le haut et le bas, pas les panneaux de contenu.
+*/
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice-intro,
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice-card,
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-panel,
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-page-header,
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-summary {
-  background: rgba(174, 155, 121, 0.18);
+  background: rgba(174, 155, 121, 0.22);
 }

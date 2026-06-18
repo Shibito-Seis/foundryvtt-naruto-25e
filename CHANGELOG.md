@@ -2,6 +2,31 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.36.5 - Test header/footer assets rognés Shinobimancer
+
+### Modifié
+
+- Remplacement du test d’assets pleine toile par deux PNG rognés :
+  - `assets/ui/shinobimancer/scroll-top.png` ;
+  - `assets/ui/shinobimancer/scroll-bottom.png`.
+- `scroll-top.png` est utilisé comme peau visuelle du header :
+  - écran d’accueil ;
+  - fenêtre principale du Shinobimancer.
+- `scroll-bottom.png` est utilisé comme peau visuelle du footer.
+- Les conteneurs existants restent en place :
+  - `.shinobimancer-hero` ;
+  - `.shinobimancer-topbar` ;
+  - `.shinobimancer-footer`.
+- Le layout stable, le scroll, les colonnes et les boutons restent gérés par `styles/shinobimancer.css`.
+
+### Notes
+
+- Aucun changement de logique.
+- Aucun changement de template.
+- `tag-left.png` n’est pas encore intégré : l’étiquette séparée sera ajoutée plus tard lorsqu’elle sera disponible.
+
+---
+
 ## 0.1.36.4 - Correctif noms assets rouleaux Shinobimancer
 
 ### Corrigé
