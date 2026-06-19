@@ -2,6 +2,38 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.39.1 - Dossiers de compendiums et rangement automatique
+
+### Ajouté
+
+- Ajout de dossiers internes dans les compendiums de techniques.
+- Ajout de dossiers internes dans les compendiums d’équipement.
+- Ajout automatique des 25 dossiers de clans dans le compendium `Techniques de lignées`.
+- Ajout d’une assignation automatique des items importés vers le bon dossier de compendium.
+
+### Modifié
+
+- Les techniques `Gensou` présentes dans les sources legacy communes sont désormais importées dans `Techniques — Genjutsu`, dossier `Gensou`.
+- Les techniques de Ninjutsu sont rangées par affinité ou domaine :
+  - Katon ;
+  - Suiton ;
+  - Doton ;
+  - Fūton ;
+  - Raïton ;
+  - Iryō ;
+  - Fūin.
+- Les techniques Mokuton legacy sont normalisées :
+  - `family: "Lignée"` devient `family: "lignee"` ;
+  - `rank: "Mokuton"` devient provisoirement `rank: "d"` ;
+  - `taxonomy.clan` devient `senju` ;
+  - le dossier cible devient `Senju`.
+- Les techniques de lignée sont rangées par clan, sans dossier générique `Divers`.
+
+### Notes
+
+- Cette version ne remplit pas encore massivement les compendiums rang D.
+- La priorité de la prochaine passe est l’audit et l’ajout des techniques rang D / assimilées rang D.
+
 ## 0.1.39 - Charpente compendiums et taxonomy
 
 ### Ajouté

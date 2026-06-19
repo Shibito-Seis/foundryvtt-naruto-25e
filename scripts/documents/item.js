@@ -77,8 +77,40 @@ export class Naruto25eItem extends Item {
         system.family = system.family ?? "";
         system.domain = system.domain ?? "";
         system.rank = system.rank ?? "";
-        if (!system.taxonomy.category || system.taxonomy.category === "divers") {
-            system.taxonomy.category = this._inferTechniqueTaxonomyCategory(system);
+
+        this._normalizeTechniqueLegacyData(system);
+
+        const inferredCategory = this._inferTechniqueTaxonomyCategory(system);
+        const inferredClan = this._inferTechniqueClanKey(system);
+        const inferredElement = this._inferTechniqueElementKey(system);
+        const inferredSchool = this._inferTechniqueSchoolKey(system);
+
+        if (!system.taxonomy.category || system.taxonomy.category === "divers" || system.taxonomy.category === "commune") {
+            system.taxonomy.category = inferredCategory;
+        }
+
+        if (!system.taxonomy.clan && inferredClan) {
+            system.taxonomy.clan = inferredClan;
+        }
+
+        if (!system.taxonomy.element && inferredElement) {
+            system.taxonomy.element = inferredElement;
+        }
+
+        if (!system.taxonomy.school && inferredSchool) {
+            system.taxonomy.school = inferredSchool;
+        }
+
+        if (!system.taxonomy.subcategory) {
+            if (system.taxonomy.category === "lignee" && system.taxonomy.clan) {
+                system.taxonomy.subcategory = this._inferTechniqueLineageSubcategory(system);
+            } else if (system.taxonomy.element) {
+                system.taxonomy.subcategory = system.taxonomy.element;
+            } else if (system.taxonomy.school) {
+                system.taxonomy.subcategory = system.taxonomy.school;
+            } else if (system.skill) {
+                system.taxonomy.subcategory = system.skill;
+            }
         }
 
         if (!system.taxonomy.rankGroup) {
@@ -87,9 +119,7 @@ export class Naruto25eItem extends Item {
                 : "";
         }
 
-        if (!system.taxonomy.packTarget) {
-            system.taxonomy.packTarget = this._inferTechniquePackTarget(system);
-        }
+        system.taxonomy.packTarget = this._inferTechniquePackTarget(system);
         system.level = Number(system.level ?? 1);
         system.skill = system.skill ?? "";
         system.base = system.base ?? "";
@@ -134,15 +164,32 @@ export class Naruto25eItem extends Item {
         if (family === "armes") return "armes";
         if (family === "taijutsu") return "taijutsu";
         if (family === "genjutsu") return "genjutsu";
+
+        if (["gensou", "yuryoku"].includes(skill)) return "genjutsu";
+
         if (family === "ninjutsu") {
             if (["henge", "kawarimi"].includes(skill)) return "commune";
             return "ninjutsu";
         }
 
-        if (["henge", "kawarimi", "gensou"].includes(skill)) return "commune";
-        if (["katon", "suiton", "doton", "futon", "raiton", "iryo", "fuin"].includes(skill)) return "ninjutsu";
-        if (["goken", "juken", "chuken"].includes(skill)) return "taijutsu";
+        if (["henge", "kawarimi"].includes(skill)) return "commune";
+
+        if ([
+            "katon",
+            "suiton",
+            "doton",
+            "futon",
+            "raiton",
+            "iryo",
+            "fuin"
+        ].includes(skill)) {
+            return "ninjutsu";
+        }
+
+        if (["goken", "juken", "chuken", "hachimon"].includes(skill)) return "taijutsu";
+
         if (domain.includes("mokuton") || skill === "mokuton") return "lignee";
+        if (["kage", "kikaichu", "jiton", "sumi", "resistancesEmotionnelles"].includes(skill)) return "lignee";
 
         return "divers";
     }
@@ -158,6 +205,84 @@ export class Naruto25eItem extends Item {
         if (category === "lignee") return "techniques-lignees";
 
         return "";
+    }
+
+    _normalizeTechniqueLegacyData(system) {
+        const family = String(system.family ?? "");
+        const rank = String(system.rank ?? "");
+        const skill = String(system.skill ?? "").toLowerCase();
+
+        if (family.toLowerCase() === "lignée") {
+            system.family = "lignee";
+        }
+
+        if (["gensou", "yuryoku"].includes(skill)) {
+            system.family = "genjutsu";
+            system.base = system.base || "gen";
+        }
+
+        if (skill === "mokuton" && rank.toLowerCase() === "mokuton") {
+            system.family = "lignee";
+            system.rank = "d";
+            system.taxonomy.category = "lignee";
+            system.taxonomy.clan = "senju";
+            system.taxonomy.subcategory = "mokuton";
+            system.taxonomy.rankGroup = system.taxonomy.rankGroup || "d";
+
+            if (!String(system.domain ?? "").toLowerCase().includes("mokuton")) {
+                system.domain = `Mokuton — ${system.domain || "Technique"}`;
+            }
+        }
+    }
+
+    _inferTechniqueElementKey(system) {
+        const skill = String(system.skill ?? "").toLowerCase();
+
+        if (["katon", "suiton", "doton", "futon", "raiton"].includes(skill)) {
+            return skill;
+        }
+
+        return "";
+    }
+
+    _inferTechniqueSchoolKey(system) {
+        const skill = String(system.skill ?? "").toLowerCase();
+
+        if (["goken", "juken", "chuken", "hachimon"].includes(skill)) {
+            return skill;
+        }
+
+        return "";
+    }
+
+    _inferTechniqueClanKey(system) {
+        const skill = String(system.skill ?? "").toLowerCase();
+        const domain = String(system.domain ?? "").toLowerCase();
+        const name = String(this.name ?? "").toLowerCase();
+
+        if (skill === "mokuton" || domain.includes("mokuton") || name.includes("mokuton")) return "senju";
+        if (skill === "kage") return "nara";
+        if (skill === "kikaichu") return "aburame";
+        if (skill === "jiton") return "munefuda";
+        if (skill === "sumi") return "aniki";
+        if (skill === "juken") return "hyuga";
+        if (skill === "resistancesEmotionnelles") return "yamanaka";
+
+        return "";
+    }
+
+    _inferTechniqueLineageSubcategory(system) {
+        const skill = String(system.skill ?? "").toLowerCase();
+
+        if (skill === "mokuton") return "mokuton";
+        if (skill === "kage") return "kage";
+        if (skill === "kikaichu") return "kikaichu";
+        if (skill === "jiton") return "jiton";
+        if (skill === "sumi") return "sumi";
+        if (skill === "juken") return "juken";
+        if (skill === "resistancesEmotionnelles") return "resistancesEmotionnelles";
+
+        return system.taxonomy?.clan ?? "";
     }
 
     _prepareConsumableData() {

@@ -317,6 +317,60 @@ const DATA_SOURCES = [
   }
 ];
 
+const NINJUTSU_FOLDER_LABELS = {
+  katon: "Katon",
+  suiton: "Suiton",
+  doton: "Doton",
+  futon: "Fūton",
+  raiton: "Raïton",
+  iryo: "Iryō",
+  fuin: "Fūin"
+};
+
+const GENJUTSU_FOLDER_LABELS = {
+  gensou: "Gensou",
+  yuryoku: "Yūryoku",
+  uchiha: "Uchiha",
+  kurama: "Kurama"
+};
+
+const TAIJUTSU_FOLDER_LABELS = {
+  goken: "Gōken",
+  juken: "Jūken",
+  chuken: "Chūken",
+  hachimon: "Hachimon"
+};
+
+const COMMUNE_FOLDER_LABELS = {
+  academie: "Académie",
+  henge: "Henge",
+  kawarimi: "Kawarimi",
+  combat: "Combat commun"
+};
+
+const ARMES_FOLDER_LABELS = {
+  coupsSpeciaux: "Coups spéciaux",
+  armesSimples: "Armes simples",
+  armesExotiques: "Armes exotiques",
+  armesJet: "Armes de jet"
+};
+
+const EQUIPMENT_FOLDER_LABELS = {
+  armesSimples: "Armes simples",
+  armesExotiques: "Armes exotiques",
+  armesJet: "Armes de jet",
+  armures: "Armures",
+  pilules: "Pilules",
+  drogues: "Drogues",
+  poisons: "Poisons",
+  explosifs: "Explosifs",
+  kits: "Kits",
+  outils: "Outils",
+  communication: "Communication",
+  objetsServices: "Objets et services",
+  depart: "Équipement de départ"
+};
+
 function getBaseItemDefaults() {
   return {
     system: {
@@ -510,17 +564,35 @@ function normalizeTechniqueData(data) {
   );
 
   const system = normalized.system;
+  const skill = String(system.skill ?? "").toLowerCase();
   const legacyFamily = String(system.family ?? "");
   const legacyRank = String(system.rank ?? "");
-  const skill = String(system.skill ?? "").toLowerCase();
   const domain = String(system.domain ?? "").toLowerCase();
 
   if (legacyFamily.toLowerCase() === "lignée") {
     system.family = "lignee";
   }
 
-  if (legacyFamily === "Lignée") {
+  if (["gensou", "yuryoku"].includes(skill)) {
+    system.family = "genjutsu";
+    system.base = system.base || "gen";
+    system.taxonomy.category = "genjutsu";
+    system.taxonomy.subcategory = skill;
+    system.taxonomy.packTarget = "techniques-genjutsu";
+  }
+
+  if (skill === "mokuton" && legacyRank.toLowerCase() === "mokuton") {
     system.family = "lignee";
+    system.rank = "d";
+    system.taxonomy.category = "lignee";
+    system.taxonomy.subcategory = "mokuton";
+    system.taxonomy.clan = "senju";
+    system.taxonomy.rankGroup = system.taxonomy.rankGroup || "d";
+    system.taxonomy.packTarget = "techniques-lignees";
+
+    if (!String(system.domain ?? "").toLowerCase().includes("mokuton")) {
+      system.domain = `Mokuton — ${system.domain || "Technique"}`;
+    }
   }
 
   if (!["d", "c", "b", "a", "s", "aa", "sPlus"].includes(system.rank)) {
@@ -531,11 +603,13 @@ function normalizeTechniqueData(data) {
     }
 
     if (rankAsDomain === "mokuton") {
+      system.family = "lignee";
+      system.rank = "d";
       system.taxonomy.category = "lignee";
       system.taxonomy.subcategory = "mokuton";
       system.taxonomy.clan = "senju";
       system.taxonomy.rankGroup = system.taxonomy.rankGroup || "d";
-      system.rank = "d";
+      system.taxonomy.packTarget = "techniques-lignees";
     }
   }
 
@@ -544,8 +618,10 @@ function normalizeTechniqueData(data) {
     else if (system.family === "armes") system.taxonomy.category = "armes";
     else if (system.family === "taijutsu") system.taxonomy.category = "taijutsu";
     else if (system.family === "genjutsu") system.taxonomy.category = "genjutsu";
-    else if (["henge", "kawarimi", "gensou"].includes(skill)) system.taxonomy.category = "commune";
+    else if (["gensou", "yuryoku"].includes(skill)) system.taxonomy.category = "genjutsu";
+    else if (["henge", "kawarimi"].includes(skill)) system.taxonomy.category = "commune";
     else if (["katon", "suiton", "doton", "futon", "raiton", "iryo", "fuin"].includes(skill)) system.taxonomy.category = "ninjutsu";
+    else if (["goken", "juken", "chuken", "hachimon"].includes(skill)) system.taxonomy.category = "taijutsu";
     else if (domain.includes("mokuton") || skill === "mokuton") system.taxonomy.category = "lignee";
     else system.taxonomy.category = system.family || "divers";
   }
@@ -562,22 +638,77 @@ function normalizeTechniqueData(data) {
     system.taxonomy.school = skill;
   }
 
-  if (!system.taxonomy.subcategory) {
-    if (system.taxonomy.element) system.taxonomy.subcategory = system.taxonomy.element;
-    else if (system.taxonomy.school) system.taxonomy.subcategory = system.taxonomy.school;
-    else if (skill) system.taxonomy.subcategory = skill;
+  if (!system.taxonomy.clan) {
+    system.taxonomy.clan = inferTechniqueClanKey(normalized);
   }
 
-  if (!system.taxonomy.packTarget) {
-    if (system.taxonomy.category === "commune") system.taxonomy.packTarget = "techniques-communes";
-    else if (system.taxonomy.category === "ninjutsu") system.taxonomy.packTarget = "techniques-ninjutsu";
-    else if (system.taxonomy.category === "genjutsu") system.taxonomy.packTarget = "techniques-genjutsu";
-    else if (system.taxonomy.category === "taijutsu") system.taxonomy.packTarget = "techniques-taijutsu";
-    else if (system.taxonomy.category === "armes") system.taxonomy.packTarget = "techniques-armes";
-    else if (system.taxonomy.category === "lignee") system.taxonomy.packTarget = "techniques-lignees";
+  if (!system.taxonomy.subcategory) {
+    if (system.taxonomy.category === "lignee") {
+      system.taxonomy.subcategory = inferTechniqueLineageSubcategory(normalized);
+    } else if (system.taxonomy.element) {
+      system.taxonomy.subcategory = system.taxonomy.element;
+    } else if (system.taxonomy.school) {
+      system.taxonomy.subcategory = system.taxonomy.school;
+    } else if (skill) {
+      system.taxonomy.subcategory = skill;
+    }
   }
+
+  system.taxonomy.packTarget = inferTechniquePackTarget(normalized);
 
   return normalized;
+}
+
+function inferTechniquePackTarget(document) {
+  const category = document.system?.taxonomy?.category ?? "";
+
+  if (category === "commune") return "techniques-communes";
+  if (category === "ninjutsu") return "techniques-ninjutsu";
+  if (category === "genjutsu") return "techniques-genjutsu";
+  if (category === "taijutsu") return "techniques-taijutsu";
+  if (category === "armes") return "techniques-armes";
+  if (category === "lignee") return "techniques-lignees";
+
+  return document.system?.taxonomy?.packTarget ?? "";
+}
+
+function inferTechniqueClanKey(document) {
+  const system = document.system ?? {};
+  const skill = String(system.skill ?? "").toLowerCase();
+  const domain = String(system.domain ?? "").toLowerCase();
+  const name = String(document.name ?? "").toLowerCase();
+
+  if (skill === "mokuton" || domain.includes("mokuton") || name.includes("mokuton")) return "senju";
+  if (skill === "kage") return "nara";
+  if (skill === "kikaichu") return "aburame";
+  if (skill === "jiton") return "munefuda";
+  if (skill === "sumi") return "aniki";
+  if (skill === "juken") return "hyuga";
+  if (skill === "resistancesEmotionnelles") return "yamanaka";
+
+  if (name.includes("sharingan") || name.includes("mangeky") || name.includes("amaterasu") || name.includes("tsukuyomi")) {
+    return "uchiha";
+  }
+
+  if (name.includes("byakugan") || name.includes("tenseigan")) {
+    return "hyuga";
+  }
+
+  return "";
+}
+
+function inferTechniqueLineageSubcategory(document) {
+  const skill = String(document.system?.skill ?? "").toLowerCase();
+
+  if (skill === "mokuton") return "mokuton";
+  if (skill === "kage") return "kage";
+  if (skill === "kikaichu") return "kikaichu";
+  if (skill === "jiton") return "jiton";
+  if (skill === "sumi") return "sumi";
+  if (skill === "juken") return "juken";
+  if (skill === "resistancesEmotionnelles") return "resistancesEmotionnelles";
+
+  return document.system?.taxonomy?.clan ?? "";
 }
 
 function normalizeLineagePowerData(data) {
@@ -773,18 +904,272 @@ async function clearPack(pack) {
   return ids.length;
 }
 
-function groupSourcesByPack(sources = DATA_SOURCES) {
-  const grouped = new Map();
+function getDeclaredPackKeys(sources = DATA_SOURCES) {
+  return new Set(sources.map((source) => source.pack));
+}
+
+function getPackKeyFromPackTarget(packTarget) {
+  const target = String(packTarget ?? "").trim();
+
+  if (!target) return "";
+  if (target.startsWith("naruto-25e.")) return target;
+
+  return `naruto-25e.${target}`;
+}
+
+function getDocumentTargetPackKey(source, document) {
+  const packTarget = document.system?.taxonomy?.packTarget ?? "";
+  return getPackKeyFromPackTarget(packTarget) || source.pack;
+}
+
+async function collectDocumentsByTargetPack(sources = DATA_SOURCES) {
+  const documentsByPack = new Map();
+  const sourceResults = [];
 
   for (const source of sources) {
-    if (!grouped.has(source.pack)) {
-      grouped.set(source.pack, []);
-    }
+    try {
+      const sourceDocuments = await collectDocumentsForSource(source);
 
-    grouped.get(source.pack).push(source);
+      for (const document of sourceDocuments) {
+        const targetPackKey = getDocumentTargetPackKey(source, document);
+
+        if (!documentsByPack.has(targetPackKey)) {
+          documentsByPack.set(targetPackKey, []);
+        }
+
+        documentsByPack.get(targetPackKey).push(document);
+      }
+
+      sourceResults.push({
+        pack: source.pack,
+        type: source.label,
+        source: source.path,
+        imported: sourceDocuments.length,
+        deleted: 0
+      });
+    } catch (error) {
+      console.error(`Naruto 2.5e | Import impossible pour ${source.path}`, error);
+
+      sourceResults.push({
+        pack: source.pack,
+        type: source.label,
+        source: source.path,
+        imported: 0,
+        deleted: 0,
+        error: error.message
+      });
+    }
   }
 
-  return grouped;
+  return {
+    documentsByPack,
+    sourceResults
+  };
+}
+
+function getPackFolderNames(packKey) {
+  if (packKey === "naruto-25e.techniques-communes") {
+    return Object.values(COMMUNE_FOLDER_LABELS);
+  }
+
+  if (packKey === "naruto-25e.techniques-ninjutsu") {
+    return Object.values(NINJUTSU_FOLDER_LABELS);
+  }
+
+  if (packKey === "naruto-25e.techniques-genjutsu") {
+    return Object.values(GENJUTSU_FOLDER_LABELS);
+  }
+
+  if (packKey === "naruto-25e.techniques-taijutsu") {
+    return Object.values(TAIJUTSU_FOLDER_LABELS);
+  }
+
+  if (packKey === "naruto-25e.techniques-armes") {
+    return Object.values(ARMES_FOLDER_LABELS);
+  }
+
+  if (packKey === "naruto-25e.techniques-lignees") {
+    return Object.values(NARUTO25E.clans ?? {}).map((clan) => clan.label);
+  }
+
+  if ([
+    "naruto-25e.armes",
+    "naruto-25e.armures",
+    "naruto-25e.consommables",
+    "naruto-25e.explosifs",
+    "naruto-25e.kits",
+    "naruto-25e.outils",
+    "naruto-25e.equipements-depart"
+  ].includes(packKey)) {
+    return Object.values(EQUIPMENT_FOLDER_LABELS);
+  }
+
+  return [];
+}
+
+function getExistingPackFolders(pack) {
+  const folders = [];
+
+  if (pack.folders) {
+    if (typeof pack.folders[Symbol.iterator] === "function") {
+      folders.push(...pack.folders);
+    } else if (Array.isArray(pack.folders.contents)) {
+      folders.push(...pack.folders.contents);
+    }
+  }
+
+  const worldFolders = game.folders?.filter?.((folder) => folder.pack === pack.collection && folder.type === "Item") ?? [];
+  folders.push(...worldFolders);
+
+  const uniqueFolders = new Map();
+
+  for (const folder of folders) {
+    if (!folder?.id) continue;
+    uniqueFolders.set(folder.id, folder);
+  }
+
+  return Array.from(uniqueFolders.values());
+}
+
+async function ensurePackFolders(pack, packKey) {
+  const existingFolders = getExistingPackFolders(pack);
+  const foldersByName = new Map(existingFolders.map((folder) => [folder.name, folder]));
+
+  for (const folderName of getPackFolderNames(packKey)) {
+    if (foldersByName.has(folderName)) continue;
+
+    const createdFolder = await Folder.create(
+      {
+        name: folderName,
+        type: "Item",
+        sorting: "a"
+      },
+      {
+        pack: pack.collection
+      }
+    );
+
+    foldersByName.set(folderName, createdFolder);
+  }
+
+  return foldersByName;
+}
+
+function getDocumentFolderName(packKey, document) {
+  const system = document.system ?? {};
+  const taxonomy = system.taxonomy ?? {};
+  const skill = String(system.skill ?? "").toLowerCase();
+  const name = String(document.name ?? "");
+  const lowerName = name.toLowerCase();
+
+  if (packKey === "naruto-25e.techniques-communes") {
+    if (taxonomy.academy) return COMMUNE_FOLDER_LABELS.academie;
+    if (skill === "henge") return COMMUNE_FOLDER_LABELS.henge;
+    if (skill === "kawarimi") return COMMUNE_FOLDER_LABELS.kawarimi;
+    return COMMUNE_FOLDER_LABELS.combat;
+  }
+
+  if (packKey === "naruto-25e.techniques-ninjutsu") {
+    const element = taxonomy.element || skill;
+
+    if (NINJUTSU_FOLDER_LABELS[element]) {
+      return NINJUTSU_FOLDER_LABELS[element];
+    }
+
+    if (skill === "iryo") return NINJUTSU_FOLDER_LABELS.iryo;
+    if (skill === "fuin") return NINJUTSU_FOLDER_LABELS.fuin;
+
+    return "";
+  }
+
+  if (packKey === "naruto-25e.techniques-genjutsu") {
+    const subcategory = taxonomy.subcategory || skill;
+
+    if (GENJUTSU_FOLDER_LABELS[subcategory]) {
+      return GENJUTSU_FOLDER_LABELS[subcategory];
+    }
+
+    return "";
+  }
+
+  if (packKey === "naruto-25e.techniques-taijutsu") {
+    const school = taxonomy.school || skill;
+
+    if (TAIJUTSU_FOLDER_LABELS[school]) {
+      return TAIJUTSU_FOLDER_LABELS[school];
+    }
+
+    return "";
+  }
+
+  if (packKey === "naruto-25e.techniques-armes") {
+    return ARMES_FOLDER_LABELS.coupsSpeciaux;
+  }
+
+  if (packKey === "naruto-25e.techniques-lignees") {
+    const clanKey = taxonomy.clan || inferTechniqueClanKey(document);
+    const clanLabel = NARUTO25E.clans?.[clanKey]?.label;
+
+    if (clanLabel) return clanLabel;
+
+    if (lowerName.includes("mokuton")) return NARUTO25E.clans?.senju?.label ?? "Senju";
+    if (lowerName.includes("sharingan") || lowerName.includes("amaterasu") || lowerName.includes("tsukuyomi")) {
+      return NARUTO25E.clans?.uchiha?.label ?? "Uchiha";
+    }
+
+    return "";
+  }
+
+  if (packKey === "naruto-25e.armes") {
+    if (taxonomy.subcategory === "armesExotiques") return EQUIPMENT_FOLDER_LABELS.armesExotiques;
+    if (taxonomy.subcategory === "armesJet" || lowerName.includes("lot de jet")) return EQUIPMENT_FOLDER_LABELS.armesJet;
+    return EQUIPMENT_FOLDER_LABELS.armesSimples;
+  }
+
+  if (packKey === "naruto-25e.armures") {
+    return EQUIPMENT_FOLDER_LABELS.armures;
+  }
+
+  if (packKey === "naruto-25e.consommables") {
+    if (taxonomy.subcategory === "poison" || skill === "poison") return EQUIPMENT_FOLDER_LABELS.poisons;
+    if (taxonomy.subcategory === "drug") return EQUIPMENT_FOLDER_LABELS.drogues;
+    return EQUIPMENT_FOLDER_LABELS.pilules;
+  }
+
+  if (packKey === "naruto-25e.explosifs") {
+    return EQUIPMENT_FOLDER_LABELS.explosifs;
+  }
+
+  if (packKey === "naruto-25e.kits") {
+    return EQUIPMENT_FOLDER_LABELS.kits;
+  }
+
+  if (packKey === "naruto-25e.outils") {
+    if (taxonomy.category === "communication") return EQUIPMENT_FOLDER_LABELS.communication;
+    if (taxonomy.category === "service") return EQUIPMENT_FOLDER_LABELS.objetsServices;
+    return EQUIPMENT_FOLDER_LABELS.outils;
+  }
+
+  if (packKey === "naruto-25e.equipements-depart") {
+    return EQUIPMENT_FOLDER_LABELS.depart;
+  }
+
+  return "";
+}
+
+async function assignFoldersToDocuments(pack, packKey, documents) {
+  const foldersByName = await ensurePackFolders(pack, packKey);
+
+  return documents.map((document) => {
+    const folderName = getDocumentFolderName(packKey, document);
+    const folder = folderName ? foldersByName.get(folderName) : null;
+
+    if (folder?.id) {
+      document.folder = folder.id;
+    }
+
+    return document;
+  });
 }
 
 function getSourceGroupsForDisplay() {
@@ -832,9 +1217,15 @@ export async function importNaruto25eTechniquePacks(options = {}) {
   }
 
   const results = [];
-  const sourcesByPack = groupSourcesByPack(DATA_SOURCES);
+  const { documentsByPack, sourceResults } = await collectDocumentsByTargetPack(DATA_SOURCES);
+  results.push(...sourceResults);
 
-  for (const [packKey, sources] of sourcesByPack.entries()) {
+  const packKeys = new Set([
+    ...getDeclaredPackKeys(DATA_SOURCES),
+    ...documentsByPack.keys()
+  ]);
+
+  for (const packKey of packKeys) {
     const pack = game.packs.get(packKey);
 
     if (!pack) {
@@ -851,49 +1242,22 @@ export async function importNaruto25eTechniquePacks(options = {}) {
     await unlockPack(pack);
 
     const deleted = clear ? await clearPack(pack) : 0;
-    const documents = [];
+    const documents = documentsByPack.get(packKey) ?? [];
+    const documentsWithFolders = await assignFoldersToDocuments(pack, packKey, documents);
 
-    for (const source of sources) {
-      try {
-        const sourceDocuments = await collectDocumentsForSource(source);
-        documents.push(...sourceDocuments);
-
-        results.push({
-          pack: packKey,
-          type: source.label,
-          source: source.path,
-          imported: sourceDocuments.length,
-          deleted: 0
-        });
-      } catch (error) {
-        console.error(`Naruto 2.5e | Import impossible pour ${source.path}`, error);
-
-        results.push({
-          pack: packKey,
-          type: source.label,
-          source: source.path,
-          imported: 0,
-          deleted: 0,
-          error: error.message
-        });
-      }
-    }
-
-    if (documents.length > 0) {
-      await Item.createDocuments(documents, {
+    if (documentsWithFolders.length > 0) {
+      await Item.createDocuments(documentsWithFolders, {
         pack: pack.collection
       });
     }
 
-    if (deleted > 0) {
-      results.push({
-        pack: packKey,
-        type: "nettoyage compendium",
-        source: "",
-        imported: 0,
-        deleted
-      });
-    }
+    results.push({
+      pack: packKey,
+      type: "compendium final",
+      source: "",
+      imported: documentsWithFolders.length,
+      deleted
+    });
   }
 
   const totalImported = results.reduce((total, result) => total + Number(result.imported ?? 0), 0);
@@ -916,9 +1280,16 @@ export async function autoImportMissingNaruto25eDataPacks(options = {}) {
   }
 
   const results = [];
-  const sourcesByPack = groupSourcesByPack(DATA_SOURCES);
+  const { documentsByPack, sourceResults } = await collectDocumentsByTargetPack(DATA_SOURCES);
 
-  for (const [packKey, sources] of sourcesByPack.entries()) {
+  results.push(...sourceResults.filter((result) => result.error));
+
+  const packKeys = new Set([
+    ...getDeclaredPackKeys(DATA_SOURCES),
+    ...documentsByPack.keys()
+  ]);
+
+  for (const packKey of packKeys) {
     const pack = game.packs.get(packKey);
 
     if (!pack) {
@@ -934,25 +1305,7 @@ export async function autoImportMissingNaruto25eDataPacks(options = {}) {
 
     await unlockPack(pack);
 
-    const documents = [];
-
-    for (const source of sources) {
-      try {
-        const sourceDocuments = await collectDocumentsForSource(source);
-        documents.push(...sourceDocuments);
-      } catch (error) {
-        console.error(`Naruto 2.5e | Auto-import impossible pour ${source.path}`, error);
-
-        results.push({
-          pack: packKey,
-          source: source.path,
-          imported: 0,
-          skipped: 0,
-          error: error.message
-        });
-      }
-    }
-
+    const documents = documentsByPack.get(packKey) ?? [];
     const index = await pack.getIndex({
       fields: ["name", "type"]
     });
@@ -966,16 +1319,18 @@ export async function autoImportMissingNaruto25eDataPacks(options = {}) {
       return !existingKeys.has(key);
     });
 
-    if (missingDocuments.length > 0) {
-      await Item.createDocuments(missingDocuments, {
+    const missingDocumentsWithFolders = await assignFoldersToDocuments(pack, packKey, missingDocuments);
+
+    if (missingDocumentsWithFolders.length > 0) {
+      await Item.createDocuments(missingDocumentsWithFolders, {
         pack: pack.collection
       });
     }
 
     results.push({
       pack: packKey,
-      imported: missingDocuments.length,
-      skipped: documents.length - missingDocuments.length
+      imported: missingDocumentsWithFolders.length,
+      skipped: documents.length - missingDocumentsWithFolders.length
     });
   }
 
