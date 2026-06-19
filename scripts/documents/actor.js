@@ -4230,9 +4230,7 @@ async decreaseBase(baseKey) {
     return this._getInventoryCarryStateDefinitions()[state] ?? state;
   }
 
-  _getInventoryCarryStateOptions(item = {}) {
-    const type = NARUTO25E.inventoryTypes[item.type] ? item.type : "misc";
-    const carry = this._prepareInventoryCarryData(item, type);
+  _getAllowedInventoryCarryStates(type = "misc", carry = {}) {
     const states = ["notHeld"];
 
     if (carry.holdable) {
@@ -4247,10 +4245,16 @@ async decreaseBase(baseKey) {
       states.push("dropped");
     }
 
+    return states;
+  }
+
+  _getInventoryCarryStateOptions(item = {}) {
+    const type = NARUTO25E.inventoryTypes[item.type] ? item.type : "misc";
+    const carry = this._prepareInventoryCarryData(item, type);
     const current = this._normalizeInventoryCarryState(item.carryState, type, carry);
     const labels = this._getInventoryCarryStateDefinitions();
 
-    return states.map((state) => ({
+    return this._getAllowedInventoryCarryStates(type, carry).map((state) => ({
       key: state,
       label: labels[state] ?? state,
       selected: state === current
@@ -4260,18 +4264,9 @@ async decreaseBase(baseKey) {
   _normalizeInventoryCarryState(state, type = "misc", carry = null) {
     const carryData = carry ?? this._prepareInventoryCarryData({}, type);
     const requested = String(state ?? "");
-
-    const allowed = this._getInventoryCarryStateOptions({
-      type,
-      carryState: "notHeld",
-      carry: carryData
-    }).map((option) => option.key);
+    const allowed = this._getAllowedInventoryCarryStates(type, carryData);
 
     if (allowed.includes(requested)) return requested;
-
-    if (type === "armor" && Boolean(carryData.wearable)) {
-      return "notHeld";
-    }
 
     return "notHeld";
   }

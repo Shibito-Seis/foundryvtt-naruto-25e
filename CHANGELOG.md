@@ -2,6 +2,25 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.37.1 - Correctif récursion tenue inventaire
+
+### Corrigé
+
+- Correction d’une récursion infinie dans la préparation des états de tenue d’inventaire.
+- `_normalizeInventoryCarryState()` n’appelle plus `_getInventoryCarryStateOptions()`.
+- Ajout d’un helper `_getAllowedInventoryCarryStates()` utilisé par :
+  - `_normalizeInventoryCarryState()` ;
+  - `_getInventoryCarryStateOptions()`.
+- Correction du crash `Maximum call stack size exceeded` à l’ouverture d’une fiche possédant des objets dans l’inventaire.
+
+### Notes
+
+- Aucun changement de structure de données.
+- Aucun changement de template.
+- Aucun changement de comportement hors correction du crash.
+
+---
+
 ## 0.1.37 - Inventaire V1, tenue et toxicité simple
 
 ### Ajouté
