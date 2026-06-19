@@ -1,1 +1,250 @@
-﻿[]
+﻿[
+  {
+    "name": "Armure Bushi",
+    "type": "armure",
+    "img": "icons/equipment/chest/breastplate-layered-steel.webp",
+    "system": {
+      "description": "Armure traditionnelle lourde issue des lignées guerrières et des anciennes armées. Données complètes à confirmer depuis le chapitre 7 avant automatisation.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "carry": {
+        "holdable": false,
+        "wearable": true
+      },
+      "taxonomy": {
+        "category": "armure",
+        "subcategory": "armures",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "armures",
+        "tags": ["armure", "bushi", "lourde", "incomplete"]
+      },
+      "automation": {
+        "status": "blocked",
+        "notes": "Armure listée dans le chapitre 7, mais valeurs PROTEC/INIT/SPE non confirmées dans les extraits récupérés."
+      }
+    }
+  },
+  {
+    "name": "Armure Shinobi",
+    "type": "armure",
+    "img": "icons/equipment/chest/breastplate-leather-studded.webp",
+    "system": {
+      "description": "Armure adaptée aux missions shinobi, conçue pour protéger sans empêcher la mobilité. Données complètes à confirmer depuis le chapitre 7 avant automatisation.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "carry": {
+        "holdable": false,
+        "wearable": true
+      },
+      "taxonomy": {
+        "category": "armure",
+        "subcategory": "armures",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "armures",
+        "tags": ["armure", "shinobi", "standard", "incomplete"]
+      },
+      "automation": {
+        "status": "blocked",
+        "notes": "Armure listée dans le chapitre 7, mais valeurs PROTEC/INIT/SPE non confirmées dans les extraits récupérés."
+      }
+    }
+  },
+  {
+    "name": "Combinaison Répressive",
+    "type": "armure",
+    "img": "icons/equipment/chest/vest-leather-tattered-black.webp",
+    "system": {
+      "description": "Combinaison spécialisée à vocation répressive ou d’intervention. Données complètes à confirmer depuis le chapitre 7 avant automatisation.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "carry": {
+        "holdable": false,
+        "wearable": true
+      },
+      "taxonomy": {
+        "category": "armure",
+        "subcategory": "armures",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "armures",
+        "tags": ["armure", "combinaison", "repressive", "incomplete"]
+      },
+      "automation": {
+        "status": "blocked",
+        "notes": "Armure listée dans le chapitre 7, mais valeurs PROTEC/INIT/SPE non confirmées dans les extraits récupérés."
+      }
+    }
+  },
+  {
+    "name": "Habits Personnels",
+    "type": "armure",
+    "img": "icons/equipment/chest/robe-layered-blue.webp",
+    "system": {
+      "description": "Tenue personnelle, civile ou adaptée au style du ninja. Protection légère ou inexistante selon interprétation MJ.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "carry": {
+        "holdable": false,
+        "wearable": true
+      },
+      "taxonomy": {
+        "category": "armure",
+        "subcategory": "armures",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "armures",
+        "tags": ["armure", "tenue", "habits-personnels", "leger"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Protection à définir par le MJ selon la tenue. Sert surtout de base de tenue personnelle."
+      }
+    }
+  },
+  {
+    "name": "Kevlar Chūnin",
+    "type": "armure",
+    "img": "icons/equipment/chest/breastplate-cuirass-steel-green.webp",
+    "system": {
+      "description": "Uniforme officiel des Forces Régulières et des ninjas de Konoha en temps de guerre. Bonus de Vigueur : +2 (+2 SPE). SPE au choix : PHY, ENVI ou ELEM. Initiative : -2. Solidité : 10. Prix papier : attribution du Bureau des missions, 40 000 両 au marché noir.",
+      "quantity": 1,
+      "value": 40000,
+      "weight": 0,
+      "carry": {
+        "holdable": false,
+        "wearable": true
+      },
+      "taxonomy": {
+        "category": "armure",
+        "subcategory": "armures",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "armures",
+        "tags": ["armure", "kevlar-chunin", "vigueur-2", "spe-2", "init-2", "solidite-10"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "PROTEC +2 Vigueur, +2 SPE au choix PHY/ENVI/ELEM, INIT -2, solidité 10. Application automatique à coder plus tard."
+      }
+    }
+  },
+  {
+    "name": "Masque Protecteur",
+    "type": "armure",
+    "img": "icons/equipment/head/mask-carved-bone-white.webp",
+    "system": {
+      "description": "Masque protecteur renforcé. Bonus de Vigueur : +3. Bonus de Caractère : +3. Bonus de Chakra : +50. Solidité : 55. Prix papier : attribution du Bureau des missions, 40 000 両 au marché noir.",
+      "quantity": 1,
+      "value": 40000,
+      "weight": 0,
+      "carry": {
+        "holdable": false,
+        "wearable": true
+      },
+      "taxonomy": {
+        "category": "armure",
+        "subcategory": "armures",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "armures",
+        "tags": ["armure", "masque", "vigueur-3", "caractere-3", "chakra-50", "solidite-55"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Bonus +3 Vigueur, +3 Caractère, +50 Chakra, solidité 55. Application automatique à coder plus tard."
+      }
+    }
+  },
+  {
+    "name": "Uniforme Clanique",
+    "type": "armure",
+    "img": "icons/equipment/chest/robe-collared-red.webp",
+    "system": {
+      "description": "Uniforme propre à un clan, une famille ou une unité interne. Données précises variables selon le clan et la tradition.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "carry": {
+        "holdable": false,
+        "wearable": true
+      },
+      "taxonomy": {
+        "category": "armure",
+        "subcategory": "armures",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "armures",
+        "tags": ["armure", "uniforme", "clanique", "incomplete"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Uniforme clanique variable ; effets à définir selon clan/campagne."
+      }
+    }
+  },
+  {
+    "name": "Uniforme ANBU / SSH",
+    "type": "armure",
+    "img": "icons/equipment/chest/breastplate-cuirass-leather-grey.webp",
+    "system": {
+      "description": "Uniforme d’unité ANBU/SSH en kevlar et fibres souples de bois à chakra. Bonus de Vigueur : +2 (+2 SPE). SPE au choix : ELEM, PHY ou ENVI. Choix : -50 Chakra permanent ou -2 Initiative. Solidité : 25. Prix papier : attribution d’Armurerie Centrale, 100 000 両 au marché noir.",
+      "quantity": 1,
+      "value": 100000,
+      "weight": 0,
+      "carry": {
+        "holdable": false,
+        "wearable": true
+      },
+      "taxonomy": {
+        "category": "armure",
+        "subcategory": "armures",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "armures",
+        "tags": ["armure", "anbu", "ssh", "vigueur-2", "spe-2", "chakra-50", "init-2", "solidite-25"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "PROTEC +2 Vigueur, +2 SPE au choix, puis choix -50 Chakra permanent ou -2 INIT. Application automatique à coder plus tard."
+      }
+    }
+  }
+]

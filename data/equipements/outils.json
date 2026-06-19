@@ -1,1 +1,250 @@
-﻿[]
+﻿[
+  {
+    "name": "Rouleau vierge",
+    "type": "equipement",
+    "img": "icons/sundries/scrolls/scroll-bound-sealed-brown.webp",
+    "system": {
+      "description": "Rouleau vierge utilisable pour transporter des notes, préparer des sceaux, stocker des formules ou servir de support à une invocation mineure selon arbitrage MJ.",
+      "quantity": 1,
+      "value": 50,
+      "weight": 0,
+      "taxonomy": {
+        "category": "outil",
+        "subcategory": "outils",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["outil", "rouleau", "fūin", "support"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Support générique. Effets précis selon Fūin, Kuchiyose ou usage narratif."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Fil ninja",
+    "type": "equipement",
+    "img": "icons/sundries/survival/rope-wrapped-brown.webp",
+    "system": {
+      "description": "Fil fin utilisé pour pièges, déclencheurs, manipulation de projectiles, ligatures discrètes ou support de notes explosives.",
+      "quantity": 1,
+      "value": 50,
+      "weight": 0,
+      "taxonomy": {
+        "category": "outil",
+        "subcategory": "outils",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["outil", "fil", "piège", "explosif", "kunaï"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Support de piège ou de manœuvre. À relier plus tard à Science des Pièges / Explosifs."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Corde",
+    "type": "equipement",
+    "img": "icons/sundries/survival/rope-coiled-brown.webp",
+    "system": {
+      "description": "Corde solide utilisée pour escalade, ligature, franchissement ou extraction en mission.",
+      "quantity": 1,
+      "value": 100,
+      "weight": 0,
+      "taxonomy": {
+        "category": "outil",
+        "subcategory": "outils",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["outil", "corde", "survie", "escalade"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Utilisation narrative ou bonus circonstanciel selon MJ."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Briquet",
+    "type": "equipement",
+    "img": "icons/tools/laboratory/burner-steel-blue.webp",
+    "system": {
+      "description": "Petit outil d’allumage utile en survie, sabotage, cuisine de terrain ou déclenchement préparatoire.",
+      "quantity": 1,
+      "value": 30,
+      "weight": 0,
+      "taxonomy": {
+        "category": "outil",
+        "subcategory": "outils",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["outil", "feu", "survie"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Outil narratif."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Gants de travail",
+    "type": "equipement",
+    "img": "icons/equipment/hand/glove-leather-brown.webp",
+    "system": {
+      "description": "Gants renforcés pour manipuler des mécanismes, câbles, explosifs, surfaces dangereuses ou outils de terrain.",
+      "quantity": 1,
+      "value": 80,
+      "weight": 0,
+      "taxonomy": {
+        "category": "outil",
+        "subcategory": "outils",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["outil", "gants", "technique", "protection"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Bonus circonstanciel possible selon MJ."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": true
+      }
+    }
+  },
+  {
+    "name": "Lunettes multi-optiques",
+    "type": "equipement",
+    "img": "icons/equipment/head/goggles-leather-blue.webp",
+    "system": {
+      "description": "Lunettes techniques utiles pour recherche, infiltration, observation rapprochée, analyse d’empreintes ou manipulation d’objets complexes.",
+      "quantity": 1,
+      "value": 300,
+      "weight": 0,
+      "taxonomy": {
+        "category": "outil",
+        "subcategory": "outils",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["outil", "lunettes", "recherche", "technique", "observation"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Utilisé notamment dans les kits de recherche et technique."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": true
+      }
+    }
+  },
+  {
+    "name": "Batterie portative",
+    "type": "equipement",
+    "img": "icons/commodities/tech/battery.webp",
+    "system": {
+      "description": "Source électrique portative pour manipulations techniques, sabotage, alimentation temporaire ou réparation d’urgence.",
+      "quantity": 1,
+      "value": 200,
+      "weight": 0,
+      "taxonomy": {
+        "category": "outil",
+        "subcategory": "outils",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["outil", "batterie", "technologie", "électricité"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Support de Technologie ou sabotage."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Matériel d’empreintes",
+    "type": "equipement",
+    "img": "icons/tools/scribal/magnifying-glass.webp",
+    "system": {
+      "description": "Poudres, papiers, fioles et accessoires pour relever ou comparer des empreintes sur le terrain.",
+      "quantity": 1,
+      "value": 150,
+      "weight": 0,
+      "taxonomy": {
+        "category": "outil",
+        "subcategory": "outils",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["outil", "empreintes", "recherche", "enquête"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Peut soutenir Collecter des Informations, Technologie ou Médecine selon usage."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  }
+]

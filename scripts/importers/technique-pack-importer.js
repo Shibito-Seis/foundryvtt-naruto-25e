@@ -276,6 +276,14 @@ const DATA_SOURCES = [
   {
     group: "equipment",
     groupLabel: "Équipement — Consommables",
+    label: "drogue",
+    pack: "naruto-25e.consommables",
+    path: "systems/naruto-25e/data/equipements/drogues.json",
+    normalize: normalizeEquipmentData
+  },
+  {
+    group: "equipment",
+    groupLabel: "Équipement — Consommables",
     label: "poison",
     pack: "naruto-25e.consommables",
     path: "systems/naruto-25e/data/equipements/poisons.json",
@@ -329,7 +337,7 @@ const DATA_SOURCES = [
     label: "équipement de départ",
     pack: "naruto-25e.equipements-depart",
     path: "systems/naruto-25e/data/equipements/equipements-depart.json",
-    normalize: normalizeEquipmentData
+    normalize: normalizeStartingEquipmentData
   }
 ];
 
@@ -385,6 +393,36 @@ const EQUIPMENT_FOLDER_LABELS = {
   communication: "Communication",
   objetsServices: "Objets et services",
   depart: "Équipement de départ"
+};
+
+const EQUIPMENT_PACK_FOLDERS = {
+  "naruto-25e.armes": [
+    EQUIPMENT_FOLDER_LABELS.armesSimples,
+    EQUIPMENT_FOLDER_LABELS.armesExotiques,
+    EQUIPMENT_FOLDER_LABELS.armesJet
+  ],
+  "naruto-25e.armures": [
+    EQUIPMENT_FOLDER_LABELS.armures
+  ],
+  "naruto-25e.consommables": [
+    EQUIPMENT_FOLDER_LABELS.pilules,
+    EQUIPMENT_FOLDER_LABELS.drogues,
+    EQUIPMENT_FOLDER_LABELS.poisons
+  ],
+  "naruto-25e.explosifs": [
+    EQUIPMENT_FOLDER_LABELS.explosifs
+  ],
+  "naruto-25e.kits": [
+    EQUIPMENT_FOLDER_LABELS.kits
+  ],
+  "naruto-25e.outils": [
+    EQUIPMENT_FOLDER_LABELS.outils,
+    EQUIPMENT_FOLDER_LABELS.communication,
+    EQUIPMENT_FOLDER_LABELS.objetsServices
+  ],
+  "naruto-25e.equipements-depart": [
+    EQUIPMENT_FOLDER_LABELS.depart
+  ]
 };
 
 function getBaseItemDefaults() {
@@ -772,17 +810,19 @@ function normalizeEquipmentData(data) {
   system.value = Math.max(0, Number(system.value ?? 0));
   system.weight = Math.max(0, Number(system.weight ?? 0));
 
+  system.taxonomy = system.taxonomy ?? {};
+  system.taxonomy.category = String(system.taxonomy.category ?? "");
+  system.taxonomy.subcategory = String(system.taxonomy.subcategory ?? "");
+  system.taxonomy.packTarget = String(system.taxonomy.packTarget ?? "");
+
   if (normalized.type === "arme") {
     system.taxonomy.category = system.taxonomy.category || "arme";
-    system.taxonomy.packTarget = system.taxonomy.packTarget || "armes";
   } else if (normalized.type === "armure") {
     system.taxonomy.category = system.taxonomy.category || "armure";
-    system.taxonomy.packTarget = system.taxonomy.packTarget || "armures";
   } else if (normalized.type === "consommable") {
     system.subtype = system.subtype ?? "medicine";
     system.taxonomy.category = system.taxonomy.category || "consommable";
     system.taxonomy.subcategory = system.taxonomy.subcategory || system.subtype;
-    system.taxonomy.packTarget = system.taxonomy.packTarget || "consommables";
 
     system.carry = system.carry ?? {};
     system.carry.holdable = Boolean(system.carry.holdable);
@@ -806,7 +846,58 @@ function normalizeEquipmentData(data) {
     system.taxonomy.category = system.taxonomy.category || "divers";
   }
 
+  if (!system.taxonomy.packTarget) {
+    system.taxonomy.packTarget = inferEquipmentPackTarget(normalized);
+  }
+
   return normalized;
+}
+
+function normalizeStartingEquipmentData(data) {
+  const normalized = normalizeEquipmentData(data);
+
+  normalized.system.taxonomy = normalized.system.taxonomy ?? {};
+  normalized.system.taxonomy.packTarget = "equipements-depart";
+  normalized.system.taxonomy.tags = normalizeTags([
+    ...(normalized.system.taxonomy.tags ?? []),
+    "equipement-depart"
+  ]);
+
+  return normalized;
+}
+
+function inferEquipmentPackTarget(document) {
+  const type = String(document.type ?? "");
+  const taxonomy = document.system?.taxonomy ?? {};
+  const category = String(taxonomy.category ?? "");
+  const subcategory = String(taxonomy.subcategory ?? "");
+
+  if (category === "depart") return "equipements-depart";
+
+  if (type === "arme" || category === "arme") return "armes";
+  if (type === "armure" || category === "armure") return "armures";
+
+  if (category === "explosif" || subcategory === "explosif" || subcategory === "explosifs") {
+    return "explosifs";
+  }
+
+  if (category === "kit" || subcategory === "kit" || subcategory === "kits") {
+    return "kits";
+  }
+
+  if (category === "outil" || category === "communication" || category === "service") {
+    return "outils";
+  }
+
+  if (
+    type === "consommable"
+    || category === "consommable"
+    || ["medicine", "pilule", "pilules", "drug", "drogue", "drogues", "poison", "poisons"].includes(subcategory)
+  ) {
+    return "consommables";
+  }
+
+  return "";
 }
 
 function getGeneratedLineagePowerDataFromConfig(existingSourceData = []) {
@@ -1011,16 +1102,10 @@ function getPackFolderNames(packKey) {
     return Object.values(NARUTO25E.clans ?? {}).map((clan) => clan.label);
   }
 
-  if ([
-    "naruto-25e.armes",
-    "naruto-25e.armures",
-    "naruto-25e.consommables",
-    "naruto-25e.explosifs",
-    "naruto-25e.kits",
-    "naruto-25e.outils",
-    "naruto-25e.equipements-depart"
-  ].includes(packKey)) {
-    return Object.values(EQUIPMENT_FOLDER_LABELS);
+  const equipmentFolderNames = EQUIPMENT_PACK_FOLDERS[packKey];
+
+  if (equipmentFolderNames) {
+    return equipmentFolderNames;
   }
 
   return [];
@@ -1150,8 +1235,16 @@ function getDocumentFolderName(packKey, document) {
   }
 
   if (packKey === "naruto-25e.consommables") {
-    if (taxonomy.subcategory === "poison" || skill === "poison") return EQUIPMENT_FOLDER_LABELS.poisons;
-    if (taxonomy.subcategory === "drug") return EQUIPMENT_FOLDER_LABELS.drogues;
+    const subcategory = String(taxonomy.subcategory ?? "").toLowerCase();
+
+    if (subcategory === "poison" || subcategory === "poisons" || lowerName.includes("poison")) {
+      return EQUIPMENT_FOLDER_LABELS.poisons;
+    }
+
+    if (subcategory === "drug" || subcategory === "drogue" || subcategory === "drogues") {
+      return EQUIPMENT_FOLDER_LABELS.drogues;
+    }
+
     return EQUIPMENT_FOLDER_LABELS.pilules;
   }
 
@@ -1164,8 +1257,11 @@ function getDocumentFolderName(packKey, document) {
   }
 
   if (packKey === "naruto-25e.outils") {
-    if (taxonomy.category === "communication") return EQUIPMENT_FOLDER_LABELS.communication;
-    if (taxonomy.category === "service") return EQUIPMENT_FOLDER_LABELS.objetsServices;
+    const category = String(taxonomy.category ?? "").toLowerCase();
+
+    if (category === "communication") return EQUIPMENT_FOLDER_LABELS.communication;
+    if (category === "service") return EQUIPMENT_FOLDER_LABELS.objetsServices;
+
     return EQUIPMENT_FOLDER_LABELS.outils;
   }
 

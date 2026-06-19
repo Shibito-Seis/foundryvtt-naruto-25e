@@ -2,6 +2,40 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.39.4 - Structure équipement V1
+
+### Ajouté
+
+- Ajout de la source `data/equipements/drogues.json` dans l’importeur de données.
+- Ajout d’un routage plus explicite des équipements selon leur catégorie :
+  - armes ;
+  - armures ;
+  - consommables ;
+  - explosifs ;
+  - kits ;
+  - outils ;
+  - communication ;
+  - objets et services ;
+  - équipement de départ.
+
+### Corrigé
+
+- Les compendiums d’équipement ne créent plus tous les dossiers d’équipement dans chaque pack.
+- `Équipement — Armes` ne crée plus que les dossiers liés aux armes.
+- `Équipement — Armures` ne crée plus que le dossier Armures.
+- `Équipement — Consommables` ne crée plus que Pilules, Drogues et Poisons.
+- `Équipement — Explosifs` ne crée plus que le dossier Explosifs.
+- `Équipement — Kits` ne crée plus que le dossier Kits.
+- `Équipement — Outils` ne crée plus que Outils, Communication et Objets et services.
+- `Équipements de départ` ne crée plus que le dossier Équipement de départ.
+- Les objets issus de `equipements-depart.json` restent désormais dans le pack `Équipements de départ`, même s’ils sont typés comme arme, consommable, kit ou explosif.
+- La Note explosive de départ reçoit une taxonomy explicite d’explosif au lieu d’être assimilée à une pilule ou à un simple outil.
+
+### Notes
+
+- Cette version prépare le remplissage des fichiers JSON d’équipement.
+- Cette version ne remplit pas encore tous les objets du chapitre 7.
+
 ## 0.1.39.3 - Correction du rangement des techniques Uchiha
 
 ### Corrigé

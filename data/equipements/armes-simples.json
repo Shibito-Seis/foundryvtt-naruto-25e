@@ -1,1 +1,250 @@
-﻿[]
+﻿[
+  {
+    "name": "Katana",
+    "type": "arme",
+    "img": "icons/weapons/swords/sword-katana.webp",
+    "system": {
+      "description": "Épée courbe emblématique des bushis, samouraïs et de certains clans ninjas à tradition martiale. Dégâts : COR+ARM+3. Portée : Z1. Initiative : -1. Prix papier : 8 000 à 30 millions 両.",
+      "quantity": 1,
+      "value": 8000,
+      "weight": 0,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "taxonomy": {
+        "category": "arme",
+        "subcategory": "armesSimples",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "armes",
+        "tags": ["arme", "arme-simple", "sabre", "katana", "cor-arm", "z1", "init-1"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Dégâts COR+ARM+3, portée Z1, INIT -1. Effets de combat à automatiser en 0.1.41."
+      }
+    }
+  },
+  {
+    "name": "Kunaï",
+    "type": "arme",
+    "img": "icons/weapons/daggers/dagger-simple.webp",
+    "system": {
+      "description": "Petite lame ninja polyvalente, utilisable au corps à corps, en lancer, en support de note explosive, de filin ou de corde. Dégâts : COR+ARM+1(1). Portée : D3. Prix papier : 100 両.",
+      "quantity": 1,
+      "value": 100,
+      "weight": 0,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "taxonomy": {
+        "category": "arme",
+        "subcategory": "armesSimples",
+        "rankGroup": "",
+        "academy": true,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "armes",
+        "tags": ["arme", "arme-simple", "jet", "kunai", "cor-arm", "d3", "cumulatif"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Dégâts COR+ARM+1(1), portée D3. Dégâts cumulatifs à gérer plus tard."
+      }
+    }
+  },
+  {
+    "name": "Manriki Gusari",
+    "type": "arme",
+    "img": "icons/weapons/misc/chain-hooked-steel.webp",
+    "system": {
+      "description": "Chaîne de neutralisation pouvant être létale, appréciée pour immobiliser, entraver et contrôler la distance. Dégâts : NIN+ARM. Portée : Z4. Critique : Immobiliser. Prix papier : 500 両.",
+      "quantity": 1,
+      "value": 500,
+      "weight": 0,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "taxonomy": {
+        "category": "arme",
+        "subcategory": "armesSimples",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "armes",
+        "tags": ["arme", "arme-simple", "chaine", "controle", "nin-arm", "z4", "crit-immobiliser"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Dégâts NIN+ARM, portée Z4, critique Immobiliser. Critique à automatiser avec Combat / Actions."
+      }
+    }
+  },
+  {
+    "name": "Ninjatō",
+    "type": "arme",
+    "img": "icons/weapons/swords/sword-straight.webp",
+    "system": {
+      "description": "Épée droite de shinobi, plus courte et utilitaire que le katana, répandue chez les ANBU et SSH. Dégâts : COR+ARM+2. Portée : Z1. Prix papier : 1 000 à 15 000 両.",
+      "quantity": 1,
+      "value": 1000,
+      "weight": 0,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "taxonomy": {
+        "category": "arme",
+        "subcategory": "armesSimples",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "armes",
+        "tags": ["arme", "arme-simple", "sabre", "ninjato", "cor-arm", "z1"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Dégâts COR+ARM+2, portée Z1."
+      }
+    }
+  },
+  {
+    "name": "Nodachi",
+    "type": "arme",
+    "img": "icons/weapons/swords/greatsword-crossguard-steel.webp",
+    "system": {
+      "description": "Grande épée à deux mains proche du katana, pensée pour frapper des créatures imposantes. Dégâts : COR+ARM+3. Portée : Z2. Initiative : -2. Force minimum : COR 3. Prix papier : 10 000 à 20 millions 両.",
+      "quantity": 1,
+      "value": 10000,
+      "weight": 0,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "taxonomy": {
+        "category": "arme",
+        "subcategory": "armesSimples",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "armes",
+        "tags": ["arme", "arme-simple", "deux-mains", "nodachi", "cor-arm", "z2", "init-2", "fm-cor3"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Dégâts COR+ARM+3, portée Z2, INIT -2, FM COR 3. Main à deux mains à gérer via état de tenue."
+      }
+    }
+  },
+  {
+    "name": "Senbon",
+    "type": "arme",
+    "img": "icons/weapons/ammunition/arrows-bodkin-yellow-red.webp",
+    "system": {
+      "description": "Aiguille métallique fine utilisable pour toucher des points sensibles, médicaux ou tenketsus. Dégâts : ESP+ARM+1(1). Portée : D5. Prix papier : 20 両.",
+      "quantity": 1,
+      "value": 20,
+      "weight": 0,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "taxonomy": {
+        "category": "arme",
+        "subcategory": "armesSimples",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "armes",
+        "tags": ["arme", "arme-simple", "jet", "senbon", "esp-arm", "d5", "cumulatif", "poison-compatible"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Dégâts ESP+ARM+1(1), portée D5. Dégâts cumulatifs et poison à automatiser plus tard."
+      }
+    }
+  },
+  {
+    "name": "Shakujo",
+    "type": "arme",
+    "img": "icons/weapons/staves/staff-ornate-gold.webp",
+    "system": {
+      "description": "Bâton de prière armé, souvent associé aux moines et aux traditions sacrées. Dégâts : COR+ARM. Portée : Z2. Critique : Assommer. Prix papier : 900 à 12 000 両.",
+      "quantity": 1,
+      "value": 900,
+      "weight": 0,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "taxonomy": {
+        "category": "arme",
+        "subcategory": "armesSimples",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "armes",
+        "tags": ["arme", "arme-simple", "baton", "shakujo", "cor-arm", "z2", "crit-assommer"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Dégâts COR+ARM, portée Z2, critique Assommer."
+      }
+    }
+  },
+  {
+    "name": "Shuriken",
+    "type": "arme",
+    "img": "icons/weapons/thrown/shuriken-steel.webp",
+    "system": {
+      "description": "Étoile de lancer classique de l’arsenal shinobi. Dégâts : TAI+ARM+1(1). Portée : D4. Prix papier : 50 両.",
+      "quantity": 1,
+      "value": 50,
+      "weight": 0,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "taxonomy": {
+        "category": "arme",
+        "subcategory": "armesSimples",
+        "rankGroup": "",
+        "academy": true,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "armes",
+        "tags": ["arme", "arme-simple", "jet", "shuriken", "tai-arm", "d4", "cumulatif"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Dégâts TAI+ARM+1(1), portée D4. Dégâts cumulatifs à gérer plus tard."
+      }
+    }
+  }
+]

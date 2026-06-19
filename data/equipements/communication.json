@@ -1,1 +1,126 @@
-﻿[]
+﻿[
+  {
+    "name": "COM",
+    "type": "equipement",
+    "img": "icons/tools/navigation/compass-brass-blue-red.webp",
+    "system": {
+      "description": "Système de communication courte portée utilisé par les ninjas en mission. Permet une coordination simple entre membres d’une équipe selon les limites de portée et d’environnement fixées par le MJ.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "communication",
+        "subcategory": "communication",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["communication", "com", "mission", "équipe"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Communication courte portée. Portée et perturbations à arbitrer en jeu."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": true
+      }
+    }
+  },
+  {
+    "name": "COM L.D.",
+    "type": "equipement",
+    "img": "icons/tools/navigation/spyglass-telescope-brass.webp",
+    "system": {
+      "description": "Système de communication longue distance. Utilisé pour maintenir un contact plus étendu avec une équipe, un poste avancé ou une autorité de mission.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "communication",
+        "subcategory": "communication",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["communication", "com-ld", "longue-distance", "mission"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Communication longue distance. Effets d’interférences ou portée exacte à arbitrer."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": true
+      }
+    }
+  },
+  {
+    "name": "Rouleau de Communication Officiel",
+    "type": "equipement",
+    "img": "icons/sundries/scrolls/scroll-sealed-red-tan.webp",
+    "system": {
+      "description": "Rouleau officiel de communication administrative ou militaire, utilisé pour transmettre un message scellé, une instruction ou un rapport selon protocole.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "communication",
+        "subcategory": "communication",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["communication", "rouleau", "officiel", "administration", "mission"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Objet narratif/protocolaire."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Oiseau messager",
+    "type": "equipement",
+    "img": "icons/creatures/birds/corvid-call-sound-glowing.webp",
+    "system": {
+      "description": "Oiseau dressé pour transmettre un message, un signal ou une instruction simple. Son efficacité dépend de la distance, du terrain, de la météo et du danger.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "communication",
+        "subcategory": "communication",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["communication", "messager", "oiseau", "animal", "mission"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Objet narratif. Peut être remplacé plus tard par une fiche compagnon/simple ressource."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      }
+    }
+  }
+]

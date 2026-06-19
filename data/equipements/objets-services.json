@@ -1,1 +1,126 @@
-﻿[]
+﻿[
+  {
+    "name": "Demande officielle d’équipement",
+    "type": "equipement",
+    "img": "icons/sundries/documents/document-official-capital.webp",
+    "system": {
+      "description": "Document administratif utilisé par un capitaine ou un shinobi habilité pour demander une rallonge de budget ou du matériel supplémentaire au Bureau des Missions.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["service", "administratif", "bureau-des-missions", "demande"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Objet/service narratif lié à l’équipement de mission."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Accès Armurerie Centrale",
+    "type": "equipement",
+    "img": "icons/sundries/documents/document-sealed-signatures-red.webp",
+    "system": {
+      "description": "Autorisation ou bon d’accès permettant de retirer du matériel à Armurerie Centrale sur ordre officiel.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["service", "armurerie", "konoha", "administratif"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Objet narratif/protocolaire."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Retrait de budget de mission",
+    "type": "equipement",
+    "img": "icons/commodities/currency/coins-plain-stack-gold.webp",
+    "system": {
+      "description": "Service administratif représentant le retrait du budget prévu d’une mission au Bureau des Missions. Le montant exact dépend de la mission.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["service", "budget", "ryo", "mission"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Service narratif. Ne modifie pas automatiquement les Ryō."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Objet interdit ou insolite",
+    "type": "equipement",
+    "img": "icons/containers/chest/chest-reinforced-steel-red.webp",
+    "system": {
+      "description": "Entrée générique pour représenter un objet rare, interdit, insolite ou soumis à validation MJ. Sert de placeholder propre avant ajout d’une table détaillée.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "interdit", "insolite", "mj", "placeholder"]
+      },
+      "automation": {
+        "status": "blocked",
+        "notes": "Placeholder V1. Remplacer plus tard par les objets précis de la table du chapitre 7."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  }
+]

@@ -1,1 +1,126 @@
-﻿[]
+﻿[
+  {
+    "name": "Kit de Premiers Soins",
+    "type": "equipement",
+    "img": "icons/tools/hand/needle-grey.webp",
+    "system": {
+      "description": "Nécessaire standard de médecine comprenant bandages, ficelle, aiguille, flacon d’alcool, antibiotiques et nécessaire à piqûre. Donne un bonus ou un support limité à dix utilisations selon arbitrage MJ.",
+      "quantity": 1,
+      "value": 250,
+      "weight": 0,
+      "taxonomy": {
+        "category": "kit",
+        "subcategory": "kits",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "kits",
+        "tags": ["kit", "premiers-soins", "medecine", "10-utilisations"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Bonus limité à dix utilisations. Bonus exact à arbitrer/automatiser plus tard avec Médecine/Santé."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Kit de Survie",
+    "type": "equipement",
+    "img": "icons/containers/bags/pack-leather-brown.webp",
+    "system": {
+      "description": "Matériel indispensable en déplacement : briquet, rouleau d’invocation d’ustensiles de cuisine basique, rations pour trois jours, eau, trois pilules d’endurance et un objet de survie essentiel selon le milieu choisi.",
+      "quantity": 1,
+      "value": 730,
+      "weight": 0,
+      "taxonomy": {
+        "category": "kit",
+        "subcategory": "kits",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "kits",
+        "tags": ["kit", "survie", "mission", "10-utilisations"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Kit de survie générique. Les options de milieu seront détaillées plus tard."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Kit de Recherche",
+    "type": "equipement",
+    "img": "icons/tools/scribal/magnifying-glass.webp",
+    "system": {
+      "description": "Kit d’investigation comprenant fioles, outils, microscope portatif, nécessaire à empreintes, gants et lunettes multi-optiques.",
+      "quantity": 1,
+      "value": 970,
+      "weight": 0,
+      "taxonomy": {
+        "category": "kit",
+        "subcategory": "kits",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "kits",
+        "tags": ["kit", "recherche", "investigation", "empreintes", "10-utilisations"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Bonus limité à dix utilisations. À relier plus tard à Collecter des Informations, Technologie, Médecine ou Science des Poisons selon usage."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Kit Technique",
+    "type": "equipement",
+    "img": "icons/tools/smithing/tongs-steel-grey.webp",
+    "system": {
+      "description": "Kit d’infiltration ou de sabotage comprenant plusieurs jeux d’outils, batterie portative, nécessaire à empreintes, câbles et fils électriques, gants et lunettes multi-optiques.",
+      "quantity": 1,
+      "value": 560,
+      "weight": 0,
+      "taxonomy": {
+        "category": "kit",
+        "subcategory": "kits",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "kits",
+        "tags": ["kit", "technique", "sabotage", "infiltration", "10-utilisations"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Bonus limité à dix utilisations. À relier plus tard à Technologie, Science des Pièges ou Science des Explosifs."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  }
+]

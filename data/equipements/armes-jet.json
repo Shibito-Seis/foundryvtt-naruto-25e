@@ -1,1 +1,95 @@
-﻿[]
+﻿[
+  {
+    "name": "Kunaï — lot de 20",
+    "type": "arme",
+    "img": "icons/weapons/daggers/dagger-simple.webp",
+    "system": {
+      "description": "Lot de vingt kunaï de lancer. Dégâts : COR+ARM+1(1). Portée : D3. Peut aussi servir d’outil, de support de note explosive, de filin ou de corde.",
+      "quantity": 20,
+      "value": 2000,
+      "weight": 0,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "taxonomy": {
+        "category": "arme",
+        "subcategory": "armesJet",
+        "rankGroup": "",
+        "academy": true,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "armes",
+        "tags": ["arme", "arme-de-jet", "kunai", "lot", "d3", "cumulatif"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Lot de 20. Dégâts cumulatifs à gérer plus tard : +1 par exemplaire lancé, max ARM."
+      }
+    }
+  },
+  {
+    "name": "Senbon — lot de 20",
+    "type": "arme",
+    "img": "icons/weapons/ammunition/arrows-bodkin-yellow-red.webp",
+    "system": {
+      "description": "Lot de vingt senbon de lancer. Dégâts : ESP+ARM+1(1). Portée : D5. Souvent utilisé avec poison ou pour viser des points sensibles.",
+      "quantity": 20,
+      "value": 400,
+      "weight": 0,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "taxonomy": {
+        "category": "arme",
+        "subcategory": "armesJet",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "armes",
+        "tags": ["arme", "arme-de-jet", "senbon", "lot", "d5", "cumulatif", "poison-compatible"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Lot de 20. Dégâts cumulatifs et application de poison à gérer plus tard."
+      }
+    }
+  },
+  {
+    "name": "Shuriken — lot de 20",
+    "type": "arme",
+    "img": "icons/weapons/thrown/shuriken-steel.webp",
+    "system": {
+      "description": "Lot de vingt shuriken. Dégâts : TAI+ARM+1(1). Portée : D4. Arme de harcèlement, diversion et interception.",
+      "quantity": 20,
+      "value": 1000,
+      "weight": 0,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "taxonomy": {
+        "category": "arme",
+        "subcategory": "armesJet",
+        "rankGroup": "",
+        "academy": true,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "armes",
+        "tags": ["arme", "arme-de-jet", "shuriken", "lot", "d4", "cumulatif"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Lot de 20. Dégâts cumulatifs à gérer plus tard : +1 par exemplaire lancé, max ARM."
+      }
+    }
+  }
+]

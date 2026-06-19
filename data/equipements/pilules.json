@@ -1,1 +1,497 @@
-﻿[]
+﻿[
+  {
+    "name": "Hyōrōgan — Pilule du Soldat",
+    "type": "consommable",
+    "img": "icons/consumables/pills/pill-round-black.webp",
+    "system": {
+      "description": "Pilule du soldat, aussi appelée Hyōrōgan. Pilule militaire standard utilisée par les ninjas en mission. Elle permet de rester éveillé et concentré, annule les malus de blessures présentes ou futures jusqu’à Blessure 1 sauf Maladies - Chimique, augmente la régénération de chakra de 1%, et supprime le besoin de dormir ou manger pendant trois jours.",
+      "subtype": "medicine",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "consommable",
+        "subcategory": "medicine",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "consommables",
+        "tags": ["pilule", "soldat", "hyōrōgan", "od-3-semaine", "ia-10", "72h"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Effet complexe : suppression sommeil/nourriture, annulation malus jusqu’à Blessure 1 hors Maladies - Chimique, +1% régénération chakra pendant 72h. À automatiser avec Santé/États."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      },
+      "useEffect": {
+        "type": "none",
+        "resource": "none",
+        "amount": 0,
+        "consumeOnUse": true,
+        "text": "Effet manuel : pendant 72h, annule les malus de blessures jusqu’à Blessure 1 hors Maladies - Chimique, augmente la régénération de chakra de 1%, supprime le besoin de dormir ou manger. OD 3/semaine. IA 10 tours."
+      },
+      "toxicity": {
+        "enabled": true,
+        "amount": 1,
+        "period": "week",
+        "iaTurns": 10
+      }
+    }
+  },
+  {
+    "name": "Pilule de Chakra",
+    "type": "consommable",
+    "img": "icons/consumables/pills/pill-round-blue.webp",
+    "system": {
+      "description": "Pilule bleue de revitalisation instantanée du chakra, distribuée par le centre Gekiyaku et utilisée comme ressource stratégique en mission.",
+      "subtype": "medicine",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "consommable",
+        "subcategory": "medicine",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "consommables",
+        "tags": ["pilule", "chakra", "restore-chakra", "od-3-jour", "ia-5"]
+      },
+      "automation": {
+        "status": "automated",
+        "notes": "Restaure 50 Chakra. Toxicité simple journalière."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      },
+      "useEffect": {
+        "type": "restoreResource",
+        "resource": "chakra",
+        "amount": 50,
+        "consumeOnUse": true,
+        "text": "Restaure instantanément 50 Chakra. OD 3/jour. IA 5 tours."
+      },
+      "toxicity": {
+        "enabled": true,
+        "amount": 1,
+        "period": "day",
+        "iaTurns": 5
+      }
+    }
+  },
+  {
+    "name": "Pilule de Chakra Noire",
+    "type": "consommable",
+    "img": "icons/consumables/pills/pill-round-purple.webp",
+    "system": {
+      "description": "Version plus puissante et dangereuse de la pilule de chakra. Effet exact à confirmer si besoin depuis la source complète ; intégrée comme pilule de régénération supérieure.",
+      "subtype": "medicine",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "consommable",
+        "subcategory": "medicine",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "consommables",
+        "tags": ["pilule", "chakra", "noire", "restore-chakra", "od-1-jour"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Effet exact à confirmer avant automatisation complète. Gardée en manuel pour éviter une valeur inventée."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      },
+      "useEffect": {
+        "type": "none",
+        "resource": "none",
+        "amount": 0,
+        "consumeOnUse": true,
+        "text": "Pilule de chakra supérieure. Effet exact à confirmer avant automatisation."
+      },
+      "toxicity": {
+        "enabled": true,
+        "amount": 1,
+        "period": "day",
+        "iaTurns": 1
+      }
+    }
+  },
+  {
+    "name": "Pilule de Chakra Divine",
+    "type": "consommable",
+    "img": "icons/consumables/pills/pill-round-gold.webp",
+    "system": {
+      "description": "Pilule dorée très rare, proche du poison, issue des secrets du clan Akimichi. Elle régénère instantanément une quantité massive de chakra.",
+      "subtype": "medicine",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "consommable",
+        "subcategory": "medicine",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "akimichi",
+        "element": "",
+        "school": "",
+        "packTarget": "consommables",
+        "tags": ["pilule", "chakra", "divine", "akimichi", "restore-chakra", "od-1-semaine", "ia-1"]
+      },
+      "automation": {
+        "status": "automated",
+        "notes": "Restaure 500 Chakra. Toxicité hebdomadaire simple."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      },
+      "useEffect": {
+        "type": "restoreResource",
+        "resource": "chakra",
+        "amount": 500,
+        "consumeOnUse": true,
+        "text": "Restaure instantanément 500 Chakra. OD 1/semaine. IA 1 tour."
+      },
+      "toxicity": {
+        "enabled": true,
+        "amount": 1,
+        "period": "week",
+        "iaTurns": 1
+      }
+    }
+  },
+  {
+    "name": "Pilule de Perturbation",
+    "type": "consommable",
+    "img": "icons/consumables/pills/pill-round-red.webp",
+    "system": {
+      "description": "Pilule écarlate aussi appelée Barrière de chakra. Elle dissimule temporairement le chakra face aux tentatives de détection.",
+      "subtype": "medicine",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "consommable",
+        "subcategory": "medicine",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "consommables",
+        "tags": ["pilule", "perturbation", "dissimulation-chakra", "od-1-jour", "ia-10"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Bonus +5 de dissimulation passive du chakra pendant GEN heures. À automatiser plus tard avec détection/signature."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      },
+      "useEffect": {
+        "type": "none",
+        "resource": "none",
+        "amount": 0,
+        "consumeOnUse": true,
+        "text": "Effet manuel : +5 à la dissimulation passive du chakra pendant GEN heures. OD 1/jour. IA 10 tours."
+      },
+      "toxicity": {
+        "enabled": true,
+        "amount": 1,
+        "period": "day",
+        "iaTurns": 10
+      }
+    }
+  },
+  {
+    "name": "Pilule Stasique",
+    "type": "consommable",
+    "img": "icons/consumables/pills/pill-round-brown.webp",
+    "system": {
+      "description": "Pilule médicale utilisée pour stopper temporairement les fonctions biologiques et stabiliser un blessé grave pendant le transport.",
+      "subtype": "medicine",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "consommable",
+        "subcategory": "medicine",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "consommables",
+        "tags": ["pilule", "stase", "medical", "coma", "od-1-jour", "ia-1", "24h"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Bloque fonctions biologiques et modificateurs pendant 24h ; coma profond. À automatiser avec Santé/États."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      },
+      "useEffect": {
+        "type": "none",
+        "resource": "none",
+        "amount": 0,
+        "consumeOnUse": true,
+        "text": "Effet manuel : coma profond et stase biologique pendant 24h. Les effets/malus reprennent ensuite. OD 1/jour. IA 1 tour."
+      },
+      "toxicity": {
+        "enabled": true,
+        "amount": 1,
+        "period": "day",
+        "iaTurns": 1
+      }
+    }
+  },
+  {
+    "name": "Pilule d'Endurance",
+    "type": "consommable",
+    "img": "icons/consumables/pills/pill-round-white.webp",
+    "system": {
+      "description": "Pilule revigorante utilisée par les ninjas médicaux et les équipes exposées aux rencontres hostiles. Elle annule les états Fatigue 1 et Fatigue 2 si le personnage n’est pas Sonné ou pire.",
+      "subtype": "medicine",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "consommable",
+        "subcategory": "medicine",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "consommables",
+        "tags": ["pilule", "endurance", "fatigue", "od-1-jour", "ia-10"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Annule Fatigue 1 et 2 si le personnage n’est pas Sonné ou plus. À automatiser avec Santé/États."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      },
+      "useEffect": {
+        "type": "none",
+        "resource": "none",
+        "amount": 0,
+        "consumeOnUse": true,
+        "text": "Effet manuel : annule Fatigue 1 et Fatigue 2 si le personnage n’est pas Sonné ou plus. OD 1/jour. IA 10 tours."
+      },
+      "toxicity": {
+        "enabled": true,
+        "amount": 1,
+        "period": "day",
+        "iaTurns": 10
+      }
+    }
+  },
+  {
+    "name": "Pilule de Vitalité",
+    "type": "consommable",
+    "img": "icons/consumables/pills/pill-round-green.webp",
+    "system": {
+      "description": "Pilule médicale de vitalité. Elle annule temporairement les effets de Blessure 2, sauf pour les blessures de type Maladies - Chimique.",
+      "subtype": "medicine",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "consommable",
+        "subcategory": "medicine",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "consommables",
+        "tags": ["pilule", "vitalite", "blessure-2", "od-1-jour", "ia-10"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Annule effets de Blessure 2 hors Maladies - Chimique pendant COR heures. À automatiser avec Santé/États."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      },
+      "useEffect": {
+        "type": "none",
+        "resource": "none",
+        "amount": 0,
+        "consumeOnUse": true,
+        "text": "Effet manuel : annule les effets de Blessure 2 hors Maladies - Chimique pendant COR heures. OD 1/jour. IA 10 tours."
+      },
+      "toxicity": {
+        "enabled": true,
+        "amount": 1,
+        "period": "day",
+        "iaTurns": 10
+      }
+    }
+  },
+  {
+    "name": "Zōketsugan — Pilule Sanguine",
+    "type": "consommable",
+    "img": "icons/consumables/pills/pill-round-red.webp",
+    "system": {
+      "description": "Pilule sanguine médicale. Elle augmente la régénération de santé de 10% et annule les effets de Blessure 3 sauf Maladies - Chimique pendant COR tours.",
+      "subtype": "medicine",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "consommable",
+        "subcategory": "medicine",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "consommables",
+        "tags": ["pilule", "sanguine", "zoketsugan", "blessure-3", "regen-sante", "od-3-jour", "ia-1"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "+10% régénération santé et annulation effets Blessure 3 hors Maladies - Chimique pendant COR tours. À automatiser avec Santé/États."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      },
+      "useEffect": {
+        "type": "none",
+        "resource": "none",
+        "amount": 0,
+        "consumeOnUse": true,
+        "text": "Effet manuel : +10% régénération santé et annule Blessure 3 hors Maladies - Chimique pendant COR tours. OD 3/jour. IA 1 tour."
+      },
+      "toxicity": {
+        "enabled": true,
+        "amount": 1,
+        "period": "day",
+        "iaTurns": 1
+      }
+    }
+  },
+  {
+    "name": "Pilule Tenketsu",
+    "type": "consommable",
+    "img": "icons/consumables/pills/pill-round-cyan.webp",
+    "system": {
+      "description": "Pilule stimulant le réseau de chakra. Elle augmente la régénération du chakra de 10% pendant COR+ESP tours et n’est pas cumulable avec un jutsu de régénération.",
+      "subtype": "medicine",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "consommable",
+        "subcategory": "medicine",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "consommables",
+        "tags": ["pilule", "tenketsu", "regen-chakra", "od-1-jour", "ia-5"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "+10% régénération chakra pendant COR+ESP tours, non cumulable avec jutsu de régénération. À automatiser avec entretien/régénération."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      },
+      "useEffect": {
+        "type": "none",
+        "resource": "none",
+        "amount": 0,
+        "consumeOnUse": true,
+        "text": "Effet manuel : +10% régénération chakra pendant COR+ESP tours, non cumulable avec un jutsu de régénération. OD 1/jour. IA 5 tours."
+      },
+      "toxicity": {
+        "enabled": true,
+        "amount": 1,
+        "period": "day",
+        "iaTurns": 5
+      }
+    }
+  },
+  {
+    "name": "Pilule d'Éveil Spirituel",
+    "type": "consommable",
+    "img": "icons/consumables/pills/pill-round-purple.webp",
+    "system": {
+      "description": "Pilule favorisant un éveil spirituel ou une montée d’intensité intérieure. Elle génère un jet de CE avec un bonus de +5.",
+      "subtype": "medicine",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "consommable",
+        "subcategory": "medicine",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "consommables",
+        "tags": ["pilule", "eveil-spirituel", "ce", "bonus-5", "od-1-semaine", "ia-1"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Génère un jet de CE avec +5. Le système de CE n’est pas encore automatisé."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      },
+      "useEffect": {
+        "type": "none",
+        "resource": "none",
+        "amount": 0,
+        "consumeOnUse": true,
+        "text": "Effet manuel : génère un jet de CE avec un bonus de +5. OD 1/semaine. IA 1 tour."
+      },
+      "toxicity": {
+        "enabled": true,
+        "amount": 1,
+        "period": "week",
+        "iaTurns": 1
+      }
+    }
+  }
+]

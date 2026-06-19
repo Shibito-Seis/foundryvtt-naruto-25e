@@ -4,10 +4,30 @@
     "type": "arme",
     "img": "icons/weapons/daggers/dagger-simple.webp",
     "system": {
-      "description": "Arme courte polyvalente ninja. Peut servir au corps à corps, comme outil ou en arme de jet improvisée.",
+      "description": "Arme courte polyvalente ninja. Peut servir au corps à corps, comme outil ou en arme de jet improvisée. Version de départ.",
       "quantity": 1,
-      "value": 1,
-      "weight": 0.1
+      "value": 100,
+      "weight": 0,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "taxonomy": {
+        "category": "arme",
+        "subcategory": "armesSimples",
+        "rankGroup": "",
+        "academy": true,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "equipements-depart",
+        "tags": ["arme", "arme-simple", "kunai", "equipement-depart"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Version de départ. Dégâts COR+ARM+1(1), portée D3."
+      }
     }
   },
   {
@@ -15,10 +35,30 @@
     "type": "arme",
     "img": "icons/weapons/daggers/dagger-straight-blue.webp",
     "system": {
-      "description": "Lame courte japonaise, discrète et fiable pour un Shinobi privilégiant la mobilité.",
+      "description": "Lame courte japonaise, discrète et fiable pour un shinobi privilégiant la mobilité. Version de départ.",
       "quantity": 1,
       "value": 10,
-      "weight": 0.6
+      "weight": 0,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "taxonomy": {
+        "category": "arme",
+        "subcategory": "armesSimples",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "equipements-depart",
+        "tags": ["arme", "lame-courte", "tanto", "equipement-depart"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Arme de départ historique du Shinobimancer ; stats détaillées à harmoniser plus tard."
+      }
     }
   },
   {
@@ -26,10 +66,30 @@
     "type": "arme",
     "img": "icons/weapons/swords/sword-guard.webp",
     "system": {
-      "description": "Sabre court, compromis entre discrétion, défense personnelle et combat rapproché.",
+      "description": "Sabre court, compromis entre discrétion, défense personnelle et combat rapproché. Version de départ.",
       "quantity": 1,
       "value": 25,
-      "weight": 1
+      "weight": 0,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "taxonomy": {
+        "category": "arme",
+        "subcategory": "armesSimples",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "equipements-depart",
+        "tags": ["arme", "sabre-court", "wakizashi", "equipement-depart"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Arme de départ historique du Shinobimancer ; stats détaillées à harmoniser plus tard."
+      }
     }
   },
   {
@@ -37,10 +97,30 @@
     "type": "arme",
     "img": "icons/weapons/swords/sword-katana.webp",
     "system": {
-      "description": "Sabre japonais emblématique, plus visible et martial qu’une arme de Shinobi discrète.",
+      "description": "Sabre japonais emblématique, plus visible et martial qu’une arme de shinobi discrète. Version de départ.",
       "quantity": 1,
-      "value": 50,
-      "weight": 1.2
+      "value": 8000,
+      "weight": 0,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "taxonomy": {
+        "category": "arme",
+        "subcategory": "armesSimples",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "equipements-depart",
+        "tags": ["arme", "arme-simple", "katana", "equipement-depart"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Version de départ. Dégâts COR+ARM+3, portée Z1, INIT -1."
+      }
     }
   },
   {
@@ -48,10 +128,30 @@
     "type": "arme",
     "img": "icons/weapons/swords/sword-straight.webp",
     "system": {
-      "description": "Lame droite de Shinobi, pensée pour l’efficacité, les embuscades et l’usage utilitaire.",
+      "description": "Lame droite de shinobi, pensée pour l’efficacité, les embuscades et l’usage utilitaire. Version de départ.",
       "quantity": 1,
-      "value": 35,
-      "weight": 1
+      "value": 1000,
+      "weight": 0,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "taxonomy": {
+        "category": "arme",
+        "subcategory": "armesSimples",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "equipements-depart",
+        "tags": ["arme", "arme-simple", "ninjato", "equipement-depart"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Version de départ. Dégâts COR+ARM+2, portée Z1."
+      }
     }
   },
   {
@@ -59,10 +159,30 @@
     "type": "arme",
     "img": "icons/weapons/daggers/dagger-simple.webp",
     "system": {
-      "description": "Lot de kunaï destinés au lancer, aux pièges et aux usages polyvalents de terrain.",
-      "quantity": 10,
-      "value": 10,
-      "weight": 1
+      "description": "Lot de kunaï destinés au lancer, aux pièges et aux usages polyvalents de terrain. Version de départ.",
+      "quantity": 20,
+      "value": 2000,
+      "weight": 0,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "taxonomy": {
+        "category": "arme",
+        "subcategory": "armesJet",
+        "rankGroup": "",
+        "academy": true,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "equipements-depart",
+        "tags": ["arme", "arme-de-jet", "kunai", "lot", "equipement-depart"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Version de départ. Dégâts COR+ARM+1(1), portée D3."
+      }
     }
   },
   {
@@ -70,10 +190,30 @@
     "type": "arme",
     "img": "icons/weapons/thrown/shuriken-steel.webp",
     "system": {
-      "description": "Lot de shuriken légers, utilisés pour harceler, distraire ou blesser à distance.",
-      "quantity": 10,
-      "value": 10,
-      "weight": 0.5
+      "description": "Lot de shuriken légers, utilisés pour harceler, distraire ou blesser à distance. Version de départ.",
+      "quantity": 20,
+      "value": 1000,
+      "weight": 0,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "taxonomy": {
+        "category": "arme",
+        "subcategory": "armesJet",
+        "rankGroup": "",
+        "academy": true,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "equipements-depart",
+        "tags": ["arme", "arme-de-jet", "shuriken", "lot", "equipement-depart"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Version de départ. Dégâts TAI+ARM+1(1), portée D4."
+      }
     }
   },
   {
@@ -81,10 +221,30 @@
     "type": "arme",
     "img": "icons/weapons/ammunition/arrows-bodkin-yellow-red.webp",
     "system": {
-      "description": "Lot de fines aiguilles de lancer, discrètes et précises.",
-      "quantity": 10,
-      "value": 10,
-      "weight": 0.2
+      "description": "Lot de fines aiguilles de lancer, discrètes et précises. Version de départ.",
+      "quantity": 20,
+      "value": 400,
+      "weight": 0,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "taxonomy": {
+        "category": "arme",
+        "subcategory": "armesJet",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "equipements-depart",
+        "tags": ["arme", "arme-de-jet", "senbon", "lot", "poison-compatible", "equipement-depart"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Version de départ. Dégâts ESP+ARM+1(1), portée D5."
+      }
     }
   },
   {
@@ -92,11 +252,27 @@
     "type": "consommable",
     "img": "icons/sundries/documents/document-symbol-rune-brown.webp",
     "system": {
-      "description": "Lot de parchemins explosifs utilisés comme outils offensifs, pièges ou diversions.",
-      "subtype": "tool",
+      "description": "Lot de parchemins explosifs utilisés comme outils offensifs, pièges ou diversions. Version de départ.",
+      "subtype": "explosive",
       "quantity": 10,
-      "value": 50,
-      "weight": 0.2,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "explosif",
+        "subcategory": "explosifs",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "equipements-depart",
+        "tags": ["explosif", "kibaku-fuda", "note", "lot-de-combat", "equipement-depart"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Version de départ. Effet complet à automatiser dans Combat / Actions."
+      },
       "carry": {
         "holdable": true,
         "wearable": false
@@ -106,7 +282,7 @@
         "resource": "none",
         "amount": 0,
         "consumeOnUse": true,
-        "text": "Effet de combat à automatiser dans le chantier Combat / Actions."
+        "text": "Explosif préparable ou posable. Dégâts, déclenchement et zone seront automatisés dans le chantier Combat / Actions."
       },
       "toxicity": {
         "enabled": false,
@@ -119,19 +295,45 @@
   {
     "name": "Pilule du soldat",
     "type": "consommable",
-    "img": "icons/consumables/pills/pill-round-red.webp",
+    "img": "icons/consumables/pills/pill-round-black.webp",
     "system": {
-      "description": "Pilule militaire standard destinée à soutenir l’endurance lors d’une mission.",
+      "description": "Pilule militaire standard destinée à soutenir l’endurance lors d’une mission. Version de départ.",
       "subtype": "medicine",
       "quantity": 5,
-      "value": 10,
-      "weight": 0.05,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "consommable",
+        "subcategory": "medicine",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "equipements-depart",
+        "tags": ["pilule", "soldat", "hyōrōgan", "equipement-depart"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Version de départ. Effet complet : voir Hyōrōgan — Pilule du Soldat."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      },
       "useEffect": {
         "type": "none",
         "resource": "none",
         "amount": 0,
         "consumeOnUse": true,
-        "text": "Effet exact à automatiser plus tard."
+        "text": "Effet exact à gérer manuellement pour l’instant."
+      },
+      "toxicity": {
+        "enabled": true,
+        "amount": 1,
+        "period": "week",
+        "iaTurns": 10
       }
     }
   },
@@ -140,11 +342,27 @@
     "type": "consommable",
     "img": "icons/consumables/pills/pill-round-blue.webp",
     "system": {
-      "description": "Pilule de chakra de base. Restaure une petite quantité de Chakra.",
+      "description": "Pilule de chakra de base. Restaure une petite quantité de Chakra. Version de départ.",
       "subtype": "medicine",
       "quantity": 1,
       "value": 25,
-      "weight": 0.01,
+      "weight": 0,
+      "taxonomy": {
+        "category": "consommable",
+        "subcategory": "medicine",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "equipements-depart",
+        "tags": ["pilule", "chakra", "restore-chakra", "mineure", "equipement-depart"]
+      },
+      "automation": {
+        "status": "automated",
+        "notes": "Restaure 25 Chakra. Version mineure propre au paquetage de départ."
+      },
       "carry": {
         "holdable": false,
         "wearable": false
@@ -169,10 +387,30 @@
     "type": "equipement",
     "img": "icons/tools/hand/needle-grey.webp",
     "system": {
-      "description": "Kit médical de terrain basique.",
+      "description": "Kit médical de terrain basique. Version de départ.",
       "quantity": 1,
-      "value": 20,
-      "weight": 1
+      "value": 250,
+      "weight": 0,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "taxonomy": {
+        "category": "kit",
+        "subcategory": "kits",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "equipements-depart",
+        "tags": ["kit", "premiers-soins", "medecine", "equipement-depart"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Version de départ. Bonus/usage à gérer manuellement."
+      }
     }
   },
   {
@@ -180,10 +418,30 @@
     "type": "equipement",
     "img": "icons/containers/bags/pack-leather-brown.webp",
     "system": {
-      "description": "Kit de base pour bivouac, déplacement et survie en mission.",
+      "description": "Kit de base pour bivouac, déplacement et survie en mission. Version de départ.",
       "quantity": 1,
-      "value": 20,
-      "weight": 2
+      "value": 730,
+      "weight": 0,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "taxonomy": {
+        "category": "kit",
+        "subcategory": "kits",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "equipements-depart",
+        "tags": ["kit", "survie", "mission", "equipement-depart"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Version de départ. Usage à gérer manuellement."
+      }
     }
   },
   {
@@ -191,10 +449,30 @@
     "type": "equipement",
     "img": "icons/tools/smithing/tongs-steel-grey.webp",
     "system": {
-      "description": "Kit d’outils simples pour manipulations techniques, pièges ou réparations.",
+      "description": "Kit d’outils simples pour manipulations techniques, pièges, réparations ou sabotage léger. Version de départ.",
       "quantity": 1,
-      "value": 20,
-      "weight": 1
+      "value": 560,
+      "weight": 0,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "taxonomy": {
+        "category": "kit",
+        "subcategory": "kits",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "equipements-depart",
+        "tags": ["kit", "technique", "technologie", "pièges", "equipement-depart"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Version de départ. Usage à gérer manuellement."
+      }
     }
   }
 ]

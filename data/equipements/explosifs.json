@@ -1,1 +1,123 @@
-﻿[]
+﻿[
+  {
+    "name": "Papier à chakra — dix feuilles vierges",
+    "type": "equipement",
+    "img": "icons/sundries/scrolls/scroll-bound-sealed-brown.webp",
+    "system": {
+      "description": "Lot de dix feuilles vierges de papier à chakra, nécessaire à la création de notes célestes. Prix moyen : 300 両 les dix feuilles.",
+      "quantity": 10,
+      "value": 300,
+      "weight": 0,
+      "taxonomy": {
+        "category": "explosif",
+        "subcategory": "explosifs",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "explosifs",
+        "tags": ["papier-chakra", "fuda", "creation", "note-celeste"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Matériau de création de Fuda. Pas d’effet d’utilisation directe."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Kibaku Fuda — Note Explosive",
+    "type": "consommable",
+    "img": "icons/sundries/documents/document-symbol-rune-brown.webp",
+    "system": {
+      "description": "Note explosive commune. Une fois activée, elle peut exploser instantanément par impulsion de chakra ou après son déclencheur latent. Version V1 : effet manuel en attendant le chantier Combat / Actions.",
+      "subtype": "explosive",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "explosif",
+        "subcategory": "explosifs",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": true,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "explosifs",
+        "tags": ["explosif", "kibaku-fuda", "note", "fuda", "impulsion", "zone"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Référence technique : Kawarimi : Kibaku Fuda, niveau 1, GEN+1 dégâts, Z2, IA 10 rounds ou instantanée par impulsion. À automatiser en 0.1.41."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "useEffect": {
+        "type": "none",
+        "resource": "none",
+        "amount": 0,
+        "consumeOnUse": true,
+        "text": "Effet manuel : explosion GEN+1 dégâts, zone Z2. Déclenchement IA 10 rounds ou instantané par impulsion de chakra."
+      },
+      "toxicity": {
+        "enabled": false,
+        "amount": 0,
+        "period": "none",
+        "iaTurns": 0
+      }
+    }
+  },
+  {
+    "name": "Kōdo Fuda — Note de Solidité",
+    "type": "consommable",
+    "img": "icons/sundries/documents/document-sealed-signatures-red.webp",
+    "system": {
+      "description": "Note de solidité utilisée contre les dégâts ou les intrusions. Version V1 : effet manuel en attendant l’automatisation des notes célestes.",
+      "subtype": "explosive",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "explosif",
+        "subcategory": "explosifs",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "explosifs",
+        "tags": ["fuda", "note", "solidite", "kodo-fuda", "defense"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Référence technique : Kawarimi : Katasa Fuda. Consolide une matière avec solidité selon GEN/niveau. À automatiser plus tard."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "useEffect": {
+        "type": "none",
+        "resource": "none",
+        "amount": 0,
+        "consumeOnUse": true,
+        "text": "Effet manuel : note de solidité contre dégâts ou intrusion. Voir Kawarimi : Katasa Fuda."
+      },
+      "toxicity": {
+        "enabled": false,
+        "amount": 0,
+        "period": "none",
+        "iaTurns": 0
+      }
+    }
+  }
+]

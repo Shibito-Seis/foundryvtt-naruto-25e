@@ -1,1 +1,312 @@
-﻿[]
+﻿[
+  {
+    "name": "Buntō",
+    "type": "arme",
+    "img": "icons/weapons/hammers/hammer-double-stone.webp",
+    "system": {
+      "description": "Marteau monstrueux aussi appelé fléau des dieux. Arme gigantesque de plus de deux mètres, souvent ornée de pointes, de piques ou de sculptures grotesques. Peut servir de réceptacle de scellage pour des créatures provenant des Royaumes Parallèles. Données papier partiellement incomplètes : dégâts COR+ARM, autres champs à confirmer.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "taxonomy": {
+        "category": "arme",
+        "subcategory": "armesExotiques",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "armes",
+        "tags": ["arme", "arme-exotique", "bunto", "marteau", "cor-arm", "monstrueuse", "incomplete"]
+      },
+      "automation": {
+        "status": "blocked",
+        "notes": "Dégâts COR+ARM connus. Portée, INIT, FM, prix et spécialisations non renseignés dans l’extrait source."
+      }
+    }
+  },
+  {
+    "name": "Horokubiya",
+    "type": "arme",
+    "img": "icons/weapons/crossbows/crossbow-repeating.webp",
+    "system": {
+      "description": "Arme exotique listée dans le chapitre 7. Données mécaniques détaillées à confirmer avant automatisation.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "taxonomy": {
+        "category": "arme",
+        "subcategory": "armesExotiques",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "armes",
+        "tags": ["arme", "arme-exotique", "horokubiya", "incomplete"]
+      },
+      "automation": {
+        "status": "blocked",
+        "notes": "Arme listée dans le résumé des armes exotiques, mais données mécaniques non retrouvées dans les extraits exploitables."
+      }
+    }
+  },
+  {
+    "name": "Kama",
+    "type": "arme",
+    "img": "icons/weapons/axes/axe-hooked-steel.webp",
+    "system": {
+      "description": "Faucille de combat exotique. Données mécaniques détaillées à confirmer avant automatisation.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "taxonomy": {
+        "category": "arme",
+        "subcategory": "armesExotiques",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "armes",
+        "tags": ["arme", "arme-exotique", "kama", "faucille", "incomplete"]
+      },
+      "automation": {
+        "status": "blocked",
+        "notes": "Arme listée dans le résumé des armes exotiques, mais données mécaniques non retrouvées dans les extraits exploitables."
+      }
+    }
+  },
+  {
+    "name": "Kanabo",
+    "type": "arme",
+    "img": "icons/weapons/maces/mace-spiked-steel.webp",
+    "system": {
+      "description": "Massue lourde exotique associée aux oni et aux guerriers de force brute. Données mécaniques détaillées à confirmer avant automatisation.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "taxonomy": {
+        "category": "arme",
+        "subcategory": "armesExotiques",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "armes",
+        "tags": ["arme", "arme-exotique", "kanabo", "massue", "lourde", "incomplete"]
+      },
+      "automation": {
+        "status": "blocked",
+        "notes": "Arme listée dans le résumé des armes exotiques, mais données mécaniques non retrouvées dans les extraits exploitables."
+      }
+    }
+  },
+  {
+    "name": "Kusarigama",
+    "type": "arme",
+    "img": "icons/weapons/sickles/sickle-chain-brown.webp",
+    "system": {
+      "description": "Faucille-chaîne plébiscitée par les ninjas mobiles et stratégiques. Ancienne arme de référence de certains corps de police. Dégâts : NIN+ARM. Spécialisation par défaut : Enchaînée. Les autres champs papier sont incomplets.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "taxonomy": {
+        "category": "arme",
+        "subcategory": "armesExotiques",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "armes",
+        "tags": ["arme", "arme-exotique", "kusarigama", "chaine", "faucille", "nin-arm", "enchainée", "incomplete"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Dégâts NIN+ARM et spécialisation par défaut Enchaînée connus. Portée, INIT, CRIT et prix non renseignés dans l’extrait source."
+      }
+    }
+  },
+  {
+    "name": "Nunchakus",
+    "type": "arme",
+    "img": "icons/weapons/clubs/club-baton-barbed.webp",
+    "system": {
+      "description": "Hakakukei nunchaku, arme tournoyante de l’école internationale de combat Mabushī. Souvent agrémentée de sceaux de perturbation Fūin. Données papier partiellement incomplètes : dégâts TAI+ARM+, portée Z2.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "taxonomy": {
+        "category": "arme",
+        "subcategory": "armesExotiques",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "armes",
+        "tags": ["arme", "arme-exotique", "nunchakus", "tai-arm", "z2", "fūin", "incomplete"]
+      },
+      "automation": {
+        "status": "blocked",
+        "notes": "Portée Z2 connue, formule de dégâts incomplète : TAI+ARM+. INIT, prix et spécialisations non renseignés."
+      }
+    }
+  },
+  {
+    "name": "Tekki",
+    "type": "arme",
+    "img": "icons/equipment/hand/glove-cestus-steel.webp",
+    "system": {
+      "description": "Poings impacteurs. Arme exotique de frappe au corps à corps. Données papier partiellement incomplètes : dégâts TAI+ARM+.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "taxonomy": {
+        "category": "arme",
+        "subcategory": "armesExotiques",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "armes",
+        "tags": ["arme", "arme-exotique", "tekki", "poings", "tai-arm", "incomplete"]
+      },
+      "automation": {
+        "status": "blocked",
+        "notes": "Formule de dégâts incomplète : TAI+ARM+. Portée, INIT, prix et spécialisations non renseignés."
+      }
+    }
+  },
+  {
+    "name": "Tekkogaki",
+    "type": "arme",
+    "img": "icons/weapons/claws/claw-paired-steel.webp",
+    "system": {
+      "description": "Griffes d’épines. Arme exotique griffue. Spécialisation par défaut : D’Épines. Spécialisations alternatives : Enchaînée, Mécanique. Données de dégâts et de portée incomplètes.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "taxonomy": {
+        "category": "arme",
+        "subcategory": "armesExotiques",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "armes",
+        "tags": ["arme", "arme-exotique", "tekkogaki", "griffes", "d-epines", "enchainée", "mecanique", "incomplete"]
+      },
+      "automation": {
+        "status": "blocked",
+        "notes": "Spécialisations connues, mais dégâts, portée, INIT et prix non renseignés dans l’extrait source."
+      }
+    }
+  },
+  {
+    "name": "Tessen",
+    "type": "arme",
+    "img": "icons/weapons/fans/fan-brown.webp",
+    "system": {
+      "description": "Éventail de guerre. Arme exotique élégante et tactique. Données papier partiellement incomplètes : dégâts NIN+ARM+, portée Z3. Spécialisation par défaut : Monstrueuse. Spécialisation alternative visible : Incendiaire.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "taxonomy": {
+        "category": "arme",
+        "subcategory": "armesExotiques",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "armes",
+        "tags": ["arme", "arme-exotique", "tessen", "eventail", "nin-arm", "z3", "monstrueuse", "incendiaire", "incomplete"]
+      },
+      "automation": {
+        "status": "blocked",
+        "notes": "Portée Z3 connue, formule de dégâts incomplète : NIN+ARM+. INIT, FM, prix et spécialisations complètes à confirmer."
+      }
+    }
+  },
+  {
+    "name": "Zambatō",
+    "type": "arme",
+    "img": "icons/weapons/swords/greatsword-guard-gem-blue.webp",
+    "system": {
+      "description": "Lame géante ensanglantée. Arme exotique colossale et destructrice. Données papier partiellement incomplètes : dégâts COR+ARM+. Spécialisation par défaut : Monstrueuse. Spécialisation alternative visible : Incendiaire.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "taxonomy": {
+        "category": "arme",
+        "subcategory": "armesExotiques",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "armes",
+        "tags": ["arme", "arme-exotique", "zambato", "lame-geante", "cor-arm", "monstrueuse", "incendiaire", "incomplete"]
+      },
+      "automation": {
+        "status": "blocked",
+        "notes": "Formule de dégâts incomplète : COR+ARM+. Portée, INIT, FM, prix et spécialisations complètes à confirmer."
+      }
+    }
+  }
+]
