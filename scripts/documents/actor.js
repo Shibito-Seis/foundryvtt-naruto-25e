@@ -5163,7 +5163,7 @@ async decreaseBase(baseKey) {
     const power = activePowers.find((entry) => entry.itemId === itemId || entry.id === itemId);
 
     if (!power) {
-      ui.notifications.warn("Pouvoir actif introuvable.");
+      ui.notifications.warn("Effet maintenu introuvable.");
       return;
     }
 
@@ -5173,9 +5173,12 @@ async decreaseBase(baseKey) {
       "system.resources.activeLineagePowers": remainingPowers
     };
 
+    const isTechnique = power.sourceType === "technique";
+    const typeLabel = isTechnique ? "technique maintenue" : "pouvoir de lignée";
+
     let mangekyoChakraMessage = "";
 
-    if (this._isMangekyoPowerName(power.name) && this._getMangekyoChakraBonusMode() === "active") {
+    if (!isTechnique && this._isMangekyoPowerName(power.name) && this._getMangekyoChakraBonusMode() === "active") {
       const chakra = this.system.resources?.chakra ?? {};
       const currentChakra = Math.max(0, Number(chakra.value ?? 0));
       const activeMaxChakra = Math.max(0, Number(chakra.max ?? 0));
@@ -5219,16 +5222,22 @@ async decreaseBase(baseKey) {
     const item = this.items.get(power.itemId);
     const safeActorName = foundry.utils.escapeHTML?.(this.name) ?? this.name;
     const safePowerName = foundry.utils.escapeHTML?.(power.name) ?? power.name;
+    const safeTypeLabel = foundry.utils.escapeHTML?.(typeLabel) ?? typeLabel;
     const safeEffect = foundry.utils.escapeHTML?.(item?.system?.effect ?? "") ?? "";
-    const maintenanceCost = Math.max(0, Number(power.maintenanceCost ?? item?.system?.maintenanceCost ?? 0));
+
+    const fallbackMaintenance = isTechnique
+      ? item?.system?.chakra?.maintenance
+      : item?.system?.maintenanceCost;
+
+    const maintenanceCost = Math.max(0, Number(power.maintenanceCost ?? fallbackMaintenance ?? 0));
 
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: this }),
-      flavor: `${safeActorName} désactive ${safePowerName}`,
+      flavor: `${safeActorName} arrête ${safePowerName}`,
       content: `
         <div class="naruto-lineage-power-card">
           <header><h3>${safePowerName}</h3></header>
-          <p><strong>${safeActorName}</strong> désactive ce pouvoir de lignée.</p>
+          <p><strong>${safeActorName}</strong> arrête cette ${safeTypeLabel}.</p>
 
           ${safeEffect ? `<p class="lineage-power-effect"><strong>Effet interrompu :</strong> ${safeEffect}</p>` : ""}
 
@@ -5238,7 +5247,7 @@ async decreaseBase(baseKey) {
       `
     });
 
-    ui.notifications.info(`${power.name} désactivé.`);
+    ui.notifications.info(`${power.name} arrêté.`);
   }
 
   _computeLineageMaintenanceCost(powers = []) {
@@ -5299,11 +5308,11 @@ async decreaseBase(baseKey) {
 
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: this }),
-      flavor: `${safeActorName} entretient ses pouvoirs de lignée`,
+      flavor: `${safeActorName} entretient ses effets maintenus`,
       content: `
         <div class="naruto-lineage-power-card">
-          <header><h3>Entretien des pouvoirs de lignée</h3></header>
-          <p><strong>${safeActorName}</strong> maintient ses pouvoirs actifs.</p>
+          <header><h3>Entretien des effets maintenus</h3></header>
+          <p><strong>${safeActorName}</strong> maintient ses pouvoirs et techniques actifs.</p>
           <div><strong>Entretien total :</strong> ${maintenance.totalMaintenance}</div>
           <div><strong>Régénération passive :</strong> -${maintenance.passiveRegen}</div>
           <div><strong>Coût net :</strong> ${maintenance.netCost}</div>
@@ -5353,7 +5362,7 @@ async decreaseBase(baseKey) {
 
     await new Promise((resolve) => {
       new Dialog({
-        title: `Entretien des pouvoirs — ${this.name}`,
+        title: `Entretien des effets maintenus — ${this.name}`,
         content,
         buttons: {
           validate: {
@@ -5401,11 +5410,11 @@ async decreaseBase(baseKey) {
 
               await ChatMessage.create({
                 speaker: ChatMessage.getSpeaker({ actor: this }),
-                flavor: `${safeActorName} ajuste ses pouvoirs maintenus`,
+                flavor: `${safeActorName} ajuste ses effets maintenus`,
                 content: `
                   <div class="naruto-lineage-power-card">
                     <header><h3>Entretien ajusté</h3></header>
-                    <p><strong>${safeActorName}</strong> choisit les pouvoirs de lignée maintenus.</p>
+                    <p><strong>${safeActorName}</strong> choisit les effets maintenus.</p>
                     <div><strong>Maintenus :</strong> ${keptNames}</div>
                     <div><strong>Désactivés :</strong> ${removedNames}</div>
                     <div><strong>Entretien total :</strong> ${maintenance.totalMaintenance}</div>

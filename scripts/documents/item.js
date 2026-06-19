@@ -416,10 +416,6 @@ export class Naruto25eItem extends Item {
             return null;
         }
 
-        const prerequisites = system.prerequisites ?? {};
-        const prerequisiteType = prerequisites.type ?? "none";
-        const strictPrerequisite = Boolean(prerequisites.strict);
-
         const prerequisiteResult = this._checkTechniquePrerequisite(
             rollActor,
             system,
@@ -429,6 +425,26 @@ export class Naruto25eItem extends Item {
 
         if (!prerequisiteResult.ok) {
             ui.notifications.warn(prerequisiteResult.message);
+            return null;
+        }
+
+        const chakra = rollActor.system.resources?.chakra ?? {};
+        const currentChakra = Math.max(0, Number(chakra.value ?? 0));
+        const maxChakra = Math.max(0, Number(chakra.max ?? 0));
+
+        const initialCost = Math.max(0, Number(system.chakra?.initial ?? 0));
+        const maintenanceCost = Math.max(0, Number(system.chakra?.maintenance ?? 0));
+        const hasMaintenance = maintenanceCost > 0;
+
+        if (initialCost > 0 && currentChakra < initialCost) {
+            ui.notifications.warn(`${rollActor.name} n’a pas assez de Chakra pour utiliser ${this.name} (${currentChakra}/${initialCost}).`);
+            return null;
+        }
+
+        const activeEffects = foundry.utils.deepClone(rollActor.system.resources?.activeLineagePowers ?? []);
+
+        if (hasMaintenance && activeEffects.some((effect) => effect.itemId === this.id)) {
+            ui.notifications.warn(`${this.name} est déjà maintenue. Désactive-la avant de la relancer.`);
             return null;
         }
 
@@ -442,84 +458,162 @@ export class Naruto25eItem extends Item {
         );
 
         const modifier = skillOwned
-        ? Number(skill?.total ?? baseTotal)
-        : baseTotal;
+            ? Number(skill?.total ?? baseTotal)
+            : baseTotal;
 
         const rollModeLabel = skillOwned
-        ? `${definition.label}`
-        : `${definition.label} non possédée — Base ${(baseKey ?? "").toUpperCase()}`;
-        const formula = `1d10x + ${modifier}`;
+            ? `${definition.label}`
+            : `${definition.label} non possédée — Base ${(baseKey ?? "").toUpperCase()}`;
 
-        const roll = new Roll(formula);
-        await roll.evaluate();
+        const rollEnabled = system.roll?.enabled !== false;
 
-        const dice = roll.dice?.[0];
-        const dieResults = dice?.results ?? [];
-        const naturalResults = dieResults.map((result) => Number(result.result ?? 0));
-        const exploded = naturalResults.some((value) => value === 10) && naturalResults.length > 1;
+        let roll = null;
+        let exploded = false;
+        let rollTotal = "—";
+        let diceText = "—";
+        let modifierText = modifier >= 0 ? `+ ${modifier}` : `- ${Math.abs(modifier)}`;
 
-        const diceText = naturalResults.length ? naturalResults.join(" + ") : "—";
-        const modifierText = modifier >= 0 ? `+ ${modifier}` : `- ${Math.abs(modifier)}`;
+        if (rollEnabled) {
+            const formula = `1d10x + ${modifier}`;
+
+            roll = new Roll(formula);
+            await roll.evaluate();
+
+            const dice = roll.dice?.[0];
+            const dieResults = dice?.results ?? [];
+            const naturalResults = dieResults.map((result) => Number(result.result ?? 0));
+
+            exploded = naturalResults.some((value) => value === 10) && naturalResults.length > 1;
+            rollTotal = roll.total;
+            diceText = naturalResults.length ? naturalResults.join(" + ") : "—";
+        }
+
+        const nextChakra = Math.max(0, currentChakra - initialCost);
+
+        const updateData = {
+            "system.resources.chakra.value": nextChakra
+        };
+
+        let maintainedMessage = "";
+
+        if (hasMaintenance) {
+            const updatedActiveEffects = [
+                ...activeEffects,
+                {
+                    id: foundry.utils.randomID(16),
+                    itemId: this.id,
+                    uuid: this.uuid,
+                    name: this.name,
+                    sourceType: "technique",
+                    activationCost: initialCost,
+                    maintenanceCost,
+                    startedRound: game.combat?.round ?? 0,
+                    startedTurn: game.combat?.turn ?? 0
+                }
+            ];
+
+            updateData["system.resources.activeLineagePowers"] = updatedActiveEffects;
+
+            maintainedMessage = `
+                <div class="naruto-technique-maintained">
+                    <strong>Maintien :</strong>
+                    cette technique est ajoutée aux effets maintenus actifs.
+                </div>
+            `;
+        }
+
+        await rollActor.update(updateData);
 
         const familyLabel = NARUTO25E.techniqueFamilies?.[system.family] ?? system.family ?? "—";
         const rankLabel = NARUTO25E.techniqueRanks?.[system.rank] ?? system.rank ?? "—";
         const actionLabel = NARUTO25E.techniqueActionTypes?.[system.actionType] ?? system.actionType ?? "—";
         const skillLabel = rollModeLabel;
 
+        const safeTechniqueName = foundry.utils.escapeHTML?.(this.name) ?? this.name;
+        const safeActorName = foundry.utils.escapeHTML?.(rollActor.name) ?? rollActor.name;
+        const safeEffect = foundry.utils.escapeHTML?.(system.effect ?? "") ?? "";
+        const safeRange = foundry.utils.escapeHTML?.(system.range || "—") ?? (system.range || "—");
+        const safeTarget = foundry.utils.escapeHTML?.(system.target || "—") ?? (system.target || "—");
+        const safeDuration = foundry.utils.escapeHTML?.(system.duration || "—") ?? (system.duration || "—");
+        const safeArea = foundry.utils.escapeHTML?.(system.area || "—") ?? (system.area || "—");
+        const safeDamageFormula = foundry.utils.escapeHTML?.(system.damage?.formula || "—") ?? (system.damage?.formula || "—");
+        const damageTypeLabel = NARUTO25E.damageTypes?.[system.damage?.type] ?? system.damage?.type ?? "";
+        const safeDamageType = foundry.utils.escapeHTML?.(damageTypeLabel) ?? damageTypeLabel;
+        const safePrerequisite = foundry.utils.escapeHTML?.(prerequisiteResult.label ?? "—") ?? (prerequisiteResult.label ?? "—");
+
+        const rollBlock = rollEnabled
+            ? `
+                <div class="${exploded ? "naruto-roll-result exploded" : "naruto-roll-result"}">
+                    ${rollTotal}
+                </div>
+
+                <div class="naruto-roll-details">
+                    <span>D10 : ${diceText}</span>
+                    <span>Modificateur : ${modifierText}</span>
+                </div>
+
+                ${exploded ? `
+                    <div class="naruto-roll-explosion">
+                        Explosion du dé !
+                    </div>
+                ` : ""}
+            `
+            : `
+                <div class="naruto-roll-result">
+                    Sans jet
+                </div>
+
+                <div class="naruto-roll-details">
+                    <span>Cette technique ne lance pas de jet automatique.</span>
+                </div>
+            `;
+
         const content = `
             <div class="naruto-roll-card naruto-technique-card ${exploded ? "is-exploded" : ""}">
                 <header class="naruto-roll-header">
-                    <h3>${this.name} — ${rollActor.name}</h3>
+                    <h3>${safeTechniqueName} — ${safeActorName}</h3>
                 </header>
 
-            <div class="naruto-technique-meta">
-                <span><strong>Famille</strong> ${familyLabel}</span>
-                <span><strong>Rang</strong> ${rankLabel}</span>
-                <span><strong>Action</strong> ${actionLabel}</span>
-                <span><strong>Compétence</strong> ${skillLabel}</span>
-            </div>
-
-            <div class="${exploded ? "naruto-roll-result exploded" : "naruto-roll-result"}">
-                ${roll.total}
-            </div>
-
-            <div class="naruto-roll-details">
-                <span>D10 : ${diceText}</span>
-                <span>Modificateur : ${modifierText}</span>
-            </div>
-
-            ${exploded ? `
-                <div class="naruto-roll-explosion">
-                    Explosion du dé !
+                <div class="naruto-technique-meta">
+                    <span><strong>Famille</strong> ${familyLabel}</span>
+                    <span><strong>Rang</strong> ${rankLabel}</span>
+                    <span><strong>Action</strong> ${actionLabel}</span>
+                    <span><strong>Compétence</strong> ${skillLabel}</span>
                 </div>
-            ` : ""}
 
-            <div class="naruto-technique-details">
-                <div><strong>Chakra :</strong> ${system.chakra?.initial ?? 0}</div>
-                <div><strong>Entretien :</strong> ${system.chakra?.maintenance ?? 0}</div>
-                <div><strong>Portée :</strong> ${system.range || "—"}</div>
-                <div><strong>Cible :</strong> ${system.target || "—"}</div>
-                <div><strong>Durée :</strong> ${system.duration || "—"}</div>
-                <div><strong>Zone :</strong> ${system.area || "—"}</div>
-                <div><strong>Dégâts :</strong> ${system.damage?.formula || "—"} ${NARUTO25E.damageTypes?.[system.damage?.type] ?? system.damage?.type ?? ""}</div>
-                <div><strong>Prérequis :</strong> ${prerequisiteResult.label}</div>
-            </div>
+                ${rollBlock}
 
-            ${system.effect ? `
-                <div class="naruto-technique-effect">
-                    <strong>Effet</strong>
-                    <div>${system.effect}</div>
+                <div class="naruto-technique-details">
+                    <div><strong>Coût initial :</strong> ${initialCost} Chakra</div>
+                    <div><strong>Chakra :</strong> ${currentChakra} → ${nextChakra} / ${maxChakra}</div>
+                    <div><strong>Entretien :</strong> ${maintenanceCost} Chakra / tour</div>
+                    <div><strong>Portée :</strong> ${safeRange}</div>
+                    <div><strong>Cible :</strong> ${safeTarget}</div>
+                    <div><strong>Durée :</strong> ${safeDuration}</div>
+                    <div><strong>Zone :</strong> ${safeArea}</div>
+                    <div><strong>Dégâts :</strong> ${safeDamageFormula} ${safeDamageType}</div>
+                    <div><strong>Prérequis :</strong> ${safePrerequisite}</div>
                 </div>
-            ` : ""}
+
+                ${maintainedMessage}
+
+                ${safeEffect ? `
+                    <div class="naruto-technique-effect">
+                        <strong>Effet</strong>
+                        <div>${safeEffect}</div>
+                    </div>
+                ` : ""}
             </div>
         `;
 
         await ChatMessage.create({
             speaker: ChatMessage.getSpeaker({ actor: rollActor }),
-            flavor: `Technique : ${this.name}`,
+            flavor: `Technique : ${safeTechniqueName}`,
             content,
-            rolls: [roll]
+            rolls: roll ? [roll] : []
         });
+
+        ui.notifications.info(`${this.name} utilisée.`);
 
         return roll;
     }

@@ -315,6 +315,88 @@ export class Naruto25eShinobiSheet extends ActorSheet {
 
   context.hasLineagePowerItems = context.lineagePowerItems.length > 0;
 
+  const activeMaintainedEffects = activeLineagePowers;
+
+  const getTechniqueFamilyLabel = (familyKey) => {
+    return NARUTO25E.techniqueFamilies?.[familyKey] ?? familyKey ?? "Autres";
+  };
+
+  const getTechniqueRankLabel = (rankKey) => {
+    return NARUTO25E.techniqueRanks?.[rankKey] ?? rankKey ?? "—";
+  };
+
+  const getTechniqueActionLabel = (actionKey) => {
+    return NARUTO25E.techniqueActionTypes?.[actionKey] ?? actionKey ?? "—";
+  };
+
+  const techniqueItems = this.actor.items
+    .filter((item) => item.type === "technique")
+    .map((item) => {
+      const system = item.system ?? {};
+      const family = system.family || "autres";
+      const maintenanceCost = Math.max(0, Number(system.chakra?.maintenance ?? 0));
+      const activeEffect = activeMaintainedEffects.find((effect) => effect.itemId === item.id);
+
+      return {
+        id: item.id,
+        name: item.name,
+        img: item.img,
+        family,
+        familyLabel: getTechniqueFamilyLabel(family),
+        domain: system.domain ?? "",
+        rank: system.rank ?? "",
+        rankLabel: getTechniqueRankLabel(system.rank),
+        level: Number(system.level ?? 1),
+        skill: system.skill ?? "",
+        skillLabel: NARUTO25E.skillDefinitions?.[system.skill]?.label ?? system.skill ?? "—",
+        base: system.base ?? "",
+        actionType: system.actionType ?? "complex",
+        actionLabel: getTechniqueActionLabel(system.actionType),
+        range: system.range ?? "",
+        duration: system.duration ?? "",
+        target: system.target ?? "",
+        area: system.area ?? "",
+        damageFormula: system.damage?.formula ?? "",
+        damageType: NARUTO25E.damageTypes?.[system.damage?.type] ?? system.damage?.type ?? "",
+        chakraInitial: Math.max(0, Number(system.chakra?.initial ?? 0)),
+        chakraMaintenance: maintenanceCost,
+        hasMaintenance: maintenanceCost > 0,
+        effect: system.effect ?? "",
+        active: Boolean(activeEffect),
+        activeId: activeEffect?.id ?? ""
+      };
+    })
+    .sort((a, b) => {
+      const familyCompare = a.familyLabel.localeCompare(b.familyLabel, "fr");
+      if (familyCompare !== 0) return familyCompare;
+
+      const rankCompare = String(a.rankLabel).localeCompare(String(b.rankLabel), "fr");
+      if (rankCompare !== 0) return rankCompare;
+
+      return a.name.localeCompare(b.name, "fr");
+    });
+
+  context.techniqueItems = techniqueItems;
+  context.hasTechniqueItems = techniqueItems.length > 0;
+
+  const techniqueGroupsMap = new Map();
+
+  for (const technique of techniqueItems) {
+    const key = technique.family || "autres";
+
+    if (!techniqueGroupsMap.has(key)) {
+      techniqueGroupsMap.set(key, {
+        key,
+        label: technique.familyLabel || "Autres",
+        techniques: []
+      });
+    }
+
+    techniqueGroupsMap.get(key).techniques.push(technique);
+  }
+
+  context.techniqueGroups = Array.from(techniqueGroupsMap.values());
+
   const lineageMaintenance = this.actor._computeLineageMaintenanceCost?.(activeLineagePowers) ?? {
     totalMaintenance: 0,
     passiveRegen: 0,
@@ -325,7 +407,7 @@ export class Naruto25eShinobiSheet extends ActorSheet {
   const nextChakraAfterMaintenance = Math.max(0, currentChakra - lineageMaintenance.netCost);
 
   context.lineageMaintenanceSummary = {
-    activeCount: activeLineagePowers.length,
+    activeCount: activeMaintainedEffects.length,
     totalMaintenance: lineageMaintenance.totalMaintenance,
     passiveRegen: lineageMaintenance.passiveRegen,
     netCost: lineageMaintenance.netCost,
@@ -1515,6 +1597,25 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
       return false;
     }
 
+    if (item.type === "technique") {
+      const existing = this.actor.items.find((actorItem) => {
+        return actorItem.type === "technique" && actorItem.name === item.name;
+      });
+
+      if (existing) {
+        ui.notifications.warn(`${this.actor.name} possède déjà la technique ${item.name}.`);
+        return false;
+      }
+
+      const itemData = item.toObject();
+      delete itemData._id;
+
+      await this.actor.createEmbeddedDocuments("Item", [itemData]);
+
+      ui.notifications.info(`${item.name} ajoutée aux techniques de ${this.actor.name}.`);
+      return false;
+    }
+
     const allowedTypes = ["arme", "armure", "equipement", "consommable"];
 
     if (!allowedTypes.includes(item.type)) {
@@ -2026,6 +2127,30 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     event.preventDefault();
 
     await this.actor.applyMaintainedLineagePowerUpkeep({ forceDialog: true });
+  });
+
+  html.find(".technique-use").on("click", async (event) => {
+    event.preventDefault();
+
+    const itemId = event.currentTarget.dataset.itemId;
+    const item = this.actor.items.get(itemId);
+
+    if (!item || item.type !== "technique") {
+      ui.notifications.warn("Technique introuvable.");
+      return;
+    }
+
+    await item.rollTechnique(this.actor);
+    this.render(false);
+  });
+
+  html.find(".technique-stop-maintained").on("click", async (event) => {
+    event.preventDefault();
+
+    const itemId = event.currentTarget.dataset.itemId;
+
+    await this.actor.deactivateLineagePower(itemId);
+    this.render(false);
   });
 
   html.find(".inventory-add-item").on("click", async (event) => {

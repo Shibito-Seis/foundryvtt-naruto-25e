@@ -2,6 +2,47 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.38 - Techniques V1 jouables
+
+### Ajouté
+
+- Ajout d’un onglet `Techniques` sur la fiche Shinobi.
+- Les techniques possédées par l’acteur sont maintenant listées sur la fiche.
+- Les techniques sont regroupées par famille :
+  - Ninjutsu ;
+  - Genjutsu ;
+  - Taijutsu ;
+  - Lignée ;
+  - Autres.
+- Ajout d’un bouton `Utiliser` sur chaque technique possédée.
+- Ajout du drag & drop des items `technique` depuis les compendiums vers une fiche Shinobi.
+- Une technique déposée sur une fiche est créée comme Item embedded de l’acteur.
+- Les techniques paient maintenant leur coût initial en Chakra à l’utilisation.
+- Les techniques avec entretien sont ajoutées aux effets maintenus actifs.
+- Les techniques maintenues peuvent être arrêtées depuis la fiche.
+- L’entretien des techniques maintenues rejoint le système existant d’entretien :
+  - les coûts d’entretien sont additionnés ;
+  - la régénération passive est soustraite une seule fois ;
+  - le MJ peut résoudre le maintien via le bouton d’entretien existant.
+
+### Modifié
+
+- Les cartes de chat des techniques affichent désormais :
+  - Chakra avant / après ;
+  - coût initial ;
+  - coût d’entretien ;
+  - état maintenu si applicable.
+- Les techniques sans jet activé peuvent créer une carte de chat sans lancer de dé, tout en payant leur coût de Chakra.
+- Le système `activeLineagePowers` est conservé pour compatibilité, mais peut maintenant contenir des effets maintenus de type `technique`.
+
+### Notes
+
+- Cette version ne code pas encore les effets automatiques de dégâts, blessures ou conditions.
+- Cette version ne code pas encore le navigateur de compendiums façon PF2e.
+- Cette version ne classe pas encore les compendiums par dossiers techniques.
+- Cette version ne branche pas encore le choix de technique de départ dans le Shinobimancer.
+- `technique-sheet.hbs` reste inutilisé pour l’instant.
+
 ## 0.1.37.1 - Correctif récursion tenue inventaire
 
 ### Corrigé

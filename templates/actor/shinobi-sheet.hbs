@@ -49,6 +49,7 @@
   <a class="item" data-tab="background">Background</a>
   <a class="item" data-tab="effects">Effets / États</a>
   <a class="item" data-tab="combat">Combat / Actions</a>
+  <a class="item" data-tab="techniques">Techniques</a>
   <a class="item" data-tab="chakra">Chakra</a>
   <a class="item" data-tab="inventory">Inventaire</a>
   <a class="item" data-tab="bases">Bases</a>
@@ -1230,6 +1231,142 @@
             <textarea name="system.combat.health.notes">{{system.combat.health.notes}}</textarea>
           </label>
         </section>
+      </section>
+    </div>
+
+    <div class="tab" data-group="primary" data-tab="techniques">
+      <section class="panel">
+        <h2>Techniques</h2>
+
+        <p class="hint">
+          Glisse une technique depuis un compendium sur cette fiche pour l’ajouter au Shinobi.
+        </p>
+
+        <section class="combat-card">
+          <h3>Entretien actif</h3>
+
+          <div class="combat-resource-line">
+            <strong>Effets maintenus</strong>
+            <span>{{lineageMaintenanceSummary.activeCount}}</span>
+          </div>
+
+          <div class="combat-resource-line">
+            <strong>Entretien total</strong>
+            <span>{{lineageMaintenanceSummary.totalMaintenance}}</span>
+          </div>
+
+          <div class="combat-resource-line">
+            <strong>Régénération passive</strong>
+            <span>-{{lineageMaintenanceSummary.passiveRegen}}</span>
+          </div>
+
+          <div class="combat-resource-line">
+            <strong>Coût net</strong>
+            <span>{{lineageMaintenanceSummary.netCost}}</span>
+          </div>
+
+          <div class="combat-resource-line">
+            <strong>Chakra après entretien</strong>
+            <span>
+              {{lineageMaintenanceSummary.currentChakra}}
+              →
+              {{lineageMaintenanceSummary.nextChakra}}
+            </span>
+          </div>
+
+          {{#if lineageMaintenanceSummary.crossesCriticalThreshold}}
+            <p class="warning-text">
+              L’entretien franchit un seuil critique de Chakra.
+            </p>
+          {{/if}}
+
+          {{#if isGM}}
+            <button type="button" class="lineage-power-upkeep-check">
+              MJ : résoudre l’entretien
+            </button>
+          {{/if}}
+        </section>
+
+        {{#if hasTechniqueItems}}
+          {{#each techniqueGroups as |group|}}
+            <section class="lineage-section">
+              <h3>{{group.label}}</h3>
+
+              <div class="naruto-technique-list">
+                {{#each group.techniques as |technique|}}
+                  <div class="naruto-lineage-power-row {{#if technique.active}}is-active{{/if}}">
+                    <div>
+                      <strong>{{technique.name}}</strong>
+
+                      <span>
+                        Rang {{technique.rankLabel}}
+                        —
+                        {{technique.actionLabel}}
+                        —
+                        {{technique.skillLabel}}
+                      </span>
+
+                      <p class="formula-hint">
+                        Chakra {{technique.chakraInitial}}
+                        {{#if technique.hasMaintenance}}
+                          — Entretien {{technique.chakraMaintenance}} / tour
+                        {{/if}}
+                        {{#if technique.range}}
+                          — Portée {{technique.range}}
+                        {{/if}}
+                        {{#if technique.duration}}
+                          — Durée {{technique.duration}}
+                        {{/if}}
+                      </p>
+
+                      {{#if technique.domain}}
+                        <p class="formula-hint">
+                          <strong>Domaine :</strong> {{technique.domain}}
+                        </p>
+                      {{/if}}
+
+                      {{#if technique.damageFormula}}
+                        <p class="formula-hint">
+                          <strong>Dégâts :</strong> {{technique.damageFormula}} {{technique.damageType}}
+                        </p>
+                      {{/if}}
+
+                      {{#if technique.effect}}
+                        <p class="formula-hint">
+                          <strong>Effet :</strong> {{technique.effect}}
+                        </p>
+                      {{/if}}
+                    </div>
+
+                    <div class="button-column">
+                      <button
+                        type="button"
+                        class="technique-use"
+                        data-item-id="{{technique.id}}"
+                      >
+                        Utiliser
+                      </button>
+
+                      {{#if technique.active}}
+                        <button
+                          type="button"
+                          class="technique-stop-maintained"
+                          data-item-id="{{technique.id}}"
+                        >
+                          Arrêter
+                        </button>
+                      {{/if}}
+                    </div>
+                  </div>
+                {{/each}}
+              </div>
+            </section>
+          {{/each}}
+        {{else}}
+          <p class="muted">
+            Aucune technique possédée pour le moment.
+          </p>
+        {{/if}}
       </section>
     </div>
 
@@ -2463,7 +2600,7 @@
 
         {{#if isGM}}
           <button type="button" class="lineage-power-upkeep-check">
-            MJ : tester / résoudre l’entretien
+            MJ : tester / résoudre l’entretien des effets maintenus
           </button>
         {{/if}}
       </section>
