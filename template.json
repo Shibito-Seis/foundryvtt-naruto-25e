@@ -101,6 +101,23 @@
               "granted": false,
               "grantedAt": "",
               "grantedBy": ""
+            },
+            "startingTechniques": {
+              "caseSchool": {
+                "choices": [],
+                "locked": false,
+                "completed": false
+              },
+              "specialized": {
+                "choices": [],
+                "locked": false,
+                "completed": false
+              },
+              "grantedLineage": [],
+              "grantedPowers": [],
+              "granted": false,
+              "grantedAt": "",
+              "grantedBy": ""
             }
           },
           "rank": {

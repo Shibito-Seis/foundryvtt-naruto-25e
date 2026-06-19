@@ -2,6 +2,60 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.40 - Techniques de départ Shinobimancer
+
+### Ajouté
+
+- Ajout de l’attribution finale des techniques de départ lors de la validation du Shinobimancer.
+- Les techniques choisies dans les blocs cas d’école et spécialisées sont créées comme Items `technique` sur l’acteur.
+- Ajout d’un anti-doublon pour éviter de recréer une technique déjà présente sur la fiche.
+- Les techniques attribuées à la création reçoivent un flag `naruto-25e.grantedAtCreation` et `creationPackage: "startingTechniques"`.
+- La validation finale exige que le bloc cas d’école soit complété et que le bloc spécialisé soit validé, même si aucune technique spécialisée n’est choisie.
+- Ajout de l’interface de sélection des techniques de départ dans l’étape Équipement du Shinobimancer.
+- Ajout du bloc “Techniques cas d’école” :
+  - affichage des techniques candidates ;
+  - sélection/désélection ;
+  - validation/repli du bloc ;
+  - bouton pour modifier les choix.
+- Ajout du bloc “Techniques spécialisées” :
+  - affichage par compétence possédée ;
+  - sélection/désélection ;
+  - validation/repli du bloc ;
+  - bouton pour modifier les choix.
+- Ajout des contrôles de limites côté interface :
+  - total cas d’école ;
+  - limite de techniques d’académie ;
+  - limite de Kawarimi ;
+  - limite de techniques spécialisées.
+- Construction des listes candidates de techniques de départ dans le Shinobimancer :
+  - techniques cas d’école depuis Techniques communes et Gensou : Kaï ;
+  - techniques spécialisées depuis Ninjutsu, Genjutsu et Taijutsu ;
+  - filtrage des techniques bloquées ;
+  - filtrage des techniques spécialisées en rang D / niveau 1 maximum ;
+  - filtrage selon les compétences possédées par le shinobi.
+- Ajout d’un accès spécial aux techniques Gensou spécialisées si le personnage possède au moins 3 en Gensou ou au moins 3 en Base Genjutsu.
+- Préparation de la structure de données des techniques de départ dans le Shinobimancer.
+- Ajout d’un état `startingTechniques` dans les données de création :
+  - techniques cas d’école ;
+  - techniques spécialisées ;
+  - techniques de lignée accordées ;
+  - pouvoirs de lignée résumés ;
+  - état d’attribution finale.
+- Préparation des limites de sélection :
+  - 3 techniques cas d’école ;
+  - 1 seule technique de type Kawarimi / permutation ;
+  - 2 techniques communes d’académie maximum ;
+  - 3 techniques spécialisées maximum.
+- Préparation de la règle Gensou spéciale :
+  - un personnage ayant au moins 3 en Gensou ou au moins 3 en Base Genjutsu peut choisir des techniques Gensou dans les techniques spécialisées de départ.
+
+### Notes
+
+- Les techniques de lignée accordées automatiquement et les pouvoirs de lignée résumés restent préparés dans la structure, mais leur attribution complète sera traitée avec la reprise des lignées et pouvoirs automatiques.
+- Cette passe pose la structure et la normalisation.
+- L’interface complète de sélection sera ajoutée dans la suite de la 0.1.40.
+- L’attribution finale des techniques sur l’acteur sera ajoutée dans une passe suivante.
+
 ## 0.1.39.4 - Structure équipement V1
 
 ### Ajouté

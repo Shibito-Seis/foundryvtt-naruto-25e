@@ -1100,6 +1100,294 @@
             </div>
           </section>
 
+          <section class="shinobimancer-panel">
+            <div class="shinobimancer-panel-heading">
+              <div>
+                <p class="shinobimancer-kicker">
+                  Choix {{startingTechniqueSelection.caseSchool.counts.total}} / {{startingTechniqueSelection.rules.caseSchool.maxChoices}}
+                </p>
+                <h3>Techniques cas d’école</h3>
+              </div>
+
+              {{#if startingTechniqueSelection.state.caseSchool.completed}}
+                <span class="shinobimancer-status-pill">Sélection validée</span>
+              {{else}}
+                <span class="shinobimancer-status-pill">Choix requis</span>
+              {{/if}}
+            </div>
+
+            <div class="shinobimancer-notice is-info">
+              <strong>Règle</strong>
+              <span>
+                Choisis 3 techniques cas d’école : techniques communes d’académie, communes de combat et Gensou : Kaï.
+                Limites : 2 techniques d’académie maximum et 1 seule permutation / Kawarimi maximum.
+              </span>
+            </div>
+
+            {{#if startingTechniqueSelection.caseSchool.overLimit}}
+              <div class="shinobimancer-notice is-warning">
+                <strong>Trop de choix</strong>
+                <span>Tu as sélectionné trop de techniques cas d’école.</span>
+              </div>
+            {{/if}}
+
+            {{#if startingTechniqueSelection.caseSchool.academyOverLimit}}
+              <div class="shinobimancer-notice is-warning">
+                <strong>Limite académie</strong>
+                <span>Tu ne peux pas choisir plus de 2 techniques communes d’académie.</span>
+              </div>
+            {{/if}}
+
+            {{#if startingTechniqueSelection.caseSchool.kawarimiOverLimit}}
+              <div class="shinobimancer-notice is-warning">
+                <strong>Limite Kawarimi</strong>
+                <span>Tu ne peux choisir qu’une seule technique de permutation / Kawarimi.</span>
+              </div>
+            {{/if}}
+
+            {{#if startingTechniqueSelection.state.caseSchool.completed}}
+              <div class="shinobimancer-equipment-grid">
+                {{#each startingTechniqueSelection.caseSchool.selected as |technique|}}
+                  <article class="shinobimancer-equipment-card is-selected">
+                    <div class="shinobimancer-equipment-quantity">Niv. {{technique.level}}</div>
+
+                    <div>
+                      <p class="shinobimancer-card-eyebrow">
+                        {{technique.skillLabel}} · {{technique.rankLabel}}
+                      </p>
+                      <h4>{{technique.name}}</h4>
+                      <p>{{technique.effect}}</p>
+                      <span class="shinobimancer-selected-stamp">Technique choisie</span>
+                    </div>
+                  </article>
+                {{/each}}
+              </div>
+
+              <div class="button-row">
+                <button
+                  type="button"
+                  class="shinobimancer-button is-secondary shinobimancer-starting-techniques-edit"
+                  data-starting-technique-section="caseSchool"
+                >
+                  Modifier mes choix cas d’école
+                </button>
+              </div>
+            {{else}}
+              <div class="shinobimancer-equipment-grid">
+                {{#each startingTechniqueSelection.caseSchool.available as |technique|}}
+                  <article
+                    class="shinobimancer-equipment-card shinobimancer-starting-technique-card {{#if technique.selected}}is-selected{{/if}}"
+                    data-starting-technique-section="caseSchool"
+                    data-starting-technique-key="{{technique.key}}"
+                  >
+                    <div class="shinobimancer-equipment-quantity">Niv. {{technique.level}}</div>
+
+                    <div>
+                      <p class="shinobimancer-card-eyebrow">
+                        {{technique.skillLabel}} · {{technique.rankLabel}}
+                      </p>
+                      <h4>{{technique.name}}</h4>
+                      <p>{{technique.effect}}</p>
+
+                      {{#if technique.selected}}
+                        <span class="shinobimancer-selected-stamp">Sélectionné</span>
+                      {{/if}}
+                    </div>
+                  </article>
+                {{/each}}
+              </div>
+
+              <div class="button-row">
+                <button
+                  type="button"
+                  class="shinobimancer-button is-primary shinobimancer-starting-techniques-complete"
+                  data-starting-technique-section="caseSchool"
+                  {{#unless startingTechniqueSelection.caseSchool.complete}}disabled{{/unless}}
+                >
+                  Valider les techniques cas d’école
+                </button>
+
+                <button
+                  type="button"
+                  class="shinobimancer-button is-secondary shinobimancer-starting-techniques-clear"
+                  data-starting-technique-section="caseSchool"
+                >
+                  Réinitialiser
+                </button>
+              </div>
+            {{/if}}
+          </section>
+
+          <section class="shinobimancer-panel">
+            <div class="shinobimancer-panel-heading">
+              <div>
+                <p class="shinobimancer-kicker">
+                  Choix {{startingTechniqueSelection.specialized.selectedCount}} / {{startingTechniqueSelection.rules.specialized.maxChoices}}
+                </p>
+                <h3>Techniques spécialisées de départ</h3>
+              </div>
+
+              {{#if startingTechniqueSelection.state.specialized.completed}}
+                <span class="shinobimancer-status-pill">Sélection validée</span>
+              {{else}}
+                <span class="shinobimancer-status-pill">Optionnel</span>
+              {{/if}}
+            </div>
+
+            <div class="shinobimancer-notice is-info">
+              <strong>Règle</strong>
+              <span>
+                Tu peux choisir jusqu’à 3 techniques supplémentaires de rang D / niveau 1 maximum,
+                uniquement dans les compétences réellement possédées à la création.
+                Gensou est aussi disponible si Gensou atteint 3 ou si la Base Genjutsu atteint 3.
+              </span>
+            </div>
+
+            {{#if startingTechniqueSelection.hasGensouSpecialAccess}}
+              <div class="shinobimancer-notice is-info">
+                <strong>Accès Gensou</strong>
+                <span>Le personnage remplit la condition spéciale : Gensou 3 ou Base Genjutsu 3.</span>
+              </div>
+            {{/if}}
+
+            {{#if startingTechniqueSelection.specialized.overLimit}}
+              <div class="shinobimancer-notice is-warning">
+                <strong>Trop de choix</strong>
+                <span>Tu as sélectionné trop de techniques spécialisées de départ.</span>
+              </div>
+            {{/if}}
+
+            {{#if startingTechniqueSelection.state.specialized.completed}}
+              {{#if startingTechniqueSelection.specialized.selected.length}}
+                <div class="shinobimancer-equipment-grid">
+                  {{#each startingTechniqueSelection.specialized.selected as |technique|}}
+                    <article class="shinobimancer-equipment-card is-selected">
+                      <div class="shinobimancer-equipment-quantity">Niv. {{technique.level}}</div>
+
+                      <div>
+                        <p class="shinobimancer-card-eyebrow">
+                          {{technique.skillLabel}} · {{technique.rankLabel}}
+                        </p>
+                        <h4>{{technique.name}}</h4>
+                        <p>{{technique.effect}}</p>
+                        <span class="shinobimancer-selected-stamp">Technique choisie</span>
+                      </div>
+                    </article>
+                  {{/each}}
+                </div>
+              {{else}}
+                <p class="shinobimancer-mini-note">
+                  Aucune technique spécialisée sélectionnée.
+                </p>
+              {{/if}}
+
+              <div class="button-row">
+                <button
+                  type="button"
+                  class="shinobimancer-button is-secondary shinobimancer-starting-techniques-edit"
+                  data-starting-technique-section="specialized"
+                >
+                  Modifier mes techniques spécialisées
+                </button>
+              </div>
+            {{else}}
+              {{#if startingTechniqueSelection.specialized.availableBySkill.length}}
+                {{#each startingTechniqueSelection.specialized.availableBySkill as |group|}}
+                  <section class="shinobimancer-panel">
+                    <div class="shinobimancer-panel-heading">
+                      <div>
+                        <p class="shinobimancer-kicker">Compétence possédée</p>
+                        <h3>{{group.label}}</h3>
+                      </div>
+                    </div>
+
+                    <div class="shinobimancer-equipment-grid">
+                      {{#each group.cards as |technique|}}
+                        <article
+                          class="shinobimancer-equipment-card shinobimancer-starting-technique-card {{#if technique.selected}}is-selected{{/if}}"
+                          data-starting-technique-section="specialized"
+                          data-starting-technique-key="{{technique.key}}"
+                        >
+                          <div class="shinobimancer-equipment-quantity">Niv. {{technique.level}}</div>
+
+                          <div>
+                            <p class="shinobimancer-card-eyebrow">
+                              {{technique.skillLabel}} · {{technique.rankLabel}}
+                            </p>
+                            <h4>{{technique.name}}</h4>
+                            <p>{{technique.effect}}</p>
+
+                            {{#if technique.selected}}
+                              <span class="shinobimancer-selected-stamp">Sélectionné</span>
+                            {{/if}}
+                          </div>
+                        </article>
+                      {{/each}}
+                    </div>
+                  </section>
+                {{/each}}
+              {{else}}
+                <div class="shinobimancer-notice is-warning">
+                  <strong>Aucune technique spécialisée disponible</strong>
+                  <span>
+                    Le personnage ne possède pas encore de compétence compatible avec les techniques de départ spécialisées,
+                    ou aucune technique rang D / niveau 1 n’est disponible dans les compendiums.
+                  </span>
+                </div>
+              {{/if}}
+
+              <div class="button-row">
+                <button
+                  type="button"
+                  class="shinobimancer-button is-primary shinobimancer-starting-techniques-complete"
+                  data-starting-technique-section="specialized"
+                  {{#if startingTechniqueSelection.specialized.overLimit}}disabled{{/if}}
+                >
+                  Valider les techniques spécialisées
+                </button>
+
+                <button
+                  type="button"
+                  class="shinobimancer-button is-secondary shinobimancer-starting-techniques-clear"
+                  data-starting-technique-section="specialized"
+                >
+                  Réinitialiser
+                </button>
+              </div>
+            {{/if}}
+          </section>
+
+          <section class="shinobimancer-panel">
+            <div class="shinobimancer-panel-heading">
+              <div>
+                <p class="shinobimancer-kicker">Hors limite</p>
+                <h3>Capacités et techniques de lignée</h3>
+              </div>
+
+              <span class="shinobimancer-status-pill">Résumé</span>
+            </div>
+
+            <div class="shinobimancer-notice is-info">
+              <strong>Rappel</strong>
+              <span>
+                Les capacités de clan et les techniques de lignée débloquées par la Lignée ne comptent pas dans les limites
+                des techniques de départ. Elles seront résumées ici puis accordées séparément.
+              </span>
+            </div>
+
+            {{#if startingTechniqueSelection.granted.lineage.length}}
+              <div class="tag-list">
+                {{#each startingTechniqueSelection.granted.lineage as |entry|}}
+                  <span class="tag">{{entry}}</span>
+                {{/each}}
+              </div>
+            {{else}}
+              <p class="shinobimancer-mini-note">
+                Aucune technique de lignée résumée pour l’instant.
+              </p>
+            {{/if}}
+          </section>
+
           <div class="shinobimancer-notice is-info">
             <strong>Attribution finale</strong>
             <span>Le paquetage sera créé dans l’inventaire au moment de la validation finale du dossier.</span>

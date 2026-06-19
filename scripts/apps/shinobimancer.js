@@ -348,6 +348,31 @@ const SHINOBIMANCER_STARTING_EQUIPMENT = {
   ]
 };
 
+const SHINOBIMANCER_STARTING_TECHNIQUE_PACKS = {
+  caseSchool: [
+    "naruto-25e.techniques-communes",
+    "naruto-25e.techniques-genjutsu"
+  ],
+  specialized: [
+    "naruto-25e.techniques-ninjutsu",
+    "naruto-25e.techniques-genjutsu",
+    "naruto-25e.techniques-taijutsu"
+  ]
+};
+
+const SHINOBIMANCER_STARTING_TECHNIQUE_RULES = {
+  caseSchool: {
+    maxChoices: 3,
+    maxAcademy: 2,
+    maxKawarimi: 1
+  },
+  specialized: {
+    maxChoices: 3,
+    maxLevel: 1,
+    allowedRanks: ["d"]
+  }
+};
+
 const SHINOBIMANCER_BASE_ORDER = ["cor", "arm", "tai", "nin", "gen", "esp", "lign"];
 
 function getActorCreationSummary(actor) {
@@ -1073,6 +1098,405 @@ function buildEquipmentPreview(actor) {
   };
 }
 
+function normalizeSearchText(value) {
+  return String(value ?? "")
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .toLowerCase();
+}
+
+function getCompendiumEntryUuid(pack, entry) {
+  if (entry.uuid) return entry.uuid;
+
+  const packCollection = pack?.collection ?? "";
+  const entryId = entry?._id ?? entry?.id ?? "";
+
+  return packCollection && entryId
+    ? `Compendium.${packCollection}.${entryId}`
+    : "";
+}
+
+function getTechniqueIndexSystem(entry) {
+  return entry?.system ?? {};
+}
+
+function getTechniqueAutomationStatus(entry) {
+  const system = getTechniqueIndexSystem(entry);
+
+  return String(system.automation?.status ?? "manual");
+}
+
+function isTechniqueBlocked(entry) {
+  return getTechniqueAutomationStatus(entry) === "blocked";
+}
+
+function getTechniqueSkill(entry) {
+  const system = getTechniqueIndexSystem(entry);
+
+  return String(system.skill ?? "").trim();
+}
+
+function getTechniqueRank(entry) {
+  const system = getTechniqueIndexSystem(entry);
+
+  return String(system.rank ?? system.taxonomy?.rankGroup ?? "").trim();
+}
+
+function getTechniqueLevel(entry) {
+  const system = getTechniqueIndexSystem(entry);
+
+  return Number(system.level ?? 1);
+}
+
+function getTechniqueCategory(entry) {
+  const system = getTechniqueIndexSystem(entry);
+
+  return String(system.taxonomy?.category ?? system.family ?? "").trim();
+}
+
+function getTechniqueDisplayCard(pack, entry, options = {}) {
+  const system = getTechniqueIndexSystem(entry);
+  const skill = getTechniqueSkill(entry);
+  const skillLabel = NARUTO25E.skillDefinitions?.[skill]?.label ?? skill;
+  const rank = getTechniqueRank(entry);
+  const level = getTechniqueLevel(entry);
+  const category = getTechniqueCategory(entry);
+  const automationStatus = getTechniqueAutomationStatus(entry);
+  const uuid = getCompendiumEntryUuid(pack, entry);
+  const choiceKey = uuid || String(entry.name ?? "");
+
+  return {
+    key: choiceKey,
+    uuid,
+    pack: pack?.collection ?? "",
+    id: entry?._id ?? entry?.id ?? "",
+    name: entry.name ?? "Technique",
+    img: entry.img ?? "icons/svg/item-bag.svg",
+    skill,
+    skillLabel,
+    rank,
+    rankLabel: NARUTO25E.techniqueRanks?.[rank] ?? rank.toUpperCase(),
+    level,
+    category,
+    family: system.family ?? "",
+    domain: system.domain ?? "",
+    actionType: system.actionType ?? "",
+    chakraInitial: Number(system.chakra?.initial ?? 0),
+    chakraMaintenance: Number(system.chakra?.maintenance ?? 0),
+    range: system.range ?? "",
+    duration: system.duration ?? "",
+    target: system.target ?? "",
+    effect: system.effect ?? "",
+    automationStatus,
+    automationLabel: NARUTO25E.automationStatuses?.[automationStatus] ?? automationStatus,
+    taxonomy: foundry.utils.deepClone(system.taxonomy ?? {}),
+    caseKind: options.caseKind ?? "",
+    selected: Boolean(options.selected),
+    disabled: Boolean(options.disabled),
+    unavailableReason: options.unavailableReason ?? ""
+  };
+}
+
+async function getTechniquePackIndex(packKey) {
+  const pack = game.packs.get(packKey);
+
+  if (!pack) {
+    console.warn(`Naruto 2.5e | Pack introuvable pour les techniques de départ : ${packKey}`);
+    return {
+      pack: null,
+      entries: []
+    };
+  }
+
+  const index = await pack.getIndex({
+    fields: [
+      "name",
+      "img",
+      "type",
+      "system.family",
+      "system.domain",
+      "system.skill",
+      "system.rank",
+      "system.level",
+      "system.actionType",
+      "system.range",
+      "system.duration",
+      "system.target",
+      "system.effect",
+      "system.chakra",
+      "system.taxonomy",
+      "system.automation"
+    ]
+  });
+
+  return {
+    pack,
+    entries: Array.from(index)
+  };
+}
+
+function isGensouKaiTechnique(entry) {
+  const skill = getTechniqueSkill(entry);
+  const name = normalizeSearchText(entry.name);
+
+  return skill === "gensou" && (name.includes("kai") || name.includes("kaï"));
+}
+
+function getCaseSchoolKind(entry) {
+  const skill = getTechniqueSkill(entry);
+  const system = getTechniqueIndexSystem(entry);
+  const taxonomy = system.taxonomy ?? {};
+  const name = normalizeSearchText(entry.name);
+
+  if (isGensouKaiTechnique(entry)) return "gensouKai";
+
+  if (skill === "kawarimi" || name.includes("kawarimi") || name.includes("permutation")) {
+    return "kawarimi";
+  }
+
+  if (Boolean(taxonomy.academy) || skill === "henge") {
+    return "academy";
+  }
+
+  return "";
+}
+
+function isCaseSchoolCandidate(entry) {
+  if (!entry || entry.type !== "technique") return false;
+  if (isTechniqueBlocked(entry)) return false;
+
+  return Boolean(getCaseSchoolKind(entry));
+}
+
+function isSpecializedStartingCandidate(entry, allowedSkillKeys) {
+  if (!entry || entry.type !== "technique") return false;
+  if (isTechniqueBlocked(entry)) return false;
+
+  const skill = getTechniqueSkill(entry);
+  if (!skill || !allowedSkillKeys.includes(skill)) return false;
+
+  const category = getTechniqueCategory(entry);
+  if (category === "commune" || category === "lignee") return false;
+
+  if (isGensouKaiTechnique(entry)) return false;
+
+  const rank = getTechniqueRank(entry);
+  const level = getTechniqueLevel(entry);
+
+  if (!SHINOBIMANCER_STARTING_TECHNIQUE_RULES.specialized.allowedRanks.includes(rank)) return false;
+  if (level > SHINOBIMANCER_STARTING_TECHNIQUE_RULES.specialized.maxLevel) return false;
+
+  return true;
+}
+
+function getSelectedStartingTechniqueKeys(actor, sectionKey) {
+  const state = actor?.system?.progression?.creation?.startingTechniques ?? {};
+  const section = state?.[sectionKey] ?? {};
+
+  return Array.isArray(section.choices)
+    ? section.choices.map((choice) => String(choice ?? "")).filter(Boolean)
+    : [];
+}
+
+function getStartingTechniqueSelectionCounts(caseSchoolCards = []) {
+  const selected = caseSchoolCards.filter((card) => card.selected);
+
+  return {
+    total: selected.length,
+    academy: selected.filter((card) => card.caseKind === "academy").length,
+    kawarimi: selected.filter((card) => card.caseKind === "kawarimi").length,
+    gensouKai: selected.filter((card) => card.caseKind === "gensouKai").length
+  };
+}
+
+function groupStartingTechniquesBySkill(cards = []) {
+  const grouped = new Map();
+
+  for (const card of cards) {
+    const key = card.skill || "autres";
+
+    if (!grouped.has(key)) {
+      grouped.set(key, {
+        key,
+        label: card.skillLabel || key,
+        cards: []
+      });
+    }
+
+    grouped.get(key).cards.push(card);
+  }
+
+  return Array.from(grouped.values())
+    .map((group) => ({
+      ...group,
+      cards: group.cards.sort((a, b) => a.name.localeCompare(b.name, "fr"))
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label, "fr"));
+}
+
+async function buildStartingTechniqueSelectionData(actor) {
+  const rules = foundry.utils.deepClone(SHINOBIMANCER_STARTING_TECHNIQUE_RULES);
+  const state = actor?.system?.progression?.creation?.startingTechniques ?? {};
+  const selectedCaseSchoolKeys = getSelectedStartingTechniqueKeys(actor, "caseSchool");
+  const selectedSpecializedKeys = getSelectedStartingTechniqueKeys(actor, "specialized");
+
+  const allowedSpecializedSkills = typeof actor?.getOwnedStartingTechniqueSkillKeys === "function"
+    ? actor.getOwnedStartingTechniqueSkillKeys()
+    : [];
+
+  const caseSchoolCards = [];
+
+  for (const packKey of SHINOBIMANCER_STARTING_TECHNIQUE_PACKS.caseSchool) {
+    const { pack, entries } = await getTechniquePackIndex(packKey);
+    if (!pack) continue;
+
+    for (const entry of entries) {
+      if (!isCaseSchoolCandidate(entry)) continue;
+
+      const uuid = getCompendiumEntryUuid(pack, entry);
+      const key = uuid || String(entry.name ?? "");
+      const caseKind = getCaseSchoolKind(entry);
+
+      caseSchoolCards.push(getTechniqueDisplayCard(pack, entry, {
+        caseKind,
+        selected: selectedCaseSchoolKeys.includes(key) || selectedCaseSchoolKeys.includes(entry.name)
+      }));
+    }
+  }
+
+  const specializedCards = [];
+
+  for (const packKey of SHINOBIMANCER_STARTING_TECHNIQUE_PACKS.specialized) {
+    const { pack, entries } = await getTechniquePackIndex(packKey);
+    if (!pack) continue;
+
+    for (const entry of entries) {
+      if (!isSpecializedStartingCandidate(entry, allowedSpecializedSkills)) continue;
+
+      const uuid = getCompendiumEntryUuid(pack, entry);
+      const key = uuid || String(entry.name ?? "");
+
+      specializedCards.push(getTechniqueDisplayCard(pack, entry, {
+        selected: selectedSpecializedKeys.includes(key) || selectedSpecializedKeys.includes(entry.name)
+      }));
+    }
+  }
+
+  const sortedCaseSchoolCards = caseSchoolCards.sort((a, b) => {
+    const order = {
+      academy: 1,
+      kawarimi: 2,
+      gensouKai: 3
+    };
+
+    const orderA = order[a.caseKind] ?? 99;
+    const orderB = order[b.caseKind] ?? 99;
+
+    if (orderA !== orderB) return orderA - orderB;
+
+    return a.name.localeCompare(b.name, "fr");
+  });
+
+  const sortedSpecializedCards = specializedCards.sort((a, b) => {
+    const skillCompare = a.skillLabel.localeCompare(b.skillLabel, "fr");
+    if (skillCompare !== 0) return skillCompare;
+
+    return a.name.localeCompare(b.name, "fr");
+  });
+
+  const caseSchoolCounts = getStartingTechniqueSelectionCounts(sortedCaseSchoolCards);
+  const specializedSelected = sortedSpecializedCards.filter((card) => card.selected);
+
+  return {
+    rules,
+    state,
+    allowedSpecializedSkills,
+    allowedSpecializedSkillLabels: allowedSpecializedSkills.map((skillKey) => {
+      return NARUTO25E.skillDefinitions?.[skillKey]?.label ?? skillKey;
+    }),
+    hasGensouSpecialAccess: typeof actor?.hasStartingGensouAccess === "function"
+      ? actor.hasStartingGensouAccess()
+      : false,
+    caseSchool: {
+      available: sortedCaseSchoolCards,
+      selected: sortedCaseSchoolCards.filter((card) => card.selected),
+      counts: caseSchoolCounts,
+      remaining: Math.max(0, rules.caseSchool.maxChoices - caseSchoolCounts.total),
+      complete: caseSchoolCounts.total === rules.caseSchool.maxChoices,
+      overLimit: caseSchoolCounts.total > rules.caseSchool.maxChoices,
+      academyOverLimit: caseSchoolCounts.academy > rules.caseSchool.maxAcademy,
+      kawarimiOverLimit: caseSchoolCounts.kawarimi > rules.caseSchool.maxKawarimi
+    },
+    specialized: {
+      available: sortedSpecializedCards,
+      availableBySkill: groupStartingTechniquesBySkill(sortedSpecializedCards),
+      selected: specializedSelected,
+      selectedCount: specializedSelected.length,
+      remaining: Math.max(0, rules.specialized.maxChoices - specializedSelected.length),
+      overLimit: specializedSelected.length > rules.specialized.maxChoices
+    },
+    granted: {
+      lineage: Array.isArray(state.grantedLineage) ? state.grantedLineage : [],
+      powers: Array.isArray(state.grantedPowers) ? state.grantedPowers : []
+    }
+  };
+}
+
+function getStartingTechniqueSectionPath(sectionKey) {
+  if (sectionKey === "caseSchool") {
+    return "system.progression.creation.startingTechniques.caseSchool";
+  }
+
+  if (sectionKey === "specialized") {
+    return "system.progression.creation.startingTechniques.specialized";
+  }
+
+  return "";
+}
+
+function getStartingTechniqueSectionRules(sectionKey) {
+  if (sectionKey === "caseSchool") {
+    return SHINOBIMANCER_STARTING_TECHNIQUE_RULES.caseSchool;
+  }
+
+  if (sectionKey === "specialized") {
+    return SHINOBIMANCER_STARTING_TECHNIQUE_RULES.specialized;
+  }
+
+  return {};
+}
+
+function getCurrentStartingTechniqueChoices(actor, sectionKey) {
+  const path = getStartingTechniqueSectionPath(sectionKey);
+  if (!path) return [];
+
+  const section = foundry.utils.getProperty(actor.system, path) ?? {};
+
+  return Array.isArray(section.choices)
+    ? section.choices.map((choice) => String(choice ?? "")).filter(Boolean)
+    : [];
+}
+
+function toggleStartingTechniqueChoice(actor, sectionKey, techniqueKey) {
+  const currentChoices = getCurrentStartingTechniqueChoices(actor, sectionKey);
+  const key = String(techniqueKey ?? "");
+
+  if (!key) return currentChoices;
+
+  if (currentChoices.includes(key)) {
+    return currentChoices.filter((choice) => choice !== key);
+  }
+
+  const rules = getStartingTechniqueSectionRules(sectionKey);
+  const maxChoices = Number(rules.maxChoices ?? 0);
+
+  if (maxChoices > 0 && currentChoices.length >= maxChoices) {
+    return currentChoices;
+  }
+
+  return [...currentChoices, key];
+}
+
 export class Naruto25eShinobimancerChoiceApplication extends Application {
   constructor(actor, options = {}) {
     super(options);
@@ -1224,7 +1648,7 @@ export class Naruto25eShinobimancerApplication extends Application {
     this.render(false);
   }
 
-  getData(options = {}) {
+  async getData(options = {}) {
     purgeShinobimancerTemplateCache();
 
     const context = super.getData(options);
@@ -1252,6 +1676,7 @@ export class Naruto25eShinobimancerApplication extends Application {
     const activeStep = steps.find((step) => step.isActive) ?? steps[0];
     const baseRows = buildBaseRows(this.actor);
     const baseRadarSvg = renderBaseRadarSvg(baseRows);
+    const startingTechniqueSelection = await buildStartingTechniqueSelectionData(this.actor);
 
     context.actor = this.actor;
     context.actorName = this.actor?.name ?? "Nouveau Shinobi";
@@ -1360,6 +1785,7 @@ export class Naruto25eShinobimancerApplication extends Application {
     context.affinityCards = buildAffinityCards(this.actor);
     context.skillGroups = buildSkillPreview(this.actor);
     context.equipmentPreview = buildEquipmentPreview(this.actor);
+    context.startingTechniqueSelection = startingTechniqueSelection;
     const nindo = system.nindo ?? {};
     const nindoChoiceMode = nindo.choiceMode ?? "preset";
     const nindoPresetMode = nindoChoiceMode === "preset";
@@ -2353,6 +2779,109 @@ export class Naruto25eShinobimancerApplication extends Application {
 
       await updateActorAndRender({
         "system.progression.creation.startingEquipment.combatLots": nextLots
+      });
+    });
+
+    html.find(".shinobimancer-starting-technique-card").on("click", async (event) => {
+      event.preventDefault();
+
+      if (!canEditCreation()) return;
+
+      const sectionKey = String(event.currentTarget?.dataset?.startingTechniqueSection ?? "");
+      const techniqueKey = String(event.currentTarget?.dataset?.startingTechniqueKey ?? "");
+
+      if (!sectionKey || !techniqueKey) return;
+
+      const path = getStartingTechniqueSectionPath(sectionKey);
+      if (!path) return;
+
+      const section = foundry.utils.getProperty(this.actor.system, path) ?? {};
+
+      if (Boolean(section.completed) || Boolean(section.locked)) {
+        ui.notifications.info("Cette sélection est déjà validée. Clique d’abord sur Modifier.");
+        return;
+      }
+
+      const nextChoices = toggleStartingTechniqueChoice(this.actor, sectionKey, techniqueKey);
+
+      if (
+        !nextChoices.includes(techniqueKey)
+        && !getCurrentStartingTechniqueChoices(this.actor, sectionKey).includes(techniqueKey)
+      ) {
+        const rules = getStartingTechniqueSectionRules(sectionKey);
+        const maxChoices = Number(rules.maxChoices ?? 0);
+
+        if (maxChoices > 0) {
+          ui.notifications.warn(`Limite atteinte : ${maxChoices} choix maximum.`);
+        }
+
+        return;
+      }
+
+      await updateActorAndRender({
+        [`${path}.choices`]: nextChoices
+      });
+    });
+
+    html.find(".shinobimancer-starting-techniques-clear").on("click", async (event) => {
+      event.preventDefault();
+
+      if (!canEditCreation()) return;
+
+      const sectionKey = String(event.currentTarget?.dataset?.startingTechniqueSection ?? "");
+      const path = getStartingTechniqueSectionPath(sectionKey);
+
+      if (!path) return;
+
+      await updateActorAndRender({
+        [`${path}.choices`]: [],
+        [`${path}.completed`]: false,
+        [`${path}.locked`]: false
+      });
+    });
+
+    html.find(".shinobimancer-starting-techniques-complete").on("click", async (event) => {
+      event.preventDefault();
+
+      if (!canEditCreation()) return;
+
+      const sectionKey = String(event.currentTarget?.dataset?.startingTechniqueSection ?? "");
+      const path = getStartingTechniqueSectionPath(sectionKey);
+
+      if (!path) return;
+
+      const choices = getCurrentStartingTechniqueChoices(this.actor, sectionKey);
+      const rules = getStartingTechniqueSectionRules(sectionKey);
+
+      if (sectionKey === "caseSchool" && choices.length !== Number(rules.maxChoices ?? 3)) {
+        ui.notifications.warn("Choisis exactement 3 techniques cas d’école avant de valider.");
+        return;
+      }
+
+      if (sectionKey === "specialized" && choices.length > Number(rules.maxChoices ?? 3)) {
+        ui.notifications.warn("Trop de techniques spécialisées sélectionnées.");
+        return;
+      }
+
+      await updateActorAndRender({
+        [`${path}.completed`]: true,
+        [`${path}.locked`]: true
+      });
+    });
+
+    html.find(".shinobimancer-starting-techniques-edit").on("click", async (event) => {
+      event.preventDefault();
+
+      if (!canEditCreation()) return;
+
+      const sectionKey = String(event.currentTarget?.dataset?.startingTechniqueSection ?? "");
+      const path = getStartingTechniqueSectionPath(sectionKey);
+
+      if (!path) return;
+
+      await updateActorAndRender({
+        [`${path}.completed`]: false,
+        [`${path}.locked`]: false
       });
     });
 

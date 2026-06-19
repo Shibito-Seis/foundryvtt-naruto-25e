@@ -22,6 +22,23 @@ const NARUTO25E_STARTING_EQUIPMENT = {
   ]
 };
 
+const NARUTO25E_STARTING_TECHNIQUES = {
+  caseSchool: {
+    maxChoices: 3,
+    maxAcademy: 2,
+    maxKawarimi: 1
+  },
+  specialized: {
+    maxChoices: 3,
+    maxLevel: 1,
+    allowedRanks: ["d"]
+  },
+  gensouUnlock: {
+    minimumGensouSkill: 3,
+    minimumGenjutsuBase: 3
+  }
+};
+
 export class Naruto25eActor extends Actor {
   prepareDerivedData() {
     super.prepareDerivedData();
@@ -107,6 +124,137 @@ export class Naruto25eActor extends Actor {
     creation.startingEquipment.granted = Boolean(creation.startingEquipment.granted);
     creation.startingEquipment.grantedAt = creation.startingEquipment.grantedAt ?? "";
     creation.startingEquipment.grantedBy = creation.startingEquipment.grantedBy ?? "";
+
+    this._prepareStartingTechniquesCreationState(creation);
+  }
+
+  _prepareStartingTechniquesCreationState(creation) {
+    if (!creation.startingTechniques) {
+      creation.startingTechniques = {};
+    }
+
+    const startingTechniques = creation.startingTechniques;
+
+    if (!startingTechniques.caseSchool) {
+      startingTechniques.caseSchool = {
+        choices: [],
+        locked: false,
+        completed: false
+      };
+    }
+
+    if (!startingTechniques.specialized) {
+      startingTechniques.specialized = {
+        choices: [],
+        locked: false,
+        completed: false
+      };
+    }
+
+    startingTechniques.caseSchool.choices = Array.isArray(startingTechniques.caseSchool.choices)
+      ? startingTechniques.caseSchool.choices
+          .map((choice) => String(choice ?? ""))
+          .filter(Boolean)
+      : [];
+
+    startingTechniques.caseSchool.locked = Boolean(startingTechniques.caseSchool.locked);
+    startingTechniques.caseSchool.completed = Boolean(startingTechniques.caseSchool.completed);
+
+    startingTechniques.specialized.choices = Array.isArray(startingTechniques.specialized.choices)
+      ? startingTechniques.specialized.choices
+          .map((choice) => String(choice ?? ""))
+          .filter(Boolean)
+      : [];
+
+    startingTechniques.specialized.locked = Boolean(startingTechniques.specialized.locked);
+    startingTechniques.specialized.completed = Boolean(startingTechniques.specialized.completed);
+
+    startingTechniques.grantedLineage = Array.isArray(startingTechniques.grantedLineage)
+      ? startingTechniques.grantedLineage
+          .map((entry) => String(entry ?? ""))
+          .filter(Boolean)
+      : [];
+
+    startingTechniques.grantedPowers = Array.isArray(startingTechniques.grantedPowers)
+      ? startingTechniques.grantedPowers
+          .map((entry) => String(entry ?? ""))
+          .filter(Boolean)
+      : [];
+
+    startingTechniques.granted = Boolean(startingTechniques.granted);
+    startingTechniques.grantedAt = startingTechniques.grantedAt ?? "";
+    startingTechniques.grantedBy = startingTechniques.grantedBy ?? "";
+  }
+
+  getStartingTechniqueRules() {
+    return foundry.utils.deepClone(NARUTO25E_STARTING_TECHNIQUES);
+  }
+
+  getStartingTechniqueState() {
+    const creation = this.system?.progression?.creation ?? {};
+
+    return creation.startingTechniques ?? {
+      caseSchool: {
+        choices: [],
+        locked: false,
+        completed: false
+      },
+      specialized: {
+        choices: [],
+        locked: false,
+        completed: false
+      },
+      grantedLineage: [],
+      grantedPowers: [],
+      granted: false,
+      grantedAt: "",
+      grantedBy: ""
+    };
+  }
+
+  hasStartingGensouAccess() {
+    const gensouSkill = Number(this.system?.skills?.gensou?.natural ?? 0);
+    const gensouBonus = Number(this.system?.skills?.gensou?.bonus ?? 0);
+    const gensouTotal = gensouSkill + gensouBonus;
+
+    const genjutsuBase = Number(this.system?.bases?.gen?.value ?? 0)
+      + Number(this.system?.bases?.gen?.bonus ?? 0);
+
+    const rules = NARUTO25E_STARTING_TECHNIQUES.gensouUnlock;
+
+    return gensouTotal >= rules.minimumGensouSkill
+      || genjutsuBase >= rules.minimumGenjutsuBase;
+  }
+
+  getOwnedStartingTechniqueSkillKeys() {
+    const skills = this.system?.skills ?? {};
+    const ownedSkillKeys = [];
+
+    for (const [skillKey, skill] of Object.entries(skills)) {
+      if (!Boolean(skill?.owned)) continue;
+
+      const definition = NARUTO25E.skillDefinitions?.[skillKey];
+      if (!definition) continue;
+
+      const category = String(definition.category ?? "");
+
+      if (!["combat", "terrain", "clan"].includes(category)) continue;
+      if (skillKey === "armesExotiques") continue;
+      if (skillKey === "coupSpecialArm") continue;
+      if (skillKey === "coupSpecialTai") continue;
+      if (skillKey === "scienceExplosifs") continue;
+      if (skillKey === "sciencePieges") continue;
+      if (skillKey === "scienceDrogues") continue;
+      if (skillKey === "sciencePoisons") continue;
+
+      ownedSkillKeys.push(skillKey);
+    }
+
+    if (this.hasStartingGensouAccess() && !ownedSkillKeys.includes("gensou")) {
+      ownedSkillKeys.push("gensou");
+    }
+
+    return ownedSkillKeys;
   }
 
     isCreationLocked() {
@@ -274,6 +422,7 @@ export class Naruto25eActor extends Actor {
       const skills = system.skills ?? {};
       const experience = system.progression?.experience ?? {};
       const startingEquipment = system.progression?.creation?.startingEquipment ?? {};
+      const startingTechniques = system.progression?.creation?.startingTechniques ?? {};
       const chakraSpecializationState = system.chakra?.specializationState ?? {};
 
       const errors = [];
@@ -630,6 +779,41 @@ export class Naruto25eActor extends Actor {
         }
       }
 
+      const caseSchoolChoices = Array.isArray(startingTechniques.caseSchool?.choices)
+        ? startingTechniques.caseSchool.choices.filter(Boolean)
+        : [];
+
+      const specializedChoices = Array.isArray(startingTechniques.specialized?.choices)
+        ? startingTechniques.specialized.choices.filter(Boolean)
+        : [];
+
+      const uniqueCaseSchoolChoices = Array.from(new Set(caseSchoolChoices));
+      const uniqueSpecializedChoices = Array.from(new Set(specializedChoices));
+
+      if (caseSchoolChoices.length !== uniqueCaseSchoolChoices.length) {
+        addError("Les techniques cas d’école ne peuvent pas contenir de doublon.");
+      }
+
+      if (specializedChoices.length !== uniqueSpecializedChoices.length) {
+        addError("Les techniques spécialisées de départ ne peuvent pas contenir de doublon.");
+      }
+
+      if (uniqueCaseSchoolChoices.length !== NARUTO25E_STARTING_TECHNIQUES.caseSchool.maxChoices) {
+        addError(`Choisis exactement ${NARUTO25E_STARTING_TECHNIQUES.caseSchool.maxChoices} techniques cas d’école.`);
+      }
+
+      if (!Boolean(startingTechniques.caseSchool?.completed)) {
+        addError("Valide tes techniques cas d’école dans l’étape Équipement.");
+      }
+
+      if (uniqueSpecializedChoices.length > NARUTO25E_STARTING_TECHNIQUES.specialized.maxChoices) {
+        addError(`Trop de techniques spécialisées de départ : ${uniqueSpecializedChoices.length} / ${NARUTO25E_STARTING_TECHNIQUES.specialized.maxChoices}.`);
+      }
+
+      if (!Boolean(startingTechniques.specialized?.completed)) {
+        addError("Valide tes techniques spécialisées dans l’étape Équipement, même si tu n’en choisis aucune.");
+      }
+
       const heritageLabel = (() => {
         if (mode === "clan") {
           if (NARUTO25E.isCustomClanKey?.(clanKey)) {
@@ -822,14 +1006,23 @@ export class Naruto25eActor extends Actor {
       }
     }
 
-    _getCreationGrantedEmbeddedItems() {
+    _getCreationGrantedEmbeddedItems(packageKey = "") {
       return this.items.filter((item) => {
-        return item.getFlag?.("naruto-25e", "grantedAtCreation") === true;
+        const grantedAtCreation = item.getFlag?.("naruto-25e", "grantedAtCreation") === true;
+
+        if (!grantedAtCreation) return false;
+        if (!packageKey) return true;
+
+        return item.getFlag?.("naruto-25e", "creationPackage") === packageKey;
       });
     }
 
     _hasCreationEquipmentAlreadyGranted() {
-      return this._getCreationGrantedEmbeddedItems().length > 0;
+      return this._getCreationGrantedEmbeddedItems("startingEquipment").length > 0;
+    }
+
+    _hasCreationStartingTechniquesAlreadyGranted() {
+      return this._getCreationGrantedEmbeddedItems("startingTechniques").length > 0;
     }
 
     _hasCreationInventoryItemsAlreadyGranted() {
@@ -894,7 +1087,7 @@ export class Naruto25eActor extends Actor {
 
       const creation = this.system.progression?.creation ?? {};
       const startingEquipment = creation.startingEquipment ?? {};
-      const existingEmbeddedItems = this._getCreationGrantedEmbeddedItems();
+      const existingEmbeddedItems = this._getCreationGrantedEmbeddedItems("startingEquipment");
       const hasCustomInventoryItems = this._hasCreationInventoryItemsAlreadyGranted();
       const hasExpectedInventoryItems = this._hasExpectedStartingEquipmentInventoryItems();
 
@@ -1080,6 +1273,240 @@ export class Naruto25eActor extends Actor {
       return true;
     }
 
+    _getStartingTechniqueChoiceKeys() {
+      const startingTechniques = this.system.progression?.creation?.startingTechniques ?? {};
+      const caseSchoolChoices = Array.isArray(startingTechniques.caseSchool?.choices)
+        ? startingTechniques.caseSchool.choices
+        : [];
+      const specializedChoices = Array.isArray(startingTechniques.specialized?.choices)
+        ? startingTechniques.specialized.choices
+        : [];
+
+      return Array.from(new Set(
+        caseSchoolChoices
+          .concat(specializedChoices)
+          .map((choice) => String(choice ?? ""))
+          .filter(Boolean)
+      ));
+    }
+
+    async _getStartingTechniqueDocumentsFromChoices(choiceKeys) {
+      const documents = [];
+      const foundKeys = new Set();
+      const techniquePackKeys = [
+        "naruto-25e.techniques-communes",
+        "naruto-25e.techniques-ninjutsu",
+        "naruto-25e.techniques-genjutsu",
+        "naruto-25e.techniques-taijutsu",
+        "naruto-25e.techniques-armes",
+        "naruto-25e.techniques-lignees"
+      ];
+
+      for (const choiceKey of choiceKeys) {
+        if (!String(choiceKey).startsWith("Compendium.")) continue;
+
+        try {
+          const document = await fromUuid(choiceKey);
+
+          if (!document || document.type !== "technique") continue;
+
+          documents.push(document);
+          foundKeys.add(choiceKey);
+        } catch (error) {
+          console.warn(`Naruto 2.5e | Technique de départ introuvable via UUID : ${choiceKey}`, error);
+        }
+      }
+
+      const missingNameChoices = choiceKeys.filter((choiceKey) => {
+        return !foundKeys.has(choiceKey) && !String(choiceKey).startsWith("Compendium.");
+      });
+
+      if (missingNameChoices.length === 0) {
+        return documents;
+      }
+
+      for (const packKey of techniquePackKeys) {
+        const pack = game.packs.get(packKey);
+        if (!pack) continue;
+
+        const index = await pack.getIndex({
+          fields: ["name", "type"]
+        });
+
+        for (const choiceName of missingNameChoices) {
+          if (foundKeys.has(choiceName)) continue;
+
+          const entry = index.find((document) => {
+            return document.type === "technique" && document.name === choiceName;
+          });
+
+          if (!entry) continue;
+
+          const document = await pack.getDocument(entry._id);
+
+          if (!document || document.type !== "technique") continue;
+
+          documents.push(document);
+          foundKeys.add(choiceName);
+        }
+      }
+
+      return documents;
+    }
+
+    async grantStartingTechniques() {
+      if (this.type !== "shinobi") return false;
+
+      const creation = this.system.progression?.creation ?? {};
+      const startingTechniques = creation.startingTechniques ?? {};
+      const choiceKeys = this._getStartingTechniqueChoiceKeys();
+
+      const markStartingTechniquesGranted = async () => {
+        if (startingTechniques.granted) return;
+
+        await this.update({
+          "system.progression.creation.startingTechniques.granted": true,
+          "system.progression.creation.startingTechniques.grantedAt": startingTechniques.grantedAt || new Date().toISOString(),
+          "system.progression.creation.startingTechniques.grantedBy": startingTechniques.grantedBy || game.user?.name || ""
+        });
+      };
+
+      if (choiceKeys.length === 0) {
+        ui.notifications.warn("Aucune technique de départ à attribuer.");
+        console.warn("Naruto 2.5e | Techniques de départ demandées vides.", {
+          actor: this.name,
+          startingTechniques
+        });
+        return false;
+      }
+
+      if (this._hasCreationStartingTechniquesAlreadyGranted()) {
+        await markStartingTechniquesGranted();
+
+        ui.notifications.info("Les techniques de départ sont déjà présentes sur la fiche.");
+        console.info("Naruto 2.5e | Techniques de départ déjà détectées, aucune attribution supplémentaire.", {
+          actor: this.name,
+          choiceKeys
+        });
+        return true;
+      }
+
+      if (startingTechniques.granted && !this._hasCreationStartingTechniquesAlreadyGranted()) {
+        ui.notifications.warn("Les techniques de départ sont marquées comme déjà attribuées, mais aucun item n’a été trouvé. Aucune nouvelle attribution automatique.");
+        console.warn("Naruto 2.5e | Techniques marquées attribuées sans item trouvé.", {
+          actor: this.name,
+          startingTechniques
+        });
+        return true;
+      }
+
+      const sourceDocuments = await this._getStartingTechniqueDocumentsFromChoices(choiceKeys);
+      const foundChoiceNames = new Set(sourceDocuments.map((document) => document.name));
+      const missingChoices = choiceKeys.filter((choiceKey) => {
+        if (String(choiceKey).startsWith("Compendium.")) {
+          return !sourceDocuments.some((document) => document.uuid === choiceKey);
+        }
+
+        return !foundChoiceNames.has(choiceKey);
+      });
+
+      if (missingChoices.length > 0) {
+        ui.notifications.warn(`Technique(s) de départ introuvable(s) : ${missingChoices.join(", ")}.`);
+        console.warn("Naruto 2.5e | Techniques de départ introuvables.", {
+          actor: this.name,
+          requested: choiceKeys,
+          found: sourceDocuments.map((document) => ({
+            name: document.name,
+            uuid: document.uuid
+          })),
+          missing: missingChoices
+        });
+        return false;
+      }
+
+      const grantedAt = new Date().toISOString();
+      const grantedBy = game.user?.name ?? "";
+      const existingTechniqueNames = new Set(
+        this.items
+          .filter((item) => item.type === "technique")
+          .map((item) => item.name)
+      );
+
+      const documentsToCreate = sourceDocuments
+        .filter((document) => !existingTechniqueNames.has(document.name))
+        .map((document) => {
+          const raw = typeof document.toObject === "function"
+            ? document.toObject()
+            : foundry.utils.deepClone(document);
+
+          return {
+            name: raw.name,
+            type: raw.type,
+            img: raw.img ?? "icons/svg/item-bag.svg",
+            system: foundry.utils.deepClone(raw.system ?? {}),
+            flags: {
+              "naruto-25e": {
+                grantedAtCreation: true,
+                creationPackage: "startingTechniques",
+                sourceItemUuid: document.uuid ?? "",
+                grantedAt,
+                grantedBy
+              }
+            }
+          };
+        });
+
+      if (documentsToCreate.length === 0) {
+        await this.update({
+          "system.progression.creation.startingTechniques.granted": true,
+          "system.progression.creation.startingTechniques.grantedAt": grantedAt,
+          "system.progression.creation.startingTechniques.grantedBy": grantedBy
+        });
+
+        ui.notifications.info("Toutes les techniques de départ étaient déjà présentes sur la fiche.");
+        return true;
+      }
+
+      console.groupCollapsed(`Naruto 2.5e | Attribution techniques de départ — ${this.name}`);
+      console.info("Choix demandés :", choiceKeys);
+      console.info("Documents trouvés :", sourceDocuments.map((document) => document.name));
+      console.table(documentsToCreate.map((document) => ({
+        name: document.name,
+        type: document.type,
+        rank: document.system?.rank ?? "",
+        level: document.system?.level ?? 1,
+        skill: document.system?.skill ?? ""
+      })));
+      console.groupEnd();
+
+      try {
+        const createdItems = await this.createEmbeddedDocuments("Item", documentsToCreate);
+
+        if (!createdItems || createdItems.length === 0) {
+          ui.notifications.warn("Aucune technique de départ n’a été créée.");
+          console.warn("Naruto 2.5e | createEmbeddedDocuments a retourné 0 technique.", {
+            actor: this.name,
+            documentsToCreate
+          });
+          return false;
+        }
+
+        await this.update({
+          "system.progression.creation.startingTechniques.granted": true,
+          "system.progression.creation.startingTechniques.grantedAt": grantedAt,
+          "system.progression.creation.startingTechniques.grantedBy": grantedBy
+        });
+
+        ui.notifications.info(`Techniques de départ attribuées à ${this.name} : ${createdItems.length} technique(s).`);
+
+        return true;
+      } catch (error) {
+        console.error("Naruto 2.5e | Attribution des techniques de départ impossible.", error);
+        ui.notifications.error("Erreur pendant l’attribution des techniques de départ. Voir la console.");
+        return false;
+      }
+    }
+
     async validateCreation() {
       if (this.type !== "shinobi") return;
 
@@ -1127,6 +1554,7 @@ export class Naruto25eActor extends Actor {
             <li>Nindō narratif</li>
             <li>Compétences initiales</li>
             <li>Affinités de Chakra futures</li>
+            <li>Paquetage et techniques de départ</li>
           </ul>
           ${warningList}
         `,
@@ -1141,6 +1569,13 @@ export class Naruto25eActor extends Actor {
 
       if (!equipmentGranted && !this.system.progression?.creation?.startingEquipment?.granted && !this._hasCreationEquipmentAlreadyGranted()) {
         ui.notifications.warn("Validation interrompue : le paquetage de départ n’a pas pu être attribué.");
+        return;
+      }
+
+      const startingTechniquesGranted = await this.grantStartingTechniques();
+
+      if (!startingTechniquesGranted && !this.system.progression?.creation?.startingTechniques?.granted && !this._hasCreationStartingTechniquesAlreadyGranted()) {
+        ui.notifications.warn("Validation interrompue : les techniques de départ n’ont pas pu être attribuées.");
         return;
       }
 
