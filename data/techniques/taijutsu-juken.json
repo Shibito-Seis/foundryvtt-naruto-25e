@@ -1,1 +1,74 @@
-﻿[]
+﻿[
+  {
+    "name": "Jūken : Hakke Hasangeki",
+    "type": "technique",
+    "img": "icons/skills/melee/unarmed-punch-fist-blue.webp",
+    "system": {
+      "description": "Technique des Soixante-Quatre Tenketsus.",
+      "family": "taijutsu",
+      "domain": "Jūken — École de combat",
+      "rank": "d",
+      "level": 1,
+      "skill": "juken",
+      "base": "tai",
+      "range": "Corps à corps",
+      "duration": "Variable",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "COR + TAI", "type": "physical", "scaling": "Dégâts de corps à corps standard" },
+      "chakra": { "initial": 0, "maintenance": 0, "text": "Aucun coût Chakra indiqué" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "juken", "masteryRank": 5, "validated": false, "text": "Compétence Jūken possédée. Médecine ou Dōjutsu requis selon le book." },
+      "effect": "Sur un jet de Jūken réussi, le personnage obstrue les méridiens principaux du système circulatoire du chakra de son adversaire. Rend impossible l’utilisation du chakra pendant un nombre de tours égal au score d’interceptions de Taijutsu du personnage. Ne s’applique pas aux pouvoirs de lignée demandant une dépense de chakra. Peut aussi rouvrir les méridiens d’une cible affectée.",
+      "taxonomy": { "category": "taijutsu", "subcategory": "juken", "rankGroup": "d", "school": "juken", "clan": "hyuga", "startingEligible": false, "packTarget": "techniques-taijutsu", "tags": ["juken", "hyuga", "tenketsu", "anti-chakra"] },
+      "automation": { "status": "manual", "notes": "Blocage du Chakra à gérer manuellement." }
+    }
+  },
+  {
+    "name": "Jūken : Shōteiuchi",
+    "type": "technique",
+    "img": "icons/skills/melee/hand-grip-staff-blue.webp",
+    "system": {
+      "description": "Technique de la Paume.",
+      "family": "taijutsu",
+      "domain": "Jūken — École de combat",
+      "rank": "d",
+      "level": 1,
+      "skill": "juken",
+      "base": "tai",
+      "range": "Corps à corps",
+      "duration": "Variable",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "COR + TAI", "type": "physical", "scaling": "Dégâts de corps à corps standard" },
+      "chakra": { "initial": 0, "maintenance": 0, "text": "Aucun coût Chakra indiqué" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "juken", "masteryRank": 5, "validated": false, "text": "Compétence Jūken possédée. Médecine ou Dōjutsu requis selon le book." },
+      "effect": "Sur un jet de Jūken réussi, le personnage diffuse son chakra dans le corps de l’adversaire et déséquilibre son fonctionnement physique. La cible est ralentie pendant un nombre de tours égal au score d’interceptions de Taijutsu du personnage et subit un malus de -2 × TAI à son initiative. Peut aussi contrer ses propres effets sur une cible immobilisée.",
+      "taxonomy": { "category": "taijutsu", "subcategory": "juken", "rankGroup": "d", "school": "juken", "clan": "hyuga", "startingEligible": false, "packTarget": "techniques-taijutsu", "tags": ["juken", "hyuga", "ralentissement", "initiative"] },
+      "automation": { "status": "manual", "notes": "Malus d’initiative et durée à gérer manuellement." }
+    }
+  },
+  {
+    "name": "Jūken : Hajiku",
+    "type": "technique",
+    "img": "icons/skills/movement/feet-winged-boots-blue.webp",
+    "system": {
+      "description": "Technique du Pas Léger.",
+      "family": "taijutsu",
+      "domain": "Jūken — École de combat",
+      "rank": "d",
+      "level": 1,
+      "skill": "juken",
+      "base": "tai",
+      "range": "Interception / corps à corps",
+      "duration": "Instantané",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "", "type": "none", "scaling": "" },
+      "chakra": { "initial": 0, "maintenance": 0, "text": "Aucun coût Chakra indiqué" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "juken", "masteryRank": 5, "validated": false, "text": "Compétence Jūken possédée. Médecine ou Dōjutsu requis selon le book." },
+      "effect": "Lors d’une attaque armée ou au corps à corps adverse, le personnage peut faire un jet de Jūken à la place de son Esquive. En cas de réussite, il obstrue plusieurs tenketsus, rompt la mêlée jusqu’à Distance 3 dans la direction voulue et empêche l’attaquant d’utiliser un pouvoir de Lignée jusqu’à la fin du tour en cours. Ne crée ni dégâts ni surprise.",
+      "taxonomy": { "category": "taijutsu", "subcategory": "juken", "rankGroup": "d", "school": "juken", "clan": "hyuga", "startingEligible": false, "packTarget": "techniques-taijutsu", "tags": ["juken", "hyuga", "esquive", "anti-lignee", "interception"] },
+      "automation": { "status": "manual", "notes": "Esquive alternative, déplacement et blocage de lignée à gérer manuellement." }
+    }
+  }
+]

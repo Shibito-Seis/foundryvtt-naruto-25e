@@ -1,1 +1,337 @@
-﻿[]
+﻿[
+  {
+    "name": "Uchiha : Magen",
+    "type": "technique",
+    "img": "icons/magic/control/hypnosis-mesmerism-eye.webp",
+    "system": {
+      "description": "Illusion démoniaque projetée par le Sharingan.",
+      "family": "lignee",
+      "domain": "Uchiha — Sharingan",
+      "rank": "d",
+      "level": 1,
+      "skill": "gensou",
+      "base": "gen",
+      "range": "Yeux / présence proche",
+      "duration": "Variable",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "", "type": "mental", "scaling": "" },
+      "chakra": { "initial": 0, "maintenance": 0, "text": "Coût non détaillé dans la source consultée" },
+      "prerequisites": {
+        "strict": true,
+        "type": "text",
+        "value": "uchiha-sharingan-magen",
+        "masteryRank": 5,
+        "validated": false,
+        "text": "Clan Uchiha ou Sharingan greffé validé. Sharingan maîtrisé et accès Magen requis."
+      },
+      "effect": "Le Sharingan permet de projeter des illusions démoniaques propres au clan Uchiha. Fondation technique active à arbitrer avec les règles de Genjutsu.",
+      "taxonomy": {
+        "category": "lignee",
+        "subcategory": "uchiha",
+        "rankGroup": "d",
+        "clan": "uchiha",
+        "school": "gensou",
+        "packTarget": "techniques-lignees",
+        "tags": ["uchiha", "sharingan", "magen", "genjutsu", "dojutsu"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Fondation V1. Effet exact de Magen à détailler avec les règles Genjutsu."
+      }
+    }
+  },
+  {
+    "name": "Uchiha : Tsukuyomi",
+    "type": "technique",
+    "img": "icons/magic/control/debuff-energy-hold-levitate-teal-blue.webp",
+    "system": {
+      "description": "Monde spirituel des ténèbres.",
+      "family": "lignee",
+      "domain": "Uchiha — Mangekyō Sharingan",
+      "rank": "s",
+      "level": 13,
+      "skill": "gensou",
+      "base": "gen",
+      "range": "Yeux",
+      "duration": "Variable",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "", "type": "mental", "scaling": "" },
+      "chakra": { "initial": 0, "maintenance": 0, "text": "Coût non détaillé dans la source consultée" },
+      "prerequisites": {
+        "strict": true,
+        "type": "text",
+        "value": "uchiha-mangekyo-tsukuyomi",
+        "masteryRank": 5,
+        "validated": false,
+        "text": "Mangekyō Sharingan validé. Pouvoir d’œil Tsukuyomi requis selon le mode Uchiha choisi par le MJ."
+      },
+      "effect": "Pouvoir de Mangekyō lié à la domination illusoire extrême. Enferme la cible dans un monde spirituel contrôlé par l’utilisateur.",
+      "taxonomy": {
+        "category": "lignee",
+        "subcategory": "uchiha",
+        "rankGroup": "s",
+        "clan": "uchiha",
+        "school": "gensou",
+        "packTarget": "techniques-lignees",
+        "tags": ["uchiha", "mangekyo", "tsukuyomi", "genjutsu", "dojutsu", "mj-validation"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Ne doit pas être accordée automatiquement hors choix d’œil validé. Coût et résolution à cadrer."
+      }
+    }
+  },
+  {
+    "name": "Uchiha : Amaterasu",
+    "type": "technique",
+    "img": "icons/magic/fire/flame-burning-black.webp",
+    "system": {
+      "description": "Flammes noires du Mangekyō Sharingan.",
+      "family": "lignee",
+      "domain": "Uchiha — Mangekyō Sharingan",
+      "rank": "s",
+      "level": 13,
+      "skill": "katon",
+      "base": "nin",
+      "range": "Yeux",
+      "duration": "Variable",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "", "type": "fire", "scaling": "Flammes noires" },
+      "chakra": { "initial": 0, "maintenance": 0, "text": "Coût non détaillé dans la source consultée" },
+      "prerequisites": {
+        "strict": true,
+        "type": "text",
+        "value": "uchiha-mangekyo-amaterasu",
+        "masteryRank": 5,
+        "validated": false,
+        "text": "Mangekyō Sharingan validé. Pouvoir d’œil Amaterasu requis."
+      },
+      "effect": "Fait naître des flammes noires quasi impossibles à éteindre sur la cible fixée par l’œil.",
+      "taxonomy": {
+        "category": "lignee",
+        "subcategory": "uchiha",
+        "rankGroup": "s",
+        "clan": "uchiha",
+        "element": "katon",
+        "packTarget": "techniques-lignees",
+        "tags": ["uchiha", "mangekyo", "amaterasu", "flammes-noires", "dojutsu", "mj-validation"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Ne doit pas être accordée automatiquement hors choix d’œil validé. Coût, dégâts et santé oculaire à cadrer."
+      }
+    }
+  },
+  {
+    "name": "Uchiha : Enton — Kagutsuchi",
+    "type": "technique",
+    "img": "icons/magic/fire/flame-burning-black-orange.webp",
+    "system": {
+      "description": "Manipulation des flammes noires.",
+      "family": "lignee",
+      "domain": "Uchiha — Mangekyō Sharingan",
+      "rank": "s",
+      "level": 13,
+      "skill": "katon",
+      "base": "nin",
+      "range": "Yeux / flammes noires",
+      "duration": "Variable",
+      "target": "Variable",
+      "area": "",
+      "damage": { "formula": "", "type": "fire", "scaling": "Contrôle des flammes noires" },
+      "chakra": { "initial": 0, "maintenance": 0, "text": "Coût non détaillé dans la source consultée" },
+      "prerequisites": {
+        "strict": true,
+        "type": "text",
+        "value": "uchiha-mangekyo-enton-amaterasu",
+        "masteryRank": 5,
+        "validated": false,
+        "text": "Mangekyō Sharingan validé. Enton choisi sur un œil et Amaterasu présent dans l’autre œil."
+      },
+      "effect": "Permet de modeler, déplacer ou exploiter les flammes d’Amaterasu. Enton nécessite Amaterasu dans l’autre œil selon la règle maison validée.",
+      "taxonomy": {
+        "category": "lignee",
+        "subcategory": "uchiha",
+        "rankGroup": "s",
+        "clan": "uchiha",
+        "element": "katon",
+        "packTarget": "techniques-lignees",
+        "tags": ["uchiha", "mangekyo", "enton", "amaterasu", "flammes-noires", "dojutsu", "mj-validation"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Condition Amaterasu/Enton à conserver. Coût, dégâts et santé oculaire à cadrer."
+      }
+    }
+  },
+  {
+    "name": "Uchiha : Kamui — Œil droit",
+    "type": "technique",
+    "img": "icons/magic/control/debuff-energy-hold-levitate-purple.webp",
+    "system": {
+      "description": "Distorsion espace-temps personnelle du Mangekyō Sharingan.",
+      "family": "lignee",
+      "domain": "Uchiha — Mangekyō Sharingan",
+      "rank": "s",
+      "level": 13,
+      "skill": "kawarimi",
+      "base": "gen",
+      "range": "Personnelle / Toucher",
+      "duration": "Variable",
+      "target": "Soi-même ou cible touchée",
+      "area": "",
+      "damage": { "formula": "", "type": "space-time", "scaling": "" },
+      "chakra": { "initial": 0, "maintenance": 0, "text": "Coût non détaillé dans la source consultée" },
+      "prerequisites": {
+        "strict": true,
+        "type": "text",
+        "value": "uchiha-mangekyo-kamui-right",
+        "masteryRank": 5,
+        "validated": false,
+        "text": "Mangekyō Sharingan validé. Pouvoir Kamui lié à l’œil droit requis."
+      },
+      "effect": "Permet de rendre le corps de l’utilisateur intangible par transfert partiel dans la dimension Kamui. Peut aussi transporter l’utilisateur ou une cible touchée dans la dimension Kamui selon validation MJ.",
+      "taxonomy": {
+        "category": "lignee",
+        "subcategory": "uchiha",
+        "rankGroup": "s",
+        "clan": "uchiha",
+        "school": "kawarimi",
+        "packTarget": "techniques-lignees",
+        "tags": ["uchiha", "mangekyo", "kamui", "oeil-droit", "intangibilite", "espace-temps", "dojutsu", "mj-validation"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Pouvoir d’œil droit. Intangibilité, phasage et transport au toucher à gérer manuellement. Dégradation oculaire à appliquer."
+      }
+    }
+  },
+  {
+    "name": "Uchiha : Kamui — Œil gauche",
+    "type": "technique",
+    "img": "icons/magic/control/hypnosis-mesmerism-eye-purple.webp",
+    "system": {
+      "description": "Distorsion espace-temps à distance du Mangekyō Sharingan.",
+      "family": "lignee",
+      "domain": "Uchiha — Mangekyō Sharingan",
+      "rank": "s",
+      "level": 13,
+      "skill": "kawarimi",
+      "base": "gen",
+      "range": "Yeux / perception",
+      "duration": "Instantané ou variable",
+      "target": "Cible regardée",
+      "area": "",
+      "damage": { "formula": "", "type": "space-time", "scaling": "" },
+      "chakra": { "initial": 0, "maintenance": 0, "text": "Coût non détaillé dans la source consultée" },
+      "prerequisites": {
+        "strict": true,
+        "type": "text",
+        "value": "uchiha-mangekyo-kamui-left",
+        "masteryRank": 5,
+        "validated": false,
+        "text": "Mangekyō Sharingan validé. Pouvoir Kamui lié à l’œil gauche requis."
+      },
+      "effect": "Permet d’aspirer à distance dans la dimension Kamui ce que l’utilisateur regarde. Peut viser une créature, un objet ou une portion d’espace selon validation MJ.",
+      "taxonomy": {
+        "category": "lignee",
+        "subcategory": "uchiha",
+        "rankGroup": "s",
+        "clan": "uchiha",
+        "school": "kawarimi",
+        "packTarget": "techniques-lignees",
+        "tags": ["uchiha", "mangekyo", "kamui", "oeil-gauche", "distorsion", "aspiration", "espace-temps", "dojutsu", "mj-validation"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Pouvoir d’œil gauche. Aspiration à distance à gérer manuellement. Dégradation oculaire à appliquer."
+      }
+    }
+  },
+  {
+    "name": "Uchiha : Kotoamatsukami",
+    "type": "technique",
+    "img": "icons/magic/control/hypnosis-mesmerism-eye-red.webp",
+    "system": {
+      "description": "Genjutsu suprême de manipulation mentale du Mangekyō Sharingan.",
+      "family": "lignee",
+      "domain": "Uchiha — Mangekyō Sharingan",
+      "rank": "s",
+      "level": 13,
+      "skill": "yuryoku",
+      "base": "gen",
+      "range": "Yeux / perception",
+      "duration": "Variable",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "", "type": "mental", "scaling": "Manipulation mentale profonde" },
+      "chakra": { "initial": 0, "maintenance": 0, "text": "Coût non détaillé dans la source consultée" },
+      "prerequisites": {
+        "strict": true,
+        "type": "text",
+        "value": "uchiha-mangekyo-kotoamatsukami",
+        "masteryRank": 5,
+        "validated": false,
+        "text": "Mangekyō Sharingan validé. Pouvoir d’œil Kotoamatsukami requis. Validation MJ obligatoire."
+      },
+      "effect": "Permet d’influencer profondément l’esprit d’une cible, jusqu’à lui faire adopter une décision ou une volonté comme si elle venait d’elle-même. Effet exact, résistance et récupération à arbitrer par le MJ.",
+      "taxonomy": {
+        "category": "lignee",
+        "subcategory": "uchiha",
+        "rankGroup": "s",
+        "clan": "uchiha",
+        "school": "yuryoku",
+        "packTarget": "techniques-lignees",
+        "tags": ["uchiha", "mangekyo", "kotoamatsukami", "genjutsu", "yuryoku", "controle-mental", "dojutsu", "mj-validation"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Pouvoir extrêmement rare. Ne doit jamais être accordé automatiquement. Résolution narrative/MJ obligatoire."
+      }
+    }
+  },
+  {
+    "name": "Uchiha : Susanō",
+    "type": "technique",
+    "img": "icons/magic/defensive/shield-barrier-flaming-diamond-purple-orange.webp",
+    "system": {
+      "description": "Manifestation gigantesque du Chakra du Mangekyō.",
+      "family": "lignee",
+      "domain": "Uchiha — Mangekyō Sharingan",
+      "rank": "sPlus",
+      "level": 20,
+      "skill": "lign",
+      "base": "lign",
+      "range": "Personnelle",
+      "duration": "Maintenu",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "", "type": "spiritual", "scaling": "" },
+      "chakra": { "initial": 30, "maintenance": 10, "text": "30/10 pts provisoires" },
+      "prerequisites": {
+        "strict": true,
+        "type": "text",
+        "value": "uchiha-mangekyo-susano",
+        "masteryRank": 5,
+        "validated": false,
+        "text": "Mangekyō Sharingan validé et conditions MJ. Susanō devra probablement avoir une progression dédiée."
+      },
+      "effect": "Manifestation gigantesque du Chakra du Mangekyō, prenant la forme d’un gardien spirituel armé et protecteur.",
+      "taxonomy": {
+        "category": "lignee",
+        "subcategory": "uchiha",
+        "rankGroup": "sPlus",
+        "clan": "uchiha",
+        "packTarget": "techniques-lignees",
+        "tags": ["uchiha", "mangekyo", "susano", "progression-dediee", "dojutsu", "mj-validation"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Fondation provisoire. À terme, Susanō devra être traité comme progression/fiche dédiée."
+      }
+    }
+  }
+]

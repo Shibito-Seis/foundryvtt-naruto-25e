@@ -1,1 +1,74 @@
-﻿[]
+﻿[
+  {
+    "name": "Hyūga : Hakke Kūshō",
+    "type": "technique",
+    "img": "icons/magic/air/wind-vortex-swirl-blue.webp",
+    "system": {
+      "description": "Technique de la Paume Absolue.",
+      "family": "lignee",
+      "domain": "Hyūga — Jūken",
+      "rank": "d",
+      "level": 1,
+      "skill": "juken",
+      "base": "tai",
+      "range": "Distance",
+      "duration": "Instantané",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "À préciser", "type": "physical", "scaling": "Projection de Jūken à distance" },
+      "chakra": { "initial": 50, "maintenance": 0, "text": "50 pts" },
+      "prerequisites": { "strict": true, "type": "text", "value": "hyuga-byakugan-juken", "masteryRank": 5, "validated": false, "text": "Clan Hyūga ou accès validé. Byakugan activé, Jūken possédé, Lignée 5 requise." },
+      "effect": "Projette une frappe de Jūken à distance. Condition : jet de Jūken réussi et Byakugan activé.",
+      "taxonomy": { "category": "lignee", "subcategory": "hyuga", "rankGroup": "d", "clan": "hyuga", "school": "juken", "packTarget": "techniques-lignees", "tags": ["hyuga", "juken", "byakugan", "projection", "degats"] },
+      "automation": { "status": "manual", "notes": "Dégâts et portée exacts à automatiser plus tard. Coût papier connu : 50 Chakra." }
+    }
+  },
+  {
+    "name": "Hyūga : Hakke Rokujūyon Shō",
+    "type": "technique",
+    "img": "icons/skills/melee/hand-grip-staff-blue.webp",
+    "system": {
+      "description": "Soixante-Quatre Paumes.",
+      "family": "lignee",
+      "domain": "Hyūga — Jūken",
+      "rank": "d",
+      "level": 1,
+      "skill": "juken",
+      "base": "tai",
+      "range": "Corps à corps",
+      "duration": "Lignée rounds",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "COR + TAI", "type": "physical", "scaling": "Blocage Chakra et pouvoirs de lignée actifs pendant Lignée rounds" },
+      "chakra": { "initial": 0, "maintenance": 0, "text": "Coût non détaillé dans la source consultée" },
+      "prerequisites": { "strict": true, "type": "text", "value": "hyuga-byakugan-juken", "masteryRank": 5, "validated": false, "text": "Clan Hyūga ou accès validé. Byakugan activé, Jūken possédé, Lignée 7 requise." },
+      "effect": "Frappe les tenketsu d’une cible et bloque son chakra et ses pouvoirs de lignée actifs pendant Lignée rounds. Condition : attaque de corps à corps réussie.",
+      "taxonomy": { "category": "lignee", "subcategory": "hyuga", "rankGroup": "d", "clan": "hyuga", "school": "juken", "packTarget": "techniques-lignees", "tags": ["hyuga", "juken", "byakugan", "tenketsu", "chakra-block"] },
+      "automation": { "status": "manual", "notes": "Blocage Chakra/pouvoirs de lignée à gérer manuellement." }
+    }
+  },
+  {
+    "name": "Hyūga : Hakkeshō Kaiten",
+    "type": "technique",
+    "img": "icons/magic/defensive/shield-barrier-blue.webp",
+    "system": {
+      "description": "Barrage Tournoyant de Tendō.",
+      "family": "lignee",
+      "domain": "Hyūga — Jūken",
+      "rank": "d",
+      "level": 1,
+      "skill": "juken",
+      "base": "tai",
+      "range": "Personnelle",
+      "duration": "Instantané",
+      "target": "Zone",
+      "area": "Rayon Lignée mètres",
+      "damage": { "formula": "", "type": "none", "scaling": "Solidité TAI × 6" },
+      "chakra": { "initial": 0, "maintenance": 0, "text": "Coût non détaillé dans la source consultée" },
+      "prerequisites": { "strict": true, "type": "text", "value": "hyuga-byakugan-juken", "masteryRank": 5, "validated": false, "text": "Clan Hyūga ou accès validé. Byakugan activé, Jūken possédé, Lignée 9 requise." },
+      "effect": "Crée une défense tournoyante de chakra : barrière de rayon Lignée mètres, solidité TAI×6, repousse les adversaires hors zone.",
+      "taxonomy": { "category": "lignee", "subcategory": "hyuga", "rankGroup": "d", "clan": "hyuga", "school": "juken", "packTarget": "techniques-lignees", "tags": ["hyuga", "juken", "byakugan", "barriere", "defense"] },
+      "automation": { "status": "manual", "notes": "Barrière, répulsion et solidité à gérer manuellement." }
+    }
+  }
+]

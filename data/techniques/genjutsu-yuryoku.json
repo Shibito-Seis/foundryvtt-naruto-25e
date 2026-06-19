@@ -1,1 +1,50 @@
-﻿[]
+﻿[
+  {
+    "name": "Yūryoku : Kyoufu",
+    "type": "technique",
+    "img": "icons/magic/fear/hand-eye-fire-blue.webp",
+    "system": {
+      "description": "Effroi, peur panique.",
+      "family": "genjutsu",
+      "domain": "Yūryoku — Contrôle mental",
+      "rank": "d",
+      "level": 1,
+      "skill": "yuryoku",
+      "base": "gen",
+      "range": "Perception",
+      "duration": "Instantané",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "GEN + 2", "type": "emotional", "scaling": "" },
+      "chakra": { "initial": 10, "maintenance": 3, "text": "10/3 pts" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "yuryoku", "masteryRank": 5, "validated": false, "text": "Compétence Yūryoku possédée." },
+      "effect": "Émotion Effroi : Peur 1 / Surprise 1. Dégâts émotionnels GEN+2. Entretien standard.",
+      "taxonomy": { "category": "genjutsu", "subcategory": "yuryoku", "rankGroup": "d", "academy": false, "startingEligible": true, "packTarget": "techniques-genjutsu", "tags": ["yuryoku", "emotion", "peur", "degats-emotionnels", "maintien"] },
+      "automation": { "status": "manual", "notes": "Le document laisse EFFET/CHAKRA vides, mais le coût est déduit du niveau 1 : 10/3. Conditions à gérer manuellement." }
+    }
+  },
+  {
+    "name": "Yūryoku : Juri",
+    "type": "technique",
+    "img": "icons/magic/control/silhouette-aura-energy.webp",
+    "system": {
+      "description": "Acceptation, paix du cœur.",
+      "family": "genjutsu",
+      "domain": "Yūryoku — Contrôle mental",
+      "rank": "d",
+      "level": 1,
+      "skill": "yuryoku",
+      "base": "gen",
+      "range": "Perception",
+      "duration": "Instantané",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "GEN + 2", "type": "emotional", "scaling": "" },
+      "chakra": { "initial": 8, "maintenance": 3, "text": "8/3 pts" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "yuryoku", "masteryRank": 5, "validated": false, "text": "Compétence Yūryoku possédée." },
+      "effect": "Émotion Acceptation 2. Dégâts émotionnels GEN+2. Entretien standard.",
+      "taxonomy": { "category": "genjutsu", "subcategory": "yuryoku", "rankGroup": "d", "academy": false, "startingEligible": true, "packTarget": "techniques-genjutsu", "tags": ["yuryoku", "emotion", "acceptation", "degats-emotionnels", "maintien"] },
+      "automation": { "status": "manual", "notes": "Le document laisse EFFET/CHAKRA vides, mais le coût est déduit du niveau 1 : 8/3. Conditions à gérer manuellement." }
+    }
+  }
+]

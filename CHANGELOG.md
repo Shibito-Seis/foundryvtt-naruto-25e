@@ -2,6 +2,54 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.39.2 - Techniques jouables V1
+
+### Ajouté
+
+- Ajout des sources JSON fines pour les techniques Iryō et Fūin.
+- Ajout des premières techniques jouables V1 dans les compendiums structurés :
+  - techniques communes ;
+  - Henge ;
+  - Kawarimi ;
+  - Gensou ;
+  - Yūryoku ;
+  - Katon ;
+  - Suiton ;
+  - Doton ;
+  - Fūton ;
+  - Raïton ;
+  - Iryō ;
+  - Fūin ;
+  - Mokuton ;
+  - Kage ;
+  - Kikaichū ;
+  - Jiton ;
+  - Kuchiyose / contrats selon données exploitables ;
+  - drogues et poisons comme facettes techniques liées à Iryō / terrain.
+
+### Modifié
+
+- Les anciens fichiers legacy de techniques sont vidés pour éviter les doublons :
+  - `techniques-communes.json` ;
+  - `techniques-elementaires.json` ;
+  - `techniques-lignees.json`.
+- Les techniques sont désormais réparties dans les fichiers fins par famille, affinité ou lignée.
+- Les rangs de techniques sont déduits du niveau de jutsu :
+  - niveaux 1 à 5 : Rang D ;
+  - niveaux 6 à 7 : Rang C ;
+  - niveaux 8 à 9 : Rang B ;
+  - niveaux 10 à 12 : Rang A ;
+  - niveaux 13 à 15 : Rang S ;
+  - niveaux 16 à 19 : Rang AA ;
+  - niveau 20 et plus : Rang S+.
+- Les techniques incomplètes ou non automatisées sont conservées avec un statut d’automatisation `manual` ou `partial`.
+
+### Notes
+
+- Cette version ne code pas encore les effets automatiques complets de combat.
+- Cette version prépare le choix de techniques de départ du Shinobimancer en 0.1.40.
+- Les améliorations futures de jutsus par niveaux/augmentations seront traitées plus tard.
+
 ## 0.1.39.1 - Dossiers de compendiums et rangement automatique
 
 ### Ajouté

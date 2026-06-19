@@ -1,1 +1,74 @@
-﻿[]
+﻿[
+  {
+    "name": "Chūken : Aoi Shōgeki",
+    "type": "technique",
+    "img": "icons/skills/melee/unarmed-punch-fist-blue.webp",
+    "system": {
+      "description": "Technique du Poing Naturel.",
+      "family": "taijutsu",
+      "domain": "Chūken — École de combat",
+      "rank": "d",
+      "level": 1,
+      "skill": "chuken",
+      "base": "tai",
+      "range": "Corps à corps",
+      "duration": "Instantané",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "COR + TAI", "type": "physical", "scaling": "Dégâts de corps à corps standard" },
+      "chakra": { "initial": 0, "maintenance": 0, "text": "Aucun coût Chakra indiqué" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "chuken", "masteryRank": 5, "validated": false, "text": "Compétence Chūken possédée." },
+      "effect": "Sur un jet de Chūken réussi, le coup rend impossible pour l’adversaire l’usage d’un pouvoir de Lignée actif sur cette initiative lors de son esquive, et pour le reste du tour. Permet aussi de toucher une cible sous forme tangible, intangible, liquide, solide, gazeuse, particulaire ou éthérée si sa position exacte est connue.",
+      "taxonomy": { "category": "taijutsu", "subcategory": "chuken", "rankGroup": "d", "school": "chuken", "startingEligible": true, "packTarget": "techniques-taijutsu", "tags": ["chuken", "taijutsu", "anti-lignee", "corps-a-corps"] },
+      "automation": { "status": "manual", "notes": "Blocage des pouvoirs de lignée et formes physiques à gérer manuellement." }
+    }
+  },
+  {
+    "name": "Chūken : Jū Ren",
+    "type": "technique",
+    "img": "icons/skills/melee/strike-fist-blue.webp",
+    "system": {
+      "description": "Technique des Dix Impacts.",
+      "family": "taijutsu",
+      "domain": "Chūken — École de combat",
+      "rank": "d",
+      "level": 1,
+      "skill": "chuken",
+      "base": "tai",
+      "range": "Corps à corps / Interception",
+      "duration": "Instantané",
+      "target": "Technique adverse",
+      "area": "",
+      "damage": { "formula": "", "type": "physical", "scaling": "" },
+      "chakra": { "initial": 0, "maintenance": 0, "text": "Aucun coût Chakra indiqué" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "chuken", "masteryRank": 5, "validated": false, "text": "Compétence Chūken possédée." },
+      "effect": "Lors d’une attaque adverse utilisant une technique offensive ou défensive de Ninjutsu, le personnage peut faire un jet de Chūken à la place de son jet d’Esquive. En cas de réussite, il porte dix impacts dans le jutsu et annule tous ses effets. Fonctionne sur les jutsus élémentaires et certains pouvoirs de Lignée liés à une compétence de jutsu élémentaire.",
+      "taxonomy": { "category": "taijutsu", "subcategory": "chuken", "rankGroup": "d", "school": "chuken", "startingEligible": true, "packTarget": "techniques-taijutsu", "tags": ["chuken", "taijutsu", "interception", "anti-ninjutsu"] },
+      "automation": { "status": "manual", "notes": "Annulation de jutsu à arbitrer manuellement." }
+    }
+  },
+  {
+    "name": "Chūken : Nisshoku",
+    "type": "technique",
+    "img": "icons/skills/movement/feet-winged-boots-blue.webp",
+    "system": {
+      "description": "Technique de l’Éclipse.",
+      "family": "taijutsu",
+      "domain": "Chūken — École de combat",
+      "rank": "d",
+      "level": 1,
+      "skill": "chuken",
+      "base": "tai",
+      "range": "Corps à corps / Interception",
+      "duration": "Instantané",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "COR + TAI si collision", "type": "physical", "scaling": "Dégâts de corps à corps standard si collision" },
+      "chakra": { "initial": 0, "maintenance": 0, "text": "Aucun coût Chakra indiqué" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "chuken", "masteryRank": 5, "validated": false, "text": "Compétence Chūken possédée." },
+      "effect": "Lors d’une attaque au corps à corps adverse, le personnage peut faire un jet de Chūken à la place de son Esquive ou Parade. En cas de réussite, il esquive et projette l’adversaire à Distance 3 dans la direction voulue. Inflige les dégâts de corps à corps standards si une collision est créée et bloque l’usage d’un pouvoir de Lignée sur l’initiative.",
+      "taxonomy": { "category": "taijutsu", "subcategory": "chuken", "rankGroup": "d", "school": "chuken", "startingEligible": true, "packTarget": "techniques-taijutsu", "tags": ["chuken", "taijutsu", "projection", "interception", "anti-lignee"] },
+      "automation": { "status": "manual", "notes": "Projection, collision et blocage de lignée à gérer manuellement." }
+    }
+  }
+]

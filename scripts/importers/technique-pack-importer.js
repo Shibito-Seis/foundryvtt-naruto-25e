@@ -76,6 +76,22 @@ const DATA_SOURCES = [
     path: "systems/naruto-25e/data/techniques/ninjutsu-raiton.json",
     normalize: normalizeTechniqueData
   },
+  {
+    group: "techniques",
+    groupLabel: "Techniques — Ninjutsu",
+    label: "technique Iryō",
+    pack: "naruto-25e.techniques-ninjutsu",
+    path: "systems/naruto-25e/data/techniques/ninjutsu-iryo.json",
+    normalize: normalizeTechniqueData
+  },
+  {
+    group: "techniques",
+    groupLabel: "Techniques — Ninjutsu",
+    label: "technique Fūin",
+    pack: "naruto-25e.techniques-ninjutsu",
+    path: "systems/naruto-25e/data/techniques/ninjutsu-fuin.json",
+    normalize: normalizeTechniqueData
+  },
 
   // Genjutsu
   {

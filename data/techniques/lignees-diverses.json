@@ -1,1 +1,74 @@
-﻿[]
+﻿[
+  {
+    "name": "Jiton : Raichikyu",
+    "type": "technique",
+    "img": "icons/magic/lightning/orb-ball-blue.webp",
+    "system": {
+      "description": "EMP anti-courant du clan Munefuda.",
+      "family": "lignee",
+      "domain": "Jiton — Magnétisme",
+      "rank": "d",
+      "level": 1,
+      "skill": "jiton",
+      "base": "nin",
+      "range": "LIGN × 100 m",
+      "duration": "Maintenu",
+      "target": "Zone",
+      "area": "Globe rayon LIGN × 100 m",
+      "damage": { "formula": "", "type": "lightning", "scaling": "" },
+      "chakra": { "initial": 0, "maintenance": 0, "text": "Lignée / tour" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "jiton", "masteryRank": 5, "validated": false, "text": "Compétence Jiton possédée. Clan Munefuda ou accès validé. Raiton et Fūton nécessaires selon le book." },
+      "effect": "Neutralise les machines et installations utilisant du courant dans un globe de rayon LIGN × 100 m et magnétise les objets non organiques sur la même surface.",
+      "taxonomy": { "category": "lignee", "subcategory": "jiton", "rankGroup": "d", "clan": "munefuda", "packTarget": "techniques-lignees", "tags": ["munefuda", "jiton", "magnetisme", "emp", "maintien"] },
+      "automation": { "status": "manual", "notes": "Effet de zone et coût lignée/tour à gérer manuellement." }
+    }
+  },
+  {
+    "name": "Jiton : Jiki",
+    "type": "technique",
+    "img": "icons/magic/symbols/runes-star-pentagon-blue.webp",
+    "system": {
+      "description": "Sceau magnétique.",
+      "family": "lignee",
+      "domain": "Jiton — Magnétisme",
+      "rank": "d",
+      "level": 1,
+      "skill": "jiton",
+      "base": "nin",
+      "range": "Cible magnétisée",
+      "duration": "Maintenu",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "", "type": "magnetic", "scaling": "+Lignée Armes Simples / Armes Exotiques contre la cible" },
+      "chakra": { "initial": 0, "maintenance": 0, "text": "Lignée / tour / cible" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "jiton", "masteryRank": 5, "validated": false, "text": "Compétence Jiton possédée. Clan Munefuda ou accès validé. Raiton et Fūton nécessaires selon le book." },
+      "effect": "Sur jet de Jiton réussi, magnétise une cible et confère au personnage +Lignée en Armes Simples / Armes Exotiques envers cette cible tant que le pouvoir est actif.",
+      "taxonomy": { "category": "lignee", "subcategory": "jiton", "rankGroup": "d", "clan": "munefuda", "packTarget": "techniques-lignees", "tags": ["munefuda", "jiton", "magnetisme", "sceau", "maintien"] },
+      "automation": { "status": "manual", "notes": "Bonus contre cible magnétisée et coût lignée/tour/cible à gérer manuellement." }
+    }
+  },
+  {
+    "name": "Jiton : Kesshū",
+    "type": "technique",
+    "img": "icons/magic/earth/projectile-stone-ball-brown.webp",
+    "system": {
+      "description": "Création céleste.",
+      "family": "lignee",
+      "domain": "Jiton — Magnétisme",
+      "rank": "d",
+      "level": 1,
+      "skill": "jiton",
+      "base": "nin",
+      "range": "LIGN / zone",
+      "duration": "Maintenu",
+      "target": "Zone",
+      "area": "LIGN / zone",
+      "damage": { "formula": "LIGN × 3", "type": "magnetic", "scaling": "Solidité LIGN × 5 en défense" },
+      "chakra": { "initial": 0, "maintenance": 0, "text": "Lignée / round / semaine" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "jiton", "masteryRank": 5, "validated": false, "text": "Compétence Jiton possédée. Clan Munefuda ou accès validé. Raiton et Fūton nécessaires selon le book." },
+      "effect": "Construction d’objets géométriques, métalliques ou magnétisés, pouvant s’abattre sur des cibles : LIGN×3 dégâts, LIGN×5 Solidité si utilisés en défense.",
+      "taxonomy": { "category": "lignee", "subcategory": "jiton", "rankGroup": "d", "clan": "munefuda", "packTarget": "techniques-lignees", "tags": ["munefuda", "jiton", "construction", "degats", "defense"] },
+      "automation": { "status": "manual", "notes": "Création/attaque/défense magnétique à gérer manuellement." }
+    }
+  }
+]

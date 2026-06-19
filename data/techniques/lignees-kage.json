@@ -1,1 +1,50 @@
-﻿[]
+﻿[
+  {
+    "name": "Kage : Kagemane",
+    "type": "technique",
+    "img": "icons/magic/control/debuff-chains-shackles-movement-blue.webp",
+    "system": {
+      "description": "Manipulation des Ombres du clan Nara.",
+      "family": "lignee",
+      "domain": "Kage — Contrôle",
+      "rank": "d",
+      "level": 1,
+      "skill": "kage",
+      "base": "nin",
+      "range": "Ombre / ligne de vue",
+      "duration": "Maintenu",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "", "type": "none", "scaling": "" },
+      "chakra": { "initial": 0, "maintenance": 0, "text": "Coût papier non détaillé dans la source consultée" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "kage", "masteryRank": 5, "validated": false, "text": "Compétence Kage possédée. Clan Nara ou accès validé." },
+      "effect": "Sur jet de Kage réussi, le personnage peut immobiliser ou contrôler une cible par son ombre. Effet détaillé à automatiser plus tard.",
+      "taxonomy": { "category": "lignee", "subcategory": "kage", "rankGroup": "d", "clan": "nara", "packTarget": "techniques-lignees", "tags": ["nara", "kage", "ombre", "controle", "maintien"] },
+      "automation": { "status": "manual", "notes": "Fondation jouable V1 depuis la progression Nara. Coût exact à préciser." }
+    }
+  },
+  {
+    "name": "Kage : Kage Nui",
+    "type": "technique",
+    "img": "icons/magic/control/debuff-tentacles-void-blue.webp",
+    "system": {
+      "description": "Entrelacement des Ombres du clan Nara.",
+      "family": "lignee",
+      "domain": "Kage — Attaque",
+      "rank": "d",
+      "level": 1,
+      "skill": "kage",
+      "base": "nin",
+      "range": "Ombre / ligne de vue",
+      "duration": "Instantané ou maintenu",
+      "target": "Zone ou individuelle",
+      "area": "",
+      "damage": { "formula": "LIGN ou Kage selon arbitrage", "type": "shadow", "scaling": "" },
+      "chakra": { "initial": 0, "maintenance": 0, "text": "Coût papier non détaillé dans la source consultée" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "kage", "masteryRank": 5, "validated": false, "text": "Compétence Kage possédée. Clan Nara ou accès validé." },
+      "effect": "Sur jet de Kage réussi, le personnage transforme son ombre en arme offensive. Dégâts et zone à automatiser plus tard.",
+      "taxonomy": { "category": "lignee", "subcategory": "kage", "rankGroup": "d", "clan": "nara", "packTarget": "techniques-lignees", "tags": ["nara", "kage", "ombre", "degats", "zone"] },
+      "automation": { "status": "manual", "notes": "Fondation jouable V1 depuis la progression Nara. Coût exact à préciser." }
+    }
+  }
+]

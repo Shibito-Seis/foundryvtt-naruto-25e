@@ -1,0 +1,98 @@
+[
+  {
+    "name": "Fūin : Momification de la Blessure",
+    "type": "technique",
+    "img": "icons/magic/symbols/rune-sigil-hook-white-red.webp",
+    "system": {
+      "description": "Catalyseur médical scellant temporairement une blessure.",
+      "family": "ninjutsu",
+      "domain": "Fūin — Sceaux passifs",
+      "rank": "c",
+      "level": 7,
+      "skill": "fuin",
+      "base": "gen",
+      "range": "Toucher",
+      "duration": "Rituel",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "", "type": "healing", "scaling": "+11 Médecine - Soigner" },
+      "chakra": { "initial": 29, "maintenance": 0, "text": "29 pts" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "fuin", "masteryRank": 5, "validated": false, "text": "Compétence Fūin possédée." },
+      "effect": "Augmente la capacité de soin de +11 via un sceau passif d’anesthésie et de stabilisation.",
+      "taxonomy": { "category": "ninjutsu", "subcategory": "fuin", "rankGroup": "c", "element": "fuin", "startingEligible": false, "packTarget": "techniques-ninjutsu", "tags": ["fuin", "sceau-passif", "medecine", "soin", "rituel"] },
+      "automation": { "status": "manual", "notes": "Soin et blessure à résoudre manuellement jusqu’au système Santé/Blessures." }
+    }
+  },
+  {
+    "name": "Fūin : Retour à la Nature",
+    "type": "technique",
+    "img": "icons/magic/symbols/runes-star-pentagon-orange.webp",
+    "system": {
+      "description": "Déverrouillage de sceau dynamique.",
+      "family": "ninjutsu",
+      "domain": "Fūin — Sceaux dynamiques",
+      "rank": "c",
+      "level": 7,
+      "skill": "fuin",
+      "base": "gen",
+      "range": "Toucher",
+      "duration": "Rituel",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "", "type": "none", "scaling": "NIN + 10 Déverrouillage de sceau dynamique" },
+      "chakra": { "initial": 29, "maintenance": 0, "text": "29 pts" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "fuin", "masteryRank": 5, "validated": false, "text": "Compétence Fūin possédée." },
+      "effect": "Déverrouillage de Sceau Dynamique NIN+10.",
+      "taxonomy": { "category": "ninjutsu", "subcategory": "fuin", "rankGroup": "c", "element": "fuin", "startingEligible": false, "packTarget": "techniques-ninjutsu", "tags": ["fuin", "sceau-dynamique", "dissipation", "rituel"] },
+      "automation": { "status": "manual", "notes": "Déverrouillage de sceau à arbitrer manuellement." }
+    }
+  },
+  {
+    "name": "Fūin : Fragilisation Alchimiste",
+    "type": "technique",
+    "img": "icons/magic/symbols/rune-sigil-black-pink.webp",
+    "system": {
+      "description": "Sceau diminutif de solidité.",
+      "family": "ninjutsu",
+      "domain": "Fūin — Sceaux dynamiques",
+      "rank": "c",
+      "level": 7,
+      "skill": "fuin",
+      "base": "gen",
+      "range": "Toucher",
+      "duration": "Rituel",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "", "type": "none", "scaling": "-(NIN + 10) Solidité" },
+      "chakra": { "initial": 26, "maintenance": 0, "text": "26 pts" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "fuin", "masteryRank": 5, "validated": false, "text": "Compétence Fūin possédée." },
+      "effect": "Réduit la solidité de la cible de -(NIN+10).",
+      "taxonomy": { "category": "ninjutsu", "subcategory": "fuin", "rankGroup": "c", "element": "fuin", "startingEligible": false, "packTarget": "techniques-ninjutsu", "tags": ["fuin", "sceau-dynamique", "solidite", "affaiblissement", "rituel"] },
+      "automation": { "status": "manual", "notes": "Réduction de solidité à gérer manuellement." }
+    }
+  },
+  {
+    "name": "Fūin : Keiyaku Fūin",
+    "type": "technique",
+    "img": "icons/magic/symbols/runes-carved-stone-green.webp",
+    "system": {
+      "description": "Sceau de contrat renvoyant un contractant Kuchiyose.",
+      "family": "ninjutsu",
+      "domain": "Fūin — Sceaux dynamiques",
+      "rank": "c",
+      "level": 7,
+      "skill": "fuin",
+      "base": "gen",
+      "range": "Toucher",
+      "duration": "Rituel",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "", "type": "none", "scaling": "+11 renvoi de contractant Kuchiyose" },
+      "chakra": { "initial": 29, "maintenance": 0, "text": "29 pts" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "fuin", "masteryRank": 5, "validated": false, "text": "Compétence Fūin possédée." },
+      "effect": "Renvoie un contractant Kuchiyose avec un bonus de +11.",
+      "taxonomy": { "category": "ninjutsu", "subcategory": "fuin", "rankGroup": "c", "element": "fuin", "startingEligible": false, "packTarget": "techniques-ninjutsu", "tags": ["fuin", "sceau", "kuchiyose", "contrat", "rituel"] },
+      "automation": { "status": "manual", "notes": "Renvoi de contractant à résoudre manuellement." }
+    }
+  }
+]

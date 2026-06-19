@@ -1,1 +1,122 @@
-﻿[]
+﻿[
+  {
+    "name": "Kawarimi : Makimono Naishin",
+    "type": "technique",
+    "img": "icons/sundries/scrolls/scroll-bound-sealed-red.webp",
+    "system": {
+      "description": "Rouleau de communication officiel par transmutation passive.",
+      "family": "ninjutsu",
+      "domain": "Kawarimi — Transmutation passive",
+      "rank": "d",
+      "level": 1,
+      "skill": "kawarimi",
+      "base": "gen",
+      "range": "Connexion — Sceau de réception Bureau des Missions",
+      "duration": "Instantané",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "", "type": "none", "scaling": "" },
+      "chakra": { "initial": 8, "maintenance": 0, "text": "8 pts" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "kawarimi", "masteryRank": 5, "validated": false, "text": "Compétence Kawarimi possédée." },
+      "effect": "Transmute un objet de 20 cm de diamètre sur D2, soit environ 100 km selon le document.",
+      "taxonomy": { "category": "commune", "subcategory": "kawarimi", "rankGroup": "d", "academy": false, "startingEligible": false, "packTarget": "techniques-communes", "tags": ["kawarimi", "transmutation", "rouleau", "communication"] },
+      "automation": { "status": "manual", "notes": "Effet de transmutation à résoudre narrativement." }
+    }
+  },
+  {
+    "name": "Kawarimi : Permutation Standard",
+    "type": "technique",
+    "img": "icons/magic/movement/trail-streak-zigzag-yellow.webp",
+    "system": {
+      "description": "Permutation physique avec un kunaï ou un objet similaire.",
+      "family": "ninjutsu",
+      "domain": "Kawarimi — Permutation physique",
+      "rank": "d",
+      "level": 1,
+      "skill": "kawarimi",
+      "base": "gen",
+      "range": "Connexion — Kunaï",
+      "duration": "Instantané",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "", "type": "none", "scaling": "" },
+      "chakra": { "initial": 5, "maintenance": 0, "text": "5 pts" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "kawarimi", "masteryRank": 5, "validated": false, "text": "Compétence Kawarimi possédée." },
+      "effect": "Permutation avec un kunaï ou objet similaire sur D2, environ 10 m.",
+      "taxonomy": { "category": "commune", "subcategory": "kawarimi", "rankGroup": "d", "academy": true, "startingEligible": true, "packTarget": "techniques-communes", "tags": ["academie", "kawarimi", "permutation", "defense"] },
+      "automation": { "status": "partial", "notes": "Coût automatisable. Le déplacement/permutation est résolu manuellement." }
+    }
+  },
+  {
+    "name": "Kawarimi : Permutation Humaine",
+    "type": "technique",
+    "img": "icons/magic/movement/trail-streak-impact-blue.webp",
+    "system": {
+      "description": "Permutation physique avec un contractant humain.",
+      "family": "ninjutsu",
+      "domain": "Kawarimi — Permutation physique",
+      "rank": "d",
+      "level": 1,
+      "skill": "kawarimi",
+      "base": "gen",
+      "range": "Connexion — Coéquipier / contrat",
+      "duration": "Instantané",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "", "type": "none", "scaling": "" },
+      "chakra": { "initial": 5, "maintenance": 0, "text": "5 pts" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "kawarimi", "masteryRank": 5, "validated": false, "text": "Compétence Kawarimi possédée et cible contractante consentante." },
+      "effect": "Permutation avec un coéquipier ou contractant sur D2, environ 10 m.",
+      "taxonomy": { "category": "commune", "subcategory": "kawarimi", "rankGroup": "d", "academy": false, "startingEligible": false, "packTarget": "techniques-communes", "tags": ["kawarimi", "permutation", "cooperation"] },
+      "automation": { "status": "manual", "notes": "Gestion de consentement/contrat et déplacement à résoudre manuellement." }
+    }
+  },
+  {
+    "name": "Kawarimi : Katasa Fuda",
+    "type": "technique",
+    "img": "icons/sundries/documents/document-symbol-rune-brown.webp",
+    "system": {
+      "description": "Note de solidité consolidant une matière.",
+      "family": "ninjutsu",
+      "domain": "Kawarimi — Notes sacrées",
+      "rank": "d",
+      "level": 1,
+      "skill": "kawarimi",
+      "base": "gen",
+      "range": "Toucher",
+      "duration": "Concentration",
+      "target": "Zone",
+      "area": "Z1 — rayon 1 m",
+      "damage": { "formula": "", "type": "none", "scaling": "GEN + 1 Solidité" },
+      "chakra": { "initial": 10, "maintenance": 0, "text": "10 pts + 10 pts / cran de durée supplémentaire" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "kawarimi", "masteryRank": 5, "validated": false, "text": "Compétence Kawarimi possédée." },
+      "effect": "Consolide une matière de GEN+1 en solidité sur Z1 pendant Durée 2 (6 heures). Peut augmenter la durabilité de 6 heures pour chaque 10 chakra supplémentaires.",
+      "taxonomy": { "category": "commune", "subcategory": "kawarimi", "rankGroup": "d", "academy": false, "startingEligible": false, "packTarget": "techniques-communes", "tags": ["kawarimi", "note", "solidite", "rituel"] },
+      "automation": { "status": "manual", "notes": "Création 5 rounds et IA 10 rounds à gérer manuellement." }
+    }
+  },
+  {
+    "name": "Kawarimi : Kibaku Fuda",
+    "type": "technique",
+    "img": "icons/sundries/documents/document-symbol-rune-red.webp",
+    "system": {
+      "description": "Note explosive.",
+      "family": "ninjutsu",
+      "domain": "Kawarimi — Notes sacrées",
+      "rank": "d",
+      "level": 1,
+      "skill": "kawarimi",
+      "base": "gen",
+      "range": "Toucher",
+      "duration": "Rituel",
+      "target": "Zone",
+      "area": "Z2 — rayon 2 m",
+      "damage": { "formula": "GEN + 1", "type": "explosive", "scaling": "" },
+      "chakra": { "initial": 10, "maintenance": 0, "text": "10 pts" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "kawarimi", "masteryRank": 5, "validated": false, "text": "Compétence Kawarimi possédée." },
+      "effect": "En explosant, la note inflige GEN+1 dégâts sur Z2. IA 10 rounds ou activation instantanée par impulsion de chakra. Création : 5 rounds.",
+      "taxonomy": { "category": "commune", "subcategory": "kawarimi", "rankGroup": "d", "academy": false, "startingEligible": false, "packTarget": "techniques-communes", "tags": ["kawarimi", "note", "explosif", "rituel"] },
+      "automation": { "status": "manual", "notes": "Dégâts et déclenchement à automatiser dans Combat / Actions." }
+    }
+  }
+]

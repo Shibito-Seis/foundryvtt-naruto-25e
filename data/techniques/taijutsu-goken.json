@@ -1,1 +1,74 @@
-﻿[]
+﻿[
+  {
+    "name": "Gōken : Kaiganshō",
+    "type": "technique",
+    "img": "icons/skills/melee/unarmed-punch-fist-yellow.webp",
+    "system": {
+      "description": "Technique du point invincible de l’école du Poing Fort.",
+      "family": "taijutsu",
+      "domain": "Gōken — École de combat",
+      "rank": "d",
+      "level": 1,
+      "skill": "goken",
+      "base": "tai",
+      "range": "Corps à corps",
+      "duration": "Instantané",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "COR + TAI", "type": "physical", "scaling": "Dégâts de corps à corps standard" },
+      "chakra": { "initial": 0, "maintenance": 0, "text": "Aucun coût Chakra indiqué" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "goken", "masteryRank": 5, "validated": false, "text": "Compétence Gōken possédée." },
+      "effect": "Technique principale du Gōken. Porte un coup en plus de son effet, sauf décision contraire du MJ. Utilisable une fois par adversaire et par situation de combat.",
+      "taxonomy": { "category": "taijutsu", "subcategory": "goken", "rankGroup": "d", "school": "goken", "startingEligible": true, "packTarget": "techniques-taijutsu", "tags": ["goken", "taijutsu", "corps-a-corps", "ecole-combat"] },
+      "automation": { "status": "manual", "notes": "Effet précis à compléter. Dégâts de corps à corps standard : COR + TAI." }
+    }
+  },
+  {
+    "name": "Gōken : Chokugeki",
+    "type": "technique",
+    "img": "icons/skills/melee/strike-fist-yellow.webp",
+    "system": {
+      "description": "Technique de l’action dynamique de l’école du Poing Fort.",
+      "family": "taijutsu",
+      "domain": "Gōken — École de combat",
+      "rank": "d",
+      "level": 1,
+      "skill": "goken",
+      "base": "tai",
+      "range": "Corps à corps",
+      "duration": "Instantané",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "COR + TAI", "type": "physical", "scaling": "Dégâts de corps à corps standard" },
+      "chakra": { "initial": 0, "maintenance": 0, "text": "Aucun coût Chakra indiqué" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "goken", "masteryRank": 5, "validated": false, "text": "Compétence Gōken possédée." },
+      "effect": "Technique principale du Gōken. Porte un coup en plus de son effet, sauf décision contraire du MJ. Utilisable une fois par adversaire et par situation de combat.",
+      "taxonomy": { "category": "taijutsu", "subcategory": "goken", "rankGroup": "d", "school": "goken", "startingEligible": true, "packTarget": "techniques-taijutsu", "tags": ["goken", "taijutsu", "corps-a-corps", "ecole-combat"] },
+      "automation": { "status": "manual", "notes": "Effet précis à compléter. Dégâts de corps à corps standard : COR + TAI." }
+    }
+  },
+  {
+    "name": "Gōken : Senpū",
+    "type": "technique",
+    "img": "icons/skills/melee/kick-footwear-boots-yellow.webp",
+    "system": {
+      "description": "Technique du pied tornade de l’école du Poing Fort.",
+      "family": "taijutsu",
+      "domain": "Gōken — École de combat",
+      "rank": "d",
+      "level": 1,
+      "skill": "goken",
+      "base": "tai",
+      "range": "Corps à corps",
+      "duration": "Instantané",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "COR + TAI", "type": "physical", "scaling": "Dégâts de corps à corps standard" },
+      "chakra": { "initial": 0, "maintenance": 0, "text": "Aucun coût Chakra indiqué" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "goken", "masteryRank": 5, "validated": false, "text": "Compétence Gōken possédée." },
+      "effect": "Technique principale du Gōken. Porte un coup en plus de son effet, sauf décision contraire du MJ. Utilisable une fois par adversaire et par situation de combat.",
+      "taxonomy": { "category": "taijutsu", "subcategory": "goken", "rankGroup": "d", "school": "goken", "startingEligible": true, "packTarget": "techniques-taijutsu", "tags": ["goken", "taijutsu", "corps-a-corps", "ecole-combat"] },
+      "automation": { "status": "manual", "notes": "Effet précis à compléter. Dégâts de corps à corps standard : COR + TAI." }
+    }
+  }
+]

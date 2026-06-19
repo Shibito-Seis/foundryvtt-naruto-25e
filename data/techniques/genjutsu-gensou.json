@@ -1,1 +1,122 @@
-﻿[]
+﻿[
+  {
+    "name": "Gensou : Kaï",
+    "type": "technique",
+    "img": "icons/magic/control/hypnosis-mesmerism-eye.webp",
+    "system": {
+      "description": "Dissipation psychique.",
+      "family": "genjutsu",
+      "domain": "Gensou — Hypnose",
+      "rank": "d",
+      "level": 1,
+      "skill": "gensou",
+      "base": "gen",
+      "range": "Personnelle",
+      "duration": "Instantané",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "", "type": "mental", "scaling": "" },
+      "chakra": { "initial": 12, "maintenance": 0, "text": "12 pts" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "gensou", "masteryRank": 5, "validated": false, "text": "Compétence Gensou possédée." },
+      "effect": "Sous les effets d’un genjutsu de domination, de contrôle ou de monde illusoire, génère un jet immédiat de Contrôle de l’Esprit augmenté de +2.",
+      "taxonomy": { "category": "genjutsu", "subcategory": "gensou", "rankGroup": "d", "academy": true, "startingEligible": true, "packTarget": "techniques-genjutsu", "tags": ["gensou", "dissipation", "defense"] },
+      "automation": { "status": "manual", "notes": "Jet de Contrôle de l’Esprit à résoudre manuellement." }
+    }
+  },
+  {
+    "name": "Gensou : Kyouko",
+    "type": "technique",
+    "img": "icons/magic/control/hypnosis-mesmerism-eye.webp",
+    "system": {
+      "description": "Stabilité émotionnelle.",
+      "family": "genjutsu",
+      "domain": "Gensou — Hypnose",
+      "rank": "d",
+      "level": 1,
+      "skill": "gensou",
+      "base": "gen",
+      "range": "Personnelle",
+      "duration": "Instantané",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "", "type": "mental", "scaling": "" },
+      "chakra": { "initial": 12, "maintenance": 0, "text": "12 pts" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "gensou", "masteryRank": 5, "validated": false, "text": "Compétence Gensou possédée." },
+      "effect": "Sous les effets d’un genjutsu émotionnel, génère un jet immédiat de Contrôle de l’Esprit augmenté de +2.",
+      "taxonomy": { "category": "genjutsu", "subcategory": "gensou", "rankGroup": "d", "academy": false, "startingEligible": true, "packTarget": "techniques-genjutsu", "tags": ["gensou", "emotion", "dissipation", "defense"] },
+      "automation": { "status": "manual", "notes": "Jet de Contrôle de l’Esprit à résoudre manuellement." }
+    }
+  },
+  {
+    "name": "Gensou : Bunshin",
+    "type": "technique",
+    "img": "icons/magic/control/silhouette-hold-change-blue.webp",
+    "system": {
+      "description": "Clone illusoire intangible.",
+      "family": "genjutsu",
+      "domain": "Gensou — Mirage",
+      "rank": "d",
+      "level": 1,
+      "skill": "gensou",
+      "base": "gen",
+      "range": "Personnelle",
+      "duration": "Momentané",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "", "type": "mental", "scaling": "" },
+      "chakra": { "initial": 8, "maintenance": 2, "text": "8/2 pts" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "gensou", "masteryRank": 5, "validated": false, "text": "Compétence Gensou possédée." },
+      "effect": "Clone intangible gensou. Entretien standard.",
+      "taxonomy": { "category": "genjutsu", "subcategory": "gensou", "rankGroup": "d", "academy": true, "startingEligible": true, "packTarget": "techniques-genjutsu", "tags": ["gensou", "mirage", "clone", "maintien"] },
+      "automation": { "status": "partial", "notes": "Coût et entretien automatisables. Effet de clone illusoire manuel." }
+    }
+  },
+  {
+    "name": "Gensou : Dowasure",
+    "type": "technique",
+    "img": "icons/magic/control/debuff-energy-hold-purple.webp",
+    "system": {
+      "description": "Blocage mémoriel.",
+      "family": "genjutsu",
+      "domain": "Gensou — Hypnose",
+      "rank": "d",
+      "level": 1,
+      "skill": "gensou",
+      "base": "gen",
+      "range": "Perception",
+      "duration": "Concentration",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "", "type": "mental", "scaling": "" },
+      "chakra": { "initial": 24, "maintenance": 0, "text": "24 pts + 10 pts / 6 heures" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "gensou", "masteryRank": 5, "validated": false, "text": "Compétence Gensou possédée." },
+      "effect": "La cible voit une de ses récentes expériences bloquée de sa mémoire pendant 6 heures par tranche de 10 pts de chakra investis. Niveau 2 : invisible -2 Sentinelle - Sentir le Chakra.",
+      "taxonomy": { "category": "genjutsu", "subcategory": "gensou", "rankGroup": "d", "academy": false, "startingEligible": false, "packTarget": "techniques-genjutsu", "tags": ["gensou", "memoire", "hypnose", "concentration"] },
+      "automation": { "status": "manual", "notes": "Effet mémoriel et durée augmentée à résoudre manuellement." }
+    }
+  },
+  {
+    "name": "Gensou : Oboe",
+    "type": "technique",
+    "img": "icons/magic/control/debuff-energy-snare-purple-pink.webp",
+    "system": {
+      "description": "Réécrire l’Histoire.",
+      "family": "genjutsu",
+      "domain": "Gensou — Hypnose",
+      "rank": "d",
+      "level": 1,
+      "skill": "gensou",
+      "base": "gen",
+      "range": "Perception",
+      "duration": "Concentration",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "", "type": "mental", "scaling": "" },
+      "chakra": { "initial": 15, "maintenance": 0, "text": "15 pts + 10 pts / 6 heures" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "gensou", "masteryRank": 5, "validated": false, "text": "Compétence Gensou possédée." },
+      "effect": "La mémoire de la cible est manipulée pour y intégrer un souvenir ou une expérience n’ayant jamais existé pendant 6 heures par tranche de 10 pts de chakra investis.",
+      "taxonomy": { "category": "genjutsu", "subcategory": "gensou", "rankGroup": "d", "academy": false, "startingEligible": false, "packTarget": "techniques-genjutsu", "tags": ["gensou", "memoire", "hypnose", "concentration"] },
+      "automation": { "status": "manual", "notes": "Effet mémoriel et durée augmentée à résoudre manuellement." }
+    }
+  }
+]

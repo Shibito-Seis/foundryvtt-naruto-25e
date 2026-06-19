@@ -1,1 +1,146 @@
-﻿[]
+﻿[
+  {
+    "name": "Kikaichū : Mure",
+    "type": "technique",
+    "img": "icons/creatures/invertebrates/wasp-swarm.webp",
+    "system": {
+      "description": "Nuées vigilantes.",
+      "family": "lignee",
+      "domain": "Kikaichū — Construction",
+      "rank": "d",
+      "level": 1,
+      "skill": "kikaichu",
+      "base": "nin",
+      "range": "Perception / D1 — 5 m",
+      "duration": "Momentané",
+      "target": "Zone",
+      "area": "Zone 4 — rayon 7 m",
+      "damage": { "formula": "", "type": "none", "scaling": "+2 Vigilance" },
+      "chakra": { "initial": 18, "maintenance": 4, "text": "18/4 pts" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "kikaichu", "masteryRank": 5, "validated": false, "text": "Compétence Kikaichū possédée. Clan Aburame ou accès validé." },
+      "effect": "Les insectes se dispersent en formation de détection. +2 Vigilance sur Zone 4, Portée D1.",
+      "taxonomy": { "category": "lignee", "subcategory": "kikaichu", "rankGroup": "d", "clan": "aburame", "packTarget": "techniques-lignees", "tags": ["aburame", "kikaichu", "detection", "vigilance", "maintien"] },
+      "automation": { "status": "manual", "notes": "Bonus de Vigilance à gérer manuellement." }
+    }
+  },
+  {
+    "name": "Kikaichū : Jūhatsu",
+    "type": "technique",
+    "img": "icons/creatures/invertebrates/wasp-swarm.webp",
+    "system": {
+      "description": "Unification / Désunification en nuage d’insectes.",
+      "family": "lignee",
+      "domain": "Kikaichū — Manipulation",
+      "rank": "d",
+      "level": 1,
+      "skill": "kikaichu",
+      "base": "nin",
+      "range": "Personnelle",
+      "duration": "Momentané",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "", "type": "none", "scaling": "" },
+      "chakra": { "initial": 13, "maintenance": 2, "text": "13/2 pts" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "kikaichu", "masteryRank": 5, "validated": false, "text": "Compétence Kikaichū possédée. Clan Aburame ou accès validé." },
+      "effect": "Le personnage se transforme en nuage d’insectes tant que la technique est maintenue. Il reprend forme normale lorsqu’il l’arrête.",
+      "taxonomy": { "category": "lignee", "subcategory": "kikaichu", "rankGroup": "d", "clan": "aburame", "packTarget": "techniques-lignees", "tags": ["aburame", "kikaichu", "unification", "desunification", "maintien"] },
+      "automation": { "status": "manual", "notes": "Unification / désunification à gérer manuellement." }
+    }
+  },
+  {
+    "name": "Kikaichū : Nagareboshi",
+    "type": "technique",
+    "img": "icons/creatures/invertebrates/wasp-swarm.webp",
+    "system": {
+      "description": "Météore d’insectes.",
+      "family": "lignee",
+      "domain": "Kikaichū — Projection",
+      "rank": "d",
+      "level": 1,
+      "skill": "kikaichu",
+      "base": "nin",
+      "range": "Perception / D3 — 25 m",
+      "duration": "Instantané",
+      "target": "Individuelle",
+      "area": "Impact Z2 — 2 m",
+      "damage": { "formula": "NIN + 2", "type": "physical", "scaling": "Document indique aussi 4 dégâts" },
+      "chakra": { "initial": 12, "maintenance": 0, "text": "12 pts" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "kikaichu", "masteryRank": 5, "validated": false, "text": "Compétence Kikaichū possédée. Clan Aburame ou accès validé." },
+      "effect": "Orbe d’insectes sur une cible. Impact Z2, portée D3. Le document indique NIN+2 dégâts et aussi 4 dégâts.",
+      "taxonomy": { "category": "lignee", "subcategory": "kikaichu", "rankGroup": "d", "clan": "aburame", "packTarget": "techniques-lignees", "tags": ["aburame", "kikaichu", "projection", "degats", "impact"] },
+      "automation": { "status": "manual", "notes": "Dégâts à arbitrer : formule NIN+2 ou valeur fixe 4 selon interprétation MJ." }
+    }
+  },
+  {
+    "name": "Kikaichū : Mushi Jamingu",
+    "type": "technique",
+    "img": "icons/creatures/invertebrates/wasp-swarm.webp",
+    "system": {
+      "description": "Brouilleur de perception.",
+      "family": "lignee",
+      "domain": "Kikaichū — Construction",
+      "rank": "d",
+      "level": 1,
+      "skill": "kikaichu",
+      "base": "nin",
+      "range": "Perception / D1 — 5 m",
+      "duration": "Momentané",
+      "target": "Groupe",
+      "area": "Zone 6 — rayon 15 m",
+      "damage": { "formula": "", "type": "none", "scaling": "+2 Dissimuler le Chakra" },
+      "chakra": { "initial": 17, "maintenance": 4, "text": "17/4 pts" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "kikaichu", "masteryRank": 5, "validated": false, "text": "Compétence Kikaichū possédée. Clan Aburame ou accès validé." },
+      "effect": "Les insectes émettent le chakra de leur hôte et brouillent les perceptions. +2 Dissimuler le Chakra sur Zone 6, Portée D1.",
+      "taxonomy": { "category": "lignee", "subcategory": "kikaichu", "rankGroup": "d", "clan": "aburame", "packTarget": "techniques-lignees", "tags": ["aburame", "kikaichu", "brouillage", "camouflage", "maintien"] },
+      "automation": { "status": "manual", "notes": "Bonus de dissimulation à gérer manuellement." }
+    }
+  },
+  {
+    "name": "Kikaichū : Bikōchū",
+    "type": "technique",
+    "img": "icons/creatures/invertebrates/beetle-stag-horned-brown.webp",
+    "system": {
+      "description": "Insecte traqueur.",
+      "family": "lignee",
+      "domain": "Kikaichū — Race d’Insecte",
+      "rank": "d",
+      "level": 1,
+      "skill": "kikaichu",
+      "base": "nin",
+      "range": "Connexion : Toucher / LD1 — 50 km",
+      "duration": "Momentané",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "", "type": "none", "scaling": "+2 Survie" },
+      "chakra": { "initial": 13, "maintenance": 1, "text": "13/1 pts" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "kikaichu", "masteryRank": 5, "validated": false, "text": "Compétence Kikaichū possédée. Clan Aburame ou accès validé." },
+      "effect": "+2 Survie, Portée LD1, Durée 1 heure. Espèce rare spécialisée dans la traque d’odeur spécifique.",
+      "taxonomy": { "category": "lignee", "subcategory": "kikaichu", "rankGroup": "d", "clan": "aburame", "packTarget": "techniques-lignees", "tags": ["aburame", "kikaichu", "pistage", "survie", "maintien"] },
+      "automation": { "status": "manual", "notes": "Pistage longue distance à gérer manuellement." }
+    }
+  },
+  {
+    "name": "Kikaichū : Kidaichū",
+    "type": "technique",
+    "img": "icons/creatures/invertebrates/beetle-stag-horned-black.webp",
+    "system": {
+      "description": "Insecte dévoreur.",
+      "family": "lignee",
+      "domain": "Kikaichū — Race d’Insecte",
+      "rank": "d",
+      "level": 1,
+      "skill": "kikaichu",
+      "base": "nin",
+      "range": "Connexion : Toucher",
+      "duration": "Instantané",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "TAI + COR + 2", "type": "physical", "scaling": "Absorption 25 Chakra" },
+      "chakra": { "initial": 15, "maintenance": 0, "text": "15 pts" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "kikaichu", "masteryRank": 5, "validated": false, "text": "Compétence Kikaichū possédée. Clan Aburame ou accès validé." },
+      "effect": "Catalyseur poing/pied : TAI + COR + 2 dégâts. Absorbe 25 points de Chakra.",
+      "taxonomy": { "category": "lignee", "subcategory": "kikaichu", "rankGroup": "d", "clan": "aburame", "packTarget": "techniques-lignees", "tags": ["aburame", "kikaichu", "corps-a-corps", "absorption-chakra"] },
+      "automation": { "status": "manual", "notes": "Absorption de Chakra et dégâts à gérer manuellement." }
+    }
+  }
+]

@@ -1,1 +1,122 @@
-﻿[]
+﻿[
+  {
+    "name": "Henge : Bunshin",
+    "type": "technique",
+    "img": "icons/magic/control/silhouette-aura-energy.webp",
+    "system": {
+      "description": "Clone physique tangible créé par métamorphose.",
+      "family": "ninjutsu",
+      "domain": "Henge — Simulacre",
+      "rank": "d",
+      "level": 1,
+      "skill": "henge",
+      "base": "nin",
+      "range": "Personnelle",
+      "duration": "Momentané",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "", "type": "none", "scaling": "" },
+      "chakra": { "initial": 10, "maintenance": 4, "text": "10/4 pts" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "henge", "masteryRank": 5, "validated": false, "text": "Compétence Henge possédée." },
+      "effect": "Clone tangible henge. +1 solidité, +1 durée. Fatigue 1, Vigueur 2.",
+      "taxonomy": { "category": "commune", "subcategory": "henge", "rankGroup": "d", "academy": true, "startingEligible": true, "packTarget": "techniques-communes", "tags": ["academie", "henge", "clone", "maintien"] },
+      "automation": { "status": "partial", "notes": "Coût et entretien automatisables. Effets de clone à résoudre manuellement pour la V1." }
+    }
+  },
+  {
+    "name": "Henge : Henshin",
+    "type": "technique",
+    "img": "icons/magic/control/debuff-chains-shackles-movement-blue.webp",
+    "system": {
+      "description": "Métamorphose humaine de base.",
+      "family": "ninjutsu",
+      "domain": "Henge — Métamorphose",
+      "rank": "d",
+      "level": 1,
+      "skill": "henge",
+      "base": "nin",
+      "range": "Personnelle",
+      "duration": "Momentané",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "", "type": "none", "scaling": "" },
+      "chakra": { "initial": 10, "maintenance": 2, "text": "10/2 pts" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "henge", "masteryRank": 5, "validated": false, "text": "Compétence Henge possédée." },
+      "effect": "Métamorphose humaine : visage. +1 durée, +1 taille.",
+      "taxonomy": { "category": "commune", "subcategory": "henge", "rankGroup": "d", "academy": true, "startingEligible": true, "packTarget": "techniques-communes", "tags": ["academie", "henge", "metamorphose", "maintien"] },
+      "automation": { "status": "partial", "notes": "Coût et entretien automatisables. Effet narratif de métamorphose à gérer manuellement." }
+    }
+  },
+  {
+    "name": "Henge : Hari Jizo",
+    "type": "technique",
+    "img": "icons/magic/control/debuff-chains-shackles-movement-blue.webp",
+    "system": {
+      "description": "Gardien d’aiguilles, noté comme variante de métamorphose humaine dans le document source.",
+      "family": "ninjutsu",
+      "domain": "Henge — Métamorphose",
+      "rank": "d",
+      "level": 1,
+      "skill": "henge",
+      "base": "nin",
+      "range": "Personnelle",
+      "duration": "Momentané",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "", "type": "none", "scaling": "" },
+      "chakra": { "initial": 10, "maintenance": 2, "text": "10/2 pts" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "henge", "masteryRank": 5, "validated": false, "text": "Compétence Henge possédée." },
+      "effect": "Métamorphose humaine : visage. +1 durée, +1 taille. Effet exact de gardien d’aiguilles à préciser plus tard.",
+      "taxonomy": { "category": "commune", "subcategory": "henge", "rankGroup": "d", "academy": false, "startingEligible": false, "packTarget": "techniques-communes", "tags": ["henge", "metamorphose", "incomplete"] },
+      "automation": { "status": "manual", "notes": "Entrée conservée depuis le document, mais effet exact à clarifier." }
+    }
+  },
+  {
+    "name": "Henge : Saibō hakai",
+    "type": "technique",
+    "img": "icons/magic/life/cross-worn-green.webp",
+    "system": {
+      "description": "Destruction cellulaire ciblant un poison biologique actif.",
+      "family": "ninjutsu",
+      "domain": "Henge — Contrôle interne",
+      "rank": "d",
+      "level": 1,
+      "skill": "henge",
+      "base": "nin",
+      "range": "Personnelle",
+      "duration": "Momentané",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "", "type": "none", "scaling": "" },
+      "chakra": { "initial": 10, "maintenance": 0, "text": "10 pts" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "henge", "masteryRank": 5, "validated": false, "text": "Compétence Henge possédée." },
+      "effect": "Détruit un poison actif de type BIO de niveau 2 dans l’organisme de la cible. Les effets sont stoppés immédiatement, mais les blessures restent.",
+      "taxonomy": { "category": "commune", "subcategory": "henge", "rankGroup": "d", "academy": false, "startingEligible": false, "packTarget": "techniques-communes", "tags": ["henge", "controle-interne", "poison", "support"] },
+      "automation": { "status": "manual", "notes": "Interaction poison à gérer manuellement jusqu’au système complet de poisons." }
+    }
+  },
+  {
+    "name": "Henge : Chakura Nagashi",
+    "type": "technique",
+    "img": "icons/magic/life/heart-cross-strong-green.webp",
+    "system": {
+      "description": "Régénération mystique du chakra de la cible.",
+      "family": "ninjutsu",
+      "domain": "Henge — Contrôle interne",
+      "rank": "d",
+      "level": 1,
+      "skill": "henge",
+      "base": "nin",
+      "range": "Personnelle",
+      "duration": "Momentané",
+      "target": "Individuelle",
+      "area": "",
+      "damage": { "formula": "", "type": "none", "scaling": "" },
+      "chakra": { "initial": 17, "maintenance": 3, "text": "17/3 pts" },
+      "prerequisites": { "strict": true, "type": "skill", "value": "henge", "masteryRank": 5, "validated": false, "text": "Compétence Henge possédée." },
+      "effect": "La régénération du chakra de la cible augmente de +3% par round en situation de repos.",
+      "taxonomy": { "category": "commune", "subcategory": "henge", "rankGroup": "d", "academy": false, "startingEligible": false, "packTarget": "techniques-communes", "tags": ["henge", "controle-interne", "chakra", "maintien"] },
+      "automation": { "status": "manual", "notes": "Bonus de régénération en repos à gérer manuellement pour la V1." }
+    }
+  }
+]
