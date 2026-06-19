@@ -395,7 +395,23 @@
     "types": ["technique", "arme", "armure", "equipement", "consommable", "clan", "pouvoirLignee", "developpement", "condition", "blessure", "nindoAction"],
     "templates": {
       "baseItem": {
-        "description": ""
+        "description": "",
+        "taxonomy": {
+          "category": "",
+          "subcategory": "",
+          "rankGroup": "",
+          "academy": false,
+          "startingEligible": false,
+          "clan": "",
+          "element": "",
+          "school": "",
+          "packTarget": "",
+          "tags": []
+        },
+        "automation": {
+          "status": "manual",
+          "notes": ""
+        }
       }
     },
     "technique": {
@@ -411,8 +427,9 @@
       "target": "",
       "area": "",
       "damage": {
+        "formula": "",
         "value": 0,
-        "type": "",
+        "type": "none",
         "scaling": ""
       },
       "chakra": {

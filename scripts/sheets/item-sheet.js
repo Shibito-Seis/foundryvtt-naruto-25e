@@ -113,6 +113,21 @@ export class Naruto25eItemSheet extends ItemSheet {
 
         context.owner = this.item.isOwner;
         context.editable = this.isEditable;
+        context.taxonomyCategories = Object.entries(NARUTO25E.taxonomyCategories ?? {}).map(([key, label]) => ({
+            key,
+            label,
+            selected: context.system.taxonomy?.category === key
+        }));
+
+        context.automationStatuses = Object.entries(NARUTO25E.automationStatuses ?? {}).map(([key, label]) => ({
+            key,
+            label,
+            selected: context.system.automation?.status === key
+        }));
+
+        context.taxonomyTagsText = Array.isArray(context.system.taxonomy?.tags)
+            ? context.system.taxonomy.tags.join(", ")
+            : String(context.system.taxonomy?.tags ?? "");
 
         context.baseOptions = Object.entries(NARUTO25E.baseLabels ?? {}).map(([key, label]) => ({
             key,

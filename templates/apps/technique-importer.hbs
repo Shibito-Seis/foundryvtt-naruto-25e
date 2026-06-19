@@ -3,7 +3,8 @@
     <h2>Import des données Naruto 2.5e</h2>
 
     <p class="muted">
-      Cet outil importe les fichiers JSON déclarés dans le système vers les compendiums correspondants : techniques, pouvoirs de lignée et équipements de départ.
+      Cet outil importe les fichiers JSON déclarés dans le système vers les compendiums correspondants :
+      techniques, pouvoirs de lignée et équipements.
     </p>
 
     <div class="form-group">
@@ -13,6 +14,7 @@
       </label>
       <p class="notes">
         Recommandé pendant le développement : cela évite les doublons après modification des fichiers JSON.
+        Les compendiums alimentés par plusieurs fichiers ne sont vidés qu’une seule fois.
       </p>
     </div>
 
@@ -20,14 +22,20 @@
 
     <h3>Sources déclarées</h3>
 
-    <ul>
-      {{#each sources as |source|}}
-        <li>
-          <strong>{{source.pack}}</strong><br>
-          <span class="muted">{{source.path}}</span>
-        </li>
-      {{/each}}
-    </ul>
+    {{#each sourceGroups as |group|}}
+      <section class="naruto-importer-source-group">
+        <h4>{{group.label}}</h4>
+
+        <ul>
+          {{#each group.sources as |source|}}
+            <li>
+              <strong>{{source.pack}}</strong><br>
+              <span class="muted">{{source.path}}</span>
+            </li>
+          {{/each}}
+        </ul>
+      </section>
+    {{/each}}
   </section>
 
   <footer class="sheet-footer flexrow">

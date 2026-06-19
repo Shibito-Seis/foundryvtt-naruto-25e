@@ -2,7 +2,7 @@
   "id": "naruto-25e",
   "title": "Naruto 2.5e",
   "description": "Système maison Naruto 2.5e pour Foundry VTT v13.",
-  "version": "0.1.38",
+  "version": "0.1.39",
   "compatibility": {
     "minimum": "13",
     "verified": "13.351"
@@ -87,9 +87,42 @@
       }
     },
     {
-      "name": "techniques-elementaires",
-      "label": "Techniques élémentaires",
-      "path": "packs/techniques-elementaires",
+      "name": "techniques-ninjutsu",
+      "label": "Techniques — Ninjutsu",
+      "path": "packs/techniques-ninjutsu",
+      "type": "Item",
+      "system": "naruto-25e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "techniques-genjutsu",
+      "label": "Techniques — Genjutsu",
+      "path": "packs/techniques-genjutsu",
+      "type": "Item",
+      "system": "naruto-25e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "techniques-taijutsu",
+      "label": "Techniques — Taijutsu",
+      "path": "packs/techniques-taijutsu",
+      "type": "Item",
+      "system": "naruto-25e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "techniques-armes",
+      "label": "Techniques — Armes",
+      "path": "packs/techniques-armes",
       "type": "Item",
       "system": "naruto-25e",
       "ownership": {
@@ -112,6 +145,72 @@
       "name": "pouvoirs-lignee",
       "label": "Pouvoirs de lignée",
       "path": "packs/pouvoirs-lignee",
+      "type": "Item",
+      "system": "naruto-25e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "armes",
+      "label": "Équipement — Armes",
+      "path": "packs/armes",
+      "type": "Item",
+      "system": "naruto-25e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "armures",
+      "label": "Équipement — Armures",
+      "path": "packs/armures",
+      "type": "Item",
+      "system": "naruto-25e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "consommables",
+      "label": "Équipement — Consommables",
+      "path": "packs/consommables",
+      "type": "Item",
+      "system": "naruto-25e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "explosifs",
+      "label": "Équipement — Explosifs",
+      "path": "packs/explosifs",
+      "type": "Item",
+      "system": "naruto-25e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "kits",
+      "label": "Équipement — Kits",
+      "path": "packs/kits",
+      "type": "Item",
+      "system": "naruto-25e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "outils",
+      "label": "Équipement — Outils",
+      "path": "packs/outils",
       "type": "Item",
       "system": "naruto-25e",
       "ownership": {

@@ -2,6 +2,48 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.39 - Charpente compendiums et taxonomy
+
+### Ajouté
+
+- Ajout de nouveaux packs de techniques :
+  - Techniques communes ;
+  - Techniques — Ninjutsu ;
+  - Techniques — Genjutsu ;
+  - Techniques — Taijutsu ;
+  - Techniques — Armes ;
+  - Techniques de lignées.
+- Ajout de nouveaux packs d’équipement :
+  - Armes ;
+  - Armures ;
+  - Consommables ;
+  - Explosifs ;
+  - Kits ;
+  - Outils ;
+  - Équipements de départ.
+- Ajout d’une structure `taxonomy` commune aux items.
+- Ajout d’une structure `automation` commune aux items.
+- Ajout d’un bloc `Classement / automatisation` sur la fiche Item.
+- Ajout de sources JSON fines pour préparer l’éclatement des techniques et équipements.
+- L’importeur de données peut désormais gérer plusieurs sources vers un même compendium sans vider le pack entre chaque source.
+
+### Modifié
+
+- Le pack `techniques-elementaires` est retiré au profit du pack `techniques-ninjutsu`.
+- Le fichier legacy `techniques-elementaires.json` est conservé temporairement comme source de migration vers `techniques-ninjutsu`.
+- Les techniques de lignée legacy sont normalisées automatiquement :
+  - `family: "Lignée"` devient `family: "lignee"` ;
+  - `rank: "Mokuton"` est déplacé en taxonomy de sous-catégorie quand possible.
+- Correction de l’affichage `Rang Rang D` dans l’onglet Techniques.
+- L’interface d’import affiche désormais les sources regroupées par famille de données.
+
+### Notes
+
+- Cette version pose la charpente des futurs compendiums propres.
+- Cette version ne remplit pas encore les nouveaux fichiers JSON fins.
+- Cette version ne crée pas encore le navigateur de compendiums façon PF2e.
+- Cette version ne branche pas encore le choix de technique de départ dans le Shinobimancer.
+
 ## 0.1.38 - Techniques V1 jouables
 
 ### Ajouté

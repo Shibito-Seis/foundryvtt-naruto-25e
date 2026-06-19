@@ -4,6 +4,8 @@ export class Naruto25eItem extends Item {
     prepareDerivedData() {
         super.prepareDerivedData();
 
+        this._prepareBaseItemData();
+
         if (this.type === "technique") {
             this._prepareTechniqueData();
         }
@@ -17,12 +19,77 @@ export class Naruto25eItem extends Item {
         }
     }
 
+    _prepareBaseItemData() {
+        const system = this.system;
+
+        system.description = system.description ?? "";
+
+        system.taxonomy = system.taxonomy ?? {};
+        system.taxonomy.category = system.taxonomy.category ?? this._inferDefaultTaxonomyCategory();
+        system.taxonomy.subcategory = system.taxonomy.subcategory ?? "";
+        system.taxonomy.rankGroup = system.taxonomy.rankGroup ?? "";
+        system.taxonomy.academy = Boolean(system.taxonomy.academy);
+        system.taxonomy.startingEligible = Boolean(system.taxonomy.startingEligible);
+        system.taxonomy.clan = system.taxonomy.clan ?? "";
+        system.taxonomy.element = system.taxonomy.element ?? "";
+        system.taxonomy.school = system.taxonomy.school ?? "";
+        system.taxonomy.packTarget = system.taxonomy.packTarget ?? "";
+        system.taxonomy.tags = this._normalizeTaxonomyTags(system.taxonomy.tags);
+
+        system.automation = system.automation ?? {};
+        system.automation.status = ["automated", "partial", "manual", "blocked"].includes(system.automation.status)
+            ? system.automation.status
+            : "manual";
+        system.automation.notes = system.automation.notes ?? "";
+    }
+
+    _inferDefaultTaxonomyCategory() {
+        if (this.type === "arme") return "arme";
+        if (this.type === "armure") return "armure";
+        if (this.type === "consommable") return "consommable";
+        if (this.type === "equipement") return "divers";
+        if (this.type === "pouvoirLignee") return "lignee";
+        if (this.type === "technique") return "divers";
+
+        return "divers";
+    }
+
+    _normalizeTaxonomyTags(tags) {
+        if (Array.isArray(tags)) {
+            return tags
+                .map((tag) => String(tag ?? "").trim())
+                .filter(Boolean);
+        }
+
+        if (typeof tags === "string") {
+            return tags
+                .split(/[,;\n]/g)
+                .map((tag) => tag.trim())
+                .filter(Boolean);
+        }
+
+        return [];
+    }
+
     _prepareTechniqueData() {
         const system = this.system;
 
         system.family = system.family ?? "";
         system.domain = system.domain ?? "";
         system.rank = system.rank ?? "";
+        if (!system.taxonomy.category || system.taxonomy.category === "divers") {
+            system.taxonomy.category = this._inferTechniqueTaxonomyCategory(system);
+        }
+
+        if (!system.taxonomy.rankGroup) {
+            system.taxonomy.rankGroup = ["d", "c", "b", "a", "s", "aa", "sPlus"].includes(system.rank)
+                ? system.rank
+                : "";
+        }
+
+        if (!system.taxonomy.packTarget) {
+            system.taxonomy.packTarget = this._inferTechniquePackTarget(system);
+        }
         system.level = Number(system.level ?? 1);
         system.skill = system.skill ?? "";
         system.base = system.base ?? "";
@@ -58,10 +125,62 @@ export class Naruto25eItem extends Item {
         system.prerequisites.validated = Boolean(system.prerequisites.validated);
     }
 
+    _inferTechniqueTaxonomyCategory(system) {
+        const family = String(system.family ?? "").toLowerCase();
+        const skill = String(system.skill ?? "").toLowerCase();
+        const domain = String(system.domain ?? "").toLowerCase();
+
+        if (family === "lignee" || family === "lignée") return "lignee";
+        if (family === "armes") return "armes";
+        if (family === "taijutsu") return "taijutsu";
+        if (family === "genjutsu") return "genjutsu";
+        if (family === "ninjutsu") {
+            if (["henge", "kawarimi"].includes(skill)) return "commune";
+            return "ninjutsu";
+        }
+
+        if (["henge", "kawarimi", "gensou"].includes(skill)) return "commune";
+        if (["katon", "suiton", "doton", "futon", "raiton", "iryo", "fuin"].includes(skill)) return "ninjutsu";
+        if (["goken", "juken", "chuken"].includes(skill)) return "taijutsu";
+        if (domain.includes("mokuton") || skill === "mokuton") return "lignee";
+
+        return "divers";
+    }
+
+    _inferTechniquePackTarget(system) {
+        const category = system.taxonomy?.category ?? this._inferTechniqueTaxonomyCategory(system);
+
+        if (category === "commune") return "techniques-communes";
+        if (category === "ninjutsu") return "techniques-ninjutsu";
+        if (category === "genjutsu") return "techniques-genjutsu";
+        if (category === "taijutsu") return "techniques-taijutsu";
+        if (category === "armes") return "techniques-armes";
+        if (category === "lignee") return "techniques-lignees";
+
+        return "";
+    }
+
     _prepareConsumableData() {
         const system = this.system;
 
         system.subtype = system.subtype ?? "medicine";
+        if (!system.taxonomy.subcategory) {
+            system.taxonomy.subcategory = system.subtype;
+        }
+
+        if (!system.taxonomy.category || system.taxonomy.category === "divers") {
+            if (system.subtype === "tool") {
+                system.taxonomy.category = "outil";
+            } else if (system.subtype === "poison") {
+                system.taxonomy.category = "consommable";
+                if (!system.taxonomy.tags.includes("poison")) system.taxonomy.tags.push("poison");
+            } else if (system.subtype === "drug") {
+                system.taxonomy.category = "consommable";
+                if (!system.taxonomy.tags.includes("drogue")) system.taxonomy.tags.push("drogue");
+            } else {
+                system.taxonomy.category = "consommable";
+            }
+        }
         system.quantity = Math.max(1, Number(system.quantity ?? 1));
         system.value = Math.max(0, Number(system.value ?? 0));
         system.weight = Math.max(0, Number(system.weight ?? 0));

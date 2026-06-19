@@ -2761,6 +2761,53 @@ NARUTO25E.damageTypes = {
   other: "Autre"
 };
 
+NARUTO25E.taxonomyCategories = {
+  commune: "Commune",
+  ninjutsu: "Ninjutsu",
+  genjutsu: "Genjutsu",
+  taijutsu: "Taijutsu",
+  armes: "Armes",
+  lignee: "Lignée",
+
+  arme: "Arme",
+  armure: "Armure",
+  consommable: "Consommable",
+  explosif: "Explosif",
+  kit: "Kit",
+  outil: "Outil",
+  communication: "Communication",
+  service: "Objet / service",
+
+  depart: "Équipement de départ",
+  divers: "Divers"
+};
+
+NARUTO25E.automationStatuses = {
+  automated: "Automatisé",
+  partial: "Partiellement automatisé",
+  manual: "Manuel / non automatisé",
+  blocked: "Bloqué volontairement"
+};
+
+NARUTO25E.techniquePackTargets = {
+  "techniques-communes": "Techniques communes",
+  "techniques-ninjutsu": "Techniques — Ninjutsu",
+  "techniques-genjutsu": "Techniques — Genjutsu",
+  "techniques-taijutsu": "Techniques — Taijutsu",
+  "techniques-armes": "Techniques — Armes",
+  "techniques-lignees": "Techniques de lignées"
+};
+
+NARUTO25E.equipmentPackTargets = {
+  armes: "Équipement — Armes",
+  armures: "Équipement — Armures",
+  consommables: "Équipement — Consommables",
+  explosifs: "Équipement — Explosifs",
+  kits: "Équipement — Kits",
+  outils: "Équipement — Outils",
+  "equipements-depart": "Équipements de départ"
+};
+
 NARUTO25E.nindoChoiceModes = {
   preset: "Nindō prédéfini",
   custom: "Nindō personnalisé"

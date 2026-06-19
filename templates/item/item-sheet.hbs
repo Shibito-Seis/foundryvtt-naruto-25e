@@ -20,6 +20,84 @@
 
   <section class="sheet-body">
     <div class="tab" data-group="primary" data-tab="main">
+      <section class="panel">
+        <h2>Classement / automatisation</h2>
+
+        <div class="item-grid two-columns">
+          <label>
+            Catégorie
+            <select name="system.taxonomy.category">
+              <option value="">—</option>
+              {{#each taxonomyCategories as |category|}}
+                <option value="{{category.key}}" {{#if category.selected}}selected{{/if}}>
+                  {{category.label}}
+                </option>
+              {{/each}}
+            </select>
+          </label>
+
+          <label>
+            Sous-catégorie
+            <input name="system.taxonomy.subcategory" type="text" value="{{system.taxonomy.subcategory}}" placeholder="henge, katon, mokuton, pilule..." />
+          </label>
+
+          <label>
+            Groupe de rang
+            <input name="system.taxonomy.rankGroup" type="text" value="{{system.taxonomy.rankGroup}}" placeholder="d, c, b, a, s, sPlus..." />
+          </label>
+
+          <label>
+            Pack cible
+            <input name="system.taxonomy.packTarget" type="text" value="{{system.taxonomy.packTarget}}" placeholder="techniques-ninjutsu, armes, consommables..." />
+          </label>
+
+          <label>
+            Élément
+            <input name="system.taxonomy.element" type="text" value="{{system.taxonomy.element}}" placeholder="katon, suiton, doton..." />
+          </label>
+
+          <label>
+            École
+            <input name="system.taxonomy.school" type="text" value="{{system.taxonomy.school}}" placeholder="goken, juken, hachimon..." />
+          </label>
+
+          <label>
+            Clan
+            <input name="system.taxonomy.clan" type="text" value="{{system.taxonomy.clan}}" placeholder="senju, nara, uchiha..." />
+          </label>
+
+          <label>
+            Statut d’automatisation
+            <select name="system.automation.status">
+              {{#each automationStatuses as |status|}}
+                <option value="{{status.key}}" {{#if status.selected}}selected{{/if}}>
+                  {{status.label}}
+                </option>
+              {{/each}}
+            </select>
+          </label>
+
+          <label>
+            Technique d’académie
+            <input name="system.taxonomy.academy" type="checkbox" {{#if system.taxonomy.academy}}checked{{/if}} />
+          </label>
+
+          <label>
+            Éligible technique de départ
+            <input name="system.taxonomy.startingEligible" type="checkbox" {{#if system.taxonomy.startingEligible}}checked{{/if}} />
+          </label>
+
+          <label class="wide">
+            Tags
+            <input name="system.taxonomy.tags" type="text" value="{{taxonomyTagsText}}" placeholder="academie, clone, defense, maintien..." />
+          </label>
+
+          <label class="wide">
+            Notes d’automatisation
+            <textarea name="system.automation.notes">{{system.automation.notes}}</textarea>
+          </label>
+        </div>
+      </section>
       {{#if isTechnique}}
         <section class="panel">
           <h2>Technique / Jutsu</h2>
