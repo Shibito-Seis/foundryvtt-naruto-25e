@@ -2,6 +2,13 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.39.3 - Correction du rangement des techniques Uchiha
+
+### Corrigé
+
+- Les techniques Uchiha de type Genjutsu ou Yūryoku, comme Magen, Tsukuyomi et Kotoamatsukami, ne sont plus forcées dans le compendium `Techniques — Genjutsu`.
+- Les techniques déclarées comme `family: "lignee"` ou `taxonomy.category: "lignee"` conservent désormais leur rangement dans `Techniques de lignées`.
+
 ## 0.1.39.2 - Techniques jouables V1
 
 ### Ajouté

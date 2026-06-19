@@ -589,7 +589,10 @@ function normalizeTechniqueData(data) {
     system.family = "lignee";
   }
 
-  if (["gensou", "yuryoku"].includes(skill)) {
+  const declaredCategory = String(system.taxonomy?.category ?? "").toLowerCase();
+  const isDeclaredLineageTechnique = system.family === "lignee" || declaredCategory === "lignee";
+
+  if (["gensou", "yuryoku"].includes(skill) && !isDeclaredLineageTechnique) {
     system.family = "genjutsu";
     system.base = system.base || "gen";
     system.taxonomy.category = "genjutsu";
