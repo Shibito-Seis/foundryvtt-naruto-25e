@@ -4048,6 +4048,7 @@ async decreaseBase(baseKey) {
 
   _prepareInventory(system) {
     if (!system.inventory) system.inventory = {};
+    if (!system.consumables) system.consumables = {};
 
     const inventory = system.inventory;
 
@@ -4062,12 +4063,25 @@ async decreaseBase(baseKey) {
     inventory.newItem.type = inventory.newItem.type ?? "misc";
     inventory.newItem.quantity = Math.max(1, Number(inventory.newItem.quantity ?? 1));
 
+    const toxicity = system.consumables.toxicity ?? {};
+    system.consumables.toxicity = {
+      value: Math.max(0, Number(toxicity.value ?? 0)),
+      max: Math.max(1, Number(toxicity.max ?? 10)),
+      dailyValue: Math.max(0, Number(toxicity.dailyValue ?? 0)),
+      dailyMax: Math.max(1, Number(toxicity.dailyMax ?? 6)),
+      weeklyValue: Math.max(0, Number(toxicity.weeklyValue ?? 0)),
+      weeklyMax: Math.max(1, Number(toxicity.weeklyMax ?? 10)),
+      notes: toxicity.notes ?? ""
+    };
+
     if (!Array.isArray(inventory.items)) {
       inventory.items = [];
     }
 
     inventory.items = inventory.items.map((item, index) => {
       const type = NARUTO25E.inventoryTypes[item.type] ? item.type : "misc";
+      const carry = this._prepareInventoryCarryData(item, type);
+      const carryState = this._normalizeInventoryCarryState(item.carryState, type, carry);
 
       return {
         id: item.id ?? foundry.utils.randomID(16),
@@ -4076,16 +4090,28 @@ async decreaseBase(baseKey) {
         name: item.name ?? "Objet",
         type,
         quantity: Math.max(1, Number(item.quantity ?? 1)),
-        equipped: Boolean(item.equipped),
+        carryState,
+        carry,
+        holdable: carry.holdable,
+        wearable: carry.wearable,
+        equipped: this._isInventoryCarryStateEquipped(type, carryState),
         notes: item.notes ?? "",
         value: Math.max(0, Number(item.value ?? 0)),
         weight: Math.max(0, Number(item.weight ?? 0)),
         useEffect: {
-          type: item.useEffect?.type ?? "",
-          resource: item.useEffect?.resource ?? "",
+          type: item.useEffect?.type ?? "none",
+          resource: item.useEffect?.resource ?? "none",
           amount: Math.max(0, Number(item.useEffect?.amount ?? 0)),
           consumeOnUse: item.useEffect?.consumeOnUse !== false,
           text: item.useEffect?.text ?? ""
+        },
+        toxicity: {
+          enabled: Boolean(item.toxicity?.enabled),
+          amount: Math.max(0, Number(item.toxicity?.amount ?? 0)),
+          period: ["none", "day", "week"].includes(item.toxicity?.period)
+            ? item.toxicity.period
+            : "none",
+          iaTurns: Math.max(0, Number(item.toxicity?.iaTurns ?? 0))
         },
         creationGranted: Boolean(item.creationGranted),
         grantedAtCreation: Boolean(item.grantedAtCreation),
@@ -4134,32 +4160,9 @@ async decreaseBase(baseKey) {
     }
 
     const cor = Math.max(1, this._getBaseEffective(system, "cor"));
-
     const lightLimit = cor * 5;
     const heavyLimit = cor * 10;
     const criticalLimit = cor * 15;
-
-    let loadState = "normal";
-    let loadLabel = "Normal";
-    let statusClass = "inventory-load-normal";
-    let penaltyText = "Aucun malus de charge.";
-
-    if (totalWeight > criticalLimit) {
-      loadState = "critical";
-      loadLabel = "Surcharge critique";
-      statusClass = "inventory-load-critical";
-      penaltyText = "Charge au-delà du maximum conseillé : le personnage ne devrait pas combattre ou se déplacer normalement.";
-    } else if (totalWeight > heavyLimit) {
-      loadState = "overloaded";
-      loadLabel = "Surchargé";
-      statusClass = "inventory-load-overloaded";
-      penaltyText = "Malus conseillé : -2 Esquive, -2 Camouflage, -1 Initiative, déplacement très réduit.";
-    } else if (totalWeight > lightLimit) {
-      loadState = "loaded";
-      loadLabel = "Chargé";
-      statusClass = "inventory-load-loaded";
-      penaltyText = "Malus conseillé : -1 Esquive, -1 Camouflage, déplacement réduit.";
-    }
 
     inventory.summary = {
       totalItems,
@@ -4175,19 +4178,167 @@ async decreaseBase(baseKey) {
     };
 
     inventory.encumbrance = {
+      disabled: true,
       cor,
       current: Number(totalWeight.toFixed(2)),
       lightLimit,
       heavyLimit,
       criticalLimit,
-      state: loadState,
-      label: loadLabel,
-      statusClass,
-      penaltyText,
-      isLoaded: loadState === "loaded",
-      isOverloaded: loadState === "overloaded",
-      isCritical: loadState === "critical"
+      state: "disabled",
+      label: "Charge désactivée",
+      statusClass: "inventory-load-disabled",
+      penaltyText: "La charge est désactivée pour Naruto 2.5e dans cette version. Le poids reste une information de référence.",
+      isLoaded: false,
+      isOverloaded: false,
+      isCritical: false
     };
+  }
+
+  _prepareInventoryCarryData(item = {}, type = "misc") {
+    const carry = item.carry ?? {};
+
+    const holdable = Boolean(
+      carry.holdable
+      ?? item.holdable
+      ?? type === "weapon"
+    );
+
+    const wearable = Boolean(
+      carry.wearable
+      ?? item.wearable
+      ?? type === "armor"
+    );
+
+    return {
+      holdable,
+      wearable
+    };
+  }
+
+  _getInventoryCarryStateDefinitions() {
+    return {
+      notHeld: "Non tenu",
+      rightHand: "Main droite",
+      leftHand: "Main gauche",
+      twoHands: "Deux mains",
+      dropped: "Lâché",
+      worn: "Porté"
+    };
+  }
+
+  _getInventoryCarryStateLabel(state) {
+    return this._getInventoryCarryStateDefinitions()[state] ?? state;
+  }
+
+  _getInventoryCarryStateOptions(item = {}) {
+    const type = NARUTO25E.inventoryTypes[item.type] ? item.type : "misc";
+    const carry = this._prepareInventoryCarryData(item, type);
+    const states = ["notHeld"];
+
+    if (carry.holdable) {
+      states.push("rightHand", "leftHand", "twoHands");
+    }
+
+    if (carry.wearable) {
+      states.push("worn");
+    }
+
+    if (carry.holdable || carry.wearable || type === "weapon" || type === "armor") {
+      states.push("dropped");
+    }
+
+    const current = this._normalizeInventoryCarryState(item.carryState, type, carry);
+    const labels = this._getInventoryCarryStateDefinitions();
+
+    return states.map((state) => ({
+      key: state,
+      label: labels[state] ?? state,
+      selected: state === current
+    }));
+  }
+
+  _normalizeInventoryCarryState(state, type = "misc", carry = null) {
+    const carryData = carry ?? this._prepareInventoryCarryData({}, type);
+    const requested = String(state ?? "");
+
+    const allowed = this._getInventoryCarryStateOptions({
+      type,
+      carryState: "notHeld",
+      carry: carryData
+    }).map((option) => option.key);
+
+    if (allowed.includes(requested)) return requested;
+
+    if (type === "armor" && Boolean(carryData.wearable)) {
+      return "notHeld";
+    }
+
+    return "notHeld";
+  }
+
+  _isInventoryCarryStateEquipped(type, carryState) {
+    if (type === "armor") return carryState === "worn";
+
+    return ["rightHand", "leftHand", "twoHands"].includes(carryState);
+  }
+
+  _applyInventoryHandConflicts(items, itemId, nextState) {
+    if (!["rightHand", "leftHand", "twoHands"].includes(nextState)) return items;
+
+    return items.map((entry) => {
+      if (entry.id === itemId) return entry;
+
+      const currentState = String(entry.carryState ?? "notHeld");
+      const mustRelease =
+        nextState === "twoHands"
+          ? ["rightHand", "leftHand", "twoHands"].includes(currentState)
+          : currentState === nextState || currentState === "twoHands";
+
+      if (!mustRelease) return entry;
+
+      return {
+        ...entry,
+        carryState: "notHeld",
+        equipped: false
+      };
+    });
+  }
+
+  async setInventoryItemCarryState(itemId, carryState) {
+    if (this.type !== "shinobi") return;
+
+    let items = foundry.utils.deepClone(this.system.inventory?.items ?? []);
+    const item = items.find((entry) => entry.id === itemId);
+
+    if (!item) {
+      ui.notifications.warn("Objet introuvable.");
+      return;
+    }
+
+    const type = NARUTO25E.inventoryTypes[item.type] ? item.type : "misc";
+    const carry = this._prepareInventoryCarryData(item, type);
+    const nextState = this._normalizeInventoryCarryState(carryState, type, carry);
+    const allowedStates = this._getInventoryCarryStateOptions(item).map((option) => option.key);
+
+    if (!allowedStates.includes(nextState)) {
+      ui.notifications.warn("Cet objet ne peut pas être placé dans cet état.");
+      return;
+    }
+
+    items = this._applyInventoryHandConflicts(items, itemId, nextState);
+
+    const updatedItem = items.find((entry) => entry.id === itemId);
+    updatedItem.carryState = nextState;
+    updatedItem.carry = carry;
+    updatedItem.holdable = carry.holdable;
+    updatedItem.wearable = carry.wearable;
+    updatedItem.equipped = this._isInventoryCarryStateEquipped(type, nextState);
+
+    await this.update({
+      "system.inventory.items": items
+    });
+
+    ui.notifications.info(`${item.name} : ${this._getInventoryCarryStateLabel(nextState)}.`);
   }
 
     _getUchihaEyePowerItemName(powerKey) {
@@ -5306,11 +5457,19 @@ async decreaseBase(baseKey) {
       name,
       type,
       quantity,
+      carryState: "notHeld",
+      carry: {
+        holdable: type === "weapon",
+        wearable: type === "armor"
+      },
+      holdable: type === "weapon",
+      wearable: type === "armor",
       equipped: false,
       notes: "",
       value: 0,
       weight: 0,
       useEffect: this._getBlankInventoryUseEffect(),
+      toxicity: this._getBlankInventoryToxicity(),
       sort: items.length
     });
 
@@ -5378,6 +5537,18 @@ async decreaseBase(baseKey) {
   async updateInventoryItem(itemId, changes = {}) {
     if (this.type !== "shinobi") return;
 
+    const sanitizedChanges = foundry.utils.deepClone(changes ?? {});
+
+    if (!game.user?.isGM) {
+      delete sanitizedChanges.value;
+      delete sanitizedChanges.weight;
+    }
+
+    if ("carryState" in sanitizedChanges) {
+      await this.setInventoryItemCarryState(itemId, sanitizedChanges.carryState);
+      return;
+    }
+
     const items = foundry.utils.deepClone(this.system.inventory?.items ?? []);
     const item = items.find((entry) => entry.id === itemId);
 
@@ -5386,12 +5557,20 @@ async decreaseBase(baseKey) {
       return;
     }
 
-    Object.assign(item, changes);
+    Object.assign(item, sanitizedChanges);
+
+    const type = NARUTO25E.inventoryTypes[item.type] ? item.type : "misc";
+    const carry = this._prepareInventoryCarryData(item, type);
+    const carryState = this._normalizeInventoryCarryState(item.carryState, type, carry);
 
     item.quantity = Math.max(1, Number(item.quantity ?? 1));
     item.value = Math.max(0, Number(item.value ?? 0));
     item.weight = Math.max(0, Number(item.weight ?? 0));
-    item.equipped = Boolean(item.equipped);
+    item.carry = carry;
+    item.holdable = carry.holdable;
+    item.wearable = carry.wearable;
+    item.carryState = carryState;
+    item.equipped = this._isInventoryCarryStateEquipped(type, carryState);
 
     await this.update({
       "system.inventory.items": items
@@ -5433,6 +5612,15 @@ async decreaseBase(baseKey) {
     };
   }
 
+  _getBlankInventoryToxicity() {
+    return {
+      enabled: false,
+      amount: 0,
+      period: "none",
+      iaTurns: 0
+    };
+  }
+
   _getInventoryTypeFromItemType(itemType) {
     const typeMap = {
       arme: "weapon",
@@ -5457,6 +5645,13 @@ async decreaseBase(baseKey) {
       name: itemDocument.name ?? "Objet",
       type: inventoryType,
       quantity: Math.max(1, Number(baseQuantity ?? 1)),
+      carryState: "notHeld",
+      carry: {
+        holdable: Boolean(system.carry?.holdable ?? inventoryType === "weapon"),
+        wearable: Boolean(system.carry?.wearable ?? inventoryType === "armor")
+      },
+      holdable: Boolean(system.carry?.holdable ?? inventoryType === "weapon"),
+      wearable: Boolean(system.carry?.wearable ?? inventoryType === "armor"),
       equipped: false,
       notes: "",
       value: Math.max(0, Number(system.value ?? 0)),
@@ -5464,6 +5659,9 @@ async decreaseBase(baseKey) {
       useEffect: inventoryType === "consumable"
         ? foundry.utils.deepClone(system.useEffect ?? this._getBlankInventoryUseEffect())
         : this._getBlankInventoryUseEffect(),
+      toxicity: inventoryType === "consumable"
+        ? foundry.utils.deepClone(system.toxicity ?? this._getBlankInventoryToxicity())
+        : this._getBlankInventoryToxicity(),
       sort: 0
     };
   }
@@ -5486,6 +5684,134 @@ async decreaseBase(baseKey) {
     };
   }
 
+  _getInventoryItemToxicity(item) {
+    const toxicity = item.toxicity ?? {};
+
+    return {
+      enabled: Boolean(toxicity.enabled),
+      amount: Math.max(0, Number(toxicity.amount ?? 0)),
+      period: ["none", "day", "week"].includes(toxicity.period)
+        ? toxicity.period
+        : "none",
+      iaTurns: Math.max(0, Number(toxicity.iaTurns ?? 0))
+    };
+  }
+
+  _getConsumableToxicityState() {
+    const toxicity = this.system.consumables?.toxicity ?? {};
+
+    return {
+      value: Math.max(0, Number(toxicity.value ?? 0)),
+      max: Math.max(1, Number(toxicity.max ?? 10)),
+      dailyValue: Math.max(0, Number(toxicity.dailyValue ?? 0)),
+      dailyMax: Math.max(1, Number(toxicity.dailyMax ?? 6)),
+      weeklyValue: Math.max(0, Number(toxicity.weeklyValue ?? 0)),
+      weeklyMax: Math.max(1, Number(toxicity.weeklyMax ?? 10)),
+      notes: toxicity.notes ?? ""
+    };
+  }
+
+  _getConsumableToxicityUpdate(toxicityData) {
+    const current = this._getConsumableToxicityState();
+    const amount = Math.max(0, Number(toxicityData.amount ?? 0));
+    const period = toxicityData.period ?? "none";
+
+    if (!toxicityData.enabled || amount <= 0) {
+      return {
+        valid: true,
+        updateData: {},
+        current,
+        next: current,
+        amount: 0,
+        period
+      };
+    }
+
+    const next = foundry.utils.deepClone(current);
+    next.value += amount;
+
+    if (period === "day") {
+      next.dailyValue += amount;
+    }
+
+    if (period === "week") {
+      next.weeklyValue += amount;
+    }
+
+    if (next.value > next.max) {
+      return {
+        valid: false,
+        reason: `Toxicité maximale atteinte (${current.value} / ${current.max}).`,
+        current,
+        next,
+        amount,
+        period
+      };
+    }
+
+    if (period === "day" && next.dailyValue > next.dailyMax) {
+      return {
+        valid: false,
+        reason: `Limite journalière de toxicité atteinte (${current.dailyValue} / ${current.dailyMax}).`,
+        current,
+        next,
+        amount,
+        period
+      };
+    }
+
+    if (period === "week" && next.weeklyValue > next.weeklyMax) {
+      return {
+        valid: false,
+        reason: `Limite hebdomadaire de toxicité atteinte (${current.weeklyValue} / ${current.weeklyMax}).`,
+        current,
+        next,
+        amount,
+        period
+      };
+    }
+
+    return {
+      valid: true,
+      updateData: {
+        "system.consumables.toxicity.value": next.value,
+        "system.consumables.toxicity.dailyValue": next.dailyValue,
+        "system.consumables.toxicity.weeklyValue": next.weeklyValue
+      },
+      current,
+      next,
+      amount,
+      period
+    };
+  }
+
+  async resetConsumableToxicity(period = "all") {
+    if (this.type !== "shinobi") return;
+
+    if (!game.user?.isGM) {
+      ui.notifications.warn("Seul le MJ peut réinitialiser la toxicité.");
+      return;
+    }
+
+    const updateData = {};
+
+    if (period === "day" || period === "all") {
+      updateData["system.consumables.toxicity.dailyValue"] = 0;
+    }
+
+    if (period === "week" || period === "all") {
+      updateData["system.consumables.toxicity.weeklyValue"] = 0;
+    }
+
+    if (period === "all") {
+      updateData["system.consumables.toxicity.value"] = 0;
+    }
+
+    await this.update(updateData);
+
+    ui.notifications.info("Toxicité réinitialisée.");
+  }
+
   async useInventoryConsumable(itemId) {
     if (this.type !== "shinobi") return;
 
@@ -5505,12 +5831,20 @@ async decreaseBase(baseKey) {
     const effect = this._getInventoryUseEffect(item);
 
     if (!effect.type || effect.type === "none") {
-      ui.notifications.warn("Ce consommable n’a pas encore d’effet utilisable.");
+      ui.notifications.warn("Ce consommable n’a pas encore d’effet automatisé fiable.");
       return;
     }
 
     if (effect.type !== "restoreResource") {
       ui.notifications.warn("Cet effet de consommable n’est pas encore pris en charge.");
+      return;
+    }
+
+    const toxicityData = this._getInventoryItemToxicity(item);
+    const toxicityCheck = this._getConsumableToxicityUpdate(toxicityData);
+
+    if (!toxicityCheck.valid) {
+      ui.notifications.warn(toxicityCheck.reason ?? "La toxicité empêche d’utiliser ce consommable.");
       return;
     }
 
@@ -5574,13 +5908,38 @@ async decreaseBase(baseKey) {
 
     await this.update({
       [resource.valuePath]: newValue,
-      "system.inventory.items": updatedItems
+      "system.inventory.items": updatedItems,
+      ...toxicityCheck.updateData
     });
 
     const safeItemName = foundry.utils.escapeHTML?.(String(item.name ?? "Consommable")) ?? String(item.name ?? "Consommable");
     const safeActorName = foundry.utils.escapeHTML?.(this.name) ?? this.name;
     const safeResourceLabel = foundry.utils.escapeHTML?.(resource.label) ?? resource.label;
     const safeEffectText = foundry.utils.escapeHTML?.(String(effect.text ?? "")) ?? String(effect.text ?? "");
+
+    const toxicityLine = toxicityData.enabled && toxicityCheck.amount > 0
+      ? `
+        <div class="naruto-consumable-toxicity">
+          <strong>Toxicité :</strong>
+          <span>
+            +${toxicityCheck.amount}
+            —
+            total ${toxicityCheck.current.value} → ${toxicityCheck.next.value} / ${toxicityCheck.next.max}
+            ${toxicityData.period === "day" ? ` — jour ${toxicityCheck.current.dailyValue} → ${toxicityCheck.next.dailyValue} / ${toxicityCheck.next.dailyMax}` : ""}
+            ${toxicityData.period === "week" ? ` — semaine ${toxicityCheck.current.weeklyValue} → ${toxicityCheck.next.weeklyValue} / ${toxicityCheck.next.weeklyMax}` : ""}
+          </span>
+        </div>
+      `
+      : "";
+
+    const iaLine = toxicityData.enabled && toxicityData.iaTurns > 0
+      ? `
+        <div class="naruto-consumable-ia">
+          <strong>IA :</strong>
+          <span>${toxicityData.iaTurns} tour(s)</span>
+        </div>
+      `
+      : "";
 
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: this }),
@@ -5602,6 +5961,9 @@ async decreaseBase(baseKey) {
             <strong>${safeResourceLabel} :</strong>
             <span>${currentValue} → ${newValue} / ${maxValue}</span>
           </div>
+
+          ${toxicityLine}
+          ${iaLine}
 
           ${safeEffectText ? `
             <div class="naruto-consumable-text">

@@ -301,6 +301,36 @@
                 Texte d’effet
                 <textarea name="system.useEffect.text">{{system.useEffect.text}}</textarea>
               </label>
+              <hr />
+
+              <label>
+                Toxique / overdose
+                <input name="system.toxicity.enabled" type="checkbox" {{#if system.toxicity.enabled}}checked{{/if}} />
+              </label>
+
+              <label>
+                Toxicité ajoutée
+                <input name="system.toxicity.amount" type="number" value="{{system.toxicity.amount}}" min="0" />
+              </label>
+
+              <label>
+                Période
+                <select name="system.toxicity.period">
+                  {{#each consumableToxicityPeriods}}
+                    <option value="{{key}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+                  {{/each}}
+                </select>
+              </label>
+
+              <label>
+                IA en tours
+                <input name="system.toxicity.iaTurns" type="number" value="{{system.toxicity.iaTurns}}" min="0" />
+              </label>
+
+              <label>
+                Peut être tenu en main
+                <input name="system.carry.holdable" type="checkbox" {{#if system.carry.holdable}}checked{{/if}} />
+              </label>
 
               <p class="wide formula-hint">
                 Exemple : une Pilule de Chakra mineure utilise

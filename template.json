@@ -338,6 +338,17 @@
           },
           "items": []
         },
+        "consumables": {
+          "toxicity": {
+            "value": 0,
+            "max": 10,
+            "dailyValue": 0,
+            "dailyMax": 6,
+            "weeklyValue": 0,
+            "weeklyMax": 10,
+            "notes": ""
+          }
+        },
         "missions": {
           "d": { "completed": 0, "failed": 0 },
           "c": { "completed": 0, "failed": 0 },
@@ -430,12 +441,22 @@
       "quantity": 1,
       "value": 0,
       "weight": 0,
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      },
       "useEffect": {
         "type": "none",
         "resource": "none",
         "amount": 0,
         "consumeOnUse": true,
         "text": ""
+      },
+      "toxicity": {
+        "enabled": false,
+        "amount": 0,
+        "period": "none",
+        "iaTurns": 0
       }
     },
     "pouvoirLignee": {

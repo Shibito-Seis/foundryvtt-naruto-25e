@@ -8,6 +8,10 @@ export class Naruto25eItem extends Item {
             this._prepareTechniqueData();
         }
 
+        if (this.type === "consommable") {
+            this._prepareConsumableData();
+        }
+
         if (this.type === "pouvoirLignee") {
             this._prepareLineagePowerData();
         }
@@ -52,6 +56,34 @@ export class Naruto25eItem extends Item {
         system.prerequisites.text = system.prerequisites.text ?? "";
         system.prerequisites.masteryRank = Number(system.prerequisites.masteryRank ?? 5);
         system.prerequisites.validated = Boolean(system.prerequisites.validated);
+    }
+
+    _prepareConsumableData() {
+        const system = this.system;
+
+        system.subtype = system.subtype ?? "medicine";
+        system.quantity = Math.max(1, Number(system.quantity ?? 1));
+        system.value = Math.max(0, Number(system.value ?? 0));
+        system.weight = Math.max(0, Number(system.weight ?? 0));
+
+        system.carry = system.carry ?? {};
+        system.carry.holdable = Boolean(system.carry.holdable);
+        system.carry.wearable = Boolean(system.carry.wearable);
+
+        system.useEffect = system.useEffect ?? {};
+        system.useEffect.type = system.useEffect.type ?? "none";
+        system.useEffect.resource = system.useEffect.resource ?? "none";
+        system.useEffect.amount = Math.max(0, Number(system.useEffect.amount ?? 0));
+        system.useEffect.consumeOnUse = system.useEffect.consumeOnUse !== false;
+        system.useEffect.text = system.useEffect.text ?? "";
+
+        system.toxicity = system.toxicity ?? {};
+        system.toxicity.enabled = Boolean(system.toxicity.enabled);
+        system.toxicity.amount = Math.max(0, Number(system.toxicity.amount ?? 0));
+        system.toxicity.period = ["none", "day", "week"].includes(system.toxicity.period)
+            ? system.toxicity.period
+            : "none";
+        system.toxicity.iaTurns = Math.max(0, Number(system.toxicity.iaTurns ?? 0));
     }
 
     _prepareLineagePowerData() {

@@ -97,12 +97,22 @@
       "quantity": 10,
       "value": 50,
       "weight": 0.2,
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
       "useEffect": {
         "type": "none",
         "resource": "none",
         "amount": 0,
         "consumeOnUse": true,
-        "text": "Consomme une note explosive."
+        "text": "Effet de combat à automatiser dans le chantier Combat / Actions."
+      },
+      "toxicity": {
+        "enabled": false,
+        "amount": 0,
+        "period": "none",
+        "iaTurns": 0
       }
     }
   },
@@ -135,12 +145,22 @@
       "quantity": 1,
       "value": 25,
       "weight": 0.01,
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      },
       "useEffect": {
         "type": "restoreResource",
         "resource": "chakra",
         "amount": 25,
         "consumeOnUse": true,
         "text": "Restaure 25 Chakra."
+      },
+      "toxicity": {
+        "enabled": true,
+        "amount": 1,
+        "period": "day",
+        "iaTurns": 0
       }
     }
   },

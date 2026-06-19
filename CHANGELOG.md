@@ -2,6 +2,57 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.37 - Inventaire V1, tenue et toxicité simple
+
+### Ajouté
+
+- Ajout d’un état de tenue des objets d’inventaire :
+  - non tenu ;
+  - main droite ;
+  - main gauche ;
+  - deux mains ;
+  - lâché ;
+  - porté.
+- Ajout d’une gestion des conflits de mains :
+  - tenir un objet à deux mains libère les deux mains ;
+  - tenir un objet en main droite libère la main droite et les objets à deux mains ;
+  - tenir un objet en main gauche libère la main gauche et les objets à deux mains.
+- Ajout d’une structure de toxicité simple pour les consommables :
+  - toxicité globale ;
+  - toxicité journalière ;
+  - toxicité hebdomadaire ;
+  - notes MJ.
+- Ajout de champs de toxicité sur les items consommables :
+  - toxicité activée ;
+  - montant ;
+  - période ;
+  - IA en tours.
+- Ajout de boutons MJ pour réinitialiser la toxicité journalière, hebdomadaire ou totale.
+
+### Modifié
+
+- Le système de charge reste présent dans les données mais est désactivé mécaniquement.
+- L’affichage `Charge` devient un affichage de poids indicatif.
+- Les états `Chargé`, `Surchargé` et `Surcharge critique` ne produisent plus d’état mécanique.
+- Les valeurs et poids des objets d’inventaire ne sont modifiables que par le MJ.
+- Les Ryō conservent la permission existante :
+  - le MJ peut toujours les modifier ;
+  - un joueur peut les modifier uniquement si le MJ l’autorise.
+- Les consommables vérifient maintenant la toxicité avant application de leur effet.
+- Les consommables non automatisés restent bloqués au lieu d’être consommés avec un effet narratif approximatif.
+
+### Données
+
+- La Pilule de chakra mineure reçoit une toxicité journalière simple.
+- La Note explosive reste un consommable, mais devient un objet tenable/préparable en main.
+
+### Notes
+
+- Cette version ne code pas encore l’overdose complexe.
+- Cette version ne code pas encore le calendrier ni la réinitialisation automatique jour/semaine.
+- Cette version ne code pas encore les effets complets des pilules longues comme la Pilule du soldat.
+- Cette version ne modifie pas le skin de la fiche Shinobi.
+
 ## 0.1.36.7 - Cadre dossier central Shinobimancer
 
 ### Modifié

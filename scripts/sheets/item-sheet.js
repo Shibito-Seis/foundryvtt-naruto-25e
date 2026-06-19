@@ -63,6 +63,15 @@ export class Naruto25eItemSheet extends ItemSheet {
             selected: context.system.useEffect?.resource === option.key
         }));
 
+        context.consumableToxicityPeriods = [
+            { key: "none", label: "Aucune" },
+            { key: "day", label: "Jour" },
+            { key: "week", label: "Semaine" }
+        ].map((option) => ({
+            ...option,
+            selected: context.system.toxicity?.period === option.key
+        }));
+
         context.lineagePowerTypes = [
             { key: "passive", label: "Passif" },
             { key: "activable", label: "Activable" },

@@ -2630,7 +2630,7 @@
           </div>
 
           <div class="inventory-encumbrance">
-            <h4>Charge</h4>
+            <h4>Poids indicatif</h4>
 
             <div class="inventory-encumbrance-grid">
               <div>
@@ -2639,23 +2639,8 @@
               </div>
 
               <div>
-                <strong>Actuelle</strong>
+                <strong>Poids porté</strong>
                 <span>{{system.inventory.encumbrance.current}}</span>
-              </div>
-
-              <div>
-                <strong>Chargé</strong>
-                <span>&gt; {{system.inventory.encumbrance.lightLimit}}</span>
-              </div>
-
-              <div>
-                <strong>Surchargé</strong>
-                <span>&gt; {{system.inventory.encumbrance.heavyLimit}}</span>
-              </div>
-
-              <div>
-                <strong>Critique</strong>
-                <span>&gt; {{system.inventory.encumbrance.criticalLimit}}</span>
               </div>
 
               <div>
@@ -2668,6 +2653,48 @@
               {{system.inventory.encumbrance.penaltyText}}
             </p>
           </div>
+        </section>
+
+        <section class="inventory-summary-panel">
+          <h3>Toxicité / drogues</h3>
+
+          <div class="inventory-summary-grid">
+            <div>
+              <strong>Total</strong>
+              <span>{{system.consumables.toxicity.value}} / {{system.consumables.toxicity.max}}</span>
+            </div>
+
+            <div>
+              <strong>Jour</strong>
+              <span>{{system.consumables.toxicity.dailyValue}} / {{system.consumables.toxicity.dailyMax}}</span>
+            </div>
+
+            <div>
+              <strong>Semaine</strong>
+              <span>{{system.consumables.toxicity.weeklyValue}} / {{system.consumables.toxicity.weeklyMax}}</span>
+            </div>
+          </div>
+
+          {{#if isGM}}
+            <div class="button-row">
+              <button type="button" class="toxicity-reset" data-toxicity-reset="day">
+                MJ : reset jour
+              </button>
+
+              <button type="button" class="toxicity-reset" data-toxicity-reset="week">
+                MJ : reset semaine
+              </button>
+
+              <button type="button" class="toxicity-reset" data-toxicity-reset="all">
+                MJ : reset total
+              </button>
+            </div>
+          {{/if}}
+
+          <label>
+            Notes toxicité
+            <textarea name="system.consumables.toxicity.notes">{{system.consumables.toxicity.notes}}</textarea>
+          </label>
         </section>
 
         <section class="inventory-add-panel">
@@ -2712,7 +2739,7 @@
                   <span>Qté</span>
                   <span>Valeur</span>
                   <span>Poids</span>
-                  <span>Équipé</span>
+                  <span>Tenue</span>
                   <span>Notes</span>
                   <span>Action</span>
                   <span></span>
@@ -2737,32 +2764,43 @@
                       min="1"
                     />
 
-                    <input
-                      class="inventory-item-field"
-                      data-item-id="{{item.id}}"
-                      data-field="value"
-                      type="number"
-                      value="{{item.value}}"
-                      min="0"
-                    />
-
-                    <input
-                      class="inventory-item-field"
-                      data-item-id="{{item.id}}"
-                      data-field="weight"
-                      type="number"
-                      value="{{item.weight}}"
-                      min="0"
-                    />
-
-                    {{#if (or (eq item.type "weapon") (eq item.type "armor"))}}
-                      <button
-                        type="button"
-                        class="inventory-toggle-equipped"
+                    {{#if ../../permissionsState.canEditInventoryEconomy}}
+                      <input
+                        class="inventory-item-field"
                         data-item-id="{{item.id}}"
-                        >
-                        {{#if item.equipped}}Oui{{else}}Non{{/if}}
-                      </button>
+                        data-field="value"
+                        type="number"
+                        value="{{item.value}}"
+                        min="0"
+                      />
+                    {{else}}
+                      <span>{{item.value}}</span>
+                    {{/if}}
+
+                    {{#if ../../permissionsState.canEditInventoryEconomy}}
+                      <input
+                        class="inventory-item-field"
+                        data-item-id="{{item.id}}"
+                        data-field="weight"
+                        type="number"
+                        value="{{item.weight}}"
+                        min="0"
+                      />
+                    {{else}}
+                      <span>{{item.weight}}</span>
+                    {{/if}}
+
+                    {{#if item.carryOptions.length}}
+                      <select
+                        class="inventory-carry-state"
+                        data-item-id="{{item.id}}"
+                      >
+                        {{#each item.carryOptions as |state|}}
+                          <option value="{{state.key}}" {{#if state.selected}}selected{{/if}}>
+                            {{state.label}}
+                          </option>
+                        {{/each}}
+                      </select>
                     {{else}}
                       <span class="muted">—</span>
                     {{/if}}

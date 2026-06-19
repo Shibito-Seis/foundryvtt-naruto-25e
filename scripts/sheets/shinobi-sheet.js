@@ -844,6 +844,7 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
   context.permissionsState = {
     canEditLockedCreationFields: this.actor.canUserEditLockedCreationFields(game.user),
     canEditRyo: this.actor.canUserEditRyo(game.user),
+    canEditInventoryEconomy: game.user.isGM,
     canEditNindo: this.actor.canUserEditNindo(game.user),
     allowPlayerRyoEdit: Boolean(this.actor.system.inventory?.permissions?.allowPlayerRyoEdit),
     nindoUnlockedByGM: Boolean(this.actor.system.nindo?.unlockedByGM)
@@ -1357,7 +1358,14 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
   context.inventoryByType = NARUTO25E.inventoryTypeOrder.map((type) => ({
     type,
     label: NARUTO25E.inventoryTypes[type],
-    items: inventoryItems.filter((item) => item.type === type)
+    items: inventoryItems
+      .filter((item) => item.type === type)
+      .map((item) => ({
+        ...item,
+        carryOptions: typeof this.actor._getInventoryCarryStateOptions === "function"
+          ? this.actor._getInventoryCarryStateOptions(item)
+          : []
+      }))
   }));
 
   context.equippedWeapons = inventoryItems.filter((item) => item.type === "weapon" && item.equipped);
@@ -2031,16 +2039,27 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     await this.actor.deleteInventoryItem(itemId);
   });
 
-  html.find(".inventory-toggle-equipped").on("click", async (event) => {
+  html.find(".inventory-carry-state").on("change", async (event) => {
     event.preventDefault();
+
     const itemId = event.currentTarget.dataset.itemId;
-    await this.actor.toggleInventoryItemEquipped(itemId);
+    const carryState = event.currentTarget.value;
+
+    await this.actor.setInventoryItemCarryState(itemId, carryState);
   });
 
     html.find(".inventory-use-consumable").on("click", async (event) => {
     event.preventDefault();
     const itemId = event.currentTarget.dataset.itemId;
     await this.actor.useInventoryConsumable(itemId);
+  });
+
+  html.find(".toxicity-reset").on("click", async (event) => {
+    event.preventDefault();
+
+    const period = event.currentTarget.dataset.toxicityReset ?? "all";
+
+    await this.actor.resetConsumableToxicity(period);
   });
 
   html.find(".inventory-item-field").on("change", async (event) => {
@@ -2051,6 +2070,12 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     const field = input.dataset.field;
 
     if (!itemId || !field) return;
+
+    if (["value", "weight"].includes(field) && !game.user.isGM) {
+      ui.notifications.warn("Seul le MJ peut modifier la valeur ou le poids d’un objet.");
+      this.render(false);
+      return;
+    }
 
     let value;
 
