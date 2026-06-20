@@ -1,12 +1,12 @@
 ﻿[
   {
-    "name": "Kunaï — lot de 20",
+    "name": "Kunaï — Arme de jet",
     "type": "arme",
     "img": "icons/weapons/daggers/dagger-simple.webp",
     "system": {
-      "description": "Lot de vingt kunaï de lancer. Dégâts : COR+ARM+1(1). Portée : D3. Peut aussi servir d’outil, de support de note explosive, de filin ou de corde.",
-      "quantity": 20,
-      "value": 2000,
+      "description": "Kunaï destiné au lancer, aux pièges et aux usages polyvalents de terrain. Dégâts : COR+ARM+1(1). Portée : D3. Peut aussi servir d’outil, de support de note explosive, de filin ou de corde.",
+      "quantity": 1,
+      "value": 100,
       "weight": 0,
       "carry": {
         "holdable": true,
@@ -22,22 +22,22 @@
         "element": "",
         "school": "",
         "packTarget": "armes",
-        "tags": ["arme", "arme-de-jet", "kunai", "lot", "d3", "cumulatif"]
+        "tags": ["arme", "arme-de-jet", "kunai", "empilable", "d3", "cumulatif"]
       },
       "automation": {
         "status": "manual",
-        "notes": "Lot de 20. Dégâts cumulatifs à gérer plus tard : +1 par exemplaire lancé, max ARM."
+        "notes": "Arme de jet empilable. Dégâts cumulatifs à gérer plus tard : +1 par exemplaire lancé, max ARM. Valeur unitaire."
       }
     }
   },
   {
-    "name": "Senbon — lot de 20",
+    "name": "Senbon — Arme de jet",
     "type": "arme",
     "img": "icons/weapons/ammunition/arrows-bodkin-yellow-red.webp",
     "system": {
-      "description": "Lot de vingt senbon de lancer. Dégâts : ESP+ARM+1(1). Portée : D5. Souvent utilisé avec poison ou pour viser des points sensibles.",
-      "quantity": 20,
-      "value": 400,
+      "description": "Fine aiguille de lancer, discrète et précise. Dégâts : ESP+ARM+1(1). Portée : D5. Souvent utilisée avec poison ou pour viser des points sensibles.",
+      "quantity": 1,
+      "value": 20,
       "weight": 0,
       "carry": {
         "holdable": true,
@@ -53,22 +53,22 @@
         "element": "",
         "school": "",
         "packTarget": "armes",
-        "tags": ["arme", "arme-de-jet", "senbon", "lot", "d5", "cumulatif", "poison-compatible"]
+        "tags": ["arme", "arme-de-jet", "senbon", "empilable", "d5", "cumulatif", "poison-compatible"]
       },
       "automation": {
         "status": "manual",
-        "notes": "Lot de 20. Dégâts cumulatifs et application de poison à gérer plus tard."
+        "notes": "Arme de jet empilable. Dégâts cumulatifs et application de poison à gérer plus tard. Valeur unitaire."
       }
     }
   },
   {
-    "name": "Shuriken — lot de 20",
+    "name": "Shuriken — Arme de jet",
     "type": "arme",
     "img": "icons/weapons/thrown/shuriken-steel.webp",
     "system": {
-      "description": "Lot de vingt shuriken. Dégâts : TAI+ARM+1(1). Portée : D4. Arme de harcèlement, diversion et interception.",
-      "quantity": 20,
-      "value": 1000,
+      "description": "Shuriken léger utilisé pour harceler, distraire ou blesser à distance. Dégâts : TAI+ARM+1(1). Portée : D4. Arme de diversion, interception et pression.",
+      "quantity": 1,
+      "value": 50,
       "weight": 0,
       "carry": {
         "holdable": true,
@@ -84,11 +84,11 @@
         "element": "",
         "school": "",
         "packTarget": "armes",
-        "tags": ["arme", "arme-de-jet", "shuriken", "lot", "d4", "cumulatif"]
+        "tags": ["arme", "arme-de-jet", "shuriken", "empilable", "d4", "cumulatif"]
       },
       "automation": {
         "status": "manual",
-        "notes": "Lot de 20. Dégâts cumulatifs à gérer plus tard : +1 par exemplaire lancé, max ARM."
+        "notes": "Arme de jet empilable. Dégâts cumulatifs à gérer plus tard : +1 par exemplaire lancé, max ARM. Valeur unitaire."
       }
     }
   }

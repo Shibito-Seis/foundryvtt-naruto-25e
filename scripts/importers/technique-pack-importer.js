@@ -1375,11 +1375,13 @@ export async function importNaruto25eTechniquePacks(options = {}) {
     });
   }
 
-  const totalImported = results.reduce((total, result) => total + Number(result.imported ?? 0), 0);
-  const totalDeleted = results.reduce((total, result) => total + Number(result.deleted ?? 0), 0);
+  const finalResults = results.filter((result) => result.type === "compendium final");
+  const sourceEntriesRead = sourceResults.reduce((total, result) => total + Number(result.imported ?? 0), 0);
+  const totalImported = finalResults.reduce((total, result) => total + Number(result.imported ?? 0), 0);
+  const totalDeleted = finalResults.reduce((total, result) => total + Number(result.deleted ?? 0), 0);
 
   ui.notifications.info(
-    `Import Naruto 2.5e terminé : ${totalImported} entrée(s) importée(s), ${totalDeleted} ancienne(s) entrée(s) supprimée(s).`
+    `Import Naruto 2.5e terminé : ${totalImported} entrée(s) créée(s), ${totalDeleted} ancienne(s) entrée(s) supprimée(s), ${sourceEntriesRead} entrée(s) lue(s) depuis les sources.`
   );
 
   console.table(results);

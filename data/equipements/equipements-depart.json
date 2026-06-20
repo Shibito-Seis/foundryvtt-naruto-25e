@@ -155,13 +155,13 @@
     }
   },
   {
-    "name": "Kunaï — lot de jet",
+    "name": "Kunaï — Arme de jet",
     "type": "arme",
     "img": "icons/weapons/daggers/dagger-simple.webp",
     "system": {
-      "description": "Lot de kunaï destinés au lancer, aux pièges et aux usages polyvalents de terrain. Version de départ.",
-      "quantity": 20,
-      "value": 2000,
+      "description": "Kunaï destiné au lancer, aux pièges et aux usages polyvalents de terrain. Version de départ empilable.",
+      "quantity": 10,
+      "value": 100,
       "weight": 0,
       "carry": {
         "holdable": true,
@@ -177,22 +177,22 @@
         "element": "",
         "school": "",
         "packTarget": "equipements-depart",
-        "tags": ["arme", "arme-de-jet", "kunai", "lot", "equipement-depart"]
+        "tags": ["arme", "arme-de-jet", "kunai", "empilable", "equipement-depart"]
       },
       "automation": {
         "status": "manual",
-        "notes": "Version de départ. Dégâts COR+ARM+1(1), portée D3."
+        "notes": "Version de départ empilable. Dégâts COR+ARM+1(1), portée D3. Valeur unitaire."
       }
     }
   },
   {
-    "name": "Shuriken — lot de jet",
+    "name": "Shuriken — Arme de jet",
     "type": "arme",
     "img": "icons/weapons/thrown/shuriken-steel.webp",
     "system": {
-      "description": "Lot de shuriken légers, utilisés pour harceler, distraire ou blesser à distance. Version de départ.",
-      "quantity": 20,
-      "value": 1000,
+      "description": "Shuriken léger utilisé pour harceler, distraire ou blesser à distance. Version de départ empilable.",
+      "quantity": 10,
+      "value": 50,
       "weight": 0,
       "carry": {
         "holdable": true,
@@ -208,22 +208,22 @@
         "element": "",
         "school": "",
         "packTarget": "equipements-depart",
-        "tags": ["arme", "arme-de-jet", "shuriken", "lot", "equipement-depart"]
+        "tags": ["arme", "arme-de-jet", "shuriken", "empilable", "equipement-depart"]
       },
       "automation": {
         "status": "manual",
-        "notes": "Version de départ. Dégâts TAI+ARM+1(1), portée D4."
+        "notes": "Version de départ empilable. Dégâts TAI+ARM+1(1), portée D4. Valeur unitaire."
       }
     }
   },
   {
-    "name": "Senbon — lot de jet",
+    "name": "Senbon — Arme de jet",
     "type": "arme",
     "img": "icons/weapons/ammunition/arrows-bodkin-yellow-red.webp",
     "system": {
-      "description": "Lot de fines aiguilles de lancer, discrètes et précises. Version de départ.",
-      "quantity": 20,
-      "value": 400,
+      "description": "Fine aiguille de lancer, discrète et précise. Version de départ empilable.",
+      "quantity": 10,
+      "value": 20,
       "weight": 0,
       "carry": {
         "holdable": true,
@@ -239,11 +239,11 @@
         "element": "",
         "school": "",
         "packTarget": "equipements-depart",
-        "tags": ["arme", "arme-de-jet", "senbon", "lot", "poison-compatible", "equipement-depart"]
+        "tags": ["arme", "arme-de-jet", "senbon", "empilable", "poison-compatible", "equipement-depart"]
       },
       "automation": {
         "status": "manual",
-        "notes": "Version de départ. Dégâts ESP+ARM+1(1), portée D5."
+        "notes": "Version de départ empilable. Dégâts ESP+ARM+1(1), portée D5. Valeur unitaire."
       }
     }
   },

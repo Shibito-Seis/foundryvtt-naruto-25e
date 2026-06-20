@@ -8,9 +8,9 @@ const NARUTO25E_STARTING_EQUIPMENT = {
     ninjato: "Ninjatō"
   },
   combatLots: {
-    kunaiLot: "Kunaï — lot de jet",
-    shurikenLot: "Shuriken — lot de jet",
-    senbonLot: "Senbon — lot de jet",
+    kunaiLot: "Kunaï — Arme de jet",
+    shurikenLot: "Shuriken — Arme de jet",
+    senbonLot: "Senbon — Arme de jet",
     explosiveNoteLot: "Note explosive — lot"
   },
   fixed: [

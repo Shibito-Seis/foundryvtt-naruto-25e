@@ -2,6 +2,27 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.40.2 - Finalisation Shinobimancer 0.1.40
+
+### Corrigé
+
+- Correction des armes de jet de départ :
+  - les entrées `Kunaï — lot de jet`, `Shuriken — lot de jet` et `Senbon — lot de jet` deviennent des armes de jet unitaires empilables ;
+  - le paquetage de départ accorde désormais 10 unités ;
+  - la valeur des armes de jet redevient une valeur unitaire, utilisée correctement par le calcul `quantité × valeur`.
+- Correction des armes de jet standards :
+  - les anciens lots de 20 sont remplacés par des entrées unitaires `Kunaï — Arme de jet`, `Shuriken — Arme de jet` et `Senbon — Arme de jet`.
+- Correction du Shinobimancer :
+  - les sélections et mises à jour conservent la position de scroll sur l’étape courante ;
+  - les changements d’étape continuent de revenir naturellement en haut.
+- Correction du compteur d’import MJ :
+  - le total affiché ne double plus les entrées en additionnant les sources lues et les documents réellement créés dans les compendiums.
+
+### Notes
+
+- Cette version finalise la 0.1.40 avant le passage au chantier Combat / Actions V1.
+- Cette version ne modifie pas les règles de création, seulement les données de paquetage, l’UX et le reporting d’import.
+
 ## 0.1.40.1 - Correctifs techniques de départ et scroll Shinobimancer
 
 ### Corrigé

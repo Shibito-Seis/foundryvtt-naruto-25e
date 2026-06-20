@@ -1627,6 +1627,7 @@ export class Naruto25eShinobimancerApplication extends Application {
     this.currentStep = normalizeShinobimancerStep(
       options.currentStep ?? actor?.system?.progression?.creation?.currentStep ?? "identity"
     );
+    this._pendingScrollTop = null;
   }
 
   static get defaultOptions() {
@@ -1644,6 +1645,38 @@ export class Naruto25eShinobimancerApplication extends Application {
   get title() {
     const actorName = this.actor?.name ?? "Nouveau Shinobi";
     return `Shinobimancer — ${actorName}`;
+  }
+
+  _getScrollContainer() {
+    return this.element?.find?.(".shinobimancer-layout")?.[0] ?? null;
+  }
+
+  _rememberScrollPosition() {
+    const scrollContainer = this._getScrollContainer();
+
+    this._pendingScrollTop = scrollContainer
+      ? Number(scrollContainer.scrollTop ?? 0)
+      : null;
+  }
+
+  _restoreScrollPosition() {
+    if (this._pendingScrollTop === null) return;
+
+    const scrollTop = this._pendingScrollTop;
+    this._pendingScrollTop = null;
+
+    window.setTimeout(() => {
+      const scrollContainer = this._getScrollContainer();
+
+      if (!scrollContainer) return;
+
+      scrollContainer.scrollTop = scrollTop;
+    }, 0);
+  }
+
+  _renderPreservingScroll() {
+    this._rememberScrollPosition();
+    this.render(false);
   }
 
   async _setCurrentStep(stepKey) {
@@ -1903,9 +1936,11 @@ export class Naruto25eShinobimancerApplication extends Application {
       if (!canEditCreation()) return;
 
       await this.actor.update(updateData);
-      this.render(false);
+      this._renderPreservingScroll();
       this.sourceSheet?.render?.(false);
     };
+
+    this._restoreScrollPosition();
 
     html.find(".shinobimancer-close").on("click", (event) => {
       event.preventDefault();
@@ -2026,7 +2061,7 @@ export class Naruto25eShinobimancerApplication extends Application {
 
         ui.notifications.info(`Portrait importé pour ${this.actor.name}.`);
 
-        this.render(false);
+        this._renderPreservingScroll();
         this.sourceSheet?.render?.(false);
       } catch (error) {
         console.error("Naruto 2.5e | Upload du portrait impossible.", error);
@@ -2045,7 +2080,7 @@ export class Naruto25eShinobimancerApplication extends Application {
             img: path
           });
 
-          this.render(false);
+          this._renderPreservingScroll();
           this.sourceSheet?.render?.(false);
         }
       });
@@ -2462,7 +2497,7 @@ export class Naruto25eShinobimancerApplication extends Application {
       if (!baseKey || typeof this.actor.increaseBase !== "function") return;
 
       await this.actor.increaseBase(baseKey);
-      this.render(false);
+      this._renderPreservingScroll();
       this.sourceSheet?.render?.(false);
     });
 
@@ -2475,7 +2510,7 @@ export class Naruto25eShinobimancerApplication extends Application {
       if (!baseKey || typeof this.actor.decreaseBase !== "function") return;
 
       await this.actor.decreaseBase(baseKey);
-      this.render(false);
+      this._renderPreservingScroll();
       this.sourceSheet?.render?.(false);
     });
 
@@ -2557,7 +2592,7 @@ export class Naruto25eShinobimancerApplication extends Application {
       if (!key || typeof this.actor.increaseChakraSpecialization !== "function") return;
 
       await this.actor.increaseChakraSpecialization(key);
-      this.render(false);
+      this._renderPreservingScroll();
       this.sourceSheet?.render?.(false);
     });
 
@@ -2570,7 +2605,7 @@ export class Naruto25eShinobimancerApplication extends Application {
       if (!key || typeof this.actor.decreaseChakraSpecialization !== "function") return;
 
       await this.actor.decreaseChakraSpecialization(key);
-      this.render(false);
+      this._renderPreservingScroll();
       this.sourceSheet?.render?.(false);
     });
 
@@ -2718,7 +2753,7 @@ export class Naruto25eShinobimancerApplication extends Application {
 
       if (typeof this.actor.increaseSkill === "function") {
         await this.actor.increaseSkill(skillKey);
-        this.render(false);
+        this._renderPreservingScroll();
         this.sourceSheet?.render?.(false);
       }
     });
@@ -2737,7 +2772,7 @@ export class Naruto25eShinobimancerApplication extends Application {
 
       if (natural > 1 && typeof this.actor.decreaseSkill === "function") {
         await this.actor.decreaseSkill(skillKey);
-        this.render(false);
+        this._renderPreservingScroll();
         this.sourceSheet?.render?.(false);
         return;
       }
