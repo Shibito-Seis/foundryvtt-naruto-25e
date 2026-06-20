@@ -1,1 +1,47 @@
-[]
+[
+  {
+    "name": "Misasagi",
+    "type": "consommable",
+    "img": "icons/consumables/powder/powder-pouch-grey.webp",
+    "system": {
+      "description": "Poussière grise utilisée par les Maho-tsukai et les mystiques. Appelée Tombe de l’empereur, elle permet de voir brièvement fantômes et créatures de Meidō et Todō, mais entraîne une dépendance rapide.",
+      "subtype": "drug",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "consommable",
+        "subcategory": "drug",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "consommables",
+        "tags": ["drogue", "interdit", "mystique", "meidō", "todō", "dependance"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Drogue interdite. Effet exact et dépendance à arbitrer par le MJ jusqu’au chantier Drogues / Poisons complet."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      },
+      "useEffect": {
+        "type": "none",
+        "resource": "none",
+        "amount": 0,
+        "consumeOnUse": true,
+        "text": "Effet manuel : permet de percevoir brièvement fantômes et créatures de Meidō et Todō. Dépendance rapide à gérer par le MJ."
+      },
+      "toxicity": {
+        "enabled": true,
+        "amount": 1,
+        "period": "day",
+        "iaTurns": 1
+      }
+    }
+  }
+]

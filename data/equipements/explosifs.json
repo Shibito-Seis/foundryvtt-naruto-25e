@@ -119,5 +119,50 @@
         "iaTurns": 0
       }
     }
+  },
+  {
+    "name": "Poudre Gaijin",
+    "type": "consommable",
+    "img": "icons/commodities/materials/powder-black.webp",
+    "system": {
+      "description": "Poudre explosive puissante avec une odeur forte et écœurante. Elle provient du continent interdit. Sa détention est passible d’emprisonnement à vie.",
+      "subtype": "explosive",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "explosif",
+        "subcategory": "explosifs",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "explosifs",
+        "tags": ["explosif", "interdit", "poudre-gaijin", "continent-interdit"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Explosif interdit. Effet de détonation à arbitrer jusqu’au chantier Combat / Actions."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      },
+      "useEffect": {
+        "type": "none",
+        "resource": "none",
+        "amount": 0,
+        "consumeOnUse": true,
+        "text": "Effet manuel : poudre explosive puissante, odeur forte et écœurante. Effets exacts à arbitrer par le MJ."
+      },
+      "toxicity": {
+        "enabled": false,
+        "amount": 0,
+        "period": "none",
+        "iaTurns": 0
+      }
+    }
   }
 ]

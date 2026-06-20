@@ -41,6 +41,20 @@ export class Naruto25eItem extends Item {
             ? system.automation.status
             : "manual";
         system.automation.notes = system.automation.notes ?? "";
+
+        system.uses = system.uses ?? {};
+        system.uses.enabled = Boolean(system.uses.enabled);
+        system.uses.value = Math.max(0, Number(system.uses.value ?? 0));
+        system.uses.max = Math.max(0, Number(system.uses.max ?? 0));
+        system.uses.per = system.uses.per ?? "charges";
+
+        if (system.uses.enabled && system.uses.max > 0 && system.uses.value <= 0) {
+            system.uses.value = system.uses.max;
+        }
+
+        if (system.uses.value > system.uses.max && system.uses.max > 0) {
+            system.uses.value = system.uses.max;
+        }
     }
 
     _inferDefaultTaxonomyCategory() {

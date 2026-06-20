@@ -2,6 +2,62 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.40.3 - Finalisation équipements et consommables V1
+
+### Ajouté
+
+- Ajout d’un suivi d’utilisations pour les kits :
+  - Kit de Premiers Soins ;
+  - Kit de Survie ;
+  - Kit de Recherche ;
+  - Kit Technique ;
+  - versions de départ concernées.
+- Ajout d’un bouton d’usage pour les objets à charges dans l’inventaire.
+- Ajout de l’effet partiellement automatisé de la Pilule du Soldat / Hyōrōgan :
+  - le +1% du Chakra max est ajouté à la régénération active ;
+  - le reste de l’effet est affiché en carte de chat.
+- Ajout de l’automatisation de la Pilule de Chakra Noire :
+  - restauration de 100 Chakra ;
+  - toxicité journalière ;
+  - IA 5 tours.
+- Ajout des objets et services du chapitre 7 :
+  - matériel médical et utilitaire ;
+  - services de vie quotidienne ;
+  - loisirs, nourriture, hébergement et objets sociaux.
+- Ajout des objets interdits ou insolites exploitables :
+  - Animal mécanique ;
+  - Com trafiqué ;
+  - Corps humain ;
+  - Corps shinobi ;
+  - Jetons de casino ;
+  - Lame sacrificielle de Kazan’bai ;
+  - Larme de Gelel ;
+  - Manuel de médecine — Clonage & reproduction héréditaire ;
+  - Matériau à chakra ;
+  - Mōsengokezoku ;
+  - Ningyō ;
+  - Ihō Fūda ;
+  - Relique Kauràne ;
+  - Statue de Kyoshin.
+- Ajout des premières drogues, poisons et substances interdites :
+  - Misasagi ;
+  - C-23 ;
+  - Écorce rouge.
+- Ajout de Poudre Gaijin dans les explosifs.
+
+### Corrigé
+
+- Les kits ne sont plus des objets à usages infinis : leurs utilisations peuvent être décrémentées depuis la fiche.
+- La Pilule du Soldat de départ n’est plus un consommable sans effet exploitable.
+- Les fichiers `drogues.json` et `poisons.json` ne sont plus vides.
+- Le placeholder générique `Objet interdit ou insolite` est remplacé par les entrées précises de la table du chapitre 7.
+- La Pilule de Chakra Noire n’est plus laissée en “effet exact à confirmer”.
+
+### Notes
+
+- Les armes, armures, explosions, poisons avancés, blessures et conditions restent majoritairement manuels jusqu’aux chantiers Combat / Actions et Santé / États.
+- Cette version referme le chantier 0.1.40 avant le passage à la 0.1.41.
+
 ## 0.1.40.2 - Finalisation Shinobimancer 0.1.40
 
 ### Corrigé

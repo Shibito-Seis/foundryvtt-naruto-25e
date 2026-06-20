@@ -22,19 +22,19 @@
         "tags": ["pilule", "soldat", "hyōrōgan", "od-3-semaine", "ia-10", "72h"]
       },
       "automation": {
-        "status": "manual",
-        "notes": "Effet complexe : suppression sommeil/nourriture, annulation malus jusqu’à Blessure 1 hors Maladies - Chimique, +1% régénération chakra pendant 72h. À automatiser avec Santé/États."
+        "status": "partial",
+        "notes": "Automatise le +1% du Chakra max vers la régénération active. Le reste de l’effet est affiché en texte : suppression sommeil/nourriture, annulation malus jusqu’à Blessure 1 hors Maladies - Chimique pendant 72h."
       },
       "carry": {
         "holdable": false,
         "wearable": false
       },
       "useEffect": {
-        "type": "none",
-        "resource": "none",
-        "amount": 0,
+        "type": "increaseActiveRegenPercent",
+        "resource": "chakra",
+        "amount": 1,
         "consumeOnUse": true,
-        "text": "Effet manuel : pendant 72h, annule les malus de blessures jusqu’à Blessure 1 hors Maladies - Chimique, augmente la régénération de chakra de 1%, supprime le besoin de dormir ou manger. OD 3/semaine. IA 10 tours."
+        "text": "Pendant 72h, annule les malus de blessures présentes ou futures jusqu’à Blessure 1 sauf Maladies - Chimique, augmente la régénération active de Chakra de 1% du Chakra max, et supprime le besoin de dormir ou manger. Retirer manuellement le bonus de régénération active après 72h. OD 3/semaine. IA 10 tours."
       },
       "toxicity": {
         "enabled": true,
@@ -112,25 +112,25 @@
         "tags": ["pilule", "chakra", "noire", "restore-chakra", "od-1-jour"]
       },
       "automation": {
-        "status": "manual",
-        "notes": "Effet exact à confirmer avant automatisation complète. Gardée en manuel pour éviter une valeur inventée."
+        "status": "automated",
+        "notes": "Restaure 100 Chakra. Toxicité journalière simple."
       },
       "carry": {
         "holdable": false,
         "wearable": false
       },
       "useEffect": {
-        "type": "none",
-        "resource": "none",
-        "amount": 0,
+        "type": "restoreResource",
+        "resource": "chakra",
+        "amount": 100,
         "consumeOnUse": true,
-        "text": "Pilule de chakra supérieure. Effet exact à confirmer avant automatisation."
+        "text": "Restaure instantanément 100 Chakra. OD 1/jour. IA 5 tours."
       },
       "toxicity": {
         "enabled": true,
         "amount": 1,
         "period": "day",
-        "iaTurns": 1
+        "iaTurns": 5
       }
     }
   },

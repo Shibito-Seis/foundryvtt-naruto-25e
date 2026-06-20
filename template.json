@@ -428,6 +428,12 @@
         "automation": {
           "status": "manual",
           "notes": ""
+        },
+        "uses": {
+          "enabled": false,
+          "value": 0,
+          "max": 0,
+          "per": "charges"
         }
       }
     },

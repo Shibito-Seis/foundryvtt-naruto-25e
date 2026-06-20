@@ -4540,6 +4540,13 @@ async decreaseBase(baseKey) {
           consumeOnUse: item.useEffect?.consumeOnUse !== false,
           text: item.useEffect?.text ?? ""
         },
+        uses: {
+          enabled: Boolean(item.uses?.enabled),
+          value: Math.max(0, Number(item.uses?.value ?? item.uses?.max ?? 0)),
+          max: Math.max(0, Number(item.uses?.max ?? 0)),
+          per: item.uses?.per ?? "charges"
+        },
+        hasUses: Boolean(item.uses?.enabled) && Math.max(0, Number(item.uses?.max ?? 0)) > 0,
         toxicity: {
           enabled: Boolean(item.toxicity?.enabled),
           amount: Math.max(0, Number(item.toxicity?.amount ?? 0)),
@@ -5908,6 +5915,7 @@ async decreaseBase(baseKey) {
       value: 0,
       weight: 0,
       useEffect: this._getBlankInventoryUseEffect(),
+      uses: this._getBlankInventoryUses(),
       toxicity: this._getBlankInventoryToxicity(),
       sort: items.length
     });
@@ -5971,6 +5979,75 @@ async decreaseBase(baseKey) {
     });
 
     ui.notifications.info(`${item.name} supprimé.`);
+  }
+
+  async useInventoryItemCharge(itemId) {
+    if (this.type !== "shinobi") return;
+
+    const items = foundry.utils.deepClone(this.system.inventory?.items ?? []);
+    const item = items.find((entry) => entry.id === itemId);
+
+    if (!item) {
+      ui.notifications.warn("Objet introuvable.");
+      return;
+    }
+
+    const uses = item.uses ?? {};
+
+    if (!uses.enabled || Number(uses.max ?? 0) <= 0) {
+      ui.notifications.warn("Cet objet n’a pas d’utilisations suivies.");
+      return;
+    }
+
+    const currentUses = Math.max(0, Number(uses.value ?? uses.max ?? 0));
+    const maxUses = Math.max(0, Number(uses.max ?? 0));
+
+    if (currentUses <= 0) {
+      ui.notifications.warn(`${item.name} n’a plus d’utilisation disponible.`);
+      return;
+    }
+
+    item.uses = {
+      enabled: true,
+      value: Math.max(0, currentUses - 1),
+      max: maxUses,
+      per: uses.per ?? "charges"
+    };
+
+    await this.update({
+      "system.inventory.items": items
+    });
+
+    const safeItemName = foundry.utils.escapeHTML?.(String(item.name ?? "Objet")) ?? String(item.name ?? "Objet");
+    const safeActorName = foundry.utils.escapeHTML?.(this.name) ?? this.name;
+    const safeNotes = foundry.utils.escapeHTML?.(String(item.notes ?? "")) ?? String(item.notes ?? "");
+
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+      flavor: `${safeActorName} utilise ${safeItemName}`,
+      content: `
+        <div class="naruto-consumable-card">
+          <header>
+            <h3>${safeItemName}</h3>
+          </header>
+
+          <p><strong>${safeActorName}</strong> utilise une charge de cet objet.</p>
+
+          <div class="naruto-consumable-quantity">
+            <strong>Utilisations restantes :</strong>
+            <span>${item.uses.value} / ${item.uses.max}</span>
+          </div>
+
+          ${safeNotes ? `
+            <div class="naruto-consumable-text">
+              ${safeNotes}
+            </div>
+          ` : ""}
+        </div>
+      `
+    });
+
+    ui.notifications.info(`${item.name} utilisé : ${item.uses.value} / ${item.uses.max} utilisation(s) restante(s).`);
   }
 
   async updateInventoryItem(itemId, changes = {}) {
@@ -6051,6 +6128,15 @@ async decreaseBase(baseKey) {
     };
   }
 
+  _getBlankInventoryUses() {
+    return {
+      enabled: false,
+      value: 0,
+      max: 0,
+      per: "charges"
+    };
+  }
+
   _getBlankInventoryToxicity() {
     return {
       enabled: false,
@@ -6098,6 +6184,7 @@ async decreaseBase(baseKey) {
       useEffect: inventoryType === "consumable"
         ? foundry.utils.deepClone(system.useEffect ?? this._getBlankInventoryUseEffect())
         : this._getBlankInventoryUseEffect(),
+      uses: foundry.utils.deepClone(system.uses ?? this._getBlankInventoryUses()),
       toxicity: inventoryType === "consumable"
         ? foundry.utils.deepClone(system.toxicity ?? this._getBlankInventoryToxicity())
         : this._getBlankInventoryToxicity(),
@@ -6274,7 +6361,12 @@ async decreaseBase(baseKey) {
       return;
     }
 
-    if (effect.type !== "restoreResource") {
+    const supportedEffectTypes = new Set([
+      "restoreResource",
+      "increaseActiveRegenPercent"
+    ]);
+
+    if (!supportedEffectTypes.has(effect.type)) {
       ui.notifications.warn("Cet effet de consommable n’est pas encore pris en charge.");
       return;
     }
@@ -6287,55 +6379,127 @@ async decreaseBase(baseKey) {
       return;
     }
 
-    const supportedResources = {
-      chakra: {
-        label: "Chakra",
-        valuePath: "system.resources.chakra.value",
-        maxPath: "system.resources.chakra.max",
-        data: this.system.resources?.chakra
-      },
-      vigueur: {
-        label: "Vigueur",
-        valuePath: "system.resources.vigueur.value",
-        maxPath: "system.resources.vigueur.max",
-        data: this.system.resources?.vigueur
-      },
-      caractere: {
-        label: "Caractère",
-        valuePath: "system.resources.caractere.value",
-        maxPath: "system.resources.caractere.max",
-        data: this.system.resources?.caractere
-      }
+    const updateData = {
+      ...toxicityCheck.updateData
     };
 
-    const resource = supportedResources[effect.resource];
+    let effectLine = "";
+    let resourceLine = "";
+    let notificationText = "";
 
-    if (!resource) {
-      ui.notifications.warn("La ressource ciblée par ce consommable n’est pas prise en charge.");
-      return;
+    if (effect.type === "restoreResource") {
+      const supportedResources = {
+        chakra: {
+          label: "Chakra",
+          valuePath: "system.resources.chakra.value",
+          maxPath: "system.resources.chakra.max",
+          data: this.system.resources?.chakra
+        },
+        vigueur: {
+          label: "Vigueur",
+          valuePath: "system.resources.vigueur.value",
+          maxPath: "system.resources.vigueur.max",
+          data: this.system.resources?.vigueur
+        },
+        caractere: {
+          label: "Caractère",
+          valuePath: "system.resources.caractere.value",
+          maxPath: "system.resources.caractere.max",
+          data: this.system.resources?.caractere
+        }
+      };
+
+      const resource = supportedResources[effect.resource];
+
+      if (!resource) {
+        ui.notifications.warn("La ressource ciblée par ce consommable n’est pas prise en charge.");
+        return;
+      }
+
+      const currentValue = Math.max(0, Number(resource.data?.value ?? 0));
+      const maxValue = Math.max(0, Number(resource.data?.max ?? 0));
+      const amount = Math.max(0, Number(effect.amount ?? 0));
+
+      if (amount <= 0) {
+        ui.notifications.warn("La quantité restaurée par ce consommable est invalide.");
+        return;
+      }
+
+      if (maxValue <= 0) {
+        ui.notifications.warn(`Le maximum de ${resource.label} du personnage est invalide.`);
+        return;
+      }
+
+      if (currentValue >= maxValue) {
+        ui.notifications.info(`${this.name} a déjà sa ressource ${resource.label} au maximum.`);
+        return;
+      }
+
+      const newValue = Math.min(maxValue, currentValue + amount);
+      const restored = newValue - currentValue;
+      const safeResourceLabel = foundry.utils.escapeHTML?.(resource.label) ?? resource.label;
+
+      updateData[resource.valuePath] = newValue;
+
+      effectLine = `
+        <div class="naruto-consumable-effect">
+          <strong>Effet :</strong>
+          <span>+${restored} ${safeResourceLabel}</span>
+        </div>
+      `;
+
+      resourceLine = `
+        <div class="naruto-consumable-resource">
+          <strong>${safeResourceLabel} :</strong>
+          <span>${currentValue} → ${newValue} / ${maxValue}</span>
+        </div>
+      `;
+
+      notificationText = `${item.name} utilisé : +${restored} ${resource.label}.`;
     }
 
-    const currentValue = Math.max(0, Number(resource.data?.value ?? 0));
-    const maxValue = Math.max(0, Number(resource.data?.max ?? 0));
-    const amount = Math.max(0, Number(effect.amount ?? 0));
+    if (effect.type === "increaseActiveRegenPercent") {
+      if (effect.resource !== "chakra") {
+        ui.notifications.warn("La régénération active automatisée ne prend en charge que le Chakra.");
+        return;
+      }
 
-    if (amount <= 0) {
-      ui.notifications.warn("La quantité restaurée par ce consommable est invalide.");
-      return;
+      const chakra = this.system.resources?.chakra ?? {};
+      const maxChakra = Math.max(0, Number(chakra.max ?? 0));
+      const currentActiveRegen = Math.max(0, Number(chakra.activeRegen ?? 0));
+      const percent = Math.max(0, Number(effect.amount ?? 0));
+
+      if (maxChakra <= 0) {
+        ui.notifications.warn("Le Chakra maximum du personnage est invalide.");
+        return;
+      }
+
+      if (percent <= 0) {
+        ui.notifications.warn("Le bonus de régénération active est invalide.");
+        return;
+      }
+
+      const regenGain = Math.max(1, Math.ceil(maxChakra * percent / 100));
+      const newActiveRegen = currentActiveRegen + regenGain;
+
+      updateData["system.resources.chakra.activeRegen"] = newActiveRegen;
+
+      effectLine = `
+        <div class="naruto-consumable-effect">
+          <strong>Effet :</strong>
+          <span>+${regenGain} régénération active de Chakra (${percent}% du Chakra max)</span>
+        </div>
+      `;
+
+      resourceLine = `
+        <div class="naruto-consumable-resource">
+          <strong>Régénération active :</strong>
+          <span>${currentActiveRegen} → ${newActiveRegen}</span>
+        </div>
+      `;
+
+      notificationText = `${item.name} utilisé : +${regenGain} régénération active de Chakra.`;
     }
-
-    if (maxValue <= 0) {
-      ui.notifications.warn(`Le maximum de ${resource.label} du personnage est invalide.`);
-      return;
-    }
-
-    if (currentValue >= maxValue) {
-      ui.notifications.info(`${this.name} a déjà sa ressource ${resource.label} au maximum.`);
-      return;
-    }
-
-    const newValue = Math.min(maxValue, currentValue + amount);
-    const restored = newValue - currentValue;
 
     if (effect.consumeOnUse) {
       item.quantity = Math.max(1, Number(item.quantity ?? 1)) - 1;
@@ -6345,15 +6509,12 @@ async decreaseBase(baseKey) {
       ? items
       : items.filter((entry) => entry.id !== itemId);
 
-    await this.update({
-      [resource.valuePath]: newValue,
-      "system.inventory.items": updatedItems,
-      ...toxicityCheck.updateData
-    });
+    updateData["system.inventory.items"] = updatedItems;
+
+    await this.update(updateData);
 
     const safeItemName = foundry.utils.escapeHTML?.(String(item.name ?? "Consommable")) ?? String(item.name ?? "Consommable");
     const safeActorName = foundry.utils.escapeHTML?.(this.name) ?? this.name;
-    const safeResourceLabel = foundry.utils.escapeHTML?.(resource.label) ?? resource.label;
     const safeEffectText = foundry.utils.escapeHTML?.(String(effect.text ?? "")) ?? String(effect.text ?? "");
 
     const toxicityLine = toxicityData.enabled && toxicityCheck.amount > 0
@@ -6391,16 +6552,8 @@ async decreaseBase(baseKey) {
 
           <p><strong>${safeActorName}</strong> utilise un consommable.</p>
 
-          <div class="naruto-consumable-effect">
-            <strong>Effet :</strong>
-            <span>+${restored} ${safeResourceLabel}</span>
-          </div>
-
-          <div class="naruto-consumable-resource">
-            <strong>${safeResourceLabel} :</strong>
-            <span>${currentValue} → ${newValue} / ${maxValue}</span>
-          </div>
-
+          ${effectLine}
+          ${resourceLine}
           ${toxicityLine}
           ${iaLine}
 
@@ -6418,6 +6571,6 @@ async decreaseBase(baseKey) {
       `
     });
 
-    ui.notifications.info(`${item.name} utilisé : +${restored} ${resource.label}.`);
+    ui.notifications.info(notificationText);
   }
 }

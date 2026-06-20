@@ -1,1 +1,92 @@
-﻿[]
+﻿[
+  {
+    "name": "C-23",
+    "type": "consommable",
+    "img": "icons/consumables/potions/bottle-corked-blue.webp",
+    "system": {
+      "description": "Agent chimique de synthèse interdit. Liquide bleu utilisé dans la composition de drogues et de poisons. Pur, il provoque la condition Hallucinations et peut mener jusqu’à la crise cardiaque.",
+      "subtype": "poison",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "consommable",
+        "subcategory": "poison",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "consommables",
+        "tags": ["poison", "interdit", "chimique", "c-23", "hallucinations"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Poison / ingrédient interdit. Hallucinations et crise cardiaque à gérer manuellement jusqu’au système de conditions."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      },
+      "useEffect": {
+        "type": "none",
+        "resource": "none",
+        "amount": 0,
+        "consumeOnUse": true,
+        "text": "Effet manuel : pur, provoque Hallucinations et peut évoluer jusqu’à la crise cardiaque selon exposition et arbitrage MJ."
+      },
+      "toxicity": {
+        "enabled": true,
+        "amount": 1,
+        "period": "day",
+        "iaTurns": 1
+      }
+    }
+  },
+  {
+    "name": "Écorce rouge",
+    "type": "consommable",
+    "img": "icons/consumables/plants/leaf-red.webp",
+    "system": {
+      "description": "Substance rougeâtre liquoreuse provenant du Pays des Forêts. Nécessaire à de nombreux poisons, très dangereuse, toxique et interdite.",
+      "subtype": "poison",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "consommable",
+        "subcategory": "poison",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "consommables",
+        "tags": ["poison", "interdit", "ecorce-rouge", "ingredient", "toxique"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Substance toxique et ingrédient de poison. Effet précis à arbitrer selon préparation."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      },
+      "useEffect": {
+        "type": "none",
+        "resource": "none",
+        "amount": 0,
+        "consumeOnUse": true,
+        "text": "Effet manuel : substance dangereuse servant à la composition de poisons. Toxicité et symptômes à définir selon préparation."
+      },
+      "toxicity": {
+        "enabled": true,
+        "amount": 1,
+        "period": "day",
+        "iaTurns": 1
+      }
+    }
+  }
+]

@@ -315,19 +315,19 @@
         "tags": ["pilule", "soldat", "hyōrōgan", "equipement-depart"]
       },
       "automation": {
-        "status": "manual",
-        "notes": "Version de départ. Effet complet : voir Hyōrōgan — Pilule du Soldat."
+        "status": "partial",
+        "notes": "Version de départ. Automatise le +1% du Chakra max vers la régénération active. Le reste de l’effet est affiché en texte."
       },
       "carry": {
         "holdable": false,
         "wearable": false
       },
       "useEffect": {
-        "type": "none",
-        "resource": "none",
-        "amount": 0,
+        "type": "increaseActiveRegenPercent",
+        "resource": "chakra",
+        "amount": 1,
         "consumeOnUse": true,
-        "text": "Effet exact à gérer manuellement pour l’instant."
+        "text": "Pendant 72h, annule les malus de blessures présentes ou futures jusqu’à Blessure 1 sauf Maladies - Chimique, augmente la régénération active de Chakra de 1% du Chakra max, et supprime le besoin de dormir ou manger. Retirer manuellement le bonus de régénération active après 72h. OD 3/semaine. IA 10 tours."
       },
       "toxicity": {
         "enabled": true,
@@ -409,7 +409,13 @@
       },
       "automation": {
         "status": "manual",
-        "notes": "Version de départ. Bonus/usage à gérer manuellement."
+        "notes": "Version de départ. Bonus limité à dix utilisations. Bonus exact à arbitrer avec Médecine/Santé."
+      },
+      "uses": {
+        "enabled": true,
+        "value": 10,
+        "max": 10,
+        "per": "charges"
       }
     }
   },
@@ -440,7 +446,13 @@
       },
       "automation": {
         "status": "manual",
-        "notes": "Version de départ. Usage à gérer manuellement."
+        "notes": "Version de départ. Kit de survie générique limité à dix utilisations. Les options de milieu sont à arbitrer."
+      },
+      "uses": {
+        "enabled": true,
+        "value": 10,
+        "max": 10,
+        "per": "charges"
       }
     }
   },
@@ -471,7 +483,13 @@
       },
       "automation": {
         "status": "manual",
-        "notes": "Version de départ. Usage à gérer manuellement."
+        "notes": "Version de départ. Bonus limité à dix utilisations. À arbitrer avec Technologie, Science des Pièges ou Science des Explosifs selon usage."
+      },
+      "uses": {
+        "enabled": true,
+        "value": 10,
+        "max": 10,
+        "per": "charges"
       }
     }
   }

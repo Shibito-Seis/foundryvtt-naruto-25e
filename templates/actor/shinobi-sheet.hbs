@@ -2960,7 +2960,18 @@
                         Utiliser
                       </button>
                     {{else}}
-                      <span class="muted">—</span>
+                      {{#if item.hasUses}}
+                        <button
+                          type="button"
+                          class="inventory-use-charge"
+                          data-item-id="{{item.id}}"
+                          title="Utiliser une charge"
+                        >
+                          Usage {{item.uses.value}} / {{item.uses.max}}
+                        </button>
+                      {{else}}
+                        <span class="muted">—</span>
+                      {{/if}}
                     {{/if}}
 
                     <button

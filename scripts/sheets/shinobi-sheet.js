@@ -2179,6 +2179,13 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     await this.actor.useInventoryConsumable(itemId);
   });
 
+  html.find(".inventory-use-charge").on("click", async (event) => {
+    event.preventDefault();
+    const itemId = event.currentTarget.dataset.itemId;
+    await this.actor.useInventoryItemCharge(itemId);
+    this.render(false);
+  });
+
   html.find(".toxicity-reset").on("click", async (event) => {
     event.preventDefault();
 

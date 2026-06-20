@@ -93,11 +93,1127 @@
     }
   },
   {
-    "name": "Objet interdit ou insolite",
+    "name": "Aiguilles (x20)",
     "type": "equipement",
-    "img": "icons/containers/chest/chest-reinforced-steel-red.webp",
+    "img": "icons/tools/hand/needle-grey.webp",
     "system": {
-      "description": "Entrée générique pour représenter un objet rare, interdit, insolite ou soumis à validation MJ. Sert de placeholder propre avant ajout d’une table détaillée.",
+      "description": "Vingt aiguilles en métal de diverses tailles, utilisées pour la médecine, la couture, les prélèvements, les pièges fins ou certains usages techniques.",
+      "quantity": 20,
+      "value": 120,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "medecine", "aiguilles", "lot"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Matériel utilitaire. Effet à arbitrer selon Médecine, Science des Poisons, Science des Pièges ou usage narratif."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Alcool à 90°",
+    "type": "equipement",
+    "img": "icons/consumables/potions/bottle-corked-blue.webp",
+    "system": {
+      "description": "Petite bouteille d’alcool à 90° de 50cl, utilisée pour désinfecter, nettoyer, conserver ou préparer certains mélanges.",
+      "quantity": 1,
+      "value": 80,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "medecine", "alcool", "soins"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Matériel médical ou chimique. Effet à arbitrer selon la situation."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Antibiotiques (x12)",
+    "type": "equipement",
+    "img": "icons/consumables/pills/pills-bottle-white.webp",
+    "system": {
+      "description": "Boîte de douze doses d’antibiotiques utilisées pour soutenir le traitement des infections et maladies courantes.",
+      "quantity": 12,
+      "value": 55,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "medecine", "antibiotiques", "lot"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Matériel médical. Effets exacts à arbitrer avec Médecine / Santé."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Appartement à Konoha",
+    "type": "equipement",
+    "img": "icons/environment/settlement/house-city.webp",
+    "system": {
+      "description": "Loyer mensuel d’un appartement de 40m² à Konoha. Le prix dépend du quartier, de l’état du logement et du clan ou service qui en a la charge.",
+      "quantity": 1,
+      "value": 4000,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["service", "logement", "konoha", "mensuel"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Service de vie quotidienne. Ne modifie pas automatiquement les Ryō."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Bandage",
+    "type": "equipement",
+    "img": "icons/commodities/cloth/cloth-roll-white.webp",
+    "system": {
+      "description": "Rouleau de bandage de 20m, utile pour les premiers soins, immobilisations, pansements ou préparations médicales.",
+      "quantity": 1,
+      "value": 30,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "medecine", "bandage"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Matériel médical. Effet à arbitrer avec Premiers Soins, Médecine ou Santé."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Batterie électrique",
+    "type": "equipement",
+    "img": "icons/commodities/tech/battery.webp",
+    "system": {
+      "description": "Petite batterie électrique transportable et rechargeable, utilisée pour alimenter du matériel technique ou de communication.",
+      "quantity": 1,
+      "value": 480,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "outil", "technologie", "batterie"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Matériel technique. Effet à arbitrer avec Technologie, Science des Pièges ou usage narratif."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Briquets (x5)",
+    "type": "equipement",
+    "img": "icons/tools/laboratory/burner-steel-blue.webp",
+    "system": {
+      "description": "Boîte de cinq briquets, utile en survie, sabotage, cuisine de terrain ou déclenchement préparatoire.",
+      "quantity": 5,
+      "value": 100,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "outil", "feu", "lot"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Objet utilitaire. Effet narratif."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Câble électrique",
+    "type": "equipement",
+    "img": "icons/commodities/tech/wire-spool.webp",
+    "system": {
+      "description": "Rouleau de câble électrique non inflammable. Le prix est généralement compté au mètre.",
+      "quantity": 1,
+      "value": 10,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "outil", "technologie", "cable"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Matériel technique. Effet à arbitrer avec Technologie, Science des Pièges ou Science des Explosifs."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Cinéma",
+    "type": "equipement",
+    "img": "icons/sundries/documents/ticket-blue.webp",
+    "system": {
+      "description": "Place pour une personne dans un cinéma populaire.",
+      "quantity": 1,
+      "value": 50,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["service", "loisir", "cinema"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Service narratif."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Concert",
+    "type": "equipement",
+    "img": "icons/sundries/documents/ticket-red.webp",
+    "system": {
+      "description": "Place de concert pour une personne dans un bar ou une salle de concert.",
+      "quantity": 1,
+      "value": 50,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["service", "loisir", "concert"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Service narratif."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Couverture",
+    "type": "equipement",
+    "img": "icons/sundries/survival/blanket-wrapped-blue.webp",
+    "system": {
+      "description": "Couverture chaude et imperméable pouvant supporter des températures jusqu’à -5°.",
+      "quantity": 1,
+      "value": 200,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "survie", "couverture", "froid"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Matériel de survie. Effet à arbitrer selon climat, repos et exposition."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Ficelle",
+    "type": "equipement",
+    "img": "icons/sundries/survival/rope-wrapped-brown.webp",
+    "system": {
+      "description": "Rouleau de ficelle de 20m, utile pour lier, marquer, tendre un signal ou préparer de petits dispositifs.",
+      "quantity": 1,
+      "value": 10,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "outil", "ficelle", "piege"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Matériel utilitaire. Effet à arbitrer selon Survie, Science des Pièges ou usage narratif."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Fioles (x8)",
+    "type": "equipement",
+    "img": "icons/consumables/potions/vial-corked-blue.webp",
+    "system": {
+      "description": "Nécessaire contenant huit fioles en verre de 10cl chacune, utilisé pour prélèvements, mélanges, poisons ou analyses.",
+      "quantity": 8,
+      "value": 200,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "medecine", "recherche", "fioles", "lot"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Matériel de recherche ou de préparation. Effet à arbitrer avec Médecine, Science des Drogues ou Science des Poisons."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Gants de médecin (x15)",
+    "type": "equipement",
+    "img": "icons/equipment/hand/glove-simple-white.webp",
+    "system": {
+      "description": "Ensemble de quinze paires de gants en plastique végétal, utile en intervention médicale ou pour préserver une scène d’empreintes.",
+      "quantity": 15,
+      "value": 150,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "medecine", "gants", "lot"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Matériel médical ou d’investigation. Effet à arbitrer selon la situation."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Gâteau pour quatre",
+    "type": "equipement",
+    "img": "icons/consumables/food/cake-slice.webp",
+    "system": {
+      "description": "Gâteau pour quatre personnes, sucré ou salé, ou les deux.",
+      "quantity": 1,
+      "value": 80,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["service", "nourriture", "gateau"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Service narratif ou nourriture."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Jeu de carte",
+    "type": "equipement",
+    "img": "icons/sundries/gaming/playing-cards.webp",
+    "system": {
+      "description": "Jeu traditionnel de cinquante-six cartes.",
+      "quantity": 1,
+      "value": 80,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "loisir", "cartes"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Objet narratif ou de loisir."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Jeu de Shogi",
+    "type": "equipement",
+    "img": "icons/sundries/gaming/chess-pawn-white.webp",
+    "system": {
+      "description": "Jeu de société traditionnel proche des échecs.",
+      "quantity": 1,
+      "value": 590,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "loisir", "shogi"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Objet narratif ou de loisir."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Kimono",
+    "type": "equipement",
+    "img": "icons/equipment/chest/robe-layered-red.webp",
+    "system": {
+      "description": "Kimono civil ou cérémoniel de qualité courante.",
+      "quantity": 1,
+      "value": 250,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "vetement", "kimono"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Vêtement narratif ou social."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": true
+      }
+    }
+  },
+  {
+    "name": "Livre",
+    "type": "equipement",
+    "img": "icons/sundries/books/book-red-exclamation.webp",
+    "system": {
+      "description": "Livre courant, technique, historique ou de divertissement.",
+      "quantity": 1,
+      "value": 60,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "livre", "education"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Objet narratif ou d’étude."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Makimono",
+    "type": "equipement",
+    "img": "icons/sundries/scrolls/scroll-bound-sealed-tan.webp",
+    "system": {
+      "description": "Rouleau manuscrit utilisable pour notes, documents, sceaux ou textes d’étude.",
+      "quantity": 1,
+      "value": 50,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "rouleau", "makimono", "fuin"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Support narratif, administratif ou technique."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Microscope",
+    "type": "equipement",
+    "img": "icons/tools/scribal/magnifying-glass.webp",
+    "system": {
+      "description": "Microscope portatif utilisé pour investigation, médecine ou analyse de substances.",
+      "quantity": 1,
+      "value": 420,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "outil", "recherche", "microscope"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Matériel de recherche. Effet à arbitrer avec Médecine, Technologie, Science des Drogues ou Science des Poisons."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Nécessaire à thé",
+    "type": "equipement",
+    "img": "icons/consumables/drinks/tea-jug-gourd-brown.webp",
+    "system": {
+      "description": "Petit nécessaire permettant de préparer et servir le thé.",
+      "quantity": 1,
+      "value": 120,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "service", "the", "culture"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Objet narratif, social ou culturel."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Nuit d’hôtel",
+    "type": "equipement",
+    "img": "icons/environment/settlement/house-manor.webp",
+    "system": {
+      "description": "Nuit dans un hôtel, une auberge ou un ryokan. Le prix varie fortement selon le confort et la région.",
+      "quantity": 1,
+      "value": 150,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["service", "logement", "hotel"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Service de vie quotidienne."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Onsen",
+    "type": "equipement",
+    "img": "icons/environment/settlement/well.webp",
+    "system": {
+      "description": "Accès à un bain public, en ville ou en pleine nature.",
+      "quantity": 1,
+      "value": 10,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["service", "loisir", "onsen"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Service narratif ou de détente."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Paquet de cigarettes",
+    "type": "equipement",
+    "img": "icons/consumables/smoke/cigarette-lit.webp",
+    "system": {
+      "description": "Paquet de vingt cigarettes.",
+      "quantity": 1,
+      "value": 35,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "cigarettes", "loisir"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Objet narratif ou social."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Parfum",
+    "type": "equipement",
+    "img": "icons/consumables/potions/bottle-round-corked-pink.webp",
+    "system": {
+      "description": "Bouteille de parfum de 30cl.",
+      "quantity": 1,
+      "value": 100,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "parfum", "social"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Objet narratif ou social."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Petite peinture ou sculpture",
+    "type": "equipement",
+    "img": "icons/sundries/misc/figurine-idol.webp",
+    "system": {
+      "description": "Petite œuvre d’art, peinture ou sculpture de taille modeste.",
+      "quantity": 1,
+      "value": 250,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "art", "decoration"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Objet narratif, décoratif ou social."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Restaurant standard",
+    "type": "equipement",
+    "img": "icons/consumables/food/bowl-stew-brown.webp",
+    "system": {
+      "description": "Menu classique pour une personne : entrée, plat, dessert et boisson.",
+      "quantity": 1,
+      "value": 80,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["service", "nourriture", "restaurant"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Service de vie quotidienne."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Restaurant de qualité",
+    "type": "equipement",
+    "img": "icons/consumables/food/plate-fish.webp",
+    "system": {
+      "description": "Repas dans un établissement de qualité, parfois réservé aux notables et à la noblesse.",
+      "quantity": 1,
+      "value": 400,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["service", "nourriture", "restaurant", "luxe"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Service de vie quotidienne ou social."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Scalpels (x10)",
+    "type": "equipement",
+    "img": "icons/tools/cutting/scalpel-grey.webp",
+    "system": {
+      "description": "Sachet de dix scalpels, utilisés en médecine, dissection, prélèvement ou analyse fine.",
+      "quantity": 10,
+      "value": 600,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "medecine", "scalpels", "lot"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Matériel médical. Effet à arbitrer avec Médecine, Iryō ou usage narratif."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Seringues (x10)",
+    "type": "equipement",
+    "img": "icons/consumables/potions/syringe-filled-blue.webp",
+    "system": {
+      "description": "Paquet de dix seringues, utilisées pour injections, prélèvements, drogues, poisons ou soins.",
+      "quantity": 10,
+      "value": 130,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "medecine", "seringues", "lot"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Matériel médical ou toxique. Effet à arbitrer avec Médecine, Science des Drogues ou Science des Poisons."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Soupe de ramen",
+    "type": "equipement",
+    "img": "icons/consumables/food/bowl-stew-tofu-potato.webp",
+    "system": {
+      "description": "Soupe de ramen composée de nouilles et de fins morceaux de viande.",
+      "quantity": 1,
+      "value": 30,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["service", "nourriture", "ramen"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Service de nourriture."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Tasse de thé",
+    "type": "equipement",
+    "img": "icons/consumables/drinks/tea-jug-gourd-brown.webp",
+    "system": {
+      "description": "Tasse de thé de qualité courante.",
+      "quantity": 1,
+      "value": 15,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["service", "boisson", "the"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Service narratif ou social."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Théâtre",
+    "type": "equipement",
+    "img": "icons/sundries/documents/ticket-orange.webp",
+    "system": {
+      "description": "Place de théâtre pour une représentation traditionnelle.",
+      "quantity": 1,
+      "value": 150,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["service", "loisir", "theatre"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Service narratif ou de loisir."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Verre d’alcool",
+    "type": "equipement",
+    "img": "icons/consumables/drinks/alcohol-stein-wooden.webp",
+    "system": {
+      "description": "Verre d’alcool courant, issu de riz, blé, pommes de terre ou fruits selon la région.",
+      "quantity": 1,
+      "value": 20,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["service", "boisson", "alcool"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Service narratif ou social."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Verre de bière",
+    "type": "equipement",
+    "img": "icons/consumables/drinks/beer-stein-wooden-brown.webp",
+    "system": {
+      "description": "Verre de bière. Le prix varie selon le pays, le goût, la couleur et la taille du verre.",
+      "quantity": 1,
+      "value": 15,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["service", "boisson", "biere"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Service narratif ou social."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Animal mécanique",
+    "type": "equipement",
+    "img": "icons/commodities/tech/cog-brass.webp",
+    "system": {
+      "description": "Petit jouet mécanique raffiné du Pays des Embruns. Des soupçons de technologies espionnes entourent parfois ce genre d’objet.",
       "quantity": 1,
       "value": 0,
       "weight": 0,
@@ -111,11 +1227,414 @@
         "element": "",
         "school": "",
         "packTarget": "outils",
-        "tags": ["objet", "interdit", "insolite", "mj", "placeholder"]
+        "tags": ["objet", "interdit", "insolite", "technologie", "espionnage"]
       },
       "automation": {
-        "status": "blocked",
-        "notes": "Placeholder V1. Remplacer plus tard par les objets précis de la table du chapitre 7."
+        "status": "manual",
+        "notes": "Objet interdit ou insolite. Détention, vente ou usage soumis à validation MJ."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Com trafiqué",
+    "type": "equipement",
+    "img": "icons/tools/navigation/compass-brass-blue-red.webp",
+    "system": {
+      "description": "COM officiel d’un village ninja, modifié pour capter certaines ondes confidentielles. Provient probablement d’un ninja renégat.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "interdit", "communication", "renegat"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Objet interdit ou insolite. Détention, vente ou usage soumis à validation MJ."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Corps humain",
+    "type": "equipement",
+    "img": "icons/commodities/bones/bone-jaw-white.webp",
+    "system": {
+      "description": "Corps vivant d’homme ou de femme adulte. Marchandise illégale, passible de la peine de mort.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "interdit", "crime", "corps"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Objet interdit ou insolite. Détention, vente ou usage soumis à validation MJ."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Corps shinobi",
+    "type": "equipement",
+    "img": "icons/commodities/bones/skull-white.webp",
+    "system": {
+      "description": "Corps vivant d’homme ou de femme shinobi. Marchandise illégale, entraînant entrée immédiate dans le bingo book et traque par les services compétents.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "interdit", "crime", "corps", "shinobi"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Objet interdit ou insolite. Détention, vente ou usage soumis à validation MJ."
+      },
+      "carry": {
+        "holdable": false,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Jetons de casino",
+    "type": "equipement",
+    "img": "icons/commodities/currency/coins-plain-stack-gold.webp",
+    "system": {
+      "description": "Jetons banals utilisés par les mafias du Pays du Jeu comme monnaie d’échange, de participation ou de transport.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "interdit", "mafia", "casino"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Objet interdit ou insolite. Détention, vente ou usage soumis à validation MJ."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Lame sacrificielle de Kazan’bai",
+    "type": "equipement",
+    "img": "icons/weapons/daggers/dagger-ritual-black.webp",
+    "system": {
+      "description": "Lame utilisée lors de sacrifices rituels au Pays des Cendres, portant des traces d’usages répétés.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "interdit", "rituel", "cendres"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Objet interdit ou insolite. Détention, vente ou usage soumis à validation MJ."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Larme de Gelel",
+    "type": "equipement",
+    "img": "icons/commodities/gems/gem-faceted-blue.webp",
+    "system": {
+      "description": "Petite pierre bleutée animée d’arabesques. Extrêmement rare, recherchée pour ses propriétés énergétiques et régénératives puissantes.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "interdit", "artefact", "gelel", "regeneration"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Objet interdit ou insolite. Détention, vente ou usage soumis à validation MJ."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Manuel de médecine — Clonage & reproduction héréditaire",
+    "type": "equipement",
+    "img": "icons/sundries/books/book-symbol-skull-grey.webp",
+    "system": {
+      "description": "Manuel médical clandestin intitulé Clonage & reproduction héréditaire. Auteur inconnu. Demande des technologies classées secret défense.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "interdit", "livre", "medecine", "secret-defense"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Objet interdit ou insolite. Détention, vente ou usage soumis à validation MJ."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Matériau à chakra",
+    "type": "equipement",
+    "img": "icons/commodities/stone/ore-pile-blue.webp",
+    "system": {
+      "description": "Matériau rare et illégal : bois à chakra de Konoha, nacre Seinaru de Kiri, terre glaise Nendo d’Iwa, silice Shirika de Suna ou métal Kikinzoku de Kumo.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "interdit", "materiau", "chakra", "bingo-book"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Objet interdit ou insolite. Détention, vente ou usage soumis à validation MJ."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Mōsengokezoku",
+    "type": "equipement",
+    "img": "icons/commodities/flowers/lotus-pink.webp",
+    "system": {
+      "description": "Plante carnivore pouvant devenir gigantesque, consommant toute matière organique sans laisser de traces. Réputée dans la pègre.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "interdit", "plante", "carnivore"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Objet interdit ou insolite. Détention, vente ou usage soumis à validation MJ."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Ningyō",
+    "type": "equipement",
+    "img": "icons/sundries/misc/doll-voodoo.webp",
+    "system": {
+      "description": "Fétiche en bois des cités-états du sud. Rudimentaire, souvent maudit ou possédé par un esprit tourmenté.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "interdit", "fetiche", "maudit", "esprit"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Objet interdit ou insolite. Détention, vente ou usage soumis à validation MJ."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Ihō Fūda",
+    "type": "equipement",
+    "img": "icons/sundries/documents/document-symbol-rune-brown.webp",
+    "system": {
+      "description": "Note de surveillance clandestine, à poser sur un rouleau ou un coffre de réception.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "interdit", "fuda", "surveillance"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Objet interdit ou insolite. Détention, vente ou usage soumis à validation MJ."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Relique Kauràne",
+    "type": "equipement",
+    "img": "icons/commodities/treasure/idol-figure-gold.webp",
+    "system": {
+      "description": "Artéfact archéologique rare et interdit à la vente, recherché par historiens, nobles et groupes sectaires influents.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "interdit", "artefact", "kaurane"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Objet interdit ou insolite. Détention, vente ou usage soumis à validation MJ."
+      },
+      "carry": {
+        "holdable": true,
+        "wearable": false
+      }
+    }
+  },
+  {
+    "name": "Statue de Kyoshin",
+    "type": "equipement",
+    "img": "icons/commodities/treasure/figurine-idol.webp",
+    "system": {
+      "description": "Sculpture en métal de Kyoshin, Kami du Vide. Origine et authenticité contestables, lien sectaire possible.",
+      "quantity": 1,
+      "value": 0,
+      "weight": 0,
+      "taxonomy": {
+        "category": "service",
+        "subcategory": "objetsServices",
+        "rankGroup": "",
+        "academy": false,
+        "startingEligible": false,
+        "clan": "",
+        "element": "",
+        "school": "",
+        "packTarget": "outils",
+        "tags": ["objet", "interdit", "statue", "kyoshin", "secte"]
+      },
+      "automation": {
+        "status": "manual",
+        "notes": "Objet interdit ou insolite. Détention, vente ou usage soumis à validation MJ."
       },
       "carry": {
         "holdable": true,

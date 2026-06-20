@@ -24,6 +24,12 @@
         "status": "manual",
         "notes": "Bonus limité à dix utilisations. Bonus exact à arbitrer/automatiser plus tard avec Médecine/Santé."
       },
+      "uses": {
+        "enabled": true,
+        "value": 10,
+        "max": 10,
+        "per": "charges"
+      },
       "carry": {
         "holdable": true,
         "wearable": false
@@ -53,7 +59,13 @@
       },
       "automation": {
         "status": "manual",
-        "notes": "Kit de survie générique. Les options de milieu seront détaillées plus tard."
+        "notes": "Kit de survie générique limité à dix utilisations. Les options de milieu seront détaillées plus tard."
+      },
+      "uses": {
+        "enabled": true,
+        "value": 10,
+        "max": 10,
+        "per": "charges"
       },
       "carry": {
         "holdable": true,
@@ -86,6 +98,12 @@
         "status": "manual",
         "notes": "Bonus limité à dix utilisations. À relier plus tard à Collecter des Informations, Technologie, Médecine ou Science des Poisons selon usage."
       },
+      "uses": {
+        "enabled": true,
+        "value": 10,
+        "max": 10,
+        "per": "charges"
+      },
       "carry": {
         "holdable": true,
         "wearable": false
@@ -116,6 +134,12 @@
       "automation": {
         "status": "manual",
         "notes": "Bonus limité à dix utilisations. À relier plus tard à Technologie, Science des Pièges ou Science des Explosifs."
+      },
+      "uses": {
+        "enabled": true,
+        "value": 10,
+        "max": 10,
+        "per": "charges"
       },
       "carry": {
         "holdable": true,
