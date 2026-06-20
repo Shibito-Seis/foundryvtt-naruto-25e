@@ -1466,11 +1466,22 @@ function getStartingTechniqueSectionRules(sectionKey) {
   return {};
 }
 
-function getCurrentStartingTechniqueChoices(actor, sectionKey) {
-  const path = getStartingTechniqueSectionPath(sectionKey);
-  if (!path) return [];
+function getCurrentStartingTechniqueSection(actor, sectionKey) {
+  const startingTechniques = actor?.system?.progression?.creation?.startingTechniques ?? {};
 
-  const section = foundry.utils.getProperty(actor.system, path) ?? {};
+  if (sectionKey === "caseSchool") {
+    return startingTechniques.caseSchool ?? {};
+  }
+
+  if (sectionKey === "specialized") {
+    return startingTechniques.specialized ?? {};
+  }
+
+  return {};
+}
+
+function getCurrentStartingTechniqueChoices(actor, sectionKey) {
+  const section = getCurrentStartingTechniqueSection(actor, sectionKey);
 
   return Array.isArray(section.choices)
     ? section.choices.map((choice) => String(choice ?? "")).filter(Boolean)
@@ -2795,7 +2806,7 @@ export class Naruto25eShinobimancerApplication extends Application {
       const path = getStartingTechniqueSectionPath(sectionKey);
       if (!path) return;
 
-      const section = foundry.utils.getProperty(this.actor.system, path) ?? {};
+      const section = getCurrentStartingTechniqueSection(this.actor, sectionKey);
 
       if (Boolean(section.completed) || Boolean(section.locked)) {
         ui.notifications.info("Cette sélection est déjà validée. Clique d’abord sur Modifier.");

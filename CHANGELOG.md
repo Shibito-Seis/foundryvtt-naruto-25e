@@ -2,6 +2,27 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.40.1 - Correctifs techniques de départ et scroll Shinobimancer
+
+### Corrigé
+
+- Correction de la sélection multiple des techniques de départ dans le Shinobimancer :
+  - les choix cas d’école peuvent désormais monter à 3 ;
+  - les choix spécialisés peuvent désormais monter à 3 ;
+  - la lecture des choix reprend la logique directe utilisée par les armes et lots de combat.
+- Correction de `Gensou : Bunshin` :
+  - la technique n’est plus marquée comme technique d’académie ;
+  - elle disparaît donc du bloc “Techniques cas d’école” ;
+  - elle reste éligible aux techniques spécialisées de départ via `startingEligible`.
+- Correction du scroll du Shinobimancer :
+  - la colonne des étapes, le contenu central et le résumé permanent reviennent dans un schéma de scroll commun ;
+  - la structure moderne `sidebar + dossier-frame` est conservée.
+
+### Notes
+
+- Cette version ne change pas les règles de création.
+- Cette version corrige uniquement les régressions constatées après la 0.1.40.
+
 ## 0.1.40 - Techniques de départ Shinobimancer
 
 ### Ajouté

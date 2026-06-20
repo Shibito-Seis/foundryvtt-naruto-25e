@@ -565,3 +565,38 @@
     margin-left: 0;
   }
 }
+
+/* ----------------------------------------- */
+/* 0.1.40.1 — Correctif scroll global        */
+/* ----------------------------------------- */
+
+/*
+  La structure actuelle du Shinobimancer est :
+  - .shinobimancer-layout
+    - .shinobimancer-sidebar
+    - .shinobimancer-dossier-frame
+      - .shinobimancer-content
+      - .shinobimancer-summary
+
+  Le scroll doit porter sur .shinobimancer-layout pour que les étapes,
+  le contenu central et le résumé permanent défilent ensemble.
+*/
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main .shinobimancer-layout {
+  grid-template-columns: 14rem minmax(0, 1fr);
+  align-items: start;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-dossier-frame {
+  min-height: 0;
+  overflow: visible;
+}
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-content,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-summary,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-sidebar {
+  max-height: none;
+  overflow: visible;
+}

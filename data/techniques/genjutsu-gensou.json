@@ -67,7 +67,7 @@
       "chakra": { "initial": 8, "maintenance": 2, "text": "8/2 pts" },
       "prerequisites": { "strict": true, "type": "skill", "value": "gensou", "masteryRank": 5, "validated": false, "text": "Compétence Gensou possédée." },
       "effect": "Clone intangible gensou. Entretien standard.",
-      "taxonomy": { "category": "genjutsu", "subcategory": "gensou", "rankGroup": "d", "academy": true, "startingEligible": true, "packTarget": "techniques-genjutsu", "tags": ["gensou", "mirage", "clone", "maintien"] },
+      "taxonomy": { "category": "genjutsu", "subcategory": "gensou", "rankGroup": "d", "academy": false, "startingEligible": true, "packTarget": "techniques-genjutsu", "tags": ["gensou", "mirage", "clone", "maintien"] },
       "automation": { "status": "partial", "notes": "Coût et entretien automatisables. Effet de clone illusoire manuel." }
     }
   },
