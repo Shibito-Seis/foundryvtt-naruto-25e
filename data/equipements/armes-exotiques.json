@@ -12,6 +12,19 @@
         "holdable": true,
         "wearable": false
       },
+      "damage": {
+  "formula": "COR + ARM",
+  "type": "physical",
+  "scaling": "Dégâts connus, autres données papier incomplètes.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["cor", "arm"],
+    "flat": 0,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": "Portée, INIT, FM, prix et spécialisations à confirmer."
+  }
+},
       "taxonomy": {
         "category": "arme",
         "subcategory": "armesExotiques",
@@ -136,6 +149,19 @@
         "holdable": true,
         "wearable": false
       },
+      "damage": {
+  "formula": "NIN + ARM",
+  "type": "physical",
+  "scaling": "Dégâts connus, autres données papier incomplètes.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["nin", "arm"],
+    "flat": 0,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": "Portée, INIT, CRIT et prix à confirmer."
+  }
+},
       "taxonomy": {
         "category": "arme",
         "subcategory": "armesExotiques",

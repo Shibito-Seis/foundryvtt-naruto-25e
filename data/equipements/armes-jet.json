@@ -12,6 +12,19 @@
         "holdable": true,
         "wearable": false
       },
+      "damage": {
+  "formula": "COR + ARM + 1(1)",
+  "type": "physical",
+  "scaling": "Arme de jet empilable.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["cor", "arm"],
+    "flat": 1,
+    "perItem": 1,
+    "perItemLimitBase": "arm",
+    "condition": "Bonus cumulatif par projectile lancé, maximum ARM."
+  }
+},
       "taxonomy": {
         "category": "arme",
         "subcategory": "armesJet",
@@ -43,6 +56,19 @@
         "holdable": true,
         "wearable": false
       },
+      "damage": {
+  "formula": "ESP + ARM + 1(1)",
+  "type": "physical",
+  "scaling": "Arme de jet empilable.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["esp", "arm"],
+    "flat": 1,
+    "perItem": 1,
+    "perItemLimitBase": "arm",
+    "condition": "Bonus cumulatif par projectile lancé, maximum ARM."
+  }
+},
       "taxonomy": {
         "category": "arme",
         "subcategory": "armesJet",
@@ -74,6 +100,19 @@
         "holdable": true,
         "wearable": false
       },
+      "damage": {
+  "formula": "TAI + ARM + 1(1)",
+  "type": "physical",
+  "scaling": "Arme de jet empilable.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["tai", "arm"],
+    "flat": 1,
+    "perItem": 1,
+    "perItemLimitBase": "arm",
+    "condition": "Bonus cumulatif par projectile lancé, maximum ARM."
+  }
+},
       "taxonomy": {
         "category": "arme",
         "subcategory": "armesJet",

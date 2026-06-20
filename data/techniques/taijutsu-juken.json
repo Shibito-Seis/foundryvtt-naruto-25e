@@ -15,7 +15,19 @@
       "duration": "Variable",
       "target": "Individuelle",
       "area": "",
-      "damage": { "formula": "COR + TAI", "type": "physical", "scaling": "Dégâts de corps à corps standard" },
+      "damage": {
+  "formula": "COR + TAI",
+  "type": "physical",
+  "scaling": "Dégâts de corps à corps standard.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["cor", "tai"],
+    "flat": 0,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": ""
+  }
+},
       "chakra": { "initial": 0, "maintenance": 0, "text": "Aucun coût Chakra indiqué" },
       "prerequisites": { "strict": true, "type": "skill", "value": "juken", "masteryRank": 5, "validated": false, "text": "Compétence Jūken possédée. Médecine ou Dōjutsu requis selon le book." },
       "effect": "Sur un jet de Jūken réussi, le personnage obstrue les méridiens principaux du système circulatoire du chakra de son adversaire. Rend impossible l’utilisation du chakra pendant un nombre de tours égal au score d’interceptions de Taijutsu du personnage. Ne s’applique pas aux pouvoirs de lignée demandant une dépense de chakra. Peut aussi rouvrir les méridiens d’une cible affectée.",
@@ -39,7 +51,19 @@
       "duration": "Variable",
       "target": "Individuelle",
       "area": "",
-      "damage": { "formula": "COR + TAI", "type": "physical", "scaling": "Dégâts de corps à corps standard" },
+      "damage": {
+  "formula": "COR + TAI",
+  "type": "physical",
+  "scaling": "Dégâts de corps à corps standard.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["cor", "tai"],
+    "flat": 0,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": ""
+  }
+},
       "chakra": { "initial": 0, "maintenance": 0, "text": "Aucun coût Chakra indiqué" },
       "prerequisites": { "strict": true, "type": "skill", "value": "juken", "masteryRank": 5, "validated": false, "text": "Compétence Jūken possédée. Médecine ou Dōjutsu requis selon le book." },
       "effect": "Sur un jet de Jūken réussi, le personnage diffuse son chakra dans le corps de l’adversaire et déséquilibre son fonctionnement physique. La cible est ralentie pendant un nombre de tours égal au score d’interceptions de Taijutsu du personnage et subit un malus de -2 × TAI à son initiative. Peut aussi contrer ses propres effets sur une cible immobilisée.",

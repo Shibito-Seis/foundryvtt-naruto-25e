@@ -2077,6 +2077,11 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     await this.actor.rollBasicAttack(kind);
   });
 
+  html.find(".combat-roll-mental-test").on("click", async (event) => {
+    event.preventDefault();
+    await this.actor.rollMentalDefenseTest();
+  });
+
   html.find(".combat-roll-interception").on("click", async (event) => {
     event.preventDefault();
     const kind = event.currentTarget.dataset.kind;
@@ -2133,15 +2138,17 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     event.preventDefault();
 
     const itemId = event.currentTarget.dataset.itemId;
-    const item = this.actor.items.get(itemId);
 
-    if (!item || item.type !== "technique") {
-      ui.notifications.warn("Technique introuvable.");
-      return;
-    }
-
-    await item.rollTechnique(this.actor);
+    await this.actor.useTechniqueItem(itemId);
     this.render(false);
+  });
+
+  html.find(".technique-roll-damage").on("click", async (event) => {
+    event.preventDefault();
+
+    const itemId = event.currentTarget.dataset.itemId;
+
+    await this.actor.rollTechniqueDamage(itemId);
   });
 
   html.find(".technique-stop-maintained").on("click", async (event) => {
@@ -2184,6 +2191,19 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     const itemId = event.currentTarget.dataset.itemId;
     await this.actor.useInventoryItemCharge(itemId);
     this.render(false);
+  });
+
+  html.find(".inventory-use-combat-item").on("click", async (event) => {
+    event.preventDefault();
+    const itemId = event.currentTarget.dataset.itemId;
+    await this.actor.useInventoryCombatItem(itemId);
+    this.render(false);
+  });
+
+  html.find(".inventory-roll-damage").on("click", async (event) => {
+    event.preventDefault();
+    const itemId = event.currentTarget.dataset.itemId;
+    await this.actor.rollInventoryCombatDamage(itemId);
   });
 
   html.find(".toxicity-reset").on("click", async (event) => {

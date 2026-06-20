@@ -63,7 +63,19 @@
       "duration": "Instantané",
       "target": "Individuelle",
       "area": "Impact Z2 — 2 m",
-      "damage": { "formula": "NIN + 2", "type": "physical", "scaling": "Document indique aussi 4 dégâts" },
+      "damage": {
+  "formula": "NIN + 2",
+  "type": "physical",
+  "scaling": "Document indique aussi 4 dégâts.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["nin"],
+    "flat": 2,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": "Impact Z2, portée D3. Le document mentionne aussi 4 dégâts : arbitrage MJ si nécessaire."
+  }
+},
       "chakra": { "initial": 12, "maintenance": 0, "text": "12 pts" },
       "prerequisites": { "strict": true, "type": "skill", "value": "kikaichu", "masteryRank": 5, "validated": false, "text": "Compétence Kikaichū possédée. Clan Aburame ou accès validé." },
       "effect": "Orbe d’insectes sur une cible. Impact Z2, portée D3. Le document indique NIN+2 dégâts et aussi 4 dégâts.",
@@ -135,7 +147,19 @@
       "duration": "Instantané",
       "target": "Individuelle",
       "area": "",
-      "damage": { "formula": "TAI + COR + 2", "type": "physical", "scaling": "Absorption 25 Chakra" },
+      "damage": {
+  "formula": "COR + TAI + 2",
+  "type": "physical",
+  "scaling": "Absorption 25 Chakra.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["cor", "tai"],
+    "flat": 2,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": "Absorbe 25 Chakra sur réussite. Absorption à gérer manuellement jusqu’à la 0.1.42."
+  }
+},
       "chakra": { "initial": 15, "maintenance": 0, "text": "15 pts" },
       "prerequisites": { "strict": true, "type": "skill", "value": "kikaichu", "masteryRank": 5, "validated": false, "text": "Compétence Kikaichū possédée. Clan Aburame ou accès validé." },
       "effect": "Catalyseur poing/pied : TAI + COR + 2 dégâts. Absorbe 25 points de Chakra.",

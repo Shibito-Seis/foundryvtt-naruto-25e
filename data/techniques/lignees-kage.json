@@ -39,7 +39,19 @@
       "duration": "Instantané ou maintenu",
       "target": "Zone ou individuelle",
       "area": "",
-      "damage": { "formula": "LIGN ou Kage selon arbitrage", "type": "shadow", "scaling": "" },
+      "damage": {
+  "formula": "LIGN",
+  "type": "shadow",
+  "scaling": "Dégâts d’ombre offensifs.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["lign"],
+    "flat": 0,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": "Valeur V1 : LIGN. Le fichier source mentionnait “LIGN ou Kage selon arbitrage”. Si le MJ préfère la compétence Kage, résoudre manuellement."
+  }
+},
       "chakra": { "initial": 0, "maintenance": 0, "text": "Coût papier non détaillé dans la source consultée" },
       "prerequisites": { "strict": true, "type": "skill", "value": "kage", "masteryRank": 5, "validated": false, "text": "Compétence Kage possédée. Clan Nara ou accès validé." },
       "effect": "Sur jet de Kage réussi, le personnage transforme son ombre en arme offensive. Dégâts et zone à automatiser plus tard.",

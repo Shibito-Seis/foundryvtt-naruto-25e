@@ -15,7 +15,19 @@
       "duration": "Instantané",
       "target": "Individuelle",
       "area": "Z2 — rayon 2 m",
-      "damage": { "formula": "NIN + 2", "type": "wind", "scaling": "" },
+      "damage": {
+  "formula": "NIN + 2",
+  "type": "wind",
+  "scaling": "Vents acérés offensifs.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["nin"],
+    "flat": 2,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": "Impact Z2, portée D1."
+  }
+},
       "chakra": { "initial": 5, "maintenance": 0, "text": "5 pts" },
       "prerequisites": { "strict": true, "type": "skill", "value": "futon", "masteryRank": 5, "validated": false, "text": "Compétence Fūton possédée." },
       "effect": "NIN+2 dégâts, Z2 impact, portée D1.",

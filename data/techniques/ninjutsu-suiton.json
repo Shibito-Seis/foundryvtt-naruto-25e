@@ -39,7 +39,19 @@
       "duration": "Instantané",
       "target": "Individuelle",
       "area": "Z1 — rayon 1 m",
-      "damage": { "formula": "NIN + 1", "type": "water", "scaling": "" },
+      "damage": {
+  "formula": "NIN + 1",
+  "type": "water",
+  "scaling": "Obus liquide offensif.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["nin"],
+    "flat": 1,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": "Impact Z1, portée D2."
+  }
+},
       "chakra": { "initial": 5, "maintenance": 0, "text": "5 pts" },
       "prerequisites": { "strict": true, "type": "skill", "value": "suiton", "masteryRank": 5, "validated": false, "text": "Compétence Suiton possédée." },
       "effect": "NIN+1 dégâts, Z1, portée D2.",
@@ -279,7 +291,19 @@
       "duration": "Instantané",
       "target": "Individuelle",
       "area": "Z1 — rayon 1 m",
-      "damage": { "formula": "NIN + 1", "type": "water", "scaling": "" },
+      "damage": {
+  "formula": "NIN + 1",
+  "type": "water",
+  "scaling": "Dragon aqueux offensif.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["nin"],
+    "flat": 1,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": "Impact Z1, portée D2. Le dragon évite les obstacles entre l’invocateur et la cible."
+  }
+},
       "chakra": { "initial": 8, "maintenance": 0, "text": "8 pts" },
       "prerequisites": { "strict": true, "type": "skill", "value": "suiton", "masteryRank": 5, "validated": false, "text": "Compétence Suiton possédée." },
       "effect": "Dragon d’eau évitant les obstacles entre l’invocateur et la cible : NIN+1 dégâts, Z1, portée D2.",
@@ -303,7 +327,19 @@
       "duration": "Momentané",
       "target": "Individuelle",
       "area": "",
-      "damage": { "formula": "COR + NIN + 1", "type": "water", "scaling": "-2 Corps à Corps indiqué" },
+      "damage": {
+  "formula": "COR + NIN + 1",
+  "type": "water",
+  "scaling": "-2 Corps à Corps indiqué.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["cor", "nin"],
+    "flat": 1,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": "Milieu aquatique requis. Entrée fragmentaire : coût Chakra et entretien absents."
+  }
+},
       "chakra": { "initial": 0, "maintenance": 0, "text": "Coût non indiqué" },
       "prerequisites": { "strict": true, "type": "skill", "value": "suiton", "masteryRank": 5, "validated": false, "text": "Compétence Suiton possédée. Milieu aquatique requis." },
       "effect": "Dans un milieu aquatique, considéré comme corps à corps : COR+NIN+1 dégâts, -2 Corps à Corps, entretien indiqué mais coût absent.",

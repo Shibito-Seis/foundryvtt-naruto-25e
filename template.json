@@ -270,6 +270,16 @@
               "remaining": 0
               }
             },
+            "defenses": {
+              "esquive": {
+                "max": 1,
+                "remaining": 1
+              },
+              "parade": {
+                "max": 1,
+                "remaining": 1
+              }
+            },
             "lineagePowers": {
               "base": 0,
               "bonus": 0,

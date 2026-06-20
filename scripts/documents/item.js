@@ -42,6 +42,25 @@ export class Naruto25eItem extends Item {
             : "manual";
         system.automation.notes = system.automation.notes ?? "";
 
+        system.damage = system.damage ?? {};
+        system.damage.formula = system.damage.formula ?? "";
+        system.damage.type = system.damage.type ?? "none";
+        system.damage.scaling = system.damage.scaling ?? "";
+        system.damage.calculation = system.damage.calculation ?? {};
+        system.damage.calculation.enabled = Boolean(system.damage.calculation.enabled);
+        system.damage.calculation.bases = Array.isArray(system.damage.calculation.bases)
+            ? system.damage.calculation.bases
+                .map((base) => String(base ?? "").trim())
+                .filter(Boolean)
+            : String(system.damage.calculation.bases ?? "")
+                .split(/[,;\s]+/g)
+                .map((base) => base.trim())
+                .filter(Boolean);
+        system.damage.calculation.flat = Number(system.damage.calculation.flat ?? 0);
+        system.damage.calculation.perItem = Math.max(0, Number(system.damage.calculation.perItem ?? 0));
+        system.damage.calculation.perItemLimitBase = String(system.damage.calculation.perItemLimitBase ?? "");
+        system.damage.calculation.condition = String(system.damage.calculation.condition ?? "");
+        
         system.uses = system.uses ?? {};
         system.uses.enabled = Boolean(system.uses.enabled);
         system.uses.value = Math.max(0, Number(system.uses.value ?? 0));
@@ -149,6 +168,20 @@ export class Naruto25eItem extends Item {
         system.damage.formula = system.damage.formula ?? String(system.damage.value ?? "");
         system.damage.type = system.damage.type ?? "none";
         system.damage.scaling = system.damage.scaling ?? "";
+        system.damage.calculation = system.damage.calculation ?? {};
+        system.damage.calculation.enabled = Boolean(system.damage.calculation.enabled);
+        system.damage.calculation.bases = Array.isArray(system.damage.calculation.bases)
+            ? system.damage.calculation.bases
+                .map((base) => String(base ?? "").trim())
+                .filter(Boolean)
+            : String(system.damage.calculation.bases ?? "")
+                .split(/[,;\s]+/g)
+                .map((base) => base.trim())
+                .filter(Boolean);
+        system.damage.calculation.flat = Number(system.damage.calculation.flat ?? 0);
+        system.damage.calculation.perItem = Math.max(0, Number(system.damage.calculation.perItem ?? 0));
+        system.damage.calculation.perItemLimitBase = String(system.damage.calculation.perItemLimitBase ?? "");
+        system.damage.calculation.condition = String(system.damage.calculation.condition ?? "");
 
         system.chakra = system.chakra ?? {};
         system.chakra.initial = Math.max(0, Number(system.chakra.initial ?? 0));

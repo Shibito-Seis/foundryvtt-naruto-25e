@@ -111,7 +111,19 @@
       "duration": "Rituel",
       "target": "Zone",
       "area": "Z2 — rayon 2 m",
-      "damage": { "formula": "GEN + 1", "type": "explosive", "scaling": "" },
+      "damage": {
+  "formula": "GEN + 1",
+  "type": "explosive",
+  "scaling": "Explosion de note explosive.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["gen"],
+    "flat": 1,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": "Explosion de zone Z2. Déclenchement IA 10 rounds ou instantané par impulsion."
+  }
+},
       "chakra": { "initial": 10, "maintenance": 0, "text": "10 pts" },
       "prerequisites": { "strict": true, "type": "skill", "value": "kawarimi", "masteryRank": 5, "validated": false, "text": "Compétence Kawarimi possédée." },
       "effect": "En explosant, la note inflige GEN+1 dégâts sur Z2. IA 10 rounds ou activation instantanée par impulsion de chakra. Création : 5 rounds.",

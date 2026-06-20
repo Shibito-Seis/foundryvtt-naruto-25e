@@ -15,7 +15,19 @@
       "duration": "Instantané",
       "target": "Individuelle",
       "area": "",
-      "damage": { "formula": "COR + TAI", "type": "physical", "scaling": "Dégâts de corps à corps standard" },
+      "damage": {
+  "formula": "COR + TAI",
+  "type": "physical",
+  "scaling": "Dégâts de corps à corps standard.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["cor", "tai"],
+    "flat": 0,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": ""
+  }
+},
       "chakra": { "initial": 0, "maintenance": 0, "text": "Aucun coût Chakra indiqué" },
       "prerequisites": { "strict": true, "type": "skill", "value": "chuken", "masteryRank": 5, "validated": false, "text": "Compétence Chūken possédée." },
       "effect": "Sur un jet de Chūken réussi, le coup rend impossible pour l’adversaire l’usage d’un pouvoir de Lignée actif sur cette initiative lors de son esquive, et pour le reste du tour. Permet aussi de toucher une cible sous forme tangible, intangible, liquide, solide, gazeuse, particulaire ou éthérée si sa position exacte est connue.",
@@ -63,7 +75,19 @@
       "duration": "Instantané",
       "target": "Individuelle",
       "area": "",
-      "damage": { "formula": "COR + TAI si collision", "type": "physical", "scaling": "Dégâts de corps à corps standard si collision" },
+      "damage": {
+  "formula": "COR + TAI",
+  "type": "physical",
+  "scaling": "Dégâts de corps à corps standard. Projection/collision à arbitrer manuellement.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["cor", "tai"],
+    "flat": 0,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": "Projection/collision à arbitrer manuellement si nécessaire."
+  }
+},
       "chakra": { "initial": 0, "maintenance": 0, "text": "Aucun coût Chakra indiqué" },
       "prerequisites": { "strict": true, "type": "skill", "value": "chuken", "masteryRank": 5, "validated": false, "text": "Compétence Chūken possédée." },
       "effect": "Lors d’une attaque au corps à corps adverse, le personnage peut faire un jet de Chūken à la place de son Esquive ou Parade. En cas de réussite, il esquive et projette l’adversaire à Distance 3 dans la direction voulue. Inflige les dégâts de corps à corps standards si une collision est créée et bloque l’usage d’un pouvoir de Lignée sur l’initiative.",

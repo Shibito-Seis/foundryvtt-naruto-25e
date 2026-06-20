@@ -12,6 +12,19 @@
         "holdable": true,
         "wearable": false
       },
+      "damage": {
+  "formula": "COR + ARM + 1(1)",
+  "type": "physical",
+  "scaling": "Version de départ. Bonus cumulatif par exemplaire lancé.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["cor", "arm"],
+    "flat": 1,
+    "perItem": 1,
+    "perItemLimitBase": "arm",
+    "condition": "Bonus cumulatif par projectile lancé, maximum ARM."
+  }
+},
       "taxonomy": {
         "category": "arme",
         "subcategory": "armesSimples",
@@ -43,6 +56,19 @@
         "holdable": true,
         "wearable": false
       },
+      "damage": {
+  "formula": "COR + ARM + 1",
+  "type": "physical",
+  "scaling": "Version de départ. Lame courte, non empilable et non prévue pour le lancer.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["cor", "arm"],
+    "flat": 1,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": ""
+  }
+},
       "taxonomy": {
         "category": "arme",
         "subcategory": "armesSimples",
@@ -74,6 +100,19 @@
         "holdable": true,
         "wearable": false
       },
+      "damage": {
+  "formula": "COR + ARM + 2",
+  "type": "physical",
+  "scaling": "Version de départ. Sabre court, moins puissant qu’un katana.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["cor", "arm"],
+    "flat": 2,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": ""
+  }
+},
       "taxonomy": {
         "category": "arme",
         "subcategory": "armesSimples",
@@ -105,6 +144,19 @@
         "holdable": true,
         "wearable": false
       },
+      "damage": {
+  "formula": "COR + ARM + 3",
+  "type": "physical",
+  "scaling": "Version de départ.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["cor", "arm"],
+    "flat": 3,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": ""
+  }
+},
       "taxonomy": {
         "category": "arme",
         "subcategory": "armesSimples",
@@ -136,6 +188,19 @@
         "holdable": true,
         "wearable": false
       },
+      "damage": {
+  "formula": "COR + ARM + 2",
+  "type": "physical",
+  "scaling": "Version de départ.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["cor", "arm"],
+    "flat": 2,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": ""
+  }
+},
       "taxonomy": {
         "category": "arme",
         "subcategory": "armesSimples",
@@ -167,6 +232,19 @@
         "holdable": true,
         "wearable": false
       },
+      "damage": {
+  "formula": "COR + ARM + 1(1)",
+  "type": "physical",
+  "scaling": "Version de départ empilable.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["cor", "arm"],
+    "flat": 1,
+    "perItem": 1,
+    "perItemLimitBase": "arm",
+    "condition": "Bonus cumulatif par projectile lancé, maximum ARM."
+  }
+},
       "taxonomy": {
         "category": "arme",
         "subcategory": "armesJet",
@@ -198,6 +276,19 @@
         "holdable": true,
         "wearable": false
       },
+      "damage": {
+  "formula": "TAI + ARM + 1(1)",
+  "type": "physical",
+  "scaling": "Version de départ empilable.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["tai", "arm"],
+    "flat": 1,
+    "perItem": 1,
+    "perItemLimitBase": "arm",
+    "condition": "Bonus cumulatif par projectile lancé, maximum ARM."
+  }
+},
       "taxonomy": {
         "category": "arme",
         "subcategory": "armesJet",
@@ -229,6 +320,19 @@
         "holdable": true,
         "wearable": false
       },
+      "damage": {
+  "formula": "ESP + ARM + 1(1)",
+  "type": "physical",
+  "scaling": "Version de départ empilable.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["esp", "arm"],
+    "flat": 1,
+    "perItem": 1,
+    "perItemLimitBase": "arm",
+    "condition": "Bonus cumulatif par projectile lancé, maximum ARM."
+  }
+},
       "taxonomy": {
         "category": "arme",
         "subcategory": "armesJet",
@@ -269,6 +373,19 @@
         "packTarget": "equipements-depart",
         "tags": ["explosif", "kibaku-fuda", "note", "lot-de-combat", "equipement-depart"]
       },
+      "damage": {
+  "formula": "GEN + 1",
+  "type": "explosive",
+  "scaling": "Explosion de note explosive.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["gen"],
+    "flat": 1,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": "Explosion de zone, blessures et états à résoudre manuellement jusqu’à la 0.1.42."
+  }
+},
       "automation": {
         "status": "manual",
         "notes": "Version de départ. Effet complet à automatiser dans Combat / Actions."

@@ -15,7 +15,19 @@
       "duration": "Instantané",
       "target": "Individuelle",
       "area": "",
-      "damage": { "formula": "À préciser", "type": "physical", "scaling": "Projection de Jūken à distance" },
+      "damage": {
+  "formula": "COR + TAI",
+  "type": "physical",
+  "scaling": "Projection de Jūken à distance.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["cor", "tai"],
+    "flat": 0,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": "Valeur V1 : dégâts de Jūken standard projetés à distance. Ajustement possible plus tard si le databook donne une valeur plus précise."
+  }
+},
       "chakra": { "initial": 50, "maintenance": 0, "text": "50 pts" },
       "prerequisites": { "strict": true, "type": "text", "value": "hyuga-byakugan-juken", "masteryRank": 5, "validated": false, "text": "Clan Hyūga ou accès validé. Byakugan activé, Jūken possédé, Lignée 5 requise." },
       "effect": "Projette une frappe de Jūken à distance. Condition : jet de Jūken réussi et Byakugan activé.",
@@ -39,7 +51,19 @@
       "duration": "Lignée rounds",
       "target": "Individuelle",
       "area": "",
-      "damage": { "formula": "COR + TAI", "type": "physical", "scaling": "Blocage Chakra et pouvoirs de lignée actifs pendant Lignée rounds" },
+      "damage": {
+  "formula": "COR + TAI",
+  "type": "physical",
+  "scaling": "Blocage Chakra et pouvoirs de lignée actifs pendant Lignée rounds.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["cor", "tai"],
+    "flat": 0,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": "Blocage Chakra et pouvoirs de lignée actifs à gérer manuellement jusqu’à la 0.1.42."
+  }
+},
       "chakra": { "initial": 0, "maintenance": 0, "text": "Coût non détaillé dans la source consultée" },
       "prerequisites": { "strict": true, "type": "text", "value": "hyuga-byakugan-juken", "masteryRank": 5, "validated": false, "text": "Clan Hyūga ou accès validé. Byakugan activé, Jūken possédé, Lignée 7 requise." },
       "effect": "Frappe les tenketsu d’une cible et bloque son chakra et ses pouvoirs de lignée actifs pendant Lignée rounds. Condition : attaque de corps à corps réussie.",

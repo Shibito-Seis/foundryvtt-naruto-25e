@@ -12,6 +12,19 @@
         "holdable": true,
         "wearable": false
       },
+      "damage": {
+        "formula": "COR + ARM + 3",
+        "type": "physical",
+        "scaling": "Dégâts d’arme simple.",
+        "calculation": {
+          "enabled": true,
+          "bases": ["cor", "arm"],
+          "flat": 3,
+          "perItem": 0,
+          "perItemLimitBase": "",
+          "condition": ""
+        }
+      },
       "taxonomy": {
         "category": "arme",
         "subcategory": "armesSimples",
@@ -42,6 +55,19 @@
       "carry": {
         "holdable": true,
         "wearable": false
+      },
+      "damage": {
+        "formula": "COR + ARM + 1(1)",
+        "type": "physical",
+        "scaling": "Dégâts d’arme simple. Bonus cumulatif par exemplaire lancé.",
+        "calculation": {
+          "enabled": true,
+          "bases": ["cor", "arm"],
+          "flat": 1,
+          "perItem": 1,
+          "perItemLimitBase": "arm",
+          "condition": "Bonus cumulatif par projectile lancé, maximum ARM."
+        }
       },
       "taxonomy": {
         "category": "arme",
@@ -74,6 +100,19 @@
         "holdable": true,
         "wearable": false
       },
+      "damage": {
+  "formula": "NIN + ARM",
+  "type": "physical",
+  "scaling": "Dégâts d’arme simple.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["nin", "arm"],
+    "flat": 0,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": ""
+  }
+},
       "taxonomy": {
         "category": "arme",
         "subcategory": "armesSimples",
@@ -105,6 +144,19 @@
         "holdable": true,
         "wearable": false
       },
+      "damage": {
+  "formula": "COR + ARM + 2",
+  "type": "physical",
+  "scaling": "Dégâts d’arme simple.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["cor", "arm"],
+    "flat": 2,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": ""
+  }
+},
       "taxonomy": {
         "category": "arme",
         "subcategory": "armesSimples",
@@ -136,6 +188,19 @@
         "holdable": true,
         "wearable": false
       },
+      "damage": {
+  "formula": "COR + ARM + 3",
+  "type": "physical",
+  "scaling": "Dégâts d’arme simple lourde.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["cor", "arm"],
+    "flat": 3,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": ""
+  }
+},
       "taxonomy": {
         "category": "arme",
         "subcategory": "armesSimples",
@@ -167,6 +232,19 @@
         "holdable": true,
         "wearable": false
       },
+      "damage": {
+  "formula": "ESP + ARM + 1(1)",
+  "type": "physical",
+  "scaling": "Dégâts d’arme simple. Bonus cumulatif par exemplaire lancé.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["esp", "arm"],
+    "flat": 1,
+    "perItem": 1,
+    "perItemLimitBase": "arm",
+    "condition": "Bonus cumulatif par projectile lancé, maximum ARM."
+  }
+},
       "taxonomy": {
         "category": "arme",
         "subcategory": "armesSimples",
@@ -198,6 +276,19 @@
         "holdable": true,
         "wearable": false
       },
+      "damage": {
+  "formula": "COR + ARM",
+  "type": "physical",
+  "scaling": "Dégâts d’arme simple.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["cor", "arm"],
+    "flat": 0,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": ""
+  }
+},
       "taxonomy": {
         "category": "arme",
         "subcategory": "armesSimples",
@@ -229,6 +320,19 @@
         "holdable": true,
         "wearable": false
       },
+      "damage": {
+  "formula": "TAI + ARM + 1(1)",
+  "type": "physical",
+  "scaling": "Dégâts d’arme simple. Bonus cumulatif par exemplaire lancé.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["tai", "arm"],
+    "flat": 1,
+    "perItem": 1,
+    "perItemLimitBase": "arm",
+    "condition": "Bonus cumulatif par projectile lancé, maximum ARM."
+  }
+},
       "taxonomy": {
         "category": "arme",
         "subcategory": "armesSimples",

@@ -52,6 +52,19 @@
         "packTarget": "explosifs",
         "tags": ["explosif", "kibaku-fuda", "note", "fuda", "impulsion", "zone"]
       },
+      "damage": {
+  "formula": "GEN + 1",
+  "type": "explosive",
+  "scaling": "Explosion de note explosive.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["gen"],
+    "flat": 1,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": "Explosion de zone Z2. Blessures et états à résoudre manuellement jusqu’à la 0.1.42."
+  }
+},
       "automation": {
         "status": "manual",
         "notes": "Référence technique : Kawarimi : Kibaku Fuda, niveau 1, GEN+1 dégâts, Z2, IA 10 rounds ou instantanée par impulsion. À automatiser en 0.1.41."

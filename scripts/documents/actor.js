@@ -2153,29 +2153,47 @@ export class Naruto25eActor extends Actor {
     const vigueur = system.resources?.vigueur;
     if (vigueur) {
       const bonus = Number(vigueur.bonus ?? 0);
-      vigueur.max = Math.max(
-        0,
-        2
-        + cor
-        + bonus
-        + Number(chakraBonuses.vigueurMax ?? 0)
-        + Number(lineageResourceBonuses.vigueurMax ?? 0)
-      );
-      vigueur.value = this._clampNumber(vigueur.value, 0, vigueur.max);
+      const base = 2 + cor;
+      const specializationBonus = Number(chakraBonuses.vigueurMax ?? 0);
+      const lineageBonus = Number(lineageResourceBonuses.vigueurMax ?? 0);
+      const total = Math.max(0, base + bonus + specializationBonus + lineageBonus);
+
+      vigueur.base = base;
+      vigueur.bonus = bonus;
+      vigueur.specializationBonus = specializationBonus;
+      vigueur.lineageBonus = lineageBonus;
+      vigueur.total = total;
+
+      /*
+        Vigueur n’est pas une réserve actuel / max.
+        On garde value et max synchronisés pour compatibilité avec les anciens champs,
+        mais la valeur utile est désormais total/value.
+      */
+      vigueur.value = total;
+      vigueur.max = total;
     }
 
     const caractere = system.resources?.caractere;
     if (caractere) {
       const bonus = Number(caractere.bonus ?? 0);
-      caractere.max = Math.max(
-        0,
-        2
-        + esp
-        + bonus
-        + Number(chakraBonuses.caractereMax ?? 0)
-        + Number(lineageResourceBonuses.caractereMax ?? 0)
-      );
-      caractere.value = this._clampNumber(caractere.value, 0, caractere.max);
+      const base = 2 + esp;
+      const specializationBonus = Number(chakraBonuses.caractereMax ?? 0);
+      const lineageBonus = Number(lineageResourceBonuses.caractereMax ?? 0);
+      const total = Math.max(0, base + bonus + specializationBonus + lineageBonus);
+
+      caractere.base = base;
+      caractere.bonus = bonus;
+      caractere.specializationBonus = specializationBonus;
+      caractere.lineageBonus = lineageBonus;
+      caractere.total = total;
+
+      /*
+        Caractère n’est pas une réserve actuel / max.
+        On garde value et max synchronisés pour compatibilité avec les anciens champs,
+        mais la valeur utile est désormais total/value.
+      */
+      caractere.value = total;
+      caractere.max = total;
     }
 
     const chakra = system.resources?.chakra;
@@ -3259,12 +3277,278 @@ async decreaseBase(baseKey) {
     return 0;
   }
 
-  _getCombatDefenseValue(defenseKey) {
-    if (defenseKey === "caractere") {
-      return Number(this.system.resources?.caractere?.max ?? this.system.resources?.caractere?.value ?? 0);
+  _normalizeDamageData(damage = {}) {
+    const normalized = foundry.utils.deepClone(damage ?? {});
+
+    normalized.formula = String(normalized.formula ?? "");
+    normalized.type = String(normalized.type ?? "none");
+    normalized.scaling = String(normalized.scaling ?? "");
+    normalized.calculation = normalized.calculation ?? {};
+    normalized.calculation.enabled = Boolean(normalized.calculation.enabled);
+    normalized.calculation.bases = Array.isArray(normalized.calculation.bases)
+      ? normalized.calculation.bases
+          .map((base) => String(base ?? "").trim())
+          .filter(Boolean)
+      : [];
+    normalized.calculation.flat = Number(normalized.calculation.flat ?? 0);
+    normalized.calculation.perItem = Math.max(0, Number(normalized.calculation.perItem ?? 0));
+    normalized.calculation.perItemLimitBase = String(normalized.calculation.perItemLimitBase ?? "");
+    normalized.calculation.condition = String(normalized.calculation.condition ?? "");
+
+    return normalized;
+  }
+
+  _getDamageBaseValue(baseKey) {
+    const key = String(baseKey ?? "").toLowerCase();
+    const base = this.system.bases?.[key];
+
+    if (!base) return 0;
+
+    return Number(base.value ?? 0) + Number(base.bonus ?? 0);
+  }
+
+  _getDamageDefenseKey(damageType = "physical") {
+    const type = String(damageType ?? "physical").toLowerCase();
+
+    if (["mental", "psychic", "spiritual", "emotional"].includes(type)) {
+      return "caractere";
     }
 
-    return Number(this.system.resources?.vigueur?.max ?? this.system.resources?.vigueur?.value ?? 0);
+    return "vigueur";
+  }
+
+  _getDamageDefenseLabel(defenseKey = "vigueur") {
+    return defenseKey === "caractere" ? "Caractère" : "Vigueur";
+  }
+
+  _getDamageDefenseValue(defenseKey = "vigueur", targetActor = null) {
+    const actor = targetActor ?? this;
+
+    if (defenseKey === "caractere") {
+      return Math.max(0, Number(actor.system.resources?.caractere?.value ?? actor.system.resources?.caractere?.max ?? 0));
+    }
+
+    return Math.max(0, Number(actor.system.resources?.vigueur?.value ?? actor.system.resources?.vigueur?.max ?? 0));
+  }
+
+  _calculateDamageData(damage = {}, options = {}) {
+    const normalized = this._normalizeDamageData(damage);
+    const calculation = normalized.calculation ?? {};
+
+    if (!calculation.enabled) {
+      return {
+        calculable: false,
+        formula: normalized.formula,
+        type: normalized.type,
+        total: 0,
+        baseTotal: 0,
+        flat: 0,
+        perItemBonus: 0,
+        perItemCount: 0,
+        parts: [],
+        reason: "Aucun calcul de dégâts automatisé n’est défini."
+      };
+    }
+
+    const parts = [];
+    let baseTotal = 0;
+
+    for (const baseKey of calculation.bases ?? []) {
+      const value = this._getDamageBaseValue(baseKey);
+      baseTotal += value;
+
+      parts.push({
+        key: baseKey,
+        label: NARUTO25E.baseLabels?.[baseKey] ?? baseKey,
+        value
+      });
+    }
+
+    const flat = Number(calculation.flat ?? 0);
+    const perItemCount = Math.max(0, Number(options.perItemCount ?? 0));
+    const perItem = Math.max(0, Number(calculation.perItem ?? 0));
+    const limitBaseKey = String(calculation.perItemLimitBase ?? "");
+    const limit = limitBaseKey ? Math.max(0, this._getDamageBaseValue(limitBaseKey)) : null;
+    const rawPerItemBonus = perItem * perItemCount;
+    const perItemBonus = limit === null ? rawPerItemBonus : Math.min(rawPerItemBonus, limit);
+
+    const total = Math.max(0, baseTotal + flat + perItemBonus);
+
+    return {
+      calculable: true,
+      formula: normalized.formula,
+      type: normalized.type,
+      total,
+      baseTotal,
+      flat,
+      perItemBonus,
+      perItemCount,
+      perItem,
+      perItemLimitBase: limitBaseKey,
+      perItemLimit: limit,
+      parts,
+      condition: String(calculation.condition ?? "")
+    };
+  }
+
+  _createDamageButtonHtml(damageAvailable = false) {
+    if (!damageAvailable) return "";
+
+    return `
+      <div class="button-row">
+        <button type="button" class="naruto-chat-damage-roll">
+          Calculer les dégâts
+        </button>
+      </div>
+    `;
+  }
+
+  async _createDamageChatCard(payload = {}) {
+    const damage = this._normalizeDamageData(payload.damage ?? {});
+    const damageResult = this._calculateDamageData(damage, {
+      perItemCount: Number(payload.perItemCount ?? 0)
+    });
+
+    const targetActor = payload.targetActorId
+      ? game.actors?.get(payload.targetActorId)
+      : null;
+
+    const defenseKey = this._getDamageDefenseKey(payload.damageType ?? damage.type);
+    const defenseLabel = this._getDamageDefenseLabel(defenseKey);
+    const defenseValue = targetActor
+      ? this._getDamageDefenseValue(defenseKey, targetActor)
+      : 0;
+    const passingDamage = targetActor
+      ? Math.max(0, damageResult.total - defenseValue)
+      : damageResult.total;
+
+    const safeActorName = foundry.utils.escapeHTML?.(this.name) ?? this.name;
+    const safeSourceName = foundry.utils.escapeHTML?.(payload.sourceName ?? "Dégâts") ?? (payload.sourceName ?? "Dégâts");
+    const safeTargetName = targetActor
+      ? (foundry.utils.escapeHTML?.(targetActor.name) ?? targetActor.name)
+      : "—";
+    const safeFormula = foundry.utils.escapeHTML?.(damageResult.formula || "—") ?? (damageResult.formula || "—");
+    const safeType = foundry.utils.escapeHTML?.(payload.damageType ?? damage.type ?? "physical") ?? (payload.damageType ?? damage.type ?? "physical");
+    const safeCondition = foundry.utils.escapeHTML?.(damageResult.condition ?? "") ?? (damageResult.condition ?? "");
+
+    const partsText = damageResult.parts?.length
+      ? damageResult.parts.map((part) => `${part.label} ${part.value}`).join(" + ")
+      : "—";
+
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+      flavor: `Dégâts — ${safeSourceName}`,
+      content: `
+        <div class="naruto-roll-card naruto-damage-card">
+          <header class="naruto-roll-header">
+            <h3>Dégâts — ${safeSourceName}</h3>
+          </header>
+
+          <p><strong>${safeActorName}</strong> calcule les dégâts.</p>
+
+          ${damageResult.calculable ? `
+            <div class="naruto-roll-result">
+              ${damageResult.total}
+            </div>
+
+            <div class="naruto-roll-details">
+              <span>Formule : ${safeFormula}</span>
+              <span>Détail : ${partsText}${damageResult.flat ? ` + ${damageResult.flat}` : ""}${damageResult.perItemBonus ? ` + cumul ${damageResult.perItemBonus}` : ""}</span>
+              <span>Type : ${safeType}</span>
+              ${safeCondition ? `<span>Condition : ${safeCondition}</span>` : ""}
+            </div>
+
+            ${targetActor ? `
+              <div class="naruto-roll-details">
+                <span>Cible : ${safeTargetName}</span>
+                <span>Défense passive : ${defenseLabel} ${defenseValue}</span>
+                <span>Dégâts qui passent : ${passingDamage}</span>
+              </div>
+
+              <p>Les blessures et états ne sont pas appliqués automatiquement avant la 0.1.42.</p>
+            ` : `
+              <p>Aucune cible de dégâts renseignée : dégâts bruts ${damageResult.total}.</p>
+            `}
+          ` : `
+            <div class="naruto-roll-result">
+              Manuel
+            </div>
+
+            <p>${damageResult.reason}</p>
+            <p>Formule papier : ${safeFormula}</p>
+          `}
+        </div>
+      `
+    });
+
+    return damageResult;
+  }
+
+  async rollTechniqueDamage(itemId) {
+    const item = this.items.get(itemId);
+
+    if (!item || item.type !== "technique") {
+      ui.notifications.warn("Technique introuvable.");
+      return null;
+    }
+
+    const targets = Array.from(game.user?.targets ?? []);
+    const targetActor = targets.length === 1 ? targets[0]?.actor : null;
+
+    return this._createDamageChatCard({
+      sourceName: item.name,
+      sourceType: "technique",
+      itemId,
+      targetActorId: targetActor?.id ?? "",
+      damage: item.system.damage ?? {},
+      damageType: this._getTechniqueDamageType(item)
+    });
+  }
+
+  async rollInventoryCombatDamage(itemId) {
+    const item = this.system.inventory?.items?.find((entry) => entry.id === itemId);
+
+    if (!item) {
+      ui.notifications.warn("Objet introuvable.");
+      return null;
+    }
+
+    const targets = Array.from(game.user?.targets ?? []);
+    const targetActor = targets.length === 1 ? targets[0]?.actor : null;
+
+    return this._createDamageChatCard({
+      sourceName: item.name,
+      sourceType: "inventory",
+      itemId,
+      targetActorId: targetActor?.id ?? "",
+      damage: item.damage ?? {
+        formula: this._extractInventoryDamageFormula(item),
+        type: "physical",
+        calculation: {
+          enabled: false
+        }
+      },
+      damageType: item.damage?.type ?? "physical"
+    });
+  }
+
+  async rollDamageFromChatMessage(message) {
+    const payload = message?.getFlag?.("naruto-25e", "damagePayload");
+
+    if (!payload) {
+      ui.notifications.warn("Aucune donnée de dégâts trouvée sur cette carte.");
+      return null;
+    }
+
+    return this._createDamageChatCard(payload);
+  }
+
+  _getCombatDefenseValue(defenseKey) {
+    if (defenseKey === "caractere") {
+      return Number(this.system.resources?.caractere?.value ?? this.system.resources?.caractere?.max ?? 0);
+    }
+
+    return Number(this.system.resources?.vigueur?.value ?? this.system.resources?.vigueur?.max ?? 0);
   }
 
   _prepareCombat(system) {
@@ -3355,6 +3639,9 @@ async decreaseBase(baseKey) {
     combat.counters.interceptions = combat.counters.interceptions ?? {};
     combat.counters.interceptions.arm = combat.counters.interceptions.arm ?? {};
     combat.counters.interceptions.tai = combat.counters.interceptions.tai ?? {};
+    combat.counters.defenses = combat.counters.defenses ?? {};
+    combat.counters.defenses.esquive = combat.counters.defenses.esquive ?? {};
+    combat.counters.defenses.parade = combat.counters.defenses.parade ?? {};
     combat.counters.lineagePowers = combat.counters.lineagePowers ?? {};
 
     const prepareCounter = (counter, max) => {
@@ -3373,6 +3660,20 @@ async decreaseBase(baseKey) {
 
     prepareCounter(combat.counters.interceptions.arm, combat.interceptions.arm.total);
     prepareCounter(combat.counters.interceptions.tai, combat.interceptions.tai.total);
+
+
+    prepareCounter(combat.counters.defenses.esquive, 1);
+    prepareCounter(combat.counters.defenses.parade, 1);
+
+    combat.defenses = combat.defenses ?? {};
+    combat.defenses.physical = combat.defenses.physical ?? {};
+    combat.defenses.mental = combat.defenses.mental ?? {};
+
+    combat.defenses.physical.vigueur = Math.max(0, Number(system.resources?.vigueur?.value ?? 0));
+    combat.defenses.physical.label = "Vigueur";
+    combat.defenses.mental.caractere = Math.max(0, Number(system.resources?.caractere?.value ?? 0));
+    combat.defenses.mental.label = "Caractère";
+    combat.defenses.mental.activeSkill = "mental";
 
     const previousLineageMax = Math.max(0, Number(combat.counters.lineagePowers.max ?? 0));
     const previousLineageRemaining = Number(combat.counters.lineagePowers.remaining);
@@ -4133,14 +4434,137 @@ async decreaseBase(baseKey) {
 
   _getBasicDefenseOptions(kind) {
     const options = [];
+    const defenseCounters = this.system.combat?.counters?.defenses ?? {};
 
     const esquive = this._getSkillCombatTotal("esquive");
     const parade = this._getSkillCombatTotal("parade");
 
-    if (esquive) options.push(esquive);
-    if (parade) options.push(parade);
+    const esquiveRemaining = Number(defenseCounters.esquive?.remaining ?? 0);
+    const paradeRemaining = Number(defenseCounters.parade?.remaining ?? 0);
+
+    if (esquive && esquiveRemaining > 0) {
+      options.push({
+        ...esquive,
+        mode: "active",
+        counterKey: "esquive",
+        limited: true,
+        remaining: esquiveRemaining
+      });
+    }
+
+    if (parade && paradeRemaining > 0) {
+      options.push({
+        ...parade,
+        mode: "active",
+        counterKey: "parade",
+        limited: true,
+        remaining: paradeRemaining
+      });
+    }
+
+    const vigueur = Math.max(0, Number(this.system.resources?.vigueur?.value ?? 0));
+
+    options.push({
+      key: "encaisser",
+      label: "Encaisser",
+      total: vigueur,
+      mode: "passive",
+      defenseKey: "vigueur",
+      limited: false,
+      remaining: null
+    });
 
     return options;
+  }
+
+  _canUseSkillForDefense(skillKey) {
+    const skill = this.system.skills?.[skillKey];
+    const definition = NARUTO25E.skillDefinitions?.[skillKey];
+
+    if (!skill || !definition) return false;
+
+    return Boolean(skill.owned) || Boolean(definition.ownedByDefault);
+  }
+
+  _getMentalDefenseOptions(profile = {}) {
+    const options = [];
+
+    if (this._canUseSkillForDefense("mental")) {
+      const mental = this._getSkillCombatTotal("mental");
+
+      if (mental) {
+        options.push({
+          ...mental,
+          mode: "active",
+          counterKey: "",
+          limited: false,
+          remaining: null,
+          defenseFamily: "mental"
+        });
+      }
+    }
+
+    const caractere = Math.max(0, Number(this.system.resources?.caractere?.value ?? 0));
+
+    options.push({
+      key: "encaisserCaractere",
+      label: "Encaisser — Caractère",
+      total: caractere,
+      mode: "passive",
+      defenseKey: "caractere",
+      limited: false,
+      remaining: null,
+      defenseFamily: "mental"
+    });
+
+    return options;
+  }
+
+  _getDefenseOptionsForAttack(profile = {}) {
+    const defenseType = String(profile.defenseType ?? "physical");
+
+    if (defenseType === "mental") {
+      return this._getMentalDefenseOptions(profile);
+    }
+
+    return this._getBasicDefenseOptions(profile.kind ?? "physical");
+  }
+
+  _getPsychicResistanceSummary(profile = {}) {
+    const damageType = String(profile.damageType ?? "");
+    const isPsychicDamage = ["psychic", "mental", "spiritual", "emotional"].includes(damageType);
+
+    if (!isPsychicDamage) return null;
+
+    const summaries = [];
+
+    if (this._canUseSkillForDefense("resistancesPsychiques")) {
+      const resistance = this._getSkillCombatTotal("resistancesPsychiques");
+
+      if (resistance) {
+        summaries.push({
+          key: "resistancesPsychiques",
+          label: resistance.label,
+          total: resistance.total,
+          note: "S’applique aux dégâts psychiques avant comparaison avec Caractère."
+        });
+      }
+    }
+
+    if (damageType === "emotional" && this._canUseSkillForDefense("resistancesEmotionnelles")) {
+      const resistance = this._getSkillCombatTotal("resistancesEmotionnelles");
+
+      if (resistance) {
+        summaries.push({
+          key: "resistancesEmotionnelles",
+          label: resistance.label,
+          total: resistance.total,
+          note: "S’applique aux dégâts émotionnels avant comparaison avec Caractère."
+        });
+      }
+    }
+
+    return summaries.length ? summaries : null;
   }
 
   async _chooseDefenseOption(targetActor, kind, defenseOptions) {
@@ -4156,10 +4580,17 @@ async decreaseBase(baseKey) {
     }
 
     const rows = defenseOptions.map((option) => {
+      const safeLabel = foundry.utils.escapeHTML?.(option.label) ?? option.label;
+      const modeLabel = option.mode === "passive"
+        ? "passif"
+        : option.limited
+        ? `${option.remaining} usage restant`
+        : "actif";
+
       return `
         <label class="naruto-defense-choice">
           <input type="radio" name="defense" value="${option.key}" ${option.key === defenseOptions[0].key ? "checked" : ""} />
-          <span>${foundry.utils.escapeHTML?.(option.label) ?? option.label}</span>
+          <span>${safeLabel} <small>(${modeLabel})</small></span>
           <strong>${option.total}</strong>
         </label>
       `;
@@ -4197,16 +4628,39 @@ async decreaseBase(baseKey) {
     });
   }
 
-  async rollBasicAttack(kind) {
-    const attack = this.system.combat?.attacks?.[kind];
+  async _consumeDefenseOption(defense) {
+    if (!defense?.limited || !defense.counterKey) return true;
 
-    if (!attack) {
-      ui.notifications.warn("Attaque introuvable.");
-      return null;
+    const path = `system.combat.counters.defenses.${defense.counterKey}.remaining`;
+    const current = Number(foundry.utils.getProperty(this, path) ?? 0);
+
+    if (current <= 0) {
+      ui.notifications.warn(`${defense.label} n’est plus disponible ce tour.`);
+      return false;
     }
 
-    const label = kind === "arm" ? "Attaque ARM basique" : "Attaque TAI basique";
-    const attackTotal = Number(attack.total ?? 0);
+    await this.update({
+      [path]: Math.max(0, current - 1)
+    });
+
+    return true;
+  }
+
+  async _resolveTargetedAttack(profile = {}) {
+    const label = String(profile.label ?? "Attaque");
+    const attackTotal = Math.max(0, Number(profile.attackTotal ?? 0));
+    const defenseType = String(profile.defenseType ?? "physical");
+    const damageFormula = String(profile.damageFormula ?? "");
+    const damageType = String(profile.damageType ?? "physical");
+    const damageData = this._normalizeDamageData(profile.damage ?? {
+      formula: damageFormula,
+      type: damageType,
+      calculation: {
+        enabled: false
+      }
+    });
+    const damageAvailable = Boolean(damageData.calculation?.enabled);
+    const effectText = String(profile.effectText ?? "");
 
     const targets = Array.from(game.user?.targets ?? []);
 
@@ -4224,28 +4678,71 @@ async decreaseBase(baseKey) {
       return null;
     }
 
-    const defenseOptions = targetActor._getBasicDefenseOptions?.(kind) ?? [];
-    const defense = await targetActor._chooseDefenseOption?.(targetActor, kind, defenseOptions);
+    const defenseOptions = targetActor._getDefenseOptionsForAttack?.({
+      ...profile,
+      defenseType
+    }) ?? [];
+
+    const defense = await targetActor._chooseDefenseOption?.(targetActor, profile.kind ?? defenseType, defenseOptions);
 
     if (!defense) {
       ui.notifications.warn("Aucune défense valide sélectionnée.");
       return null;
     }
 
-    const attackRoll = await this._rollExplodingD10Data(attackTotal);
-    const defenseRoll = await targetActor._rollExplodingD10Data(defense.total);
+    const consumed = await targetActor._consumeDefenseOption?.(defense);
 
-    const success = attackRoll.total >= defenseRoll.total;
-    const margin = attackRoll.total - defenseRoll.total;
+    if (!consumed) return null;
+
+    const attackRoll = await this._rollExplodingD10Data(attackTotal);
+    const defenseRoll = defense.mode === "passive"
+      ? null
+      : await targetActor._rollExplodingD10Data(defense.total);
+
+    const defenseTotal = defenseRoll?.total ?? Number(defense.total ?? 0);
+    const success = attackRoll.total >= defenseTotal;
+    const margin = attackRoll.total - defenseTotal;
 
     const safeActorName = foundry.utils.escapeHTML?.(this.name) ?? this.name;
     const safeTargetName = foundry.utils.escapeHTML?.(targetActor.name) ?? targetActor.name;
     const safeLabel = foundry.utils.escapeHTML?.(label) ?? label;
     const safeDefenseLabel = foundry.utils.escapeHTML?.(defense.label) ?? defense.label;
+    const safeDamageFormula = foundry.utils.escapeHTML?.(damageFormula) ?? damageFormula;
+    const safeDamageType = foundry.utils.escapeHTML?.(damageType) ?? damageType;
+    const safeEffectText = foundry.utils.escapeHTML?.(effectText) ?? effectText;
+
+    const resistanceSummaries = targetActor._getPsychicResistanceSummary?.({
+      damageType
+    });
+
+    const resistanceBlock = resistanceSummaries?.length
+      ? `
+        <div class="naruto-roll-details">
+          <strong>Résistances pertinentes :</strong>
+          ${resistanceSummaries.map((resistance) => {
+            const safeResistanceLabel = foundry.utils.escapeHTML?.(resistance.label) ?? resistance.label;
+            const safeResistanceNote = foundry.utils.escapeHTML?.(resistance.note) ?? resistance.note;
+
+            return `<span>${safeResistanceLabel} ${resistance.total} — ${safeResistanceNote}</span>`;
+          }).join("")}
+        </div>
+      `
+      : "";
 
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: this }),
       flavor: `${safeLabel} — ${safeActorName}`,
+      flags: {
+        "naruto-25e": {
+          damagePayload: {
+            actorId: this.id,
+            targetActorId: targetActor.id,
+            sourceName: label,
+            damage: damageData,
+            damageType
+          }
+        }
+      },
       content: `
         <div class="naruto-roll-card">
           <header class="naruto-roll-header">
@@ -4260,10 +4757,31 @@ async decreaseBase(baseKey) {
 
           <div class="naruto-roll-details">
             <span>Résultat d’attaque : ${attackRoll.total}</span>
+            <span>Défense : ${safeDefenseLabel} — ${defenseTotal}${defense.mode === "passive" ? " fixe" : ""}</span>
             <span>Cible : ${safeTargetName}</span>
+            <span>Marge : ${margin >= 0 ? "+" : ""}${margin}</span>
           </div>
 
-          ${success ? `<p>L’attaque touche. Résous ensuite les dégâts et blessures.</p>` : `<p>La défense tient bon.</p>`}
+          ${safeDamageFormula ? `
+            <div class="naruto-roll-details">
+              <span>Dégâts : ${safeDamageFormula}</span>
+              <span>Type : ${safeDamageType}</span>
+            </div>
+          ` : ""}
+
+          ${resistanceBlock}
+
+          ${safeEffectText ? `
+            <div class="naruto-consumable-text">
+              ${safeEffectText}
+            </div>
+          ` : ""}
+
+          ${success ? `
+            <p>L’action touche ou affecte la cible.</p>
+            ${this._createDamageButtonHtml(damageAvailable)}
+            <p>Les blessures et états restent à appliquer manuellement jusqu’à la 0.1.42.</p>
+          ` : `<p>La défense tient bon.</p>`}
         </div>
       `,
       rolls: [attackRoll.roll]
@@ -4282,16 +4800,394 @@ async decreaseBase(baseKey) {
 
             <div><strong>Attaquant :</strong> ${safeActorName}</div>
             <div><strong>Cible :</strong> ${safeTargetName}</div>
+            <div><strong>Type de défense :</strong> ${defenseType}</div>
             <div><strong>Attaque :</strong> ${attackRoll.total} — D10 ${attackRoll.diceText} + ${attackRoll.modifier}</div>
-            <div><strong>Défense :</strong> ${defenseRoll.total} — ${safeDefenseLabel}, D10 ${defenseRoll.diceText} + ${defenseRoll.modifier}</div>
+            <div><strong>Défense :</strong> ${defenseTotal} — ${safeDefenseLabel}${defenseRoll ? `, D10 ${defenseRoll.diceText} + ${defenseRoll.modifier}` : " fixe"}</div>
             <div><strong>Marge :</strong> ${margin >= 0 ? "+" : ""}${margin}</div>
           </div>
         `,
-        rolls: [defenseRoll.roll]
+        rolls: defenseRoll ? [defenseRoll.roll] : []
       });
     }
 
     return attackRoll.roll;
+  }
+
+  async rollBasicAttack(kind) {
+    const attack = this.system.combat?.attacks?.[kind];
+
+    if (!attack) {
+      ui.notifications.warn("Attaque introuvable.");
+      return null;
+    }
+
+    const label = kind === "arm" ? "Attaque ARM basique" : "Attaque TAI basique";
+    const attackTotal = Number(attack.total ?? 0);
+
+    const damageFormula = kind === "arm"
+      ? this.system.combat?.damage?.arm?.formula ?? ""
+      : this.system.combat?.damage?.tai?.formula ?? "";
+
+    const damage = kind === "arm"
+      ? {
+          formula: damageFormula,
+          type: "physical",
+          calculation: {
+            enabled: true,
+            bases: ["cor", "arm"],
+            flat: Number(this.system.combat?.damage?.arm?.bonus ?? 0),
+            perItem: 0,
+            perItemLimitBase: "",
+            condition: ""
+          }
+        }
+      : {
+          formula: damageFormula,
+          type: "physical",
+          calculation: {
+            enabled: true,
+            bases: ["cor", "tai"],
+            flat: Number(this.system.combat?.damage?.tai?.bonus ?? 0),
+            perItem: 0,
+            perItemLimitBase: "",
+            condition: ""
+          }
+        };
+
+    return this._resolveTargetedAttack({
+      label,
+      attackTotal,
+      kind,
+      defenseType: "physical",
+      damageFormula,
+      damageType: "physical",
+      damage
+    });
+  }
+
+  _getTechniqueSkillTotal(item) {
+    const system = item?.system ?? {};
+    const skillKey = String(system.skill ?? "");
+    const baseKey = String(system.base ?? "");
+
+    const skill = this.system.skills?.[skillKey];
+    const definition = NARUTO25E.skillDefinitions?.[skillKey];
+
+    if (skillKey && skill && definition && (skill.owned || definition.ownedByDefault)) {
+      return {
+        key: skillKey,
+        label: definition.label ?? skillKey,
+        total: Number(skill.total ?? 0)
+      };
+    }
+
+    if (baseKey) {
+      const base = this.system.bases?.[baseKey];
+
+      if (base) {
+        const label = NARUTO25E.baseLabels?.[baseKey] ?? base.label ?? baseKey;
+        const total = Number(base.value ?? 0) + Number(base.bonus ?? 0);
+
+        return {
+          key: baseKey,
+          label,
+          total
+        };
+      }
+    }
+
+    return null;
+  }
+
+  _isTechniqueMentalAttack(item) {
+    const system = item?.system ?? {};
+    const family = String(system.family ?? "").toLowerCase();
+    const category = String(system.taxonomy?.category ?? "").toLowerCase();
+    const skill = String(system.skill ?? "").toLowerCase();
+    const damageType = String(system.damage?.type ?? "").toLowerCase();
+
+    return family === "genjutsu"
+      || category === "genjutsu"
+      || ["gensou", "yuryoku"].includes(skill)
+      || ["mental", "psychic", "spiritual", "emotional"].includes(damageType);
+  }
+
+  _isTechniqueOffensive(item) {
+    const system = item?.system ?? {};
+    const damageFormula = String(system.damage?.formula ?? "").trim();
+    const damageType = String(system.damage?.type ?? "none").toLowerCase();
+    const effect = String(system.effect ?? "").toLowerCase();
+
+    if (damageFormula && damageType !== "none") return true;
+
+    return [
+      "attaque",
+      "dégât",
+      "degat",
+      "blesse",
+      "touche",
+      "ralenti",
+      "bloque",
+      "obstrue",
+      "hallucination",
+      "sommeil",
+      "brûlure",
+      "brulure"
+    ].some((keyword) => effect.includes(keyword));
+  }
+
+  _getTechniqueDefenseType(item) {
+    if (this._isTechniqueMentalAttack(item)) return "mental";
+
+    return "physical";
+  }
+
+  _getTechniqueDamageType(item) {
+    const rawType = String(item?.system?.damage?.type ?? "none").toLowerCase();
+
+    if (rawType && rawType !== "none") return rawType;
+    if (this._isTechniqueMentalAttack(item)) return "mental";
+
+    return "physical";
+  }
+
+  async _spendTechniqueChakra(item) {
+    const initialCost = Math.max(0, Number(item?.system?.chakra?.initial ?? 0));
+
+    if (initialCost <= 0) {
+      return {
+        spent: 0,
+        before: Math.max(0, Number(this.system.resources?.chakra?.value ?? 0)),
+        after: Math.max(0, Number(this.system.resources?.chakra?.value ?? 0)),
+        max: Math.max(0, Number(this.system.resources?.chakra?.max ?? 0))
+      };
+    }
+
+    const chakra = this.system.resources?.chakra ?? {};
+    const current = Math.max(0, Number(chakra.value ?? 0));
+    const max = Math.max(0, Number(chakra.max ?? 0));
+
+    if (current < initialCost) {
+      ui.notifications.warn(`${this.name} n’a pas assez de Chakra pour utiliser ${item.name} (${current}/${initialCost}).`);
+      return null;
+    }
+
+    const next = Math.max(0, current - initialCost);
+
+    await this.update({
+      "system.resources.chakra.value": next
+    });
+
+    return {
+      spent: initialCost,
+      before: current,
+      after: next,
+      max
+    };
+  }
+
+  async _startMaintainedTechnique(item, chakraSpend = null) {
+    const maintenanceCost = Math.max(0, Number(item?.system?.chakra?.maintenance ?? 0));
+
+    if (maintenanceCost <= 0) return;
+
+    if (this.isLineagePowerActive?.(item)) return;
+
+    const activePowers = this._getActiveLineagePowers?.() ?? [];
+
+    const updatedActivePowers = [
+      ...activePowers,
+      {
+        id: foundry.utils.randomID(16),
+        itemId: item.id,
+        uuid: item.uuid,
+        name: item.name,
+        activationCost: Math.max(0, Number(chakraSpend?.spent ?? item.system?.chakra?.initial ?? 0)),
+        maintenanceCost,
+        isTechnique: true,
+        startedRound: game.combat?.round ?? 0,
+        startedTurn: game.combat?.turn ?? 0
+      }
+    ];
+
+    await this.update({
+      "system.resources.activeLineagePowers": updatedActivePowers
+    });
+  }
+
+  async _createTechniqueChatCard(item, options = {}) {
+    const system = item.system ?? {};
+    const chakraSpend = options.chakraSpend ?? {};
+    const roll = options.roll ?? null;
+    const rollTotal = options.rollTotal ?? null;
+    const effectText = String(system.effect ?? "");
+    const damageFormula = String(system.damage?.formula ?? "");
+    const damageType = this._getTechniqueDamageType(item);
+    const damageResult = this._calculateDamageData(system.damage ?? {});
+    const maintenanceCost = Math.max(0, Number(system.chakra?.maintenance ?? 0));
+    const familyLabel = NARUTO25E.techniqueFamilies?.[system.family] ?? system.family ?? "—";
+    const rankLabel = NARUTO25E.techniqueRanks?.[system.rank] ?? system.rank ?? "—";
+    const actionLabel = NARUTO25E.techniqueActionTypes?.[system.actionType] ?? system.actionType ?? "—";
+    const skillData = this._getTechniqueSkillTotal(item);
+
+    const safeTechniqueName = foundry.utils.escapeHTML?.(item.name) ?? item.name;
+    const safeActorName = foundry.utils.escapeHTML?.(this.name) ?? this.name;
+    const safeFamily = foundry.utils.escapeHTML?.(familyLabel) ?? familyLabel;
+    const safeRank = foundry.utils.escapeHTML?.(rankLabel) ?? rankLabel;
+    const safeAction = foundry.utils.escapeHTML?.(actionLabel) ?? actionLabel;
+    const safeSkill = foundry.utils.escapeHTML?.(skillData?.label ?? "—") ?? (skillData?.label ?? "—");
+    const safeRange = foundry.utils.escapeHTML?.(system.range || "—") ?? (system.range || "—");
+    const safeTarget = foundry.utils.escapeHTML?.(system.target || "—") ?? (system.target || "—");
+    const safeDuration = foundry.utils.escapeHTML?.(system.duration || "—") ?? (system.duration || "—");
+    const safeArea = foundry.utils.escapeHTML?.(system.area || "—") ?? (system.area || "—");
+    const safeDamageFormula = foundry.utils.escapeHTML?.(damageFormula || "—") ?? (damageFormula || "—");
+    const safeDamageType = foundry.utils.escapeHTML?.(damageType) ?? damageType;
+    const safeEffect = foundry.utils.escapeHTML?.(effectText) ?? effectText;
+
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+      flavor: `Technique : ${safeTechniqueName}`,
+      content: `
+        <div class="naruto-roll-card naruto-technique-card">
+          <header class="naruto-roll-header">
+            <h3>${safeTechniqueName} — ${safeActorName}</h3>
+          </header>
+
+          <div class="naruto-technique-meta">
+            <span><strong>Famille</strong> ${safeFamily}</span>
+            <span><strong>Rang</strong> ${safeRank}</span>
+            <span><strong>Action</strong> ${safeAction}</span>
+            <span><strong>Compétence</strong> ${safeSkill}</span>
+          </div>
+
+          ${roll ? `
+            <div class="naruto-roll-result">
+              ${rollTotal}
+            </div>
+          ` : `
+            <div class="naruto-roll-result">
+              Sans jet ciblé
+            </div>
+          `}
+
+          <div class="naruto-technique-details">
+            <div><strong>Chakra :</strong> ${chakraSpend.before ?? 0} → ${chakraSpend.after ?? 0} / ${chakraSpend.max ?? 0}</div>
+            <div><strong>Coût initial :</strong> ${chakraSpend.spent ?? 0}</div>
+            <div><strong>Entretien :</strong> ${maintenanceCost} Chakra / tour</div>
+            <div><strong>Portée :</strong> ${safeRange}</div>
+            <div><strong>Cible :</strong> ${safeTarget}</div>
+            <div><strong>Durée :</strong> ${safeDuration}</div>
+            <div><strong>Zone :</strong> ${safeArea}</div>
+            <div><strong>Dégâts :</strong> ${safeDamageFormula} ${safeDamageType}</div>
+            ${damageResult.calculable ? `<div><strong>Dégâts calculés :</strong> ${damageResult.total}</div>` : ""}
+          </div>
+
+          ${maintenanceCost > 0 ? `
+            <p class="naruto-technique-maintained">
+              Technique maintenue ajoutée à l’entretien actif.
+            </p>
+          ` : ""}
+
+          ${safeEffect ? `
+            <div class="naruto-technique-effect">
+              <strong>Effet</strong>
+              <div>${safeEffect}</div>
+            </div>
+          ` : ""}
+        </div>
+      `,
+      rolls: roll ? [roll] : []
+    });
+  }
+
+  async useTechniqueItem(itemId) {
+    const item = this.items.get(itemId);
+
+    if (!item || item.type !== "technique") {
+      ui.notifications.warn("Technique introuvable.");
+      return null;
+    }
+
+    const skillData = this._getTechniqueSkillTotal(item);
+
+    if (!skillData && item.system?.roll?.enabled !== false) {
+      ui.notifications.warn(`Aucune compétence ou Base valide trouvée pour ${item.name}.`);
+      return null;
+    }
+
+    const chakraSpend = await this._spendTechniqueChakra(item);
+
+    if (!chakraSpend) return null;
+
+    await this._startMaintainedTechnique(item, chakraSpend);
+
+    const rollEnabled = item.system?.roll?.enabled !== false;
+    const offensive = this._isTechniqueOffensive(item);
+    const targets = Array.from(game.user?.targets ?? []);
+
+    if (rollEnabled && offensive && targets.length === 1 && skillData) {
+      const maintenanceCost = Math.max(0, Number(item.system?.chakra?.maintenance ?? 0));
+      const effectText = [
+        String(item.system?.effect ?? ""),
+        `Chakra : ${chakraSpend.before} → ${chakraSpend.after} / ${chakraSpend.max}. Coût initial : ${chakraSpend.spent}.`,
+        maintenanceCost > 0
+          ? `Technique maintenue : entretien ${maintenanceCost} Chakra / tour.`
+          : ""
+      ].filter(Boolean).join("\n\n");
+
+      return this._resolveTargetedAttack({
+        label: `Technique — ${item.name}`,
+        attackTotal: Number(skillData.total ?? 0),
+        kind: String(item.system?.skill ?? item.system?.family ?? "technique"),
+        defenseType: this._getTechniqueDefenseType(item),
+        damageFormula: String(item.system?.damage?.formula ?? ""),
+        damageType: this._getTechniqueDamageType(item),
+        damage: item.system?.damage ?? {},
+        effectText
+      });
+    }
+
+    let roll = null;
+    let rollTotal = null;
+
+    if (rollEnabled && skillData) {
+      const rollData = await this._rollExplodingD10Data(Number(skillData.total ?? 0));
+
+      roll = rollData.roll;
+      rollTotal = rollData.total;
+    }
+
+    await this._createTechniqueChatCard(item, {
+      chakraSpend,
+      roll,
+      rollTotal
+    });
+
+    return roll;
+  }
+
+  async rollMentalDefenseTest() {
+    const gensou = this._getSkillCombatTotal("gensou");
+    const yuryoku = this._getSkillCombatTotal("yuryoku");
+
+    const attack = yuryoku?.total > gensou?.total
+      ? yuryoku
+      : gensou;
+
+    if (!attack) {
+      ui.notifications.warn("Aucune compétence Gensou ou Yūryoku disponible.");
+      return null;
+    }
+
+    return this._resolveTargetedAttack({
+      label: `Test Genjutsu — ${attack.label}`,
+      attackTotal: Number(attack.total ?? 0),
+      kind: "genjutsu",
+      defenseType: "mental",
+      damageFormula: "Selon technique",
+      damageType: "mental",
+      effectText: "Test de défense mentale : la cible utilise Mental ou encaisse contre Caractère. Les résistances psychiques s’appliqueront aux dégâts lors de la résolution complète des techniques."
+    });
   }
 
   async rollSkillAction(skillKey) {
@@ -4457,6 +5353,8 @@ async decreaseBase(baseKey) {
 
       updates["system.combat.counters.interceptions.arm.remaining"] = armMax;
       updates["system.combat.counters.interceptions.tai.remaining"] = taiMax;
+      updates["system.combat.counters.defenses.esquive.remaining"] = 1;
+      updates["system.combat.counters.defenses.parade.remaining"] = 1;
       updates["system.combat.actions.simpleAvailable"] = true;
       updates["system.combat.actions.complexAvailable"] = true;
       updates["system.combat.actions.delayedAvailable"] = false;
@@ -4524,6 +5422,12 @@ async decreaseBase(baseKey) {
         sourceItemUuid: item.sourceItemUuid ?? "",
         name: item.name ?? "Objet",
         type,
+        description: item.description ?? "",
+        subtype: item.subtype ?? "",
+        taxonomy: foundry.utils.deepClone(item.taxonomy ?? {}),
+        automation: foundry.utils.deepClone(item.automation ?? {}),
+        combat: foundry.utils.deepClone(item.combat ?? {}),
+        damage: this._normalizeDamageData(item.damage ?? {}),
         quantity: Math.max(1, Number(item.quantity ?? 1)),
         carryState,
         carry,
@@ -4547,6 +5451,7 @@ async decreaseBase(baseKey) {
           per: item.uses?.per ?? "charges"
         },
         hasUses: Boolean(item.uses?.enabled) && Math.max(0, Number(item.uses?.max ?? 0)) > 0,
+        hasCombatUse: type === "weapon" || this._isInventoryExplosiveItem(item),
         toxicity: {
           enabled: Boolean(item.toxicity?.enabled),
           amount: Math.max(0, Number(item.toxicity?.amount ?? 0)),
@@ -5698,12 +6603,18 @@ async decreaseBase(baseKey) {
     }, 0);
 
     const passiveRegen = Math.max(0, Number(this.system.resources?.chakra?.passiveRegen ?? 0));
-    const netCost = Math.max(0, totalMaintenance - passiveRegen);
+    const activeRegen = Math.max(0, Number(this.system.resources?.chakra?.activeRegen ?? 0));
+    const totalRegen = passiveRegen + activeRegen;
+    const netCost = Math.max(0, totalMaintenance - totalRegen);
+    const overflowRegen = Math.max(0, totalRegen - totalMaintenance);
 
     return {
       totalMaintenance,
       passiveRegen,
-      netCost
+      activeRegen,
+      totalRegen,
+      netCost,
+      overflowRegen
     };
   }
 
@@ -5727,7 +6638,10 @@ async decreaseBase(baseKey) {
     const maxChakra = Math.max(0, Number(chakra.max ?? 0));
 
     const maintenance = this._computeLineageMaintenanceCost(activePowers);
-    const nextChakra = Math.max(0, currentChakra - maintenance.netCost);
+    const nextChakra = Math.min(
+      maxChakra,
+      Math.max(0, currentChakra - maintenance.netCost + maintenance.overflowRegen)
+    );
 
     const needsChoice = forceDialog
       || currentChakra < maintenance.netCost
@@ -5756,8 +6670,11 @@ async decreaseBase(baseKey) {
           <header><h3>Entretien des effets maintenus</h3></header>
           <p><strong>${safeActorName}</strong> maintient ses pouvoirs et techniques actifs.</p>
           <div><strong>Entretien total :</strong> ${maintenance.totalMaintenance}</div>
-          <div><strong>Régénération passive :</strong> -${maintenance.passiveRegen}</div>
+          <div><strong>Régénération passive :</strong> +${maintenance.passiveRegen}</div>
+          <div><strong>Régénération active :</strong> +${maintenance.activeRegen}</div>
+          <div><strong>Régénération totale :</strong> +${maintenance.totalRegen}</div>
           <div><strong>Coût net :</strong> ${maintenance.netCost}</div>
+          <div><strong>Gain net :</strong> +${maintenance.overflowRegen}</div>
           <div><strong>Chakra :</strong> ${currentChakra} → ${nextChakra} / ${maxChakra}</div>
         </div>
       `
@@ -5788,8 +6705,11 @@ async decreaseBase(baseKey) {
         <div class="naruto-maintenance-summary">
           <div><strong>Chakra actuel :</strong> ${context.currentChakra} / ${context.maxChakra}</div>
           <div><strong>Entretien total actuel :</strong> ${context.totalMaintenance}</div>
-          <div><strong>Régénération passive :</strong> -${context.passiveRegen}</div>
+          <div><strong>Régénération passive :</strong> +${context.passiveRegen}</div>
+          <div><strong>Régénération active :</strong> +${context.activeRegen}</div>
+          <div><strong>Régénération totale :</strong> +${context.totalRegen}</div>
           <div><strong>Coût net actuel :</strong> ${context.netCost}</div>
+          <div><strong>Gain net actuel :</strong> +${context.overflowRegen}</div>
         </div>
 
         <hr />
@@ -5797,7 +6717,7 @@ async decreaseBase(baseKey) {
         ${rows}
 
         <p class="formula-hint">
-          Rappel : les entretiens sont additionnés, puis la régénération passive est soustraite une seule fois.
+          Rappel : les entretiens sont additionnés, puis les régénérations passive et active sont appliquées une seule fois.
         </p>
       </form>
     `;
@@ -5831,7 +6751,10 @@ async decreaseBase(baseKey) {
                     maxChakra,
                     totalMaintenance: maintenance.totalMaintenance,
                     passiveRegen: maintenance.passiveRegen,
-                    netCost: maintenance.netCost
+                    activeRegen: maintenance.activeRegen,
+                    totalRegen: maintenance.totalRegen,
+                    netCost: maintenance.netCost,
+                    overflowRegen: maintenance.overflowRegen
                   });
                 }, 100);
 
@@ -5839,7 +6762,10 @@ async decreaseBase(baseKey) {
                 return;
               }
 
-              const nextChakra = Math.max(0, currentChakra - maintenance.netCost);
+              const nextChakra = Math.min(
+                maxChakra,
+                Math.max(0, currentChakra - maintenance.netCost + maintenance.overflowRegen)
+              );
 
               await this.update({
                 "system.resources.chakra.value": nextChakra,
@@ -5860,8 +6786,11 @@ async decreaseBase(baseKey) {
                     <div><strong>Maintenus :</strong> ${keptNames}</div>
                     <div><strong>Désactivés :</strong> ${removedNames}</div>
                     <div><strong>Entretien total :</strong> ${maintenance.totalMaintenance}</div>
-                    <div><strong>Régénération passive :</strong> -${maintenance.passiveRegen}</div>
+                    <div><strong>Régénération passive :</strong> +${maintenance.passiveRegen}</div>
+                    <div><strong>Régénération active :</strong> +${maintenance.activeRegen}</div>
+                    <div><strong>Régénération totale :</strong> +${maintenance.totalRegen}</div>
                     <div><strong>Coût net :</strong> ${maintenance.netCost}</div>
+                    <div><strong>Gain net :</strong> +${maintenance.overflowRegen}</div>
                     <div><strong>Chakra :</strong> ${currentChakra} → ${nextChakra} / ${maxChakra}</div>
                   </div>
                 `
@@ -6169,6 +7098,12 @@ async decreaseBase(baseKey) {
       sourceItemUuid: itemDocument.uuid ?? "",
       name: itemDocument.name ?? "Objet",
       type: inventoryType,
+      description: system.description ?? "",
+      subtype: system.subtype ?? "",
+      taxonomy: foundry.utils.deepClone(system.taxonomy ?? {}),
+      automation: foundry.utils.deepClone(system.automation ?? {}),
+      combat: foundry.utils.deepClone(system.combat ?? {}),
+      damage: this._normalizeDamageData(system.damage ?? {}),
       quantity: Math.max(1, Number(baseQuantity ?? 1)),
       carryState: "notHeld",
       carry: {
@@ -6336,6 +7271,271 @@ async decreaseBase(baseKey) {
     await this.update(updateData);
 
     ui.notifications.info("Toxicité réinitialisée.");
+  }
+
+  _normalizeTextForCombatSearch(value) {
+    return String(value ?? "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
+  }
+
+  _isInventoryExplosiveItem(item = {}) {
+    const subtype = this._normalizeTextForCombatSearch(item.subtype);
+    const category = this._normalizeTextForCombatSearch(item.taxonomy?.category);
+    const subcategory = this._normalizeTextForCombatSearch(item.taxonomy?.subcategory);
+    const tags = Array.isArray(item.taxonomy?.tags)
+      ? item.taxonomy.tags.map((tag) => this._normalizeTextForCombatSearch(tag))
+      : [];
+
+    return subtype === "explosive"
+      || category === "explosif"
+      || subcategory === "explosifs"
+      || tags.includes("explosif")
+      || this._normalizeTextForCombatSearch(item.name).includes("fuda")
+      || this._normalizeTextForCombatSearch(item.name).includes("poudre");
+  }
+
+  _extractInventoryDamageFormula(item = {}) {
+    if (item.damage?.formula) return String(item.damage.formula);
+    if (item.combat?.damageFormula) return String(item.combat.damageFormula);
+
+    const searchableText = [
+      item.description,
+      item.automation?.notes,
+      item.useEffect?.text,
+      item.notes
+    ].map((entry) => String(entry ?? "")).join("\n");
+
+    const damageMatch = searchableText.match(/Dégâts?\s*:\s*([^.;\n]+)/i);
+
+    if (damageMatch?.[1]) {
+      return damageMatch[1].trim();
+    }
+
+    const name = this._normalizeTextForCombatSearch(item.name);
+
+    if (name.includes("katana")) return "COR + ARM + 3";
+    if (name.includes("ninjato")) return "COR + ARM + 2";
+    if (name.includes("nodachi")) return "COR + ARM + 4";
+    if (name.includes("kunai")) return "COR + ARM + 1(1)";
+    if (name.includes("shuriken")) return "TAI + ARM + 1(1)";
+    if (name.includes("senbon")) return "ESP + ARM + 1(1)";
+    if (name.includes("manriki") || name.includes("kusarigama")) return "NIN + ARM";
+    if (name.includes("kibaku")) return "GEN + 1";
+
+    return "";
+  }
+
+  _extractInventoryRange(item = {}) {
+    if (item.combat?.range) return String(item.combat.range);
+
+    const searchableText = [
+      item.description,
+      item.automation?.notes,
+      item.useEffect?.text,
+      item.notes
+    ].map((entry) => String(entry ?? "")).join("\n");
+
+    const rangeMatch = searchableText.match(/Portée\s*:\s*([^.;\n]+)/i);
+
+    if (rangeMatch?.[1]) {
+      return rangeMatch[1].trim();
+    }
+
+    const name = this._normalizeTextForCombatSearch(item.name);
+
+    if (name.includes("katana")) return "Z1";
+    if (name.includes("ninjato")) return "Z1";
+    if (name.includes("nodachi")) return "Z2";
+    if (name.includes("kunai")) return "D3";
+    if (name.includes("shuriken")) return "D4";
+    if (name.includes("senbon")) return "D5";
+    if (name.includes("manriki")) return "Z4";
+    if (name.includes("kibaku")) return "Z2";
+
+    return "—";
+  }
+
+  _getInventoryWeaponSkillKey(item = {}) {
+    const explicitSkill = String(item.combat?.skill ?? "");
+
+    if (explicitSkill) return explicitSkill;
+
+    const subcategory = this._normalizeTextForCombatSearch(item.taxonomy?.subcategory);
+    const tags = Array.isArray(item.taxonomy?.tags)
+      ? item.taxonomy.tags.map((tag) => this._normalizeTextForCombatSearch(tag))
+      : [];
+    const name = this._normalizeTextForCombatSearch(item.name);
+
+    if (
+      subcategory.includes("armesexotiques")
+      || tags.includes("arme-exotique")
+      || name.includes("kusarigama")
+      || name.includes("kanabo")
+      || name.includes("zambato")
+      || name.includes("bunto")
+      || name.includes("tessen")
+      || name.includes("nunchakus")
+    ) {
+      return "armesExotiques";
+    }
+
+    return "armesSimples";
+  }
+
+  _getInventoryCombatSkillData(item = {}) {
+    if (this._isInventoryExplosiveItem(item)) {
+      if (this._canUseSkillForDefense?.("scienceExplosifs")) {
+        return this._getSkillCombatTotal("scienceExplosifs");
+      }
+
+      return null;
+    }
+
+    const skillKey = this._getInventoryWeaponSkillKey(item);
+
+    if (!this._canUseSkillForDefense?.(skillKey)) {
+      return null;
+    }
+
+    return this._getSkillCombatTotal(skillKey);
+  }
+
+  async _createInventoryCombatCard(item, profile = {}, rollData = null) {
+    const safeActorName = foundry.utils.escapeHTML?.(this.name) ?? this.name;
+    const safeItemName = foundry.utils.escapeHTML?.(item.name) ?? item.name;
+    const safeDamageFormula = foundry.utils.escapeHTML?.(profile.damageFormula || "—") ?? (profile.damageFormula || "—");
+    const safeDamageType = foundry.utils.escapeHTML?.(profile.damageType || "physical") ?? (profile.damageType || "physical");
+    const safeRange = foundry.utils.escapeHTML?.(profile.range || "—") ?? (profile.range || "—");
+    const safeArea = foundry.utils.escapeHTML?.(profile.area || "—") ?? (profile.area || "—");
+    const safeEffectText = foundry.utils.escapeHTML?.(profile.effectText || "") ?? (profile.effectText || "");
+    const safeSkillLabel = foundry.utils.escapeHTML?.(profile.skillLabel || "—") ?? (profile.skillLabel || "—");
+    const damageResult = this._calculateDamageData(profile.damage ?? item.damage ?? {});
+
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+      flavor: `${safeActorName} utilise ${safeItemName}`,
+      content: `
+        <div class="naruto-roll-card naruto-inventory-combat-card">
+          <header class="naruto-roll-header">
+            <h3>${safeItemName}</h3>
+          </header>
+
+          <p><strong>${safeActorName}</strong> utilise un objet de combat.</p>
+
+          ${rollData ? `
+            <div class="naruto-roll-result">
+              ${rollData.total}
+            </div>
+          ` : `
+            <div class="naruto-roll-result">
+              Résolution manuelle
+            </div>
+          `}
+
+          <div class="naruto-roll-details">
+            <span>Compétence : ${safeSkillLabel}</span>
+            <span>Dégâts : ${safeDamageFormula}</span>
+            <span>Type : ${safeDamageType}</span>
+            ${damageResult.calculable ? `<span>Dégâts calculés : ${damageResult.total}</span>` : ""}
+            <span>Portée : ${safeRange}</span>
+            <span>Zone : ${safeArea}</span>
+          </div>
+
+          ${safeEffectText ? `
+            <div class="naruto-consumable-text">
+              ${safeEffectText}
+            </div>
+          ` : ""}
+        </div>
+      `,
+      rolls: rollData?.roll ? [rollData.roll] : []
+    });
+  }
+
+  async useInventoryCombatItem(itemId) {
+    if (this.type !== "shinobi") return null;
+
+    const items = foundry.utils.deepClone(this.system.inventory?.items ?? []);
+    const item = items.find((entry) => entry.id === itemId);
+
+    if (!item) {
+      ui.notifications.warn("Objet introuvable.");
+      return null;
+    }
+
+    const isExplosive = this._isInventoryExplosiveItem(item);
+
+    if (item.type !== "weapon" && !isExplosive) {
+      ui.notifications.warn("Cet objet n’est pas utilisable comme action de combat.");
+      return null;
+    }
+
+    const damage = this._normalizeDamageData(item.damage ?? {});
+    const damageFormula = damage.formula || this._extractInventoryDamageFormula(item);
+    const range = this._extractInventoryRange(item);
+    const area = item.area ?? (isExplosive ? range : "");
+    const effectText = [
+      item.useEffect?.text,
+      item.automation?.notes,
+      item.notes
+    ].map((entry) => String(entry ?? "").trim()).filter(Boolean).join("\n\n");
+
+    if (isExplosive) {
+      await this._createInventoryCombatCard(item, {
+        damageFormula,
+        damageType: damage.type || "physical",
+        damage,
+        range,
+        area,
+        skillLabel: "Science des Explosifs / résolution MJ",
+        effectText: effectText || "Explosif : résoudre la zone, les dégâts et les blessures manuellement."
+      });
+
+      return null;
+    }
+
+    const skillData = this._getInventoryCombatSkillData(item);
+
+    if (!skillData) {
+      ui.notifications.warn(`${this.name} ne possède pas la compétence nécessaire pour utiliser ${item.name}.`);
+      return null;
+    }
+
+    const targets = Array.from(game.user?.targets ?? []);
+    const profile = {
+      label: `Arme — ${item.name}`,
+      attackTotal: Number(skillData.total ?? 0),
+      kind: String(skillData.key ?? "armesSimples"),
+      defenseType: "physical",
+      damageFormula,
+      damageType: damage.type || "physical",
+      damage,
+      effectText: [
+        `Compétence : ${skillData.label}.`,
+        `Portée : ${range}.`,
+        effectText
+      ].filter(Boolean).join("\n\n")
+    };
+
+    if (targets.length === 1) {
+      return this._resolveTargetedAttack(profile);
+    }
+
+    const rollData = await this._rollExplodingD10Data(Number(skillData.total ?? 0));
+
+    await this._createInventoryCombatCard(item, {
+      damageFormula,
+      damageType: damage.type || "physical",
+      damage,
+      range,
+      area: "",
+      skillLabel: skillData.label,
+      effectText
+    }, rollData);
+
+    return rollData.roll;
   }
 
   async useInventoryConsumable(itemId) {
@@ -6574,3 +7774,20 @@ async decreaseBase(baseKey) {
     ui.notifications.info(notificationText);
   }
 }
+
+Hooks.on("renderChatMessage", (message, html) => {
+  html.find(".naruto-chat-damage-roll").on("click", async (event) => {
+    event.preventDefault();
+
+    const payload = message.getFlag("naruto-25e", "damagePayload");
+    const actorId = payload?.actorId ?? "";
+    const actor = game.actors?.get(actorId);
+
+    if (!actor || typeof actor.rollDamageFromChatMessage !== "function") {
+      ui.notifications.warn("Acteur introuvable pour calculer les dégâts.");
+      return;
+    }
+
+    await actor.rollDamageFromChatMessage(message);
+  });
+});

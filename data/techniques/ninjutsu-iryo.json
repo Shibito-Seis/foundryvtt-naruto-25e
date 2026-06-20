@@ -15,7 +15,19 @@
       "duration": "Instantané",
       "target": "Individuelle",
       "area": "",
-      "damage": { "formula": "NIN + COR + 2", "type": "physical", "scaling": "Impact, projection D2" },
+      "damage": {
+  "formula": "NIN + COR + 2",
+  "type": "physical",
+  "scaling": "Impact, projection D2.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["nin", "cor"],
+    "flat": 2,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": "Projection D2 à gérer manuellement jusqu’à la 0.1.42."
+  }
+},
       "chakra": { "initial": 15, "maintenance": 0, "text": "15 pts" },
       "prerequisites": { "strict": true, "type": "skill", "value": "iryo", "masteryRank": 5, "validated": false, "text": "Compétence Iryō possédée." },
       "effect": "NIN + COR + 2 dégâts. Projette la cible à une distance D2.",

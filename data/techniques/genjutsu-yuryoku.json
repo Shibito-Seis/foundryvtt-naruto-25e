@@ -15,7 +15,19 @@
       "duration": "Instantané",
       "target": "Individuelle",
       "area": "",
-      "damage": { "formula": "GEN + 2", "type": "emotional", "scaling": "" },
+      "damage": {
+  "formula": "GEN + 2",
+  "type": "emotional",
+  "scaling": "Dégâts émotionnels.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["gen"],
+    "flat": 2,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": "Émotion Effroi : Peur 1 / Surprise 1. États à gérer manuellement jusqu’à la 0.1.42."
+  }
+},
       "chakra": { "initial": 10, "maintenance": 3, "text": "10/3 pts" },
       "prerequisites": { "strict": true, "type": "skill", "value": "yuryoku", "masteryRank": 5, "validated": false, "text": "Compétence Yūryoku possédée." },
       "effect": "Émotion Effroi : Peur 1 / Surprise 1. Dégâts émotionnels GEN+2. Entretien standard.",
@@ -39,7 +51,19 @@
       "duration": "Instantané",
       "target": "Individuelle",
       "area": "",
-      "damage": { "formula": "GEN + 2", "type": "emotional", "scaling": "" },
+      "damage": {
+  "formula": "GEN + 2",
+  "type": "emotional",
+  "scaling": "Dégâts émotionnels.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["gen"],
+    "flat": 2,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": "Émotion Acceptation 2. État à gérer manuellement jusqu’à la 0.1.42."
+  }
+},
       "chakra": { "initial": 8, "maintenance": 3, "text": "8/3 pts" },
       "prerequisites": { "strict": true, "type": "skill", "value": "yuryoku", "masteryRank": 5, "validated": false, "text": "Compétence Yūryoku possédée." },
       "effect": "Émotion Acceptation 2. Dégâts émotionnels GEN+2. Entretien standard.",

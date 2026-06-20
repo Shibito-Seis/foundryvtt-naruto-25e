@@ -63,7 +63,19 @@
       "duration": "Maintenu",
       "target": "Zone",
       "area": "LIGN / zone",
-      "damage": { "formula": "LIGN × 3", "type": "magnetic", "scaling": "Solidité LIGN × 5 en défense" },
+      "damage": {
+  "formula": "LIGN × 3",
+  "type": "magnetic",
+  "scaling": "Solidité LIGN × 5 en défense.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["lign", "lign", "lign"],
+    "flat": 0,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": "Construction magnétique offensive. Solidité défensive LIGN × 5 à gérer manuellement."
+  }
+},
       "chakra": { "initial": 0, "maintenance": 0, "text": "Lignée / round / semaine" },
       "prerequisites": { "strict": true, "type": "skill", "value": "jiton", "masteryRank": 5, "validated": false, "text": "Compétence Jiton possédée. Clan Munefuda ou accès validé. Raiton et Fūton nécessaires selon le book." },
       "effect": "Construction d’objets géométriques, métalliques ou magnétisés, pouvant s’abattre sur des cibles : LIGN×3 dégâts, LIGN×5 Solidité si utilisés en défense.",

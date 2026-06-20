@@ -15,7 +15,19 @@
       "duration": "Instantané",
       "target": "Individuelle",
       "area": "Z2 — rayon 2 m",
-      "damage": { "formula": "NIN + 2", "type": "fire", "scaling": "" },
+      "damage": {
+  "formula": "NIN + 2",
+  "type": "fire",
+  "scaling": "Grande sphère de flammes offensives.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["nin"],
+    "flat": 2,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": "Zone Z2, portée D1."
+  }
+},
       "chakra": { "initial": 5, "maintenance": 0, "text": "5 pts" },
       "prerequisites": { "strict": true, "type": "skill", "value": "katon", "masteryRank": 5, "validated": false, "text": "Compétence Katon possédée." },
       "effect": "NIN+2 dégâts, Z2, portée D1.",
@@ -63,7 +75,19 @@
       "duration": "Momentané",
       "target": "Zone",
       "area": "Z2 — rayon 2 m",
-      "damage": { "formula": "NIN + 2", "type": "fire", "scaling": "" },
+      "damage": {
+  "formula": "NIN + 2",
+  "type": "fire",
+  "scaling": "Torrent de flammes offensif.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["nin"],
+    "flat": 2,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": "Zone Z2, portée D1, autonomie 3 rounds à gérer manuellement."
+  }
+},
       "chakra": { "initial": 10, "maintenance": 0, "text": "10 pts" },
       "prerequisites": { "strict": true, "type": "skill", "value": "katon", "masteryRank": 5, "validated": false, "text": "Compétence Katon possédée." },
       "effect": "NIN+2 dégâts, Z2, autonomie de 3 rounds, portée D1.",
@@ -111,7 +135,19 @@
       "duration": "Momentané",
       "target": "Zone",
       "area": "Z2 — rayon 2 m",
-      "damage": { "formula": "1", "type": "fire", "scaling": "" },
+      "damage": {
+  "formula": "1",
+  "type": "fire",
+  "scaling": "Nuage de cendres enflammées.",
+  "calculation": {
+    "enabled": true,
+    "bases": [],
+    "flat": 1,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": "Zone opaque Z2. Malus de Vigilance/Sentinelle et Camouflage à gérer manuellement."
+  }
+},
       "chakra": { "initial": 15, "maintenance": 3, "text": "15/3 pts" },
       "prerequisites": { "strict": true, "type": "skill", "value": "katon", "masteryRank": 5, "validated": false, "text": "Compétence Katon possédée." },
       "effect": "Zone opaque : -1 Vigilance, -1 Sentinelle - Sentir le Chakra, Z2, dégâts 1. Génère un jet automatique de Camouflage.",
@@ -183,7 +219,19 @@
       "duration": "Momentané",
       "target": "Groupe",
       "area": "Cube Z2 — 2 x 2 m",
-      "damage": { "formula": "NIN + 2 au contact", "type": "fire", "scaling": "NIN + 1 Solidité" },
+      "damage": {
+  "formula": "NIN + 2 au contact",
+  "type": "fire",
+  "scaling": "NIN + 1 Solidité.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["nin"],
+    "flat": 2,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": "Dégâts uniquement au contact de la barrière. Solidité NIN + 1 à gérer manuellement."
+  }
+},
       "chakra": { "initial": 13, "maintenance": 3, "text": "13/3 pts" },
       "prerequisites": { "strict": true, "type": "skill", "value": "katon", "masteryRank": 5, "validated": false, "text": "Compétence Katon possédée." },
       "effect": "Barrière de feu cubique NIN+1 solidité sur Z2. Inflige NIN+2 dégâts au contact.",

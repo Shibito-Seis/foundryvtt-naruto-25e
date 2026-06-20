@@ -87,7 +87,19 @@
       "duration": "Instantané",
       "target": "Cône",
       "area": "Z2 — rayon 2 m",
-      "damage": { "formula": "NIN + 1", "type": "earth", "scaling": "" },
+      "damage": {
+  "formula": "NIN + 1",
+  "type": "earth",
+  "scaling": "Dragon de terre offensif.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["nin"],
+    "flat": 1,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": "Impact Z2, portée D1. Le dragon évite les obstacles entre l’invocateur et la cible."
+  }
+},
       "chakra": { "initial": 8, "maintenance": 0, "text": "8 pts" },
       "prerequisites": { "strict": true, "type": "skill", "value": "doton", "masteryRank": 5, "validated": false, "text": "Compétence Doton possédée." },
       "effect": "Dragon de terre évitant les obstacles entre l’invocateur et la cible : NIN+1 dégâts, impact Z2, portée D1.",

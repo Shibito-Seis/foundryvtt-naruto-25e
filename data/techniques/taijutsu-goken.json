@@ -15,7 +15,19 @@
       "duration": "Instantané",
       "target": "Individuelle",
       "area": "",
-      "damage": { "formula": "COR + TAI", "type": "physical", "scaling": "Dégâts de corps à corps standard" },
+      "damage": {
+  "formula": "COR + TAI",
+  "type": "physical",
+  "scaling": "Dégâts de corps à corps standard.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["cor", "tai"],
+    "flat": 0,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": ""
+  }
+},
       "chakra": { "initial": 0, "maintenance": 0, "text": "Aucun coût Chakra indiqué" },
       "prerequisites": { "strict": true, "type": "skill", "value": "goken", "masteryRank": 5, "validated": false, "text": "Compétence Gōken possédée." },
       "effect": "Technique principale du Gōken. Porte un coup en plus de son effet, sauf décision contraire du MJ. Utilisable une fois par adversaire et par situation de combat.",
@@ -39,7 +51,19 @@
       "duration": "Instantané",
       "target": "Individuelle",
       "area": "",
-      "damage": { "formula": "COR + TAI", "type": "physical", "scaling": "Dégâts de corps à corps standard" },
+      "damage": {
+  "formula": "COR + TAI",
+  "type": "physical",
+  "scaling": "Dégâts de corps à corps standard.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["cor", "tai"],
+    "flat": 0,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": ""
+  }
+},
       "chakra": { "initial": 0, "maintenance": 0, "text": "Aucun coût Chakra indiqué" },
       "prerequisites": { "strict": true, "type": "skill", "value": "goken", "masteryRank": 5, "validated": false, "text": "Compétence Gōken possédée." },
       "effect": "Technique principale du Gōken. Porte un coup en plus de son effet, sauf décision contraire du MJ. Utilisable une fois par adversaire et par situation de combat.",
@@ -63,7 +87,19 @@
       "duration": "Instantané",
       "target": "Individuelle",
       "area": "",
-      "damage": { "formula": "COR + TAI", "type": "physical", "scaling": "Dégâts de corps à corps standard" },
+      "damage": {
+  "formula": "COR + TAI",
+  "type": "physical",
+  "scaling": "Dégâts de corps à corps standard.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["cor", "tai"],
+    "flat": 0,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": ""
+  }
+},
       "chakra": { "initial": 0, "maintenance": 0, "text": "Aucun coût Chakra indiqué" },
       "prerequisites": { "strict": true, "type": "skill", "value": "goken", "masteryRank": 5, "validated": false, "text": "Compétence Gōken possédée." },
       "effect": "Technique principale du Gōken. Porte un coup en plus de son effet, sauf décision contraire du MJ. Utilisable une fois par adversaire et par situation de combat.",

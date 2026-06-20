@@ -2,6 +2,85 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.41 - Combat / Actions V1 et dégâts calculables
+
+### Ajouté
+
+- Ajout d’un premier moteur de résolution d’attaque ciblée :
+  - jet d’attaque depuis une attaque basique ;
+  - jet d’attaque depuis une technique ;
+  - jet d’attaque depuis un objet de combat ;
+  - choix de défense de la cible ;
+  - carte de chat indiquant réussite ou échec.
+- Ajout d’un moteur de calcul de dégâts V1 :
+  - lecture de `system.damage.formula` ;
+  - lecture de `system.damage.calculation` ;
+  - calcul par bases (`COR`, `TAI`, `ARM`, `NIN`, `GEN`, `LIGN`) ;
+  - bonus fixe ;
+  - bonus cumulatif par projectile ;
+  - limitation de cumul par base, notamment `ARM` pour les armes de jet.
+- Ajout d’un bouton de calcul des dégâts depuis les cartes de chat d’attaque réussie.
+- Ajout de boutons de dégâts directs sur les techniques et objets de combat disposant d’une formule exploitable.
+- Ajout de la comparaison des dégâts contre la défense passive appropriée :
+  - `Vigueur` pour les dégâts physiques et élémentaires ;
+  - `Caractère` pour les dégâts mentaux, psychiques, spirituels ou émotionnels.
+- Ajout de la structure `damage.calculation` sur les armes, armes de jet, explosifs et techniques exploitables.
+- Ajout des dégâts calculables pour les attaques basiques :
+  - attaque ARM basique ;
+  - attaque TAI basique.
+- Ajout des dégâts calculables pour les armes simples et de jet :
+  - Katana ;
+  - Kunaï ;
+  - Manriki Gusari ;
+  - Ninjatō ;
+  - Nodachi ;
+  - Senbon ;
+  - Shakujo ;
+  - Shuriken ;
+  - Tantō ;
+  - Wakizashi.
+- Ajout des dégâts calculables pour les explosifs et notes offensives exploitables :
+  - Kibaku Fuda ;
+  - Note explosive de départ ;
+  - Kawarimi : Kibaku Fuda.
+- Ajout des dégâts calculables pour les premières techniques Taijutsu, Ninjutsu, Genjutsu et Lignées exploitables :
+  - Gōken ;
+  - Chūken ;
+  - Jūken ;
+  - Katon ;
+  - Suiton ;
+  - Doton ;
+  - Fūton ;
+  - Raïton ;
+  - Iryō ;
+  - Yūryoku ;
+  - Kikaichū ;
+  - Mokuton ;
+  - Jiton ;
+  - Hyūga ;
+  - Kage.
+
+### Modifié
+
+- Les fiches techniques peuvent désormais stocker une formule de dégâts lisible et une formule de calcul structurée.
+- Les objets importés depuis les JSON conservent désormais leurs données `damage.calculation`.
+- Les dégâts des armes de jet tiennent compte du bonus cumulatif `(1)` sans appliquer directement les blessures.
+- Les techniques offensives déjà chiffrées dans les sources sont normalisées pour le calcul V1.
+- Les catalyseurs, buffs, barrières, solidités, soins, contrôles et effets d’état restent explicitement manuels lorsqu’ils ne sont pas de vrais dégâts autonomes.
+
+### Corrigé
+
+- Les armes de départ Tantō et Wakizashi ne sont plus des choix sans dégâts exploitables.
+- Les dégâts directs des techniques déjà chiffrées ne restent plus de simples notes textuelles.
+- Les cartes de combat distinguent désormais le jet d’attaque et le calcul des dégâts.
+
+### Notes
+
+- Cette version ne crée pas encore le système complet de blessures, conditions, brûlure, fatigue, poison, sommeil ou application automatique d’états.
+- Les dégâts calculés indiquent les dégâts bruts et les dégâts passant la défense passive, mais les conséquences de santé restent à résoudre manuellement jusqu’au chantier `0.1.42`.
+- Les catalyseurs comme `Chidorigatana`, `Kaze no Yaiba`, les bonus d’arme, les barrières et les soins avancés seront repris plus tard avec les effets maintenus, buffs et états.
+- Cette version finalise le chantier `Combat / Actions V1` avant le passage au chantier `Santé / Blessures / États V1`.
+
 ## 0.1.40.3 - Finalisation équipements et consommables V1
 
 ### Ajouté

@@ -177,10 +177,9 @@
 
          <label>
           Vigueur
-          <div class="resource-row">
-           <input name="system.resources.vigueur.value" type="number" value="{{system.resources.vigueur.value}}" />
-           <span>/</span>
-           <input name="system.resources.vigueur.max" type="number" value="{{system.resources.vigueur.max}}" readonly />
+          <div class="readonly-value">
+            <strong>{{system.resources.vigueur.value}}</strong>
+            <span>Défense physique fixe</span>
           </div>
         </label>
 
@@ -191,10 +190,9 @@
 
         <label>
          Caractère
-         <div class="resource-row">
-          <input name="system.resources.caractere.value" type="number" value="{{system.resources.caractere.value}}" />
-          <span>/</span>
-          <input name="system.resources.caractere.max" type="number" value="{{system.resources.caractere.max}}" readonly />
+         <div class="readonly-value">
+            <strong>{{system.resources.caractere.value}}</strong>
+            <span>Défense mentale / spirituelle fixe</span>
          </div>
         </label>
 
@@ -796,12 +794,12 @@
 
               <div class="combat-resource-line">
                 <strong>Vigueur</strong>
-                <span>{{system.resources.vigueur.value}} / {{system.resources.vigueur.max}}</span>
+                <span>{{system.resources.vigueur.value}} — défense physique fixe</span>
               </div>
 
               <div class="combat-resource-line">
                 <strong>Caractère</strong>
-                <span>{{system.resources.caractere.value}} / {{system.resources.caractere.max}}</span>
+                <span>{{system.resources.caractere.value}} — défense mentale fixe</span>
               </div>
 
               <div class="combat-resource-line">
@@ -857,6 +855,16 @@
                 <div class="combat-resource-line">
                   <strong>Interceptions TAI</strong>
                   <span>{{system.combat.counters.interceptions.tai.remaining}} / {{system.combat.counters.interceptions.tai.max}}</span>
+                </div>
+
+                <div class="combat-resource-line">
+                  <strong>Esquive</strong>
+                  <span>{{system.combat.counters.defenses.esquive.remaining}} / {{system.combat.counters.defenses.esquive.max}}</span>
+                </div>
+
+                <div class="combat-resource-line">
+                  <strong>Parade</strong>
+                  <span>{{system.combat.counters.defenses.parade.remaining}} / {{system.combat.counters.defenses.parade.max}}</span>
                 </div>
 
                 {{#if isGM}}
@@ -999,6 +1007,10 @@
               
               <button type="button" class="combat-roll-attack" data-kind="tai">
                 Attaque TAI
+              </button>
+
+              <button type="button" class="combat-roll-mental-test">
+                Test Genjutsu
               </button>
 
               <label>
@@ -1346,6 +1358,17 @@
                       >
                         Utiliser
                       </button>
+
+
+                      {{#if technique.damageFormula}}
+                        <button
+                          type="button"
+                          class="technique-roll-damage"
+                          data-item-id="{{technique.id}}"
+                        >
+                          Dégâts
+                        </button>
+                      {{/if}}
 
                       {{#if technique.active}}
                         <button
@@ -2950,27 +2973,48 @@
                       value="{{item.notes}}"
                     />
 
-                    {{#if (eq item.type "consumable")}}
+                    {{#if item.hasCombatUse}}
                       <button
                         type="button"
-                        class="inventory-use-consumable"
+                        class="inventory-use-combat-item"
                         data-item-id="{{item.id}}"
-                        title="Utiliser"
+                        title="Utiliser en combat"
                       >
-                        Utiliser
+                        Combat
                       </button>
+
+                      <button
+                        type="button"
+                        class="inventory-roll-damage"
+                        data-item-id="{{item.id}}"
+                        title="Calculer les dégâts"
+                      >
+                        Dégâts
+                      </button>
+                      
                     {{else}}
-                      {{#if item.hasUses}}
+                      {{#if (eq item.type "consumable")}}
                         <button
                           type="button"
-                          class="inventory-use-charge"
+                          class="inventory-use-consumable"
                           data-item-id="{{item.id}}"
-                          title="Utiliser une charge"
+                          title="Utiliser"
                         >
-                          Usage {{item.uses.value}} / {{item.uses.max}}
+                          Utiliser
                         </button>
                       {{else}}
-                        <span class="muted">—</span>
+                        {{#if item.hasUses}}
+                          <button
+                            type="button"
+                            class="inventory-use-charge"
+                            data-item-id="{{item.id}}"
+                            title="Utiliser une charge"
+                          >
+                            Usage {{item.uses.value}} / {{item.uses.max}}
+                          </button>
+                        {{else}}
+                          <span class="muted">—</span>
+                        {{/if}}
                       {{/if}}
                     {{/if}}
 

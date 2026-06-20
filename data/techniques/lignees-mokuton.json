@@ -159,7 +159,19 @@
       "duration": "Instantané",
       "target": "Zone",
       "area": "Zone 2",
-      "damage": { "formula": "NIN + 1", "type": "wood", "scaling": "" },
+      "damage": {
+  "formula": "NIN + 1",
+  "type": "wood",
+  "scaling": "Projection en cône avec obstacles.",
+  "calculation": {
+    "enabled": true,
+    "bases": ["nin"],
+    "flat": 1,
+    "perItem": 0,
+    "perItemLimitBase": "",
+    "condition": "Zone 2, portée D2. Obstacles à gérer manuellement."
+  }
+},
       "chakra": { "initial": 10, "maintenance": 0, "text": "10 pts" },
       "prerequisites": { "strict": true, "type": "skill", "value": "mokuton", "masteryRank": 5, "validated": false, "text": "Compétence Mokuton possédée. Doton et Suiton requis par la lignée Senju." },
       "effect": "Projection en cône avec obstacles : dégâts NIN+1, Zone 2, portée D2.",

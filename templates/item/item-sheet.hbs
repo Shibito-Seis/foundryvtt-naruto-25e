@@ -229,6 +229,37 @@
               <input name="system.damage.scaling" type="text" value="{{system.damage.scaling}}" />
             </label>
 
+
+            <label>
+              Dégâts calculables
+              <input name="system.damage.calculation.enabled" type="checkbox" {{#if system.damage.calculation.enabled}}checked{{/if}} />
+            </label>
+
+            <label>
+              Bases de dégâts
+              <input name="system.damage.calculation.bases" type="text" value="{{system.damage.calculation.bases}}" placeholder="cor, arm" />
+            </label>
+
+            <label>
+              Bonus fixe
+              <input name="system.damage.calculation.flat" type="number" value="{{system.damage.calculation.flat}}" />
+            </label>
+
+            <label>
+              Bonus cumulatif / projectile
+              <input name="system.damage.calculation.perItem" type="number" value="{{system.damage.calculation.perItem}}" min="0" />
+            </label>
+
+            <label>
+              Limite cumul
+              <input name="system.damage.calculation.perItemLimitBase" type="text" value="{{system.damage.calculation.perItemLimitBase}}" placeholder="arm" />
+            </label>
+
+            <label class="wide">
+              Condition / note
+              <input name="system.damage.calculation.condition" type="text" value="{{system.damage.calculation.condition}}" placeholder="Collision, projectile multiple..." />
+            </label>
+
             <label class="wide">
               Texte Chakra
               <input name="system.chakra.text" type="text" value="{{system.chakra.text}}" />
