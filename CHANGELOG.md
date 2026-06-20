@@ -2,6 +2,66 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.42 - Santé / Blessures / États V1
+
+### Ajouté
+
+- Ajout d’une piste de santé persistante pour les Shinobi :
+  - Fatigue 1 ;
+  - Fatigue 2 ;
+  - Sonné ;
+  - Blessure 1 ;
+  - Blessure 2 ;
+  - Blessure 3.
+- Ajout d’un fonctionnement par cases de santé :
+  - chaque zone contient 5 cases ;
+  - les dégâts qui passent la défense passive remplissent la piste ;
+  - l’état actif dépend de la dernière zone complétée.
+- Ajout de la règle de coup violent :
+  - si 6 dégâts ou plus passent en une seule fois, une zone supplémentaire de choc est ajoutée ;
+  - cette règle permet de représenter les coups critiques ou particulièrement brutaux.
+- Ajout de réserves spéciales activables par le MJ :
+  - Esprit A ;
+  - Esprit B ;
+  - Blessure A ;
+  - Blessure B.
+- Ajout d’un bouton “Appliquer à la santé” depuis les cartes de dégâts générées par le système de combat.
+- Ajout d’une application manuelle des dégâts depuis la fiche :
+  - infliger X dégâts à la piste ;
+  - récupérer / soigner X dégâts sur la piste ;
+  - remise à zéro MJ.
+- Ajout d’un état effectif de santé :
+  - comparaison entre la piste de santé ;
+  - le palier Chakra ;
+  - le palier manuel ;
+  - affichage du pire état actif.
+- Ajout de rappels d’effets selon l’état effectif :
+  - Fatigue ;
+  - Sonné ;
+  - Blessures ;
+  - Blessure 3.
+- Ajout de l’affichage de la piste de santé dans l’onglet Résumé.
+- Ajout de l’affichage détaillé de la piste et de l’état effectif dans l’onglet Combat / Actions.
+- Ajout de l’affichage de suivi dans l’onglet Effets / États.
+
+### Modifié
+
+- Le calculateur de blessures ne repose plus sur l’ancien modèle “1 blessure puis +1 par tranche de 5”.
+- Les dégâts calculés par la version `0.1.41` peuvent désormais être appliqués directement à la piste de santé de la cible.
+- Les soins, techniques Iryō et objets de soin peuvent être représentés manuellement en retirant des dégâts de la piste.
+- Les états manuels restent disponibles, mais ils sont désormais comparés à la piste et au Chakra pour déterminer l’état effectif.
+- Les alertes de santé affichent désormais le rappel utile plutôt qu’un simple état isolé.
+
+### Notes
+
+- Cette version s’éloigne volontairement de l’ancienne lecture du book pour adopter une piste de santé plus claire et plus jouable en Foundry.
+- Les effets restent volontairement majoritairement manuels :
+  - Sonné rappelle la perte d’action complexe, mais ne la retire pas automatiquement ;
+  - les Blessures rappellent les soins longs, mais ne déclenchent pas encore de procédure automatisée ;
+  - les soins ne sont pas encore calculés automatiquement depuis les techniques ou objets.
+- Les projectiles, charges de munitions, catalyseurs, buffs, conditions structurées, poison, brûlure, sommeil, Brisé, mort et séquelles avancées sont reportés à des versions futures.
+- Les pouvoirs Uchiha avancés comme Amaterasu devront être réaudités depuis le databook papier plus tard.
+
 ## 0.1.41 - Combat / Actions V1 et dégâts calculables
 
 ### Ajouté

@@ -296,8 +296,18 @@
 
     <div class="combat-mini-state">
       <div>
-        <strong>État manuel</strong>
-        <span>{{combatSummary.manualStateLabel}}</span>
+        <strong>Piste santé</strong>
+        <span>{{combatHealthTrack.value}} / {{combatHealthTrack.max}}</span>
+      </div>
+
+      <div class="{{#if combatSummary.hasEffectiveAlert}}chakra-alert{{/if}}">
+        <strong>État effectif</strong>
+        <span>{{combatSummary.effectiveStateLabel}}</span>
+      </div>
+
+      <div>
+        <strong>Source</strong>
+        <span>{{combatSummary.effectiveStateSource}}</span>
       </div>
 
       <div class="{{#if combatSummary.hasChakraAlert}}chakra-alert{{/if}}">
@@ -306,10 +316,23 @@
       </div>
     </div>
 
-    {{#if combatSummary.hasChakraAlert}}
-      <p class="warning-text">
-        Le niveau actuel de Chakra déclenche un palier automatique.
-      </p>
+    <div class="health-track">
+      {{#each combatHealthTrack.segments as |segment|}}
+        <span class="{{#if segment.complete}}is-complete{{/if}}">
+          {{segment.marks}} {{segment.label}}
+        </span>
+      {{/each}}
+    </div>
+
+    {{#if effectiveHealthState.effectHints.length}}
+      <div class="creation-warnings">
+        <strong>Rappels d’état</strong>
+        <ul>
+          {{#each effectiveHealthState.effectHints as |hint|}}
+            <li>{{hint}}</li>
+          {{/each}}
+        </ul>
+      </div>
     {{/if}}
   </section>
 
@@ -699,6 +722,21 @@
         <section class="panel">
           <h3>États de combat</h3>
 
+          <div class="combat-resource-line {{#if combatSummary.hasEffectiveAlert}}chakra-alert{{/if}}">
+            <strong>État effectif</strong>
+            <span>{{combatSummary.effectiveStateLabel}} — {{combatSummary.effectiveStateSource}}</span>
+          </div>
+
+          <div class="combat-resource-line {{#if combatSummary.hasTrackAlert}}chakra-alert{{/if}}">
+            <strong>Piste de santé</strong>
+            <span>{{combatHealthTrack.value}} / {{combatHealthTrack.max}}</span>
+          </div>
+
+          <div class="combat-resource-line">
+            <strong>État piste</strong>
+            <span>{{combatSummary.trackStateLabel}}</span>
+          </div>
+
           <div class="combat-resource-line">
             <strong>État manuel</strong>
             <span>{{combatSummary.manualStateLabel}}</span>
@@ -708,6 +746,27 @@
             <strong>État Chakra</strong>
             <span>{{combatSummary.chakraStateLabel}}</span>
           </div>
+
+          <div class="health-track">
+            {{#each combatHealthTrack.segments as |segment|}}
+              <span class="{{#if segment.complete}}is-complete{{/if}}">
+                {{segment.marks}} {{segment.label}}
+              </span>
+            {{/each}}
+          </div>
+
+          {{#if effectiveHealthState.effectHints.length}}
+            <div class="creation-warnings">
+              <strong>Rappels d’état</strong>
+              <ul>
+                {{#each effectiveHealthState.effectHints as |hint|}}
+                  <li>{{hint}}</li>
+                {{/each}}
+              </ul>
+            </div>
+          {{/if}}
+
+          <hr />
 
           <div class="combat-resource-line">
             <strong>Conditions</strong>
@@ -730,7 +789,7 @@
           </div>
 
           <p class="formula-hint">
-            Ces champs se modifient depuis l’onglet Combat / Actions. Cet onglet affiche seulement le résumé des états.
+            Les dégâts et soins se modifient depuis l’onglet Combat / Actions. Cet onglet sert au suivi global des effets et états.
           </p>
         </section>
 
@@ -1108,52 +1167,70 @@
           </section>
 
         <section class="combat-card">
-            <h3>Santé</h3>
+          <h3>Santé</h3>
 
-            <label>
-              Palier manuel
-              <select name="system.combat.health.manualState">
-                {{#each combatHealthStates as |state|}}
-                  <option value="{{state.key}}" {{#if state.selected}}selected{{/if}}>
-                    {{state.label}}
-                  </option>
-                {{/each}}
-              </select>
-            </label>
+          <div class="combat-resource-line {{#if combatSummary.hasTrackAlert}}chakra-alert{{/if}}">
+            <strong>Piste de santé</strong>
+            <span>{{combatHealthTrack.value}} / {{combatHealthTrack.max}}</span>
+          </div>
+
+          <div class="combat-resource-line">
+            <strong>État piste</strong>
+            <span>{{combatSummary.trackStateLabel}}</span>
+          </div>
 
           <div class="combat-resource-line {{#if combatSummary.hasChakraAlert}}chakra-alert{{/if}}">
             <strong>Palier Chakra</strong>
             <span>{{combatSummary.chakraStateLabel}}</span>
           </div>
 
-          <div class="health-track">
-            <span>Fatigue 1</span>
-            <span>Fatigue 2</span>
-            <span>Sonné</span>
-            <span>Blessure 1</span>
-            <span>Blessure 2</span>
-            <span>Blessure 3</span>
+          <label>
+            Palier manuel
+            <select name="system.combat.health.manualState">
+              {{#each combatHealthStates as |state|}}
+                <option value="{{state.key}}" {{#if state.selected}}selected{{/if}}>
+                  {{state.label}}
+                </option>
+              {{/each}}
+            </select>
+          </label>
+
+          <div class="combat-resource-line {{#if combatSummary.hasEffectiveAlert}}chakra-alert{{/if}}">
+            <strong>État effectif</strong>
+            <span>{{combatSummary.effectiveStateLabel}} — {{combatSummary.effectiveStateSource}}</span>
           </div>
+
+          <div class="health-track">
+            {{#each combatHealthTrack.segments as |segment|}}
+              <span class="{{#if segment.complete}}is-complete{{/if}}">
+                {{segment.marks}} {{segment.label}}
+              </span>
+            {{/each}}
+          </div>
+
+          {{#if effectiveHealthState.effectHints.length}}
+            <div class="creation-warnings">
+              <strong>Rappels d’état</strong>
+              <ul>
+                {{#each effectiveHealthState.effectHints as |hint|}}
+                  <li>{{hint}}</li>
+                {{/each}}
+              </ul>
+            </div>
+          {{/if}}
 
           <hr />
 
-          <h4>Calculateur de blessures</h4>
+          <h4>Application manuelle de dégâts</h4>
 
           <label>
-            Dégâts entrants
+            Dégâts qui passent
             <input
               name="system.combat.health.woundCalculator.incomingDamage"
               type="number"
               value="{{system.combat.health.woundCalculator.incomingDamage}}"
+              min="0"
             />
-          </label>
-
-          <label>
-            Défense ciblée
-            <select name="system.combat.health.woundCalculator.defense">
-              <option value="vigueur" {{#if (eq system.combat.health.woundCalculator.defense "vigueur")}}selected{{/if}}>Vigueur</option>
-              <option value="caractere" {{#if (eq system.combat.health.woundCalculator.defense "caractere")}}selected{{/if}}>Caractère</option>
-            </select>
           </label>
 
           <label>
@@ -1168,54 +1245,75 @@
             </select>
           </label>
 
-          <button type="button" class="combat-calculate-wounds">
-            Calculer les blessures
-          </button>
+          <div class="button-row">
+            <button type="button" class="combat-calculate-wounds">
+              Prévisualiser
+            </button>
+
+            <button type="button" class="combat-apply-health-damage">
+              Infliger à la piste
+            </button>
+
+            <button type="button" class="combat-recover-health-damage">
+              Récupérer / soigner
+            </button>
+
+            {{#if isGM}}
+              <button type="button" class="combat-reset-health-track">
+                MJ : remettre à zéro
+              </button>
+            {{/if}}
+          </div>
+
+          <p class="formula-hint">
+            Règle : chaque tranche de 5 dégâts coche une zone. Si 6 dégâts ou plus passent en une fois, +1 zone de choc est ajoutée.
+            Le même champ sert aussi aux soins manuels : indique une valeur puis clique sur “Récupérer / soigner”.
+          </p>
         </section>
 
         <section class="combat-card">
-          <h3>Réserves de lignée</h3>
-
-          <label class="{{#unless system.combat.health.reserves.lineageA.enabled}}disabled-field{{/unless}}">
-            <input
-              name="system.combat.health.reserves.lineageA.checked"
-              type="checkbox"
-              {{checked system.combat.health.reserves.lineageA.checked}}
-              {{#unless system.combat.health.reserves.lineageA.enabled}}disabled{{/unless}}
-            />
-            Lignée A
-          </label>
-
-          <label class="{{#unless system.combat.health.reserves.lineageB.enabled}}disabled-field{{/unless}}">
-            <input
-              name="system.combat.health.reserves.lineageB.checked"
-              type="checkbox"
-              {{checked system.combat.health.reserves.lineageB.checked}}
-              {{#unless system.combat.health.reserves.lineageB.enabled}}disabled{{/unless}}
-            />
-            Lignée B
-          </label>
+          <h3>Réserves spéciales</h3>
 
           {{#if isGM}}
-            <hr />
-
             <label>
               <input
-                name="system.combat.health.reserves.lineageA.enabled"
+                name="system.combat.health.damageTrack.reserves.spiritA.enabled"
                 type="checkbox"
-                {{checked system.combat.health.reserves.lineageA.enabled}}
+                {{checked system.combat.health.damageTrack.reserves.spiritA.enabled}}
               />
-              MJ : autoriser Lignée A
+              Activer Esprit A
             </label>
 
             <label>
               <input
-                name="system.combat.health.reserves.lineageB.enabled"
+                name="system.combat.health.damageTrack.reserves.spiritB.enabled"
                 type="checkbox"
-                {{checked system.combat.health.reserves.lineageB.enabled}}
+                {{checked system.combat.health.damageTrack.reserves.spiritB.enabled}}
               />
-              MJ : autoriser Lignée B
+              Activer Esprit B
             </label>
+
+            <label>
+              <input
+                name="system.combat.health.damageTrack.reserves.woundA.enabled"
+                type="checkbox"
+                {{checked system.combat.health.damageTrack.reserves.woundA.enabled}}
+              />
+              Activer Blessure A
+            </label>
+
+            <label>
+              <input
+                name="system.combat.health.damageTrack.reserves.woundB.enabled"
+                type="checkbox"
+                {{checked system.combat.health.damageTrack.reserves.woundB.enabled}}
+              />
+              Activer Blessure B
+            </label>
+          {{else}}
+            <p class="formula-hint">
+              Les réserves spéciales sont activées par le MJ selon le clan ou les pouvoirs du personnage.
+            </p>
           {{/if}}
         </section>
         </div>
@@ -2991,7 +3089,7 @@
                       >
                         Dégâts
                       </button>
-                      
+
                     {{else}}
                       {{#if (eq item.type "consumable")}}
                         <button

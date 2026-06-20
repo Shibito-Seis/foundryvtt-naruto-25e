@@ -1366,12 +1366,46 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     selected: this.actor.system.combat?.health?.manualState === key
   }));
 
+  const combatHealthTrack = typeof this.actor.getHealthTrackSummary === "function"
+    ? this.actor.getHealthTrackSummary()
+    : {
+        value: 0,
+        max: 30,
+        activeLabel: "Pleine forme",
+        segments: []
+      };
+
+  const effectiveHealthState = typeof this.actor.getEffectiveHealthStateSummary === "function"
+    ? this.actor.getEffectiveHealthStateSummary()
+    : {
+        key: "none",
+        label: "Pleine forme",
+        source: "—",
+        rank: 0,
+        effectHints: [],
+        hasPenalty: false,
+        isSonneOrWorse: false,
+        isWounded: false
+      };
+
+  context.combatHealthTrack = combatHealthTrack;
+  context.effectiveHealthState = effectiveHealthState;
+
   context.combatSummary = {
     manualStateLabel:
       NARUTO25E.healthStates[this.actor.system.combat?.health?.manualState ?? "none"] ?? "Pleine forme",
     chakraStateLabel:
       NARUTO25E.healthStates[this.actor.system.combat?.health?.chakraState ?? "none"] ?? "Pleine forme",
-    hasChakraAlert: (this.actor.system.combat?.health?.chakraState ?? "none") !== "none"
+    trackStateLabel: combatHealthTrack.activeLabel,
+    effectiveStateLabel: effectiveHealthState.label,
+    effectiveStateSource: effectiveHealthState.source,
+    hasChakraAlert: (this.actor.system.combat?.health?.chakraState ?? "none") !== "none",
+    hasTrackAlert: combatHealthTrack.value > 0,
+    hasEffectiveAlert: Boolean(effectiveHealthState.hasPenalty),
+    trackIsSonneOrWorse: Boolean(combatHealthTrack.isSonneOrWorse),
+    trackIsWounded: Boolean(combatHealthTrack.isWounded),
+    effectiveIsSonneOrWorse: Boolean(effectiveHealthState.isSonneOrWorse),
+    effectiveIsWounded: Boolean(effectiveHealthState.isWounded)
   };
 
   const chakraSpecState = this.actor.system.chakra?.specializationState ?? {
@@ -2112,6 +2146,27 @@ context.bases = Object.entries(this.actor.system.bases ?? {}).map(([key, base]) 
     event.preventDefault();
 
     await this.actor.calculateWoundFromCombatForm();
+  });
+
+  html.find(".combat-apply-health-damage").on("click", async (event) => {
+    event.preventDefault();
+
+    await this.actor.applyDamageToHealthTrackFromCombatForm();
+    this.render(false);
+  });
+
+  html.find(".combat-recover-health-damage").on("click", async (event) => {
+    event.preventDefault();
+
+    await this.actor.recoverHealthTrackFromCombatForm();
+    this.render(false);
+  });
+
+  html.find(".combat-reset-health-track").on("click", async (event) => {
+    event.preventDefault();
+
+    await this.actor.resetHealthTrack();
+    this.render(false);
   });
 
   html.find(".lineage-power-toggle").on("click", async (event) => {

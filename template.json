@@ -295,6 +295,31 @@
             "aggravations": "",
             "weaknesses": "",
             "notes": "",
+            "damageTrack": {
+              "value": 0,
+              "segmentSize": 5,
+              "criticalThreshold": 6,
+              "criticalBonusSegments": 1,
+              "useCriticalShock": true,
+              "reserves": {
+                "spiritA": {
+                  "enabled": false,
+                  "label": "Esprit A"
+                },
+                "spiritB": {
+                  "enabled": false,
+                  "label": "Esprit B"
+                },
+                "woundA": {
+                  "enabled": false,
+                  "label": "Blessure A"
+                },
+                "woundB": {
+                  "enabled": false,
+                  "label": "Blessure B"
+                }
+              }
+            },
             "woundCalculator": {
               "incomingDamage": 0,
               "defense": "vigueur",

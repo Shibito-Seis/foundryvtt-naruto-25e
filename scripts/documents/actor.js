@@ -3465,7 +3465,22 @@ async decreaseBase(baseKey) {
                 <span>Dégâts qui passent : ${passingDamage}</span>
               </div>
 
-              <p>Les blessures et états ne sont pas appliqués automatiquement avant la 0.1.42.</p>
+              ${passingDamage > 0 ? `
+                <div class="button-row">
+                  <button
+                    type="button"
+                    class="naruto-chat-health-apply"
+                    data-target-actor-id="${targetActor.id}"
+                    data-damage="${passingDamage}"
+                    data-damage-type="${safeType}"
+                    data-source-name="${safeSourceName}"
+                  >
+                    Appliquer à la santé
+                  </button>
+                </div>
+              ` : `
+                <p>Aucun dégât ne passe la défense passive.</p>
+              `}
             ` : `
               <p>Aucune cible de dégâts renseignée : dégâts bruts ${damageResult.total}.</p>
             `}
@@ -3713,6 +3728,30 @@ async decreaseBase(baseKey) {
     combat.health.aggravations = combat.health.aggravations ?? "";
     combat.health.weaknesses = combat.health.weaknesses ?? "";
     combat.health.notes = combat.health.notes ?? "";
+
+    combat.health.damageTrack = combat.health.damageTrack ?? {};
+    combat.health.damageTrack.value = Math.max(0, Number(combat.health.damageTrack.value ?? 0));
+    combat.health.damageTrack.segmentSize = Math.max(1, Number(combat.health.damageTrack.segmentSize ?? 5));
+    combat.health.damageTrack.criticalThreshold = Math.max(1, Number(combat.health.damageTrack.criticalThreshold ?? 6));
+    combat.health.damageTrack.criticalBonusSegments = Math.max(0, Number(combat.health.damageTrack.criticalBonusSegments ?? 1));
+    combat.health.damageTrack.useCriticalShock = combat.health.damageTrack.useCriticalShock !== false;
+    combat.health.damageTrack.reserves = combat.health.damageTrack.reserves ?? {};
+
+    combat.health.damageTrack.reserves.spiritA = combat.health.damageTrack.reserves.spiritA ?? {};
+    combat.health.damageTrack.reserves.spiritA.enabled = Boolean(combat.health.damageTrack.reserves.spiritA.enabled);
+    combat.health.damageTrack.reserves.spiritA.label = combat.health.damageTrack.reserves.spiritA.label ?? "Esprit A";
+
+    combat.health.damageTrack.reserves.spiritB = combat.health.damageTrack.reserves.spiritB ?? {};
+    combat.health.damageTrack.reserves.spiritB.enabled = Boolean(combat.health.damageTrack.reserves.spiritB.enabled);
+    combat.health.damageTrack.reserves.spiritB.label = combat.health.damageTrack.reserves.spiritB.label ?? "Esprit B";
+
+    combat.health.damageTrack.reserves.woundA = combat.health.damageTrack.reserves.woundA ?? {};
+    combat.health.damageTrack.reserves.woundA.enabled = Boolean(combat.health.damageTrack.reserves.woundA.enabled);
+    combat.health.damageTrack.reserves.woundA.label = combat.health.damageTrack.reserves.woundA.label ?? "Blessure A";
+
+    combat.health.damageTrack.reserves.woundB = combat.health.damageTrack.reserves.woundB ?? {};
+    combat.health.damageTrack.reserves.woundB.enabled = Boolean(combat.health.damageTrack.reserves.woundB.enabled);
+    combat.health.damageTrack.reserves.woundB.label = combat.health.damageTrack.reserves.woundB.label ?? "Blessure B";
 
     combat.health.woundCalculator.incomingDamage = Math.max(
       0,
@@ -5281,57 +5320,441 @@ async decreaseBase(baseKey) {
     return true;
   }
 
-    async calculateWoundFromCombatForm() {
+  _getHealthTrackSegments(track = this.system.combat?.health?.damageTrack ?? {}) {
+    const reserves = track.reserves ?? {};
+    const segments = [
+      { key: "fatigue1", label: "Fatigue 1", state: "fatigue1" },
+      { key: "fatigue2", label: "Fatigue 2", state: "fatigue2" }
+    ];
+
+    if (reserves.spiritA?.enabled) {
+      segments.push({
+        key: "spiritA",
+        label: reserves.spiritA.label ?? "Esprit A",
+        state: "fatigue2"
+      });
+    }
+
+    if (reserves.spiritB?.enabled) {
+      segments.push({
+        key: "spiritB",
+        label: reserves.spiritB.label ?? "Esprit B",
+        state: "fatigue2"
+      });
+    }
+
+    segments.push(
+      { key: "sonne", label: "Sonné", state: "sonne" },
+      { key: "blessure1", label: "Blessure 1", state: "blessure1" },
+      { key: "blessure2", label: "Blessure 2", state: "blessure2" },
+      { key: "blessure3", label: "Blessure 3", state: "blessure3" }
+    );
+
+    if (reserves.woundA?.enabled) {
+      segments.push({
+        key: "woundA",
+        label: reserves.woundA.label ?? "Blessure A",
+        state: "blessure3"
+      });
+    }
+
+    if (reserves.woundB?.enabled) {
+      segments.push({
+        key: "woundB",
+        label: reserves.woundB.label ?? "Blessure B",
+        state: "blessure3"
+      });
+    }
+
+    return segments;
+  }
+
+  getHealthTrackSummary(valueOverride = null) {
+    const health = this.system.combat?.health ?? {};
+    const track = health.damageTrack ?? {};
+    const segmentSize = Math.max(1, Number(track.segmentSize ?? 5));
+    const segments = this._getHealthTrackSegments(track);
+    const max = segments.length * segmentSize;
+    const value = Math.min(
+      max,
+      Math.max(0, Number(valueOverride ?? track.value ?? 0))
+    );
+
+    let activeState = "none";
+    let activeLabel = "Pleine forme";
+
+    const renderedSegments = segments.map((segment, index) => {
+      const start = index * segmentSize;
+      const end = start + segmentSize;
+      const filled = Math.max(0, Math.min(segmentSize, value - start));
+      const complete = filled >= segmentSize;
+
+      if (complete) {
+        activeState = segment.state;
+        activeLabel = segment.label;
+      }
+
+      return {
+        ...segment,
+        start,
+        end,
+        filled,
+        empty: segmentSize - filled,
+        complete,
+        marks: `${"-".repeat(filled)}${"/".repeat(segmentSize - filled)}`
+      };
+    });
+
+    return {
+      value,
+      max,
+      segmentSize,
+      activeState,
+      activeLabel,
+      segments: renderedSegments,
+      isSonneOrWorse: ["sonne", "blessure1", "blessure2", "blessure3"].includes(activeState),
+      isWounded: ["blessure1", "blessure2", "blessure3"].includes(activeState)
+    };
+  }
+
+  _getHealthStateRank(stateKey) {
+    const ranks = {
+      none: 0,
+      fatigue1: 1,
+      fatigue2: 2,
+      sonne: 3,
+      blessure1: 4,
+      blessure2: 5,
+      blessure3: 6
+    };
+
+    return ranks[String(stateKey ?? "none")] ?? 0;
+  }
+
+  getEffectiveHealthStateSummary() {
+    const health = this.system.combat?.health ?? {};
+    const trackSummary = this.getHealthTrackSummary();
+    const manualState = String(health.manualState ?? "none");
+    const chakraState = String(health.chakraState ?? "none");
+
+    const candidates = [
+      {
+        key: trackSummary.activeState,
+        label: trackSummary.activeLabel,
+        source: "Piste de santé",
+        rank: this._getHealthStateRank(trackSummary.activeState)
+      },
+      {
+        key: chakraState,
+        label: NARUTO25E.healthStates?.[chakraState] ?? "Pleine forme",
+        source: "Chakra",
+        rank: this._getHealthStateRank(chakraState)
+      },
+      {
+        key: manualState,
+        label: NARUTO25E.healthStates?.[manualState] ?? "Pleine forme",
+        source: "Palier manuel",
+        rank: this._getHealthStateRank(manualState)
+      }
+    ];
+
+    const effective = candidates.reduce((best, candidate) => {
+      return candidate.rank > best.rank ? candidate : best;
+    }, candidates[0]);
+
+    const effectHints = [];
+
+    if (effective.rank >= 1) {
+      effectHints.push("Fatigue : suivre l’état du personnage et les limitations narratives éventuelles.");
+    }
+
+    if (effective.rank >= 3) {
+      effectHints.push("Sonné : retirer manuellement l’action complexe du tour en cours / prochain tour selon le timing de table.");
+    }
+
+    if (effective.rank >= 4) {
+      effectHints.push("Blessure : soins longs ou traitement narratif requis.");
+    }
+
+    if (effective.rank >= 6) {
+      effectHints.push("Blessure 3 : personnage probablement inconscient ou hors combat selon l’arbitrage MJ.");
+    }
+
+    return {
+      key: effective.key,
+      label: effective.label,
+      source: effective.source,
+      rank: effective.rank,
+      candidates,
+      effectHints,
+      hasPenalty: effective.rank > 0,
+      isSonneOrWorse: effective.rank >= 3,
+      isWounded: effective.rank >= 4
+    };
+  }
+
+  _previewHealthTrackDamage(incomingDamage = 0) {
+    const health = this.system.combat?.health ?? {};
+    const track = health.damageTrack ?? {};
+    const segmentSize = Math.max(1, Number(track.segmentSize ?? 5));
+    const baseDamage = Math.max(0, Number(incomingDamage ?? 0));
+    const criticalThreshold = Math.max(1, Number(track.criticalThreshold ?? 6));
+    const criticalBonusSegments = Math.max(0, Number(track.criticalBonusSegments ?? 1));
+    const criticalShock = Boolean(track.useCriticalShock) && baseDamage >= criticalThreshold;
+    const criticalBonus = criticalShock ? criticalBonusSegments * segmentSize : 0;
+    const appliedDamage = baseDamage + criticalBonus;
+    const before = this.getHealthTrackSummary();
+    const after = this.getHealthTrackSummary(before.value + appliedDamage);
+
+    return {
+      baseDamage,
+      criticalShock,
+      criticalBonus,
+      appliedDamage,
+      before,
+      after
+    };
+  }
+
+  async calculateWoundFromCombatForm() {
     if (this.type !== "shinobi") return null;
 
     const calculator = this.system.combat?.health?.woundCalculator ?? {};
     const incomingDamage = Math.max(0, Number(calculator.incomingDamage ?? 0));
-    const defenseKey = calculator.defense ?? "vigueur";
     const damageType = calculator.damageType ?? "PHY";
-    const defenseValue = Math.max(0, this._getCombatDefenseValue(defenseKey));
-    const margin = incomingDamage - defenseValue;
+    const preview = this._previewHealthTrackDamage(incomingDamage);
 
-    const wounds = margin > 0
-      ? 1 + Math.floor(Math.max(0, margin - 1) / 5)
-      : 0;
-
-    const defenseLabel = defenseKey === "caractere" ? "Caractère" : "Vigueur";
-    const woundLabel = wounds > 1 ? "Blessures" : "Blessure";
+    const safeActorName = foundry.utils.escapeHTML?.(this.name) ?? this.name;
+    const criticalText = preview.criticalShock
+      ? `Oui (+${preview.criticalBonus} dégâts de choc)`
+      : "Non";
 
     const content = `
       <div class="naruto-roll-card combat-wound-card">
         <header class="naruto-roll-header">
-          <h2>Calcul de blessures</h2>
+          <h2>Prévisualisation santé</h2>
         </header>
 
         <div class="naruto-roll-details">
-          <div><strong>Acteur :</strong> ${this.name}</div>
-          <div><strong>Dégâts entrants :</strong> ${incomingDamage} (${damageType})</div>
-          <div><strong>Défense :</strong> ${defenseLabel} ${defenseValue}</div>
-          <div><strong>Marge :</strong> ${margin}</div>
-          <div><strong>Résultat :</strong> ${wounds > 0 ? `${wounds} ${woundLabel}` : "Aucune Blessure"}</div>
+          <div><strong>Acteur :</strong> ${safeActorName}</div>
+          <div><strong>Dégâts qui passent :</strong> ${preview.baseDamage} (${damageType})</div>
+          <div><strong>Coup violent :</strong> ${criticalText}</div>
+          <div><strong>Dégâts appliqués à la piste :</strong> ${preview.appliedDamage}</div>
+          <div><strong>Piste :</strong> ${preview.before.value} → ${preview.after.value} / ${preview.after.max}</div>
+          <div><strong>État avant :</strong> ${preview.before.activeLabel}</div>
+          <div><strong>État après :</strong> ${preview.after.activeLabel}</div>
         </div>
 
+        ${preview.after.isSonneOrWorse ? `
+          <p class="warning-text">
+            Sonné ou pire : retirer manuellement l’action complexe du tour en cours / prochain tour selon le timing de table.
+          </p>
+        ` : ""}
+
+        ${preview.after.isWounded ? `
+          <p class="warning-text">
+            Blessure atteinte : soins longs ou traitement narratif requis selon la gravité.
+          </p>
+        ` : ""}
+
         <p class="formula-hint">
-          Rappel : si les dégâts dépassent la défense, la cible subit 1 Blessure, puis +1 Blessure par tranche complète de 5 points au-dessus.
+          Cette carte prévisualise seulement. Utilise “Appliquer à la piste” sur la fiche pour enregistrer les dégâts.
         </p>
       </div>
     `;
 
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: this }),
-      flavor: `Calcul de blessures — ${this.name}`,
+      flavor: `Prévisualisation santé — ${this.name}`,
       content
     });
 
-    return {
-      incomingDamage,
-      defenseKey,
-      defenseValue,
+    return preview;
+  }
+
+  async applyDamageToHealthTrack(incomingDamage = 0, options = {}) {
+    if (this.type !== "shinobi") return null;
+
+    if (!this.isOwner && !game.user?.isGM) {
+      ui.notifications.warn("Tu n’as pas les droits pour modifier la santé de cette fiche.");
+      return null;
+    }
+
+    const damageType = String(options.damageType ?? "PHY");
+    const sourceName = String(options.sourceName ?? "Dégâts");
+    const preview = this._previewHealthTrackDamage(incomingDamage);
+
+    await this.update({
+      "system.combat.health.damageTrack.value": preview.after.value
+    });
+
+    const safeActorName = foundry.utils.escapeHTML?.(this.name) ?? this.name;
+    const safeSourceName = foundry.utils.escapeHTML?.(sourceName) ?? sourceName;
+    const criticalText = preview.criticalShock
+      ? `Oui (+${preview.criticalBonus} dégâts de choc)`
+      : "Non";
+
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+      flavor: `Santé — ${safeActorName}`,
+      content: `
+        <div class="naruto-roll-card combat-wound-card">
+          <header class="naruto-roll-header">
+            <h2>Santé — dégâts appliqués</h2>
+          </header>
+
+          <div class="naruto-roll-details">
+            <div><strong>Acteur :</strong> ${safeActorName}</div>
+            <div><strong>Source :</strong> ${safeSourceName}</div>
+            <div><strong>Dégâts qui passent :</strong> ${preview.baseDamage} (${damageType})</div>
+            <div><strong>Coup violent :</strong> ${criticalText}</div>
+            <div><strong>Dégâts appliqués :</strong> ${preview.appliedDamage}</div>
+            <div><strong>Piste :</strong> ${preview.before.value} → ${preview.after.value} / ${preview.after.max}</div>
+            <div><strong>État :</strong> ${preview.before.activeLabel} → ${preview.after.activeLabel}</div>
+          </div>
+
+          ${preview.after.isSonneOrWorse ? `
+            <p class="warning-text">
+              Sonné ou pire : retirer manuellement l’action complexe du tour en cours / prochain tour selon le timing de table.
+            </p>
+          ` : ""}
+
+          ${preview.after.isWounded ? `
+            <p class="warning-text">
+              Blessure atteinte : soins longs ou traitement narratif requis.
+            </p>
+          ` : ""}
+        </div>
+      `
+    });
+
+    ui.notifications.info(`${this.name} : santé ${preview.before.value} → ${preview.after.value}.`);
+
+    return preview;
+  }
+
+  async applyDamageToHealthTrackFromCombatForm() {
+    const calculator = this.system.combat?.health?.woundCalculator ?? {};
+    const incomingDamage = Math.max(0, Number(calculator.incomingDamage ?? 0));
+    const damageType = String(calculator.damageType ?? "PHY");
+
+    return this.applyDamageToHealthTrack(incomingDamage, {
       damageType,
-      margin,
-      wounds
+      sourceName: "Application manuelle"
+    });
+  }
+
+  async recoverHealthTrackFromCombatForm() {
+    const calculator = this.system.combat?.health?.woundCalculator ?? {};
+    const recoveredDamage = Math.max(0, Number(calculator.incomingDamage ?? 0));
+
+    return this.adjustHealthTrack(-recoveredDamage, {
+      sourceName: "Récupération manuelle",
+      reason: "Soins / récupération"
+    });
+  }
+
+  async adjustHealthTrack(delta = 0, options = {}) {
+    if (this.type !== "shinobi") return null;
+
+    if (!this.isOwner && !game.user?.isGM) {
+      ui.notifications.warn("Tu n’as pas les droits pour modifier la santé de cette fiche.");
+      return null;
+    }
+
+    const amount = Number(delta ?? 0);
+
+    if (!Number.isFinite(amount) || amount === 0) {
+      ui.notifications.warn("Indique une valeur différente de 0 pour ajuster la piste de santé.");
+      return null;
+    }
+
+    const sourceName = String(options.sourceName ?? "Ajustement manuel");
+    const reason = String(options.reason ?? "");
+    const before = this.getHealthTrackSummary();
+    const afterValue = Math.max(0, Math.min(before.max, before.value + amount));
+    const after = this.getHealthTrackSummary(afterValue);
+
+    await this.update({
+      "system.combat.health.damageTrack.value": after.value
+    });
+
+    const safeActorName = foundry.utils.escapeHTML?.(this.name) ?? this.name;
+    const safeSourceName = foundry.utils.escapeHTML?.(sourceName) ?? sourceName;
+    const safeReason = foundry.utils.escapeHTML?.(reason) ?? reason;
+    const directionLabel = amount > 0 ? "Dégâts ajoutés" : "Dégâts récupérés";
+
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+      flavor: `Santé — ${safeActorName}`,
+      content: `
+        <div class="naruto-roll-card combat-wound-card">
+          <header class="naruto-roll-header">
+            <h2>Santé — ajustement manuel</h2>
+          </header>
+
+          <div class="naruto-roll-details">
+            <div><strong>Acteur :</strong> ${safeActorName}</div>
+            <div><strong>Source :</strong> ${safeSourceName}</div>
+            ${safeReason ? `<div><strong>Raison :</strong> ${safeReason}</div>` : ""}
+            <div><strong>${directionLabel} :</strong> ${Math.abs(amount)}</div>
+            <div><strong>Piste :</strong> ${before.value} → ${after.value} / ${after.max}</div>
+            <div><strong>État :</strong> ${before.activeLabel} → ${after.activeLabel}</div>
+          </div>
+
+          ${after.isSonneOrWorse ? `
+            <p class="warning-text">
+              Sonné ou pire : retirer manuellement l’action complexe du tour en cours / prochain tour selon le timing de table.
+            </p>
+          ` : ""}
+
+          ${after.isWounded ? `
+            <p class="warning-text">
+              Blessure atteinte : soins longs ou traitement narratif requis.
+            </p>
+          ` : ""}
+        </div>
+      `
+    });
+
+    ui.notifications.info(`${this.name} : santé ${before.value} → ${after.value}.`);
+
+    return {
+      before,
+      after,
+      delta: amount
     };
+  }
+
+  async resetHealthTrack() {
+    if (this.type !== "shinobi") return null;
+
+    if (!game.user?.isGM) {
+      ui.notifications.warn("Seul le MJ peut remettre la piste de santé à zéro.");
+      return null;
+    }
+
+    const before = this.getHealthTrackSummary();
+
+    await this.update({
+      "system.combat.health.damageTrack.value": 0
+    });
+
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+      flavor: `Santé remise à zéro — ${this.name}`,
+      content: `
+        <div class="naruto-roll-card combat-wound-card">
+          <header class="naruto-roll-header">
+            <h2>Santé remise à zéro</h2>
+          </header>
+
+          <p><strong>${this.name}</strong> revient à 0 / ${before.max} sur sa piste de santé.</p>
+        </div>
+      `
+    });
+
+    return true;
   }
 
   async resetCombatCounters(scope = "round", options = {}) {
@@ -7789,5 +8212,26 @@ Hooks.on("renderChatMessage", (message, html) => {
     }
 
     await actor.rollDamageFromChatMessage(message);
+  });
+
+  html.find(".naruto-chat-health-apply").on("click", async (event) => {
+    event.preventDefault();
+
+    const button = event.currentTarget;
+    const targetActorId = button.dataset.targetActorId ?? "";
+    const targetActor = game.actors?.get(targetActorId);
+    const damage = Math.max(0, Number(button.dataset.damage ?? 0));
+    const damageType = String(button.dataset.damageType ?? "PHY");
+    const sourceName = String(button.dataset.sourceName ?? "Dégâts");
+
+    if (!targetActor || typeof targetActor.applyDamageToHealthTrack !== "function") {
+      ui.notifications.warn("Cible introuvable pour appliquer les dégâts à la santé.");
+      return;
+    }
+
+    await targetActor.applyDamageToHealthTrack(damage, {
+      damageType,
+      sourceName
+    });
   });
 });
