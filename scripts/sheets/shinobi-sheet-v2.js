@@ -172,6 +172,30 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
       await this.actor.setInventoryItemCarryState(itemId, carryState);
       this.render(false);
     });
+
+    html.find(".nindo-action-use").on("click", async (event) => {
+      event.preventDefault();
+
+      const actionKey = event.currentTarget?.dataset?.action;
+      if (!actionKey) return;
+
+      await this.actor.useNindoAction(actionKey);
+      this.render(false);
+    });
+
+    html.find(".nindo-charge-spend").on("click", async (event) => {
+      event.preventDefault();
+
+      await this.actor.spendNindoCharge();
+      this.render(false);
+    });
+
+    html.find(".nindo-effects-reset").on("click", async (event) => {
+      event.preventDefault();
+
+      await this.actor.resetNindoActiveEffects();
+      this.render(false);
+    });
   }
 
   _activateV2StoredTab() {
@@ -942,19 +966,34 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
 
   _buildV2CharacterContext(identity) {
     const nindo = this.actor.system?.nindo ?? {};
-    const nindoValue = Math.max(0, Number(nindo.value ?? 0));
+    const nindoValue = Number(nindo.value ?? 0);
     const nindoMax = Math.max(0, Number(nindo.max ?? 0));
     const nindoChargeValue = Math.max(0, Number(nindo.charges?.value ?? 0));
     const nindoChargeMax = Math.max(0, Number(nindo.charges?.max ?? 0));
     const nindoChoiceMode = String(nindo.choiceMode ?? "preset");
     const nindoPresetKey = String(nindo.preset ?? "");
     const nindoPreset = NARUTO25E.nindoPresets?.[nindoPresetKey] ?? null;
+    const isCustomNindo = nindoChoiceMode === "custom";
+
+    const nindoDisplay = {
+      mode: nindoChoiceMode,
+      name: isCustomNindo
+        ? (nindo.custom?.name || "Nindō personnalisé")
+        : (nindoPreset?.label || "Aucun Nindō choisi"),
+      description: isCustomNindo
+        ? (nindo.custom?.description || "")
+        : (nindoPreset?.description || "")
+    };
+
     const nindoActions = Object.entries(NARUTO25E.nindoActions ?? {}).map(([key, action]) => ({
       key,
-      name: action.name ?? key,
-      category: action.category ?? "—",
+      label: action.label ?? key,
+      cost: action.cost ?? 0,
+      variableCost: Boolean(action.variableCost),
+      maxCost: action.maxCost ?? action.cost ?? 0,
+      temporalite: action.temporalite ?? "—",
       description: action.description ?? "",
-      effect: action.effect ?? ""
+      canUse: true
     }));
 
     return {
@@ -965,13 +1004,20 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
         chargeMax: nindoChargeMax,
         choiceMode: nindoChoiceMode,
         presetKey: nindoPresetKey,
-        presetName: nindoPreset?.name ?? "—",
-        presetDescription: nindoPreset?.description ?? "",
+        presetName: nindoDisplay.name,
+        presetDescription: nindoDisplay.description,
         customName: nindo.custom?.name ?? "",
         customDescription: nindo.custom?.description ?? "",
         identityText: identity.nindoText ?? "",
+        isCustom: isCustomNindo,
+        display: nindoDisplay,
         actions: nindoActions,
-        hasActions: nindoActions.length > 0
+        hasActions: nindoActions.length > 0,
+        activeEffects: {
+          chakraBoost: nindo.activeEffects?.chakraBoost ?? {},
+          awakening: nindo.activeEffects?.awakening ?? {},
+          opportunity: nindo.activeEffects?.opportunity ?? {}
+        }
       },
       age: identity.age || "",
       birth: identity.birth || "",

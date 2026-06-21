@@ -2,6 +2,32 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.44 - Hotfix défense par carte et Nindō V2
+
+### Corrigé
+
+- Correction de la résolution attaque / défense par carte de chat :
+  - la demande de défense est désormais publique ;
+  - les boutons de défense ne sont plus désactivés à la création selon le client attaquant ;
+  - le propriétaire de la cible peut résoudre la défense sans tenter de modifier une carte ChatMessage qu’il ne possède pas ;
+  - le résultat de confrontation est posté dans une nouvelle carte publique.
+- Correction de l’affichage des cartes de confrontation :
+  - réduction des débordements ;
+  - repositionnement de la barre opposée ;
+  - containment du kunaï animé.
+- Correction du bloc Nindō de la fiche Shinobi V2 :
+  - restauration des noms d’actions ;
+  - restauration des descriptions complètes ;
+  - restauration des boutons d’utilisation ;
+  - restauration de la dépense de charges de Dépassement ;
+  - masquage des champs custom lorsqu’un Nindō prédéfini est utilisé.
+- Ajout d’un bouton MJ pour réinitialiser les effets actifs de Nindō suivis par la fiche.
+
+### Notes
+
+- Les effets Nindō restent principalement suivis par la fiche pour cette version.
+- L’application mécanique complète de Accroissement du Chakra, Éveil et Unison sera traitée dans un chantier dédié.
+
 ## 0.1.43.9 - Rattrapage jouabilité combat, création et Nindō
 
 ### Ajouté

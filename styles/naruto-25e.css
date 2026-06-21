@@ -1798,3 +1798,112 @@
   color: #efe3cc;
   font-size: 1.2rem;
 }
+
+/* ----------------------------------------- */
+/* 0.1.44 — Hotfix cartes attaque/défense    */
+/* ----------------------------------------- */
+
+.naruto-opposed-card {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.naruto-opposed-card * {
+  box-sizing: border-box;
+}
+
+.naruto-opposed-versus {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 2.4rem minmax(0, 1fr);
+  grid-template-areas: "attack track defense";
+  gap: 0.45rem;
+  align-items: stretch;
+  overflow: hidden;
+}
+
+.naruto-opposed-score.is-attack {
+  grid-area: attack;
+}
+
+.naruto-opposed-score.is-defense {
+  grid-area: defense;
+  position: relative;
+  overflow: visible;
+}
+
+.naruto-opposed-track {
+  grid-area: track;
+  position: relative;
+  min-width: 2.4rem;
+  height: auto;
+  overflow: visible;
+}
+
+.naruto-opposed-line {
+  position: absolute;
+  top: 50%;
+  left: -0.15rem;
+  right: -0.15rem;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(201, 163, 93, 0.18), rgba(201, 163, 93, 0.8), rgba(201, 163, 93, 0.18));
+}
+
+.naruto-opposed-kunai {
+  position: absolute;
+  z-index: 4;
+  top: 50%;
+  left: 50% !important;
+  width: 1.8rem;
+  height: 1.8rem;
+  object-fit: contain;
+  filter: drop-shadow(0 0 0.18rem rgba(0, 0, 0, 0.85));
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.naruto-opposed-kunai.is-hit {
+  left: calc(100% + 0.55rem) !important;
+  animation: naruto-kunai-hit-defense 520ms ease-out both;
+}
+
+.naruto-opposed-kunai.is-miss {
+  top: calc(100% - 0.1rem);
+  left: 50% !important;
+  opacity: 0.78;
+  animation: naruto-kunai-miss-ground 520ms ease-out both;
+}
+
+@keyframes naruto-kunai-hit-defense {
+  from {
+    transform: translate(-220%, -50%) rotate(90deg);
+  }
+
+  to {
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+}
+
+@keyframes naruto-kunai-miss-ground {
+  from {
+    transform: translate(-190%, -120%) rotate(90deg);
+  }
+
+  to {
+    transform: translate(-50%, -50%) rotate(130deg);
+  }
+}
+
+.naruto-opposed-score small {
+  overflow-wrap: anywhere;
+}
+
+.naruto-opposed-summary {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.naruto-opposed-summary span {
+  overflow-wrap: anywhere;
+}
+
+.naruto-opposed-card.is-resolved {
+  opacity: 0.82;
+}

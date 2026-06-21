@@ -1314,70 +1314,114 @@
         <section class="shinobi-v2-panel">
           <h2>Nindō</h2>
 
-          <div class="shinobi-v2-data-grid">
-            <div>
-              <strong>Points actuels</strong>
-              <span>{{v2.character.nindo.value}} / {{v2.character.nindo.max}}</span>
+          <section class="nindo-panel">
+            <div class="shinobi-v2-data-grid">
+              <div>
+                <strong>Points actuels</strong>
+                <span>{{v2.character.nindo.value}} / {{v2.character.nindo.max}}</span>
+              </div>
+
+              <div>
+                <strong>Charges Nindō</strong>
+                <span>{{v2.character.nindo.chargeValue}} / {{v2.character.nindo.chargeMax}}</span>
+              </div>
+
+              <div>
+                <strong>Type</strong>
+                <span>{{v2.character.nindo.choiceMode}}</span>
+              </div>
+
+              <div>
+                <strong>Nindō</strong>
+                <span>{{v2.character.nindo.display.name}}</span>
+              </div>
             </div>
 
-            <div>
-              <strong>Charges Nindō</strong>
-              <span>{{v2.character.nindo.chargeValue}} / {{v2.character.nindo.chargeMax}}</span>
+            <label>
+              Devise / texte personnel
+              <textarea name="system.identity.nindoText">{{system.identity.nindoText}}</textarea>
+            </label>
+
+            {{#if v2.character.nindo.isCustom}}
+              <div class="nindo-custom">
+                <label>Nom du Nindō personnalisé</label>
+                <input
+                  type="text"
+                  name="system.nindo.custom.name"
+                  value="{{system.nindo.custom.name}}"
+                />
+
+                <label>Description personnalisée</label>
+                <textarea name="system.nindo.custom.description">{{system.nindo.custom.description}}</textarea>
+              </div>
+            {{/if}}
+
+            <div class="nindo-current">
+              <h3>{{v2.character.nindo.display.name}}</h3>
+              <p>{{v2.character.nindo.display.description}}</p>
             </div>
 
-            <div>
-              <strong>Type</strong>
-              <span>{{v2.character.nindo.choiceMode}}</span>
-            </div>
+            <h3>Actions Nindō</h3>
 
-            <div>
-              <strong>Nindō prédéfini</strong>
-              <span>{{v2.character.nindo.presetName}}</span>
-            </div>
-          </div>
-
-          <label>
-            Devise / texte personnel
-            <textarea name="system.identity.nindoText">{{system.identity.nindoText}}</textarea>
-          </label>
-
-          <label>
-            Nom custom
-            <input name="system.nindo.custom.name" type="text" value="{{system.nindo.custom.name}}" />
-          </label>
-
-          <label>
-            Description custom
-            <textarea name="system.nindo.custom.description">{{system.nindo.custom.description}}</textarea>
-          </label>
-
-          {{#if v2.character.nindo.presetDescription}}
-            <div class="shinobi-v2-nindo-action-card">
-              <strong>{{v2.character.nindo.presetName}}</strong>
-              <p>{{v2.character.nindo.presetDescription}}</p>
-            </div>
-          {{/if}}
-
-          {{#if v2.character.nindo.hasActions}}
-            <div class="shinobi-v2-nindo-actions">
+            <div class="nindo-actions">
               {{#each v2.character.nindo.actions as |action|}}
-                <article class="shinobi-v2-nindo-action-card">
-                  <strong>{{action.name}}</strong>
-                  <span>{{action.category}}</span>
+                <div class="nindo-action-card">
+                  <h4>{{action.label}}</h4>
+                  <p>
+                    <strong>Coût :</strong>
+                    {{action.cost}}{{#if action.variableCost}} à {{action.maxCost}}{{/if}} point(s)
+                  </p>
+                  <p><strong>Temporalité :</strong> {{action.temporalite}}</p>
+                  <p>{{action.description}}</p>
 
-                  {{#if action.description}}
-                    <p>{{action.description}}</p>
-                  {{/if}}
-
-                  {{#if action.effect}}
-                    <p>{{action.effect}}</p>
-                  {{/if}}
-                </article>
+                  <button type="button" class="nindo-action-use" data-action="{{action.key}}">
+                    Utiliser
+                  </button>
+                </div>
               {{/each}}
             </div>
-          {{else}}
-            <p class="shinobi-v2-muted">Aucune action de Nindō configurée dans le système.</p>
-          {{/if}}
+
+            <h3>Charges de Dépassement</h3>
+
+            <p>
+              Charges disponibles :
+              <strong>{{v2.character.nindo.chargeValue}} / {{v2.character.nindo.chargeMax}}</strong>
+            </p>
+
+            <button type="button" class="nindo-charge-spend" {{#unless v2.character.nindo.chargeValue}}disabled{{/unless}}>
+              Dépenser une charge
+            </button>
+
+            {{#if v2.character.nindo.activeEffects.chakraBoost.active}}
+              <p class="nindo-active-effect">
+                Accroissement du Chakra actif :
+                +{{v2.character.nindo.activeEffects.chakraBoost.amount}} Chakra,
+                {{v2.character.nindo.activeEffects.chakraBoost.remainingTurns}} tour(s) restant(s).
+              </p>
+            {{/if}}
+
+            {{#if v2.character.nindo.activeEffects.awakening.active}}
+              <p class="nindo-active-effect">
+                Éveil actif :
+                {{v2.character.nindo.activeEffects.awakening.actionsRemaining}} action(s) spéciale(s),
+                bonus +{{v2.character.nindo.activeEffects.awakening.bonus}}.
+              </p>
+            {{/if}}
+
+            {{#if v2.character.nindo.activeEffects.opportunity.available}}
+              <p class="nindo-active-effect">
+                Opportunité disponible grâce à Unison.
+              </p>
+            {{/if}}
+
+            {{#if isGM}}
+              <div class="button-row">
+                <button type="button" class="nindo-effects-reset">
+                  MJ : réinitialiser les effets actifs de Nindō
+                </button>
+              </div>
+            {{/if}}
+          </section>
         </section>
 
         <section class="shinobi-v2-panel">

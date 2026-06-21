@@ -1795,6 +1795,47 @@ export class Naruto25eActor extends Actor {
       });
     }
 
+    async resetNindoActiveEffects() {
+      if (this.type !== "shinobi") return;
+
+      if (!game.user?.isGM) {
+        ui.notifications.warn("Seul le MJ peut réinitialiser les effets actifs de Nindō.");
+        return;
+      }
+
+      await this.update({
+        "system.nindo.activeEffects.chakraBoost": {
+          active: false,
+          remainingTurns: 0,
+          amount: 0
+        },
+        "system.nindo.activeEffects.awakening": {
+          active: false,
+          actionsRemaining: 0,
+          bonus: 0
+        },
+        "system.nindo.activeEffects.opportunity": {
+          available: false
+        }
+      }, {
+        naruto25e: {
+          allowNindoActionUpdate: true
+        }
+      });
+
+      await ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor: this }),
+        content: `
+          <div class="naruto-roll-card nindo-card">
+            <h2>Effets Nindō réinitialisés</h2>
+            <p><strong>${foundry.utils.escapeHTML?.(this.name) ?? this.name}</strong> n’a plus d’effet actif de Nindō suivi par la fiche.</p>
+          </div>
+        `
+      });
+
+      ui.notifications.info(`${this.name} : effets Nindō réinitialisés.`);
+    }
+
   _prepareBases(system) {
     for (const base of Object.values(system.bases ?? {})) {
       base.value = Number(base.value ?? 0);
@@ -4720,17 +4761,13 @@ async decreaseBase(baseKey) {
   _buildDefenseRequestCardContent(data = {}) {
     const safe = (value) => foundry.utils.escapeHTML?.(String(value ?? "")) ?? String(value ?? "");
     const options = Array.isArray(data.defenseOptions) ? data.defenseOptions : [];
-    const canResolve = this._canUserResolveDefenseForActor(game.actors?.get(data.targetActorId));
 
     const buttons = options.map((option) => {
-      const disabled = canResolve ? "" : "disabled";
-
       return `
         <button
           type="button"
           class="naruto-chat-defense-select"
           data-defense-key="${safe(option.key)}"
-          ${disabled}
         >
           <span>${safe(option.label)}</span>
           <small>${safe(this._getDefenseModeLabel(option))}</small>
@@ -4739,9 +4776,7 @@ async decreaseBase(baseKey) {
       `;
     }).join("");
 
-    const waitingText = canResolve
-      ? "Choisis la défense utilisée contre cette attaque."
-      : "En attente du propriétaire de la cible ou du MJ.";
+    const waitingText = "Le propriétaire de la cible ou le MJ choisit la défense utilisée contre cette attaque.";
 
     return `
       <div class="naruto-roll-card naruto-opposed-card is-pending">
@@ -4902,7 +4937,6 @@ async decreaseBase(baseKey) {
     const safeActorName = foundry.utils.escapeHTML?.(this.name) ?? this.name;
     const safeTargetName = foundry.utils.escapeHTML?.(targetActor.name) ?? targetActor.name;
     const ownerIds = this._getActorPrimaryOwnerIds(targetActor);
-    const whisper = ownerIds.length ? [...ownerIds, ...ChatMessage.getWhisperRecipients("GM").map((user) => user.id)] : null;
     const defenseData = {
       actorId: this.id,
       actorName: this.name,
@@ -4932,7 +4966,6 @@ async decreaseBase(baseKey) {
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: this }),
       flavor: `Défense demandée — ${safeLabel}`,
-      whisper,
       flags: {
         "naruto-25e": {
           defenseRequest: defenseData
@@ -5029,19 +5062,40 @@ async decreaseBase(baseKey) {
       resistanceBlock
     };
 
-    await message.update({
-      content: this._buildOpposedResultCardContent(resultData),
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+      flavor: `${data.label} — ${data.actorName} contre ${data.targetName}`,
       flags: {
-        "naruto-25e.damagePayload": success ? {
-          actorId: this.id,
-          targetActorId: targetActor.id,
-          sourceName: data.label,
-          damage: data.damage,
-          damageType: data.damageType
-        } : null,
-        "naruto-25e.defenseResolved": true
-      }
+        "naruto-25e": {
+          damagePayload: success ? {
+            actorId: this.id,
+            targetActorId: targetActor.id,
+            sourceName: data.label,
+            damage: data.damage,
+            damageType: data.damageType
+          } : null,
+          defenseResult: resultData,
+          defenseResolvedFrom: message.id
+        }
+      },
+      content: this._buildOpposedResultCardContent(resultData)
     });
+
+    if (game.user?.isGM || message.isOwner) {
+      await message.update({
+        content: `
+          <div class="naruto-roll-card naruto-opposed-card is-resolved">
+            <header class="naruto-roll-header">
+              <h3>${foundry.utils.escapeHTML?.(data.label) ?? data.label}</h3>
+            </header>
+            <p>Défense résolue. Voir la carte de confrontation publique.</p>
+          </div>
+        `,
+        flags: {
+          "naruto-25e.defenseResolved": true
+        }
+      });
+    }
 
     return attackRoll.roll;
   }
