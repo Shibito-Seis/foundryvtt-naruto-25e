@@ -173,23 +173,6 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
       this.render(false);
     });
 
-    html.find(".nindo-action-use").on("click", async (event) => {
-      event.preventDefault();
-
-      const actionKey = event.currentTarget?.dataset?.action;
-      if (!actionKey) return;
-
-      await this.actor.useNindoAction(actionKey);
-      this.render(false);
-    });
-
-    html.find(".nindo-charge-spend").on("click", async (event) => {
-      event.preventDefault();
-
-      await this.actor.spendNindoCharge();
-      this.render(false);
-    });
-
     html.find(".nindo-effects-reset").on("click", async (event) => {
       event.preventDefault();
 

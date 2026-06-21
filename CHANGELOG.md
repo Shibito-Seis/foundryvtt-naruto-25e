@@ -2,6 +2,21 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.44.2 - Correction double déclenchement Nindō V2
+
+### Corrigé
+
+- Correction du double déclenchement des actions Nindō dans la fiche Shinobi V2 :
+  - les actions `Utiliser` ne créent plus deux popups ;
+  - les actions `Utiliser` ne consomment plus deux fois les points de Nindō ;
+  - les actions `Utiliser` ne créent plus deux cartes de chat ;
+  - la dépense de charge de Nindō ne se déclenche plus deux fois.
+
+### Notes
+
+- La fiche Shinobi V2 hérite déjà des listeners Nindō de la fiche Tetris.
+- Le bouton MJ de réinitialisation des effets actifs reste géré spécifiquement par la fiche V2.
+
 ## 0.1.44.1 - Hotfix lisibilité combat, Santé V2 et Nindō négatif
 
 ### Corrigé
