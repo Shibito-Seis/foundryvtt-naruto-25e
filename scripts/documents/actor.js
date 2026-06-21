@@ -1584,6 +1584,10 @@ export class Naruto25eActor extends Actor {
         "system.progression.creation.validatedAt": new Date().toISOString(),
         "system.progression.creation.validatedBy": game.user.name,
         "system.progression.creation.currentStep": "summary"
+      }, {
+        naruto25e: {
+          allowCreationLockUpdate: true
+        }
       });
 
       ui.notifications.info(`Dossier de Shinobi validé pour ${this.name}.`);
@@ -3422,17 +3426,16 @@ async decreaseBase(baseKey) {
       ? Math.max(0, damageResult.total - defenseValue)
       : damageResult.total;
 
-    const safeActorName = foundry.utils.escapeHTML?.(this.name) ?? this.name;
-    const safeSourceName = foundry.utils.escapeHTML?.(payload.sourceName ?? "Dégâts") ?? (payload.sourceName ?? "Dégâts");
-    const safeTargetName = targetActor
-      ? (foundry.utils.escapeHTML?.(targetActor.name) ?? targetActor.name)
-      : "—";
-    const safeFormula = foundry.utils.escapeHTML?.(damageResult.formula || "—") ?? (damageResult.formula || "—");
-    const safeType = foundry.utils.escapeHTML?.(payload.damageType ?? damage.type ?? "physical") ?? (payload.damageType ?? damage.type ?? "physical");
-    const safeCondition = foundry.utils.escapeHTML?.(damageResult.condition ?? "") ?? (damageResult.condition ?? "");
+    const safe = (value) => foundry.utils.escapeHTML?.(String(value ?? "")) ?? String(value ?? "");
+    const safeActorName = safe(this.name);
+    const safeSourceName = safe(payload.sourceName ?? "Dégâts");
+    const safeTargetName = targetActor ? safe(targetActor.name) : "—";
+    const safeFormula = safe(damageResult.formula || "—");
+    const safeType = safe(payload.damageType ?? damage.type ?? "physical");
+    const safeCondition = safe(damageResult.condition ?? "");
 
     const partsText = damageResult.parts?.length
-      ? damageResult.parts.map((part) => `${part.label} ${part.value}`).join(" + ")
+      ? damageResult.parts.map((part) => `${safe(part.label)} ${Number(part.value ?? 0)}`).join(" + ")
       : "—";
 
     await ChatMessage.create({
@@ -3444,7 +3447,10 @@ async decreaseBase(baseKey) {
             <h3>Dégâts — ${safeSourceName}</h3>
           </header>
 
-          <p><strong>${safeActorName}</strong> calcule les dégâts.</p>
+          <div class="naruto-opposed-summary">
+            <div><strong>Source</strong><span>${safeSourceName}</span></div>
+            <div><strong>Cible</strong><span>${safeTargetName}</span></div>
+          </div>
 
           ${damageResult.calculable ? `
             <div class="naruto-roll-result">
@@ -3452,6 +3458,7 @@ async decreaseBase(baseKey) {
             </div>
 
             <div class="naruto-roll-details">
+              <span>Attaquant : ${safeActorName}</span>
               <span>Formule : ${safeFormula}</span>
               <span>Détail : ${partsText}${damageResult.flat ? ` + ${damageResult.flat}` : ""}${damageResult.perItemBonus ? ` + cumul ${damageResult.perItemBonus}` : ""}</span>
               <span>Type : ${safeType}</span>
@@ -3459,10 +3466,10 @@ async decreaseBase(baseKey) {
             </div>
 
             ${targetActor ? `
-              <div class="naruto-roll-details">
-                <span>Cible : ${safeTargetName}</span>
-                <span>Défense passive : ${defenseLabel} ${defenseValue}</span>
-                <span>Dégâts qui passent : ${passingDamage}</span>
+              <div class="naruto-damage-breakdown">
+                <div><span>Dégâts bruts</span><strong>${damageResult.total}</strong></div>
+                <div><span>${safe(defenseLabel)}</span><strong>-${defenseValue}</strong></div>
+                <div><span>Dégâts qui passent</span><strong>${passingDamage}</strong></div>
               </div>
 
               ${passingDamage > 0 ? `
@@ -3475,11 +3482,11 @@ async decreaseBase(baseKey) {
                     data-damage-type="${safeType}"
                     data-source-name="${safeSourceName}"
                   >
-                    Appliquer à la santé
+                    Appliquer à la santé de ${safeTargetName}
                   </button>
                 </div>
               ` : `
-                <p>Aucun dégât ne passe la défense passive.</p>
+                <p>Aucun dégât ne passe la défense passive de ${safeTargetName}.</p>
               `}
             ` : `
               <p>Aucune cible de dégâts renseignée : dégâts bruts ${damageResult.total}.</p>
@@ -3489,7 +3496,7 @@ async decreaseBase(baseKey) {
               Manuel
             </div>
 
-            <p>${damageResult.reason}</p>
+            <p>${safe(damageResult.reason)}</p>
             <p>Formule papier : ${safeFormula}</p>
           `}
         </div>
@@ -3910,6 +3917,7 @@ async decreaseBase(baseKey) {
 
     const isGM = Boolean(updatingUser?.isGM);
     const allowNindoActionUpdate = Boolean(options?.naruto25e?.allowNindoActionUpdate);
+    const allowCreationLockUpdate = Boolean(options?.naruto25e?.allowCreationLockUpdate);
 
     if (isGM) return allowed;
 
@@ -4197,7 +4205,7 @@ async decreaseBase(baseKey) {
         deletePath(path);
       }
 
-      if (path === "system.progression.creation.locked") {
+      if (path === "system.progression.creation.locked" && !allowCreationLockUpdate) {
         deletePath(path);
       }
     }
@@ -4685,6 +4693,169 @@ async decreaseBase(baseKey) {
     return true;
   }
 
+  _getActorPrimaryOwnerIds(actor) {
+    const ownership = actor?.ownership ?? {};
+    const ids = [];
+
+    for (const user of game.users ?? []) {
+      if (!user || user.isGM) continue;
+
+      const level = Number(ownership[user.id] ?? ownership.default ?? 0);
+      if (level >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER) ids.push(user.id);
+    }
+
+    return ids;
+  }
+
+  _canUserResolveDefenseForActor(actor) {
+    return Boolean(game.user?.isGM || actor?.isOwner);
+  }
+
+  _getDefenseModeLabel(option = {}) {
+    if (option.mode === "passive") return "passif";
+    if (option.limited) return `${option.remaining ?? 0} usage restant`;
+    return "actif";
+  }
+
+  _buildDefenseRequestCardContent(data = {}) {
+    const safe = (value) => foundry.utils.escapeHTML?.(String(value ?? "")) ?? String(value ?? "");
+    const options = Array.isArray(data.defenseOptions) ? data.defenseOptions : [];
+    const canResolve = this._canUserResolveDefenseForActor(game.actors?.get(data.targetActorId));
+
+    const buttons = options.map((option) => {
+      const disabled = canResolve ? "" : "disabled";
+
+      return `
+        <button
+          type="button"
+          class="naruto-chat-defense-select"
+          data-defense-key="${safe(option.key)}"
+          ${disabled}
+        >
+          <span>${safe(option.label)}</span>
+          <small>${safe(this._getDefenseModeLabel(option))}</small>
+          <strong>${Number(option.total ?? 0)}</strong>
+        </button>
+      `;
+    }).join("");
+
+    const waitingText = canResolve
+      ? "Choisis la défense utilisée contre cette attaque."
+      : "En attente du propriétaire de la cible ou du MJ.";
+
+    return `
+      <div class="naruto-roll-card naruto-opposed-card is-pending">
+        <header class="naruto-roll-header">
+          <h3>${safe(data.label)}</h3>
+        </header>
+
+        <div class="naruto-opposed-summary">
+          <div><strong>Attaquant</strong><span>${safe(data.actorName)}</span></div>
+          <div><strong>Cible</strong><span>${safe(data.targetName)}</span></div>
+        </div>
+
+        <div class="naruto-roll-result">
+          Défense demandée
+        </div>
+
+        <p>${waitingText}</p>
+
+        <div class="naruto-defense-button-grid">
+          ${buttons}
+        </div>
+
+        ${data.damageFormula ? `
+          <div class="naruto-roll-details">
+            <span>Dégâts : ${safe(data.damageFormula)}</span>
+            <span>Type : ${safe(data.damageType)}</span>
+          </div>
+        ` : ""}
+
+        ${data.effectText ? `
+          <div class="naruto-consumable-text">
+            ${safe(data.effectText)}
+          </div>
+        ` : ""}
+      </div>
+    `;
+  }
+
+  _buildOpposedResultCardContent(data = {}) {
+    const safe = (value) => foundry.utils.escapeHTML?.(String(value ?? "")) ?? String(value ?? "");
+    const success = Boolean(data.success);
+    const margin = Number(data.margin ?? 0);
+    const impactPercent = Math.max(8, Math.min(92, Number(data.impactPercent ?? 50)));
+    const kunaiClass = success ? "is-hit" : "is-miss";
+    const damageAvailable = Boolean(data.damageAvailable);
+
+    return `
+      <div class="naruto-roll-card naruto-opposed-card ${success ? "is-hit" : "is-miss"}">
+        <header class="naruto-roll-header">
+          <h3>${safe(data.label)}</h3>
+        </header>
+
+        <div class="naruto-opposed-summary">
+          <div><strong>Attaquant</strong><span>${safe(data.actorName)}</span></div>
+          <div><strong>Cible</strong><span>${safe(data.targetName)}</span></div>
+        </div>
+
+        <div class="naruto-roll-result ${success ? "success" : "failure"}">
+          ${success ? "Attaque réussie" : "Attaque échouée"}
+        </div>
+
+        <div class="naruto-opposed-versus">
+          <div class="naruto-opposed-score is-attack">
+            <span>Attaque</span>
+            <strong>${Number(data.attackTotal ?? 0)}</strong>
+            <small>D10 ${safe(data.attackDiceText)} + ${Number(data.attackModifier ?? 0)}</small>
+          </div>
+
+          <div class="naruto-opposed-track">
+            <span class="naruto-opposed-line"></span>
+            <img
+              class="naruto-opposed-kunai ${kunaiClass}"
+              src="systems/naruto-25e/assets/ui/chat/kunai.webp"
+              alt="Kunai"
+              style="left: ${impactPercent}%;"
+            />
+          </div>
+
+          <div class="naruto-opposed-score is-defense ${success ? "is-broken" : ""}">
+            <span>Défense</span>
+            <strong>${Number(data.defenseTotal ?? 0)}</strong>
+            <small>${safe(data.defenseLabel)}${data.defenseRoll ? ` · D10 ${safe(data.defenseDiceText)} + ${Number(data.defenseModifier ?? 0)}` : " · fixe"}</small>
+          </div>
+        </div>
+
+        <div class="naruto-roll-details">
+          <span>Marge : ${margin >= 0 ? "+" : ""}${margin}</span>
+          <span>Cible : ${safe(data.targetName)}</span>
+          <span>Défense choisie : ${safe(data.defenseLabel)}</span>
+        </div>
+
+        ${data.damageFormula ? `
+          <div class="naruto-roll-details">
+            <span>Dégâts : ${safe(data.damageFormula)}</span>
+            <span>Type : ${safe(data.damageType)}</span>
+          </div>
+        ` : ""}
+
+        ${data.resistanceBlock ?? ""}
+
+        ${data.effectText ? `
+          <div class="naruto-consumable-text">
+            ${safe(data.effectText)}
+          </div>
+        ` : ""}
+
+        ${success ? `
+          <p>L’action touche ou affecte la cible.</p>
+          ${this._createDamageButtonHtml(damageAvailable)}
+        ` : `<p>La défense tient bon.</p>`}
+      </div>
+    `;
+  }
+
   async _resolveTargetedAttack(profile = {}) {
     const label = String(profile.label ?? "Attaque");
     const attackTotal = Math.max(0, Number(profile.attackTotal ?? 0));
@@ -4698,12 +4869,12 @@ async decreaseBase(baseKey) {
         enabled: false
       }
     });
-    const damageAvailable = Boolean(damageData.calculation?.enabled);
     const effectText = String(profile.effectText ?? "");
 
     const targets = Array.from(game.user?.targets ?? []);
 
     if (targets.length !== 1) {
+      ui.notifications.warn("Cible exactement un token pour créer une demande de défense.");
       return this._rollExplodingD10(label, attackTotal, {
         flavor: `${label} — ${this.name}`
       });
@@ -4722,36 +4893,109 @@ async decreaseBase(baseKey) {
       defenseType
     }) ?? [];
 
-    const defense = await targetActor._chooseDefenseOption?.(targetActor, profile.kind ?? defenseType, defenseOptions);
+    if (!defenseOptions.length) {
+      ui.notifications.warn("Aucune défense valide disponible pour cette cible.");
+      return null;
+    }
+
+    const safeLabel = foundry.utils.escapeHTML?.(label) ?? label;
+    const safeActorName = foundry.utils.escapeHTML?.(this.name) ?? this.name;
+    const safeTargetName = foundry.utils.escapeHTML?.(targetActor.name) ?? targetActor.name;
+    const ownerIds = this._getActorPrimaryOwnerIds(targetActor);
+    const whisper = ownerIds.length ? [...ownerIds, ...ChatMessage.getWhisperRecipients("GM").map((user) => user.id)] : null;
+    const defenseData = {
+      actorId: this.id,
+      actorName: this.name,
+      targetActorId: targetActor.id,
+      targetName: targetActor.name,
+      label,
+      attackTotal,
+      defenseType,
+      kind: String(profile.kind ?? defenseType),
+      damageFormula,
+      damageType,
+      damage: damageData,
+      effectText,
+      defenseOptions: defenseOptions.map((option) => ({
+        key: String(option.key ?? ""),
+        label: String(option.label ?? option.key ?? "Défense"),
+        total: Math.max(0, Number(option.total ?? 0)),
+        mode: String(option.mode ?? "active"),
+        counterKey: String(option.counterKey ?? ""),
+        limited: Boolean(option.limited),
+        remaining: option.remaining === null || option.remaining === undefined ? null : Number(option.remaining),
+        defenseKey: String(option.defenseKey ?? ""),
+        defenseFamily: String(option.defenseFamily ?? "")
+      }))
+    };
+
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+      flavor: `Défense demandée — ${safeLabel}`,
+      whisper,
+      flags: {
+        "naruto-25e": {
+          defenseRequest: defenseData
+        }
+      },
+      content: this._buildDefenseRequestCardContent(defenseData)
+    });
+
+    ui.notifications.info(`Défense demandée à ${safeTargetName} contre ${safeActorName}.`);
+    return null;
+  }
+
+  async resolveDefenseFromChatMessage(message, defenseKey = "") {
+    const data = message?.getFlag?.("naruto-25e", "defenseRequest");
+
+    if (!data || data.actorId !== this.id) {
+      ui.notifications.warn("Cette carte de défense n’est plus exploitable.");
+      return null;
+    }
+
+    const targetActor = game.actors?.get(data.targetActorId);
+
+    if (!targetActor || targetActor.type !== "shinobi") {
+      ui.notifications.warn("Cible introuvable pour résoudre la défense.");
+      return null;
+    }
+
+    if (!this._canUserResolveDefenseForActor(targetActor)) {
+      ui.notifications.warn("Seul le propriétaire de la cible ou le MJ peut choisir cette défense.");
+      return null;
+    }
+
+    if (message.getFlag("naruto-25e", "defenseResolved")) {
+      ui.notifications.warn("Cette défense a déjà été résolue.");
+      return null;
+    }
+
+    const defenseOptions = Array.isArray(data.defenseOptions) ? data.defenseOptions : [];
+    const defense = defenseOptions.find((option) => option.key === defenseKey) ?? defenseOptions[0];
 
     if (!defense) {
-      ui.notifications.warn("Aucune défense valide sélectionnée.");
+      ui.notifications.warn("Défense introuvable.");
       return null;
     }
 
     const consumed = await targetActor._consumeDefenseOption?.(defense);
-
     if (!consumed) return null;
 
-    const attackRoll = await this._rollExplodingD10Data(attackTotal);
+    const attackRoll = await this._rollExplodingD10Data(Number(data.attackTotal ?? 0));
     const defenseRoll = defense.mode === "passive"
       ? null
-      : await targetActor._rollExplodingD10Data(defense.total);
+      : await targetActor._rollExplodingD10Data(Number(defense.total ?? 0));
 
     const defenseTotal = defenseRoll?.total ?? Number(defense.total ?? 0);
     const success = attackRoll.total >= defenseTotal;
     const margin = attackRoll.total - defenseTotal;
-
-    const safeActorName = foundry.utils.escapeHTML?.(this.name) ?? this.name;
-    const safeTargetName = foundry.utils.escapeHTML?.(targetActor.name) ?? targetActor.name;
-    const safeLabel = foundry.utils.escapeHTML?.(label) ?? label;
-    const safeDefenseLabel = foundry.utils.escapeHTML?.(defense.label) ?? defense.label;
-    const safeDamageFormula = foundry.utils.escapeHTML?.(damageFormula) ?? damageFormula;
-    const safeDamageType = foundry.utils.escapeHTML?.(damageType) ?? damageType;
-    const safeEffectText = foundry.utils.escapeHTML?.(effectText) ?? effectText;
+    const maxTotal = Math.max(1, attackRoll.total, defenseTotal);
+    const impactPercent = success
+      ? Math.max(10, Math.min(90, (defenseTotal / maxTotal) * 100))
+      : 50;
 
     const resistanceSummaries = targetActor._getPsychicResistanceSummary?.({
-      damageType
+      damageType: data.damageType
     });
 
     const resistanceBlock = resistanceSummaries?.length
@@ -4768,86 +5012,36 @@ async decreaseBase(baseKey) {
       `
       : "";
 
-    await ChatMessage.create({
-      speaker: ChatMessage.getSpeaker({ actor: this }),
-      flavor: `${safeLabel} — ${safeActorName}`,
+    const resultData = {
+      ...data,
+      defenseLabel: defense.label,
+      defenseTotal,
+      defenseRoll: Boolean(defenseRoll),
+      defenseDiceText: defenseRoll?.diceText ?? "",
+      defenseModifier: defenseRoll?.modifier ?? Number(defense.total ?? 0),
+      attackTotal: attackRoll.total,
+      attackDiceText: attackRoll.diceText,
+      attackModifier: attackRoll.modifier,
+      success,
+      margin,
+      impactPercent,
+      damageAvailable: Boolean(data.damage?.calculation?.enabled),
+      resistanceBlock
+    };
+
+    await message.update({
+      content: this._buildOpposedResultCardContent(resultData),
       flags: {
-        "naruto-25e": {
-          damagePayload: {
-            actorId: this.id,
-            targetActorId: targetActor.id,
-            sourceName: label,
-            damage: damageData,
-            damageType
-          }
-        }
-      },
-      content: `
-        <div class="naruto-roll-card">
-          <header class="naruto-roll-header">
-            <h3>${safeLabel}</h3>
-          </header>
-
-          <p><strong>${safeActorName}</strong> attaque <strong>${safeTargetName}</strong>.</p>
-
-          <div class="naruto-roll-result ${success ? "success" : "failure"}">
-            ${success ? "Réussite" : "Échec"}
-          </div>
-
-          <div class="naruto-roll-details">
-            <span>Résultat d’attaque : ${attackRoll.total}</span>
-            <span>Défense : ${safeDefenseLabel} — ${defenseTotal}${defense.mode === "passive" ? " fixe" : ""}</span>
-            <span>Cible : ${safeTargetName}</span>
-            <span>Marge : ${margin >= 0 ? "+" : ""}${margin}</span>
-          </div>
-
-          ${safeDamageFormula ? `
-            <div class="naruto-roll-details">
-              <span>Dégâts : ${safeDamageFormula}</span>
-              <span>Type : ${safeDamageType}</span>
-            </div>
-          ` : ""}
-
-          ${resistanceBlock}
-
-          ${safeEffectText ? `
-            <div class="naruto-consumable-text">
-              ${safeEffectText}
-            </div>
-          ` : ""}
-
-          ${success ? `
-            <p>L’action touche ou affecte la cible.</p>
-            ${this._createDamageButtonHtml(damageAvailable)}
-            <p>Les blessures et états restent à appliquer manuellement jusqu’à la 0.1.42.</p>
-          ` : `<p>La défense tient bon.</p>`}
-        </div>
-      `,
-      rolls: [attackRoll.roll]
+        "naruto-25e.damagePayload": success ? {
+          actorId: this.id,
+          targetActorId: targetActor.id,
+          sourceName: data.label,
+          damage: data.damage,
+          damageType: data.damageType
+        } : null,
+        "naruto-25e.defenseResolved": true
+      }
     });
-
-    if (game.user?.isGM) {
-      await ChatMessage.create({
-        speaker: ChatMessage.getSpeaker({ actor: this }),
-        whisper: ChatMessage.getWhisperRecipients("GM"),
-        flavor: `Détails MJ — ${safeLabel}`,
-        content: `
-          <div class="naruto-roll-card">
-            <header class="naruto-roll-header">
-              <h3>Détails MJ — confrontation</h3>
-            </header>
-
-            <div><strong>Attaquant :</strong> ${safeActorName}</div>
-            <div><strong>Cible :</strong> ${safeTargetName}</div>
-            <div><strong>Type de défense :</strong> ${defenseType}</div>
-            <div><strong>Attaque :</strong> ${attackRoll.total} — D10 ${attackRoll.diceText} + ${attackRoll.modifier}</div>
-            <div><strong>Défense :</strong> ${defenseTotal} — ${safeDefenseLabel}${defenseRoll ? `, D10 ${defenseRoll.diceText} + ${defenseRoll.modifier}` : " fixe"}</div>
-            <div><strong>Marge :</strong> ${margin >= 0 ? "+" : ""}${margin}</div>
-          </div>
-        `,
-        rolls: defenseRoll ? [defenseRoll.roll] : []
-      });
-    }
 
     return attackRoll.roll;
   }
@@ -8201,6 +8395,23 @@ async decreaseBase(baseKey) {
 }
 
 Hooks.on("renderChatMessage", (message, html) => {
+    html.find(".naruto-chat-defense-select").on("click", async (event) => {
+    event.preventDefault();
+
+    const button = event.currentTarget;
+    const defenseKey = String(button.dataset.defenseKey ?? "");
+    const request = message.getFlag("naruto-25e", "defenseRequest");
+    const actorId = request?.actorId ?? "";
+    const actor = game.actors?.get(actorId);
+
+    if (!actor || typeof actor.resolveDefenseFromChatMessage !== "function") {
+      ui.notifications.warn("Acteur introuvable pour résoudre la défense.");
+      return;
+    }
+
+    await actor.resolveDefenseFromChatMessage(message, defenseKey);
+  });
+
   html.find(".naruto-chat-damage-roll").on("click", async (event) => {
     event.preventDefault();
 

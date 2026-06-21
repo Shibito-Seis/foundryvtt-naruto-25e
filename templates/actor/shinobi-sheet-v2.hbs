@@ -139,6 +139,15 @@
       <strong>{{v2.resources.initiative}}</strong>
     </div>
 
+    <div
+      class="shinobi-v2-stat-card is-nindo"
+      data-v2-resource-control="nindo"
+      title="{{v2.resources.nindo.title}}"
+    >
+      <span>Nindō</span>
+      <strong>{{v2.resources.nindo.headerLabel}}</strong>
+    </div>
+
     <div class="shinobi-v2-stat-card is-actions">
       <span>Actions</span>
       <strong>{{v2.resources.actions.label}}</strong>
@@ -1300,6 +1309,75 @@
             Notes personnelles
             <textarea name="system.identity.notes">{{system.identity.notes}}</textarea>
           </label>
+        </section>
+
+        <section class="shinobi-v2-panel">
+          <h2>Nindō</h2>
+
+          <div class="shinobi-v2-data-grid">
+            <div>
+              <strong>Points actuels</strong>
+              <span>{{v2.character.nindo.value}} / {{v2.character.nindo.max}}</span>
+            </div>
+
+            <div>
+              <strong>Charges Nindō</strong>
+              <span>{{v2.character.nindo.chargeValue}} / {{v2.character.nindo.chargeMax}}</span>
+            </div>
+
+            <div>
+              <strong>Type</strong>
+              <span>{{v2.character.nindo.choiceMode}}</span>
+            </div>
+
+            <div>
+              <strong>Nindō prédéfini</strong>
+              <span>{{v2.character.nindo.presetName}}</span>
+            </div>
+          </div>
+
+          <label>
+            Devise / texte personnel
+            <textarea name="system.identity.nindoText">{{system.identity.nindoText}}</textarea>
+          </label>
+
+          <label>
+            Nom custom
+            <input name="system.nindo.custom.name" type="text" value="{{system.nindo.custom.name}}" />
+          </label>
+
+          <label>
+            Description custom
+            <textarea name="system.nindo.custom.description">{{system.nindo.custom.description}}</textarea>
+          </label>
+
+          {{#if v2.character.nindo.presetDescription}}
+            <div class="shinobi-v2-nindo-action-card">
+              <strong>{{v2.character.nindo.presetName}}</strong>
+              <p>{{v2.character.nindo.presetDescription}}</p>
+            </div>
+          {{/if}}
+
+          {{#if v2.character.nindo.hasActions}}
+            <div class="shinobi-v2-nindo-actions">
+              {{#each v2.character.nindo.actions as |action|}}
+                <article class="shinobi-v2-nindo-action-card">
+                  <strong>{{action.name}}</strong>
+                  <span>{{action.category}}</span>
+
+                  {{#if action.description}}
+                    <p>{{action.description}}</p>
+                  {{/if}}
+
+                  {{#if action.effect}}
+                    <p>{{action.effect}}</p>
+                  {{/if}}
+                </article>
+              {{/each}}
+            </div>
+          {{else}}
+            <p class="shinobi-v2-muted">Aucune action de Nindō configurée dans le système.</p>
+          {{/if}}
         </section>
 
         <section class="shinobi-v2-panel">

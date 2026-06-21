@@ -1637,3 +1637,55 @@
   color: rgba(255, 218, 198, 0.78);
   font-weight: 800;
 }
+
+/* ----------------------------------------- */
+/* 0.1.43.9 — Cartes opposées / Nindō V2     */
+/* ----------------------------------------- */
+
+.shinobi-v2-resource-bar {
+  grid-template-columns: minmax(18rem, 1.55fr) minmax(16rem, 1.25fr) repeat(5, minmax(5.4rem, 0.6fr));
+}
+
+.shinobi-v2-stat-card.is-nindo {
+  cursor: pointer;
+}
+
+.shinobi-v2-stat-card.is-nindo strong {
+  font-size: 0.82rem;
+  line-height: 1.25;
+}
+
+.shinobi-v2-nindo-actions {
+  display: grid;
+  gap: 0.45rem;
+  margin-top: 0.65rem;
+}
+
+.shinobi-v2-nindo-action-card {
+  padding: 0.55rem;
+  border: 1px solid rgba(201, 163, 93, 0.24);
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.shinobi-v2-nindo-action-card strong {
+  display: block;
+  color: var(--v2-gold);
+}
+
+.shinobi-v2-nindo-action-card span {
+  display: block;
+  color: var(--v2-muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.shinobi-v2-nindo-action-card p {
+  margin: 0.35rem 0 0;
+  color: var(--v2-muted);
+  font-size: 0.78rem;
+}
+
+.shinobi-v2-stat-card.is-nindo:hover {
+  border-color: var(--v2-border-strong);
+  box-shadow: 0 0 0.45rem rgba(201, 163, 93, 0.18);
+}

@@ -1614,3 +1614,187 @@
   background: rgba(0, 0, 0, 0.06);
   font-style: italic;
 }
+
+/* ----------------------------------------- */
+/* 0.1.43.9 — Cartes de chat combat / santé  */
+/* ----------------------------------------- */
+
+.naruto-opposed-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.naruto-opposed-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45rem;
+  margin: 0.55rem 0;
+}
+
+.naruto-opposed-summary div {
+  padding: 0.4rem;
+  border: 1px solid rgba(201, 163, 93, 0.28);
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.naruto-opposed-summary strong,
+.naruto-opposed-summary span {
+  display: block;
+}
+
+.naruto-defense-button-grid {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 0.55rem;
+}
+
+.naruto-chat-defense-select {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.25rem 0.55rem;
+  align-items: center;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid rgba(201, 163, 93, 0.42);
+  color: #efe3cc;
+  background: rgba(35, 20, 18, 0.82);
+  text-align: left;
+}
+
+.naruto-chat-defense-select small {
+  grid-column: 1 / 2;
+  color: rgba(239, 227, 204, 0.66);
+}
+
+.naruto-chat-defense-select strong {
+  grid-column: 2 / 3;
+  grid-row: 1 / 3;
+  color: #c9a35d;
+  font-size: 1.1rem;
+}
+
+.naruto-opposed-versus {
+  display: grid;
+  grid-template-columns: minmax(5.5rem, 0.9fr) minmax(8rem, 1.2fr) minmax(5.5rem, 0.9fr);
+  gap: 0.45rem;
+  align-items: center;
+  margin: 0.7rem 0;
+}
+
+.naruto-opposed-score {
+  position: relative;
+  padding: 0.45rem;
+  border: 1px solid rgba(201, 163, 93, 0.3);
+  background: rgba(0, 0, 0, 0.22);
+  text-align: center;
+}
+
+.naruto-opposed-score span,
+.naruto-opposed-score small {
+  display: block;
+  color: rgba(239, 227, 204, 0.66);
+  font-size: 0.7rem;
+}
+
+.naruto-opposed-score strong {
+  display: block;
+  color: #efe3cc;
+  font-size: 1.35rem;
+}
+
+.naruto-opposed-score.is-broken {
+  border-color: rgba(220, 72, 52, 0.72);
+  background:
+    linear-gradient(135deg, rgba(126, 22, 18, 0.36), transparent 55%),
+    rgba(0, 0, 0, 0.22);
+}
+
+.naruto-opposed-score.is-broken::after {
+  content: "";
+  position: absolute;
+  inset: 0.25rem;
+  border-top: 1px solid rgba(255, 210, 160, 0.42);
+  transform: rotate(-12deg);
+  pointer-events: none;
+}
+
+.naruto-opposed-track {
+  position: relative;
+  height: 2.5rem;
+}
+
+.naruto-opposed-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(201, 163, 93, 0.18), rgba(201, 163, 93, 0.8), rgba(201, 163, 93, 0.18));
+}
+
+.naruto-opposed-kunai {
+  position: absolute;
+  top: 50%;
+  width: 2.2rem;
+  height: 2.2rem;
+  object-fit: contain;
+  transform: translate(-50%, -50%) rotate(42deg);
+  filter: drop-shadow(0 0 0.18rem rgba(0, 0, 0, 0.85));
+}
+
+.naruto-opposed-kunai.is-hit {
+  animation: naruto-kunai-hit 520ms ease-out both;
+}
+
+.naruto-opposed-kunai.is-miss {
+  top: 88%;
+  animation: naruto-kunai-miss 520ms ease-out both;
+  opacity: 0.78;
+}
+
+@keyframes naruto-kunai-hit {
+  from {
+    transform: translate(-280%, -50%) rotate(42deg);
+  }
+
+  to {
+    transform: translate(-50%, -50%) rotate(42deg);
+  }
+}
+
+@keyframes naruto-kunai-miss {
+  from {
+    transform: translate(-220%, -100%) rotate(42deg);
+  }
+
+  to {
+    transform: translate(-50%, -50%) rotate(78deg);
+  }
+}
+
+.naruto-damage-breakdown {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.4rem;
+  margin: 0.65rem 0;
+}
+
+.naruto-damage-breakdown div {
+  padding: 0.45rem;
+  border: 1px solid rgba(201, 163, 93, 0.28);
+  background: rgba(0, 0, 0, 0.22);
+  text-align: center;
+}
+
+.naruto-damage-breakdown span {
+  display: block;
+  color: rgba(239, 227, 204, 0.66);
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.naruto-damage-breakdown strong {
+  display: block;
+  color: #efe3cc;
+  font-size: 1.2rem;
+}

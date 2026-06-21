@@ -151,6 +151,11 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
         return;
       }
 
+      if (control === "nindo") {
+        await this._openV2NindoControlDialog();
+        return;
+      }
+
       if (control === "experience") {
         await this._openV2ExperienceControlDialog();
       }
@@ -540,6 +545,82 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
     }).render(true);
   }
 
+  async _openV2NindoControlDialog() {
+    if (!game.user?.isGM) return;
+
+    const nindo = this.actor.system?.nindo ?? {};
+    const currentValue = Math.max(0, Number(nindo.value ?? 0));
+    const maxValue = Math.max(0, Number(nindo.max ?? 0));
+    const currentCharges = Math.max(0, Number(nindo.charges?.value ?? 0));
+    const maxCharges = Math.max(0, Number(nindo.charges?.max ?? 0));
+
+    new Dialog({
+      title: `Nindō — ${this.actor.name}`,
+      content: `
+        <form class="shinobi-v2-dialog-form">
+          <p>
+            Points actuels : <strong>${currentValue} / ${maxValue}</strong><br />
+            Charges Nindō : <strong>${currentCharges} / ${maxCharges}</strong>
+          </p>
+
+          <label>
+            Valeur
+            <input type="number" name="value" value="1" min="0" step="1" />
+          </label>
+
+          <label>
+            Charges Nindō
+            <input type="number" name="charges" value="${currentCharges}" min="0" max="${maxCharges}" step="1" />
+          </label>
+        </form>
+      `,
+      buttons: {
+        add: {
+          label: "Accorder points",
+          callback: async (html) => {
+            const value = this._getV2DialogNumber(html);
+            const nextValue = Math.max(0, Math.min(maxValue, currentValue + value));
+
+            await this.actor.update({
+              "system.nindo.value": nextValue
+            });
+          }
+        },
+        remove: {
+          label: "Retirer points",
+          callback: async (html) => {
+            const value = this._getV2DialogNumber(html);
+            const nextValue = Math.max(0, Math.min(maxValue, currentValue - value));
+
+            await this.actor.update({
+              "system.nindo.value": nextValue
+            });
+          }
+        },
+        zero: {
+          label: "Points à 0",
+          callback: async () => {
+            await this.actor.update({
+              "system.nindo.value": 0
+            });
+          }
+        },
+        charges: {
+          label: "Modifier charges",
+          callback: async (html) => {
+            const rawValue = Number(html.find("[name='charges']").val() ?? currentCharges);
+            const nextCharges = Math.max(0, Math.min(maxCharges, rawValue));
+
+            await this.actor.update({
+              "system.nindo.charges.value": nextCharges
+            });
+          }
+        }
+      },
+      default: "add"
+    }).render(true);
+  }
+
   async _openV2ExperienceControlDialog() {
     if (!game.user?.isGM) {
       ui.notifications.warn("Seul le MJ peut modifier directement l’XP totale.");
@@ -708,6 +789,12 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
       ? Math.max(0, Math.min(100, Math.round((chakraValue / chakraMax) * 100)))
       : 0;
 
+    const nindo = this.actor.system?.nindo ?? {};
+    const nindoValue = Math.max(0, Number(nindo.value ?? 0));
+    const nindoMax = Math.max(0, Number(nindo.max ?? 0));
+    const nindoChargeValue = Math.max(0, Number(nindo.charges?.value ?? 0));
+    const nindoChargeMax = Math.max(0, Number(nindo.charges?.max ?? 0));
+
     const initiative = Number(this.actor.system?.combat?.initiative?.total ?? 0);
 
     return {
@@ -721,6 +808,14 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
       vigor: Number(resources.vigueur?.value ?? 0),
       character: Number(resources.caractere?.value ?? 0),
       initiative,
+      nindo: {
+        value: nindoValue,
+        max: nindoMax,
+        chargeValue: nindoChargeValue,
+        chargeMax: nindoChargeMax,
+        headerLabel: `${nindoValue} · ChN. ${nindoChargeValue}`,
+        title: `Points de Nindō actuels : ${nindoValue} / ${nindoMax} — Charges de Nindō : ${nindoChargeValue} / ${nindoChargeMax}`
+      },
       actions: {
         simple: Boolean(combatActions.simpleAvailable),
         complex: Boolean(combatActions.complexAvailable),
@@ -846,7 +941,38 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
   }
 
   _buildV2CharacterContext(identity) {
+    const nindo = this.actor.system?.nindo ?? {};
+    const nindoValue = Math.max(0, Number(nindo.value ?? 0));
+    const nindoMax = Math.max(0, Number(nindo.max ?? 0));
+    const nindoChargeValue = Math.max(0, Number(nindo.charges?.value ?? 0));
+    const nindoChargeMax = Math.max(0, Number(nindo.charges?.max ?? 0));
+    const nindoChoiceMode = String(nindo.choiceMode ?? "preset");
+    const nindoPresetKey = String(nindo.preset ?? "");
+    const nindoPreset = NARUTO25E.nindoPresets?.[nindoPresetKey] ?? null;
+    const nindoActions = Object.entries(NARUTO25E.nindoActions ?? {}).map(([key, action]) => ({
+      key,
+      name: action.name ?? key,
+      category: action.category ?? "—",
+      description: action.description ?? "",
+      effect: action.effect ?? ""
+    }));
+
     return {
+      nindo: {
+        value: nindoValue,
+        max: nindoMax,
+        chargeValue: nindoChargeValue,
+        chargeMax: nindoChargeMax,
+        choiceMode: nindoChoiceMode,
+        presetKey: nindoPresetKey,
+        presetName: nindoPreset?.name ?? "—",
+        presetDescription: nindoPreset?.description ?? "",
+        customName: nindo.custom?.name ?? "",
+        customDescription: nindo.custom?.description ?? "",
+        identityText: identity.nindoText ?? "",
+        actions: nindoActions,
+        hasActions: nindoActions.length > 0
+      },
       age: identity.age || "",
       birth: identity.birth || "",
       sex: identity.sex || "",

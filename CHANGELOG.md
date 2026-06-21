@@ -2,6 +2,59 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.43.9 - Rattrapage jouabilité combat, création et Nindō
+
+### Ajouté
+
+- Ajout d’une nouvelle résolution attaque / défense par carte de chat :
+  - l’attaque crée une demande de défense dans le chat ;
+  - le propriétaire de la cible ou le MJ peut choisir la défense directement depuis la carte ;
+  - la popup locale de défense n’est plus utilisée comme cœur de résolution ;
+  - la carte affiche ensuite le résultat opposé attaque / défense.
+- Ajout d’une présentation visuelle de confrontation dans les cartes de chat :
+  - score d’attaque ;
+  - score de défense ;
+  - marge ;
+  - résultat clair, réussite ou échec ;
+  - animation visuelle avec le kunaï `assets/ui/chat/kunai.webp`.
+- Ajout d’un affichage plus lisible des cartes de dégâts :
+  - source ;
+  - cible ;
+  - dégâts bruts ;
+  - défense passive ;
+  - dégâts qui passent ;
+  - bouton explicite `Appliquer à la santé de [cible]`.
+- Ajout du Nindō dans le bandeau permanent de la fiche Shinobi V2 :
+  - affichage compact `NINDŌ — 2 · ChN. 4` ;
+  - survol explicatif des points et charges actuels ;
+  - clic MJ pour ajuster rapidement les points et charges de Nindō.
+- Ajout d’un bloc Nindō dans l’onglet Personnage de la fiche Shinobi V2 :
+  - points actuels / maximum ;
+  - charges actuelles / maximum ;
+  - type de Nindō ;
+  - Nindō prédéfini ou custom ;
+  - texte / devise personnelle ;
+  - actions de Nindō configurées dans le système.
+
+### Modifié
+
+- La résolution des défenses ne dépend plus d’une popup ouverte côté attaquant.
+- Les cartes de dégâts et de santé sont reformulées pour limiter les erreurs de cible.
+- La validation finale du Shinobimancer peut désormais être effectuée par le propriétaire du personnage si le dossier est valide.
+- La sécurité de verrouillage de création reste protégée contre les modifications manuelles directes : seule la méthode officielle de validation peut verrouiller la création.
+
+### Corrigé
+
+- Correction du problème où une attaque physique ciblée pouvait demander la défense sur le mauvais client ou échouer si le mauvais token était sélectionné.
+- Correction du blocage empêchant les joueurs de finaliser eux-mêmes leur création via le Shinobimancer.
+- Correction de l’absence des points, charges et actions de Nindō dans la fiche Shinobi V2.
+
+### Notes
+
+- Cette version ne réutilise pas encore la nouvelle barre Santé dans tous les emplacements de Résumé / Combat : ce chantier est prévu pour `0.1.44`.
+- L’amélioration visuelle de la barre Chakra est également prévue pour `0.1.44`.
+- Les roues narratives / arcs narratifs restent prévues pour `0.1.44.1`.
+
 ## 0.1.43.8 - Recadrage visuel Shinobimancer
 
 ### Modifié
