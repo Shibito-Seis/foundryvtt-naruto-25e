@@ -2,7 +2,13 @@
 
   <header class="shinobi-v2-header">
     <aside class="shinobi-v2-portrait-column">
-      <img class="shinobi-v2-portrait" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+      <div class="shinobi-v2-portrait-frame">
+        <img class="shinobi-v2-portrait shinobi-v2-portrait-picker" src="{{actor.img}}" title="{{actor.name}}" />
+
+        <div class="shinobi-v2-portrait-hint">
+          Changer portrait
+        </div>
+      </div>
 
       <div class="shinobi-v2-chakra-icons">
         {{#if v2.identity.chakraIcons.length}}
@@ -721,6 +727,37 @@
               </button>
             </div>
           {{/if}}
+          <div class="shinobi-v2-active-maintained">
+            <h3>Actifs / maintenus</h3>
+
+            {{#if v2.techniques.hasActiveTechniques}}
+              <div class="shinobi-v2-active-list">
+                {{#each v2.techniques.activeTechniques as |technique|}}
+                  <article>
+                    <strong>{{technique.name}}</strong>
+                    <span>
+                      Entretien {{technique.chakraMaintenance}} / tour
+                    </span>
+                  </article>
+                {{/each}}
+              </div>
+            {{else}}
+              <p class="shinobi-v2-muted">Aucune technique maintenue active.</p>
+            {{/if}}
+
+            {{#if v2.techniques.hasActiveLineagePowers}}
+              <div class="shinobi-v2-active-list">
+                {{#each v2.techniques.activeLineagePowers as |power|}}
+                  <article>
+                    <strong>{{power.name}}</strong>
+                    <span>
+                      Entretien {{power.maintenanceCost}} / tour
+                    </span>
+                  </article>
+                {{/each}}
+              </div>
+            {{/if}}
+          </div>
         </section>
 
         <section class="shinobi-v2-panel">
@@ -778,7 +815,23 @@
                   <article class="{{#if technique.active}}is-active{{/if}}">
                     <header class="shinobi-v2-technique-header">
                       <div>
-                        <strong>{{technique.name}}</strong>
+                        <div class="shinobi-v2-technique-title">
+                          <strong>{{technique.name}}</strong>
+
+                          {{#if technique.frenchName}}
+                            <span
+                              class="shinobi-v2-help-badge"
+                              title="Nom français : {{technique.frenchName}}"
+                            >
+                              ?
+                            </span>
+                          {{/if}}
+                        </div>
+
+                        {{#if technique.frenchName}}
+                          <small class="shinobi-v2-fr-name">{{technique.frenchName}}</small>
+                        {{/if}}
+
                         <span>
                           {{technique.rankLabel}}
                           · {{technique.actionLabel}}
@@ -1274,10 +1327,21 @@
           </section>
 
           {{#if isGM}}
-            <section class="shinobi-v2-panel">
+            <section class="shinobi-v2-panel shinobi-v2-gm-options-panel">
               <h2>Options MJ</h2>
 
               <div class="shinobi-v2-checkbox-grid">
+                {{#if (eq v2.lineage.mode "hiddenClan")}}
+                  <label>
+                    <input
+                      type="checkbox"
+                      class="hidden-clan-field"
+                      data-field="unlocked"
+                      {{#if v2.lineage.hiddenClan.unlocked}}checked{{/if}}
+                    />
+                    Débloquer le Réel Clan / libérer la Lignée cachée
+                  </label>
+                {{/if}}
                 <label>
                   <input
                     type="checkbox"
@@ -1855,7 +1919,16 @@
 
               {{#each group.skills as |skill|}}
                 <div class="shinobi-v2-skill-row {{#unless skill.owned}}is-unowned{{/unless}}">
-                  <strong>{{skill.label}}</strong>
+                  <strong class="shinobi-v2-skill-name">
+                    <span>{{skill.label}}</span>
+
+                    <span
+                      class="shinobi-v2-help-badge"
+                      title="{{skill.help}}"
+                    >
+                      ?
+                    </span>
+                  </strong>
                   <span>{{skill.baseLabel}}</span>
                   <span>{{skill.natural}}</span>
                   <span>{{skill.bonus}}</span>

@@ -2,6 +2,49 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.43.2 - Correctifs et confort fiche Shinobi V2
+
+### Ajouté
+
+- Ajout d’un upload de portrait depuis la fiche Shinobi V2 :
+  - clic sur le portrait ;
+  - import depuis l’ordinateur ;
+  - utilisation des paramètres d’upload déjà employés par le Shinobimancer ;
+  - option MJ pour choisir une image existante via le FilePicker.
+- Ajout d’une case MJ dans l’onglet Lignée V2 pour débloquer le Réel Clan / libérer la Lignée cachée.
+- Ajout d’un affichage des techniques et pouvoirs maintenus actifs en haut de l’onglet Techniques V2.
+- Ajout d’aides contextuelles sur les compétences dans l’onglet Progression V2 :
+  - bouton `?` ;
+  - description courte au survol.
+- Ajout d’un affichage du nom français des techniques quand il est détectable :
+  - sous le nom principal ;
+  - avec aide `?` au survol.
+- Ajout d’une synchronisation de l’onglet actif V2 via un flag d’acteur, pour mieux conserver l’état de navigation entre rendus.
+
+### Modifié
+
+- Refonte visuelle du portrait dans le header V2 :
+  - portrait plus vertical ;
+  - cadre dédié ;
+  - icônes d’affinités / maîtrises replacées autour du portrait.
+- Déplacement du bloc Options MJ de l’onglet Lignée V2 en bandeau horizontal bas.
+- Ajustement du bloc Mangekyō Sharingan pour limiter les débordements visuels.
+- Amélioration de la lisibilité des techniques maintenues et pouvoirs de lignée actifs.
+- Amélioration de la lisibilité de la table des compétences grâce aux aides rapides.
+
+### Corrigé
+
+- Correction du bouton de déblocage MJ de Clan caché absent de la fiche V2.
+- Correction partielle du problème d’accès joueur au changement de portrait depuis la fiche V2.
+- Correction de débordements visuels dans le bloc Mangekyō Sharingan.
+- Correction de l’accès aux champs missions MJ dans l’onglet Progression V2 via `@root.isGM`.
+
+### Notes
+
+- Le recadrage interactif du portrait n’est pas encore implémenté.
+- Les aides de compétences sont des descriptions courtes V2 temporaires, destinées à être enrichies plus tard depuis les données système ou le databook.
+- La fiche Shinobi V2 reste sélectionnable, mais l’ancienne fiche Shinobi reste la fiche par défaut.
+
 ## 0.1.43.1 - Correction synthaxe fiche shinobi V2 JS
 
 ### Modifié

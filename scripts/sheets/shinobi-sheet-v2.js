@@ -21,6 +21,67 @@ const NARUTO25E_V2_VILLAGE_ICON_PATHS = {
   suna_nukenin: "systems/naruto-25e/assets/village/suna_nukenin.webp"
 };
 
+const NARUTO25E_V2_SKILL_HELP = {
+  armesSimples: "Maîtrise des armes ninja et armes courantes : kunaï, shuriken, sabres simples et équipement martial standard.",
+  camouflage: "Discrétion, infiltration, dissimulation et capacité à disparaître dans l’environnement.",
+  corpsACorps: "Combat rapproché générique sans école de Taijutsu avancée.",
+  esquive: "Capacité à éviter une attaque par déplacement, réflexe ou lecture du danger.",
+  gensou: "Genjutsu commun, illusions de base, perturbations sensorielles et Kai.",
+  henge: "Transformation, déguisement ninja et altération d’apparence.",
+  kawarimi: "Permutation, substitution et défense ninja de base.",
+  mental: "Résistance mentale, sang-froid, volonté et stabilité psychologique.",
+  parade: "Défense avec arme, blocage, déviation et protection active.",
+  physique: "Force, endurance, athlétisme, effort physique et résistance corporelle.",
+  survie: "Orientation, bivouac, pistage simple, autonomie et survie en terrain hostile.",
+  vigilance: "Perception, attention, anticipation et détection du danger.",
+
+  armesExotiques: "Maîtrise des armes rares, inhabituelles ou spécialisées.",
+  chuken: "Style de Taijutsu souple, alternatif ou technique, entre adaptation et contrôle.",
+  coupSpecialArm: "Attaques armées spéciales : désarmer, briser, immobiliser ou exploiter une manœuvre martiale.",
+  coupSpecialTai: "Attaques Taijutsu spéciales : assommer, projeter, immobiliser ou exploiter une manœuvre au corps à corps.",
+  doton: "Nature de Terre : défense, stabilité, murs, sols, structures et contrôle du terrain.",
+  futon: "Nature de Vent : vitesse, tranchant, projection, mobilité et attaques coupantes.",
+  goken: "Style de Taijutsu dur et direct, basé sur la puissance physique et l’impact.",
+  juken: "Style du Poing Souple, lié au contrôle du Chakra, aux Tenketsu et aux traditions Hyūga / Byakugan / Médecine selon prérequis.",
+  intimidation: "Pression, menace, domination sociale et capacité à faire reculer l’adversaire.",
+  katon: "Nature de Feu : dégâts directs, pression offensive, brûlures et destruction.",
+  premiersSoins: "Soins de terrain immédiats, stabilisation et gestes médicaux d’urgence.",
+  raiton: "Nature de Foudre : vitesse, percussion, stimulation, précision et attaques électriques.",
+  regeneration: "Récupération, soin assisté par Chakra et soutien de guérison.",
+  resistancesElementaires: "Résistance aux dégâts élémentaires et aux agressions de Chakra élémentaire.",
+  resistancesEnvironnementales: "Résistance aux dangers du terrain, du climat, des toxines naturelles ou des environnements hostiles.",
+  resistancesPhysiques: "Résistance aux chocs, blessures, impacts, contraintes corporelles et violences physiques.",
+  resistancesPsychiques: "Résistance aux attaques mentales, spirituelles, psychiques ou émotionnelles.",
+  scienceExplosifs: "Connaissance, pose, fabrication et neutralisation d’explosifs ninja.",
+  sciencePieges: "Création, détection, pose et désamorçage de pièges.",
+  suiton: "Nature d’Eau : flux, adaptation, entrave, pression et contrôle de zone.",
+  yuryoku: "Force spirituelle, pression d’âme, puissance intérieure et techniques liées au Genjutsu / spirituel.",
+
+  collecterInformations: "Enquête, rumeurs, recherche sociale et récupération d’informations utiles.",
+  education: "Culture générale, savoir académique, lecture, histoire et connaissances formelles.",
+  empathie: "Lecture des émotions, compréhension d’autrui et intuition sociale.",
+  fauxSemblants: "Mensonge, déguisement social, manipulation d’identité et tromperie.",
+  fuin: "Sceaux, verrouillage, stockage, inscriptions et techniques de scellement.",
+  iryo: "Médecine ninja, Chakra médical, soins avancés et techniques Iryō.",
+  kuchiyose: "Invocation, pactes, contrats et liens avec des créatures ou clans d’invocation.",
+  loisTraditions: "Connaissance des lois, coutumes, protocoles, hiérarchies et traditions.",
+  manipulation: "Influence sociale, persuasion trouble, mensonge orienté et pression relationnelle.",
+  medecine: "Diagnostic, chirurgie, soins savants, anatomie et traitement médical structuré.",
+  scienceDrogues: "Fabrication, connaissance et usage des drogues, remèdes et substances contrôlées.",
+  sciencePoisons: "Fabrication, connaissance et neutralisation des poisons.",
+  sentinelle: "Surveillance, garde, perception prolongée et tenue d’un poste d’observation.",
+  sixiemeSens: "Intuition surnaturelle, perception occulte et pressentiments difficiles à expliquer.",
+  technologie: "Usage, réparation, sabotage et compréhension des outils technologiques.",
+
+  jiton: "Nature magnétique, métal, sable ferrugineux et contrôle d’attraction.",
+  kage: "Techniques d’ombre, immobilisation, contrôle et manipulation des formes sombres.",
+  kikaichu: "Symbiose Aburame, insectes Kikaichū, essaims et réserve associée.",
+  mokuton: "Nature supérieure du Bois, issue de Doton et Suiton, liée au clan Senju.",
+  resistancesEmotionnelles: "Résistance aux blessures émotionnelles, pressions affectives et manipulations intimes.",
+  sumi: "Encre, calligraphie, formes dessinées, matérialisation et techniques liées au clan Aniki.",
+  unificationDesunification: "Manipulation de l’unité, de la séparation, de l’assemblage ou de la désunion."
+};
+
 export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -48,6 +109,230 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
     context.v2 = this._buildV2Context(context);
 
     return context;
+  }
+
+  activateListeners(html) {
+    super.activateListeners(html);
+
+    this._activateV2StoredTab();
+
+    html.find(".shinobi-v2-tabs .item").on("click", async (event) => {
+      const tabKey = event.currentTarget?.dataset?.tab;
+      if (!tabKey) return;
+
+      if (!this.actor?.isOwner && !game.user?.isGM) return;
+
+      const currentTab = this.actor.getFlag?.("naruto-25e", "shinobiSheetV2ActiveTab") ?? "summary";
+
+      if (currentTab === tabKey) return;
+
+      await this.actor.setFlag("naruto-25e", "shinobiSheetV2ActiveTab", tabKey);
+    });
+
+    html.find(".shinobi-v2-portrait-picker").on("click", async (event) => {
+      event.preventDefault();
+
+      await this._openV2PortraitDialog();
+    });
+  }
+
+  _activateV2StoredTab() {
+    const tabKey = this.actor.getFlag?.("naruto-25e", "shinobiSheetV2ActiveTab") ?? "summary";
+    if (!tabKey) return;
+
+    const tabController = Array.isArray(this._tabs) ? this._tabs[0] : null;
+
+    if (tabController && typeof tabController.activate === "function") {
+      tabController.activate(tabKey, {
+        triggerCallback: false
+      });
+      return;
+    }
+
+    const element = this.element;
+    if (!element?.length) return;
+
+    element.find(".shinobi-v2-tabs .item").removeClass("active");
+    element.find(`.shinobi-v2-tabs .item[data-tab="${tabKey}"]`).addClass("active");
+
+    element.find(".shinobi-v2-body .tab").removeClass("active");
+    element.find(`.shinobi-v2-body .tab[data-tab="${tabKey}"]`).addClass("active");
+  }
+
+  _canEditV2Portrait() {
+    return Boolean(this.actor?.isOwner || game.user?.isGM);
+  }
+
+  async _pickV2LocalImageFile() {
+    return new Promise((resolve) => {
+      const input = document.createElement("input");
+
+      input.type = "file";
+      input.accept = "image/*";
+
+      input.addEventListener("change", () => {
+        resolve(input.files?.[0] ?? null);
+      }, {
+        once: true
+      });
+
+      input.click();
+    });
+  }
+
+  _getV2PortraitUploadSettings() {
+    let source = "forgevtt";
+    let path = "worlds/Naruto/PJ";
+
+    try {
+      source = game.settings.get("naruto-25e", "portraitUploadSource") || source;
+    } catch (error) {
+      source = "forgevtt";
+    }
+
+    try {
+      path = game.settings.get("naruto-25e", "portraitUploadPath") || path;
+    } catch (error) {
+      path = "worlds/Naruto/PJ";
+    }
+
+    return {
+      source,
+      path: String(path).replace(/^\/+|\/+$/g, "")
+    };
+  }
+
+  async _uploadV2PortraitFromComputer() {
+    if (!this._canEditV2Portrait()) {
+      ui.notifications.warn("Tu n’as pas les droits nécessaires pour modifier ce portrait.");
+      return;
+    }
+
+    const file = await this._pickV2LocalImageFile();
+
+    if (!file) return;
+
+    if (!String(file.type ?? "").startsWith("image/")) {
+      ui.notifications.warn("Le fichier choisi n’est pas une image.");
+      return;
+    }
+
+    const { source, path } = this._getV2PortraitUploadSettings();
+
+    try {
+      try {
+        await FilePicker.createDirectory(source, path, {
+          notify: false
+        });
+      } catch (directoryError) {
+        console.debug("Naruto 2.5e | Dossier portrait déjà existant ou non créable automatiquement.", {
+          source,
+          path,
+          directoryError
+        });
+      }
+
+      const result = await FilePicker.upload(source, path, file, {}, {
+        notify: true
+      });
+
+      const uploadedPath = result?.path ?? result?.url ?? result;
+
+      if (!uploadedPath) {
+        ui.notifications.warn("L’upload du portrait n’a pas renvoyé de chemin utilisable.");
+        console.warn("Naruto 2.5e | Upload portrait V2 sans chemin exploitable.", {
+          result,
+          source,
+          path
+        });
+        return;
+      }
+
+      await this.actor.update({
+        img: uploadedPath
+      });
+
+      ui.notifications.info(`Portrait importé pour ${this.actor.name}.`);
+      this.render(false);
+    } catch (error) {
+      console.error("Naruto 2.5e | Upload du portrait V2 impossible.", error);
+      ui.notifications.error("Impossible d’importer le portrait. Voir la console ou demander au MJ.");
+    }
+  }
+
+  async _browseV2ExistingPortrait() {
+    if (!this._canEditV2Portrait()) {
+      ui.notifications.warn("Tu n’as pas les droits nécessaires pour modifier ce portrait.");
+      return;
+    }
+
+    const picker = new FilePicker({
+      type: "image",
+      current: this.actor?.img ?? "",
+      callback: async (path) => {
+        await this.actor.update({
+          img: path
+        });
+
+        this.render(false);
+      }
+    });
+
+    picker.browse();
+  }
+
+  async _openV2PortraitDialog() {
+    if (!this._canEditV2Portrait()) {
+      ui.notifications.warn("Tu n’as pas les droits nécessaires pour modifier ce portrait.");
+      return;
+    }
+
+    const { source, path } = this._getV2PortraitUploadSettings();
+
+    const safePath = foundry.utils.escapeHTML?.(path) ?? path;
+    const safeSource = foundry.utils.escapeHTML?.(source) ?? source;
+
+    const content = `
+      <div class="naruto-portrait-upload-dialog">
+        <p>
+          Importe un portrait depuis ton ordinateur.
+        </p>
+        <p>
+          Dossier cible : <strong>${safePath}</strong>
+        </p>
+        <p class="hint">
+          Source : ${safeSource}
+        </p>
+        <p class="hint">
+          Le recadrage interactif viendra plus tard. Pour l’instant, l’image est importée puis cadrée par la fiche.
+        </p>
+      </div>
+    `;
+
+    const buttons = {
+      upload: {
+        label: "Importer une image",
+        callback: async () => this._uploadV2PortraitFromComputer()
+      }
+    };
+
+    if (game.user?.isGM) {
+      buttons.browse = {
+        label: "Choisir une image existante",
+        callback: async () => this._browseV2ExistingPortrait()
+      };
+    }
+
+    buttons.cancel = {
+      label: "Annuler"
+    };
+
+    await new Dialog({
+      title: "Changer le portrait",
+      content,
+      buttons,
+      default: "upload"
+    }).render(true);
   }
 
   _buildV2Context(context = {}) {
@@ -446,19 +731,38 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
   }
 
   _buildV2TechniqueContext(context) {
-    const groups = Array.isArray(context.techniqueGroups)
+    const sourceGroups = Array.isArray(context.techniqueGroups)
       ? context.techniqueGroups
       : [];
+
+    const groups = sourceGroups.map((group) => {
+      const techniques = Array.isArray(group.techniques)
+        ? group.techniques.map((technique) => ({
+            ...technique,
+            frenchName: this._getV2TechniqueFrenchName(technique)
+          }))
+        : [];
+
+      return {
+        ...group,
+        techniques
+      };
+    });
 
     const lineagePowers = Array.isArray(context.lineagePowerItems)
       ? context.lineagePowerItems
       : [];
 
     const activeLineagePowers = lineagePowers.filter((power) => Boolean(power.active));
+    const activeTechniques = groups
+      .flatMap((group) => Array.isArray(group.techniques) ? group.techniques : [])
+      .filter((technique) => Boolean(technique.active));
 
     return {
       groups,
       hasGroups: groups.some((group) => Array.isArray(group.techniques) && group.techniques.length > 0),
+      activeTechniques,
+      hasActiveTechniques: activeTechniques.length > 0,
       total: groups.reduce((total, group) => {
         return total + (Array.isArray(group.techniques) ? group.techniques.length : 0);
       }, 0),
@@ -672,7 +976,17 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
         available: Number(experienceSummary.available ?? system.progression?.experience?.available ?? 0)
       },
       bases: Array.isArray(context.bases) ? context.bases : [],
-      skillGroups: Array.isArray(context.skillGroups) ? context.skillGroups : [],
+      skillGroups: Array.isArray(context.skillGroups)
+        ? context.skillGroups.map((group) => ({
+            ...group,
+            skills: Array.isArray(group.skills)
+              ? group.skills.map((skill) => ({
+                  ...skill,
+                  help: this._getV2SkillHelp(skill)
+                }))
+              : []
+          }))
+        : [],
       creationSkillSummary: context.creationSkillSummary ?? {
         used: 0,
         max: 5,
@@ -693,6 +1007,54 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
         summary: creationValidation.summary ?? {}
       }
     };
+  }
+
+  _getV2SkillHelp(skill = {}) {
+    const key = String(skill.key ?? "");
+    const definition = NARUTO25E.skillDefinitions?.[key] ?? {};
+
+    if (NARUTO25E_V2_SKILL_HELP[key]) {
+      return NARUTO25E_V2_SKILL_HELP[key];
+    }
+
+    if (definition.description) {
+      return definition.description;
+    }
+
+    const baseLabel = NARUTO25E.baseLabels?.[definition.base] ?? definition.base ?? "—";
+    const categoryLabel =
+      NARUTO25E.skillCategoryLabels?.[definition.category]
+      ?? NARUTO25E.skillCategories?.[definition.category]
+      ?? definition.category
+      ?? "Compétence";
+
+    return `${categoryLabel}. Base associée : ${baseLabel}.`;
+  }
+
+  _getV2TechniqueFrenchName(technique = {}) {
+    const directName =
+      technique.frenchName
+      ?? technique.frName
+      ?? technique.nameFr
+      ?? technique.translationFr
+      ?? technique.localizedName
+      ?? "";
+
+    if (directName) return String(directName);
+
+    const name = String(technique.name ?? "");
+
+    if (name.includes("—")) {
+      const [, frenchPart] = name.split("—");
+      return String(frenchPart ?? "").trim();
+    }
+
+    if (name.includes(" - ")) {
+      const [, frenchPart] = name.split(" - ");
+      return String(frenchPart ?? "").trim();
+    }
+
+    return "";
   }
 
   _buildV2TabsContext() {
