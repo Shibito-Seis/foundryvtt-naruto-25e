@@ -73,10 +73,14 @@
   </header>
 
   <section class="shinobi-v2-resource-bar">
-    <div class="shinobi-v2-track-card is-health {{#if v2.health.effective.hasPenalty}}is-alert{{/if}}">
+    <div
+      class="shinobi-v2-track-card is-health {{#if v2.health.effective.hasPenalty}}is-alert{{/if}}"
+      data-v2-resource-control="health"
+      title="{{#if isGM}}MJ : cliquer pour modifier la piste de santé{{/if}}"
+    >
       <div class="shinobi-v2-track-header">
         <strong>Santé</strong>
-        <span>{{v2.health.track.value}} / {{v2.health.track.max}}</span>
+        <span>Dégâts subis {{v2.health.track.value}} / {{v2.health.track.max}}</span>
       </div>
 
       <div class="shinobi-v2-health-segments">
@@ -93,7 +97,11 @@
       </div>
     </div>
 
-    <div class="shinobi-v2-track-card is-chakra">
+    <div
+      class="shinobi-v2-track-card is-chakra"
+      data-v2-resource-control="chakra"
+      title="{{#if isGM}}MJ : cliquer pour modifier le Chakra actuel{{/if}}"
+    >
       <div class="shinobi-v2-track-header">
         <strong>Chakra</strong>
         <span>{{v2.resources.chakra.value}} / {{v2.resources.chakra.max}}</span>
@@ -163,6 +171,7 @@
             <p>{{v2.identity.nindo}}</p>
           </div>
         </section>
+        {{#if v2.canSeePrivateLineage}}
 
         <section class="shinobi-v2-panel shinobi-v2-summary-card is-combat">
           <h2>État de combat</h2>
@@ -170,7 +179,7 @@
           <div class="shinobi-v2-data-grid">
             <div><strong>État effectif</strong><span>{{v2.health.stateLabel}}</span></div>
             <div><strong>Source</strong><span>{{v2.health.stateSource}}</span></div>
-            <div><strong>Piste santé</strong><span>{{v2.health.track.value}} / {{v2.health.track.max}}</span></div>
+            <div><strong>Dégâts subis</strong><span>{{v2.health.track.value}} / {{v2.health.track.max}}</span></div>
             <div><strong>Chakra</strong><span>{{v2.resources.chakra.value}} / {{v2.resources.chakra.max}}</span></div>
             <div><strong>Vigueur</strong><span>{{v2.resources.vigor}}</span></div>
             <div><strong>Caractère</strong><span>{{v2.resources.character}}</span></div>
@@ -274,7 +283,14 @@
             </div>
           {{/unless}}
         </section>
-
+        {{else}}
+          <section class="shinobi-v2-panel shinobi-v2-summary-card is-public-note">
+            <h2>Dossier public</h2>
+            <p class="shinobi-v2-muted">
+              Seules les informations d’identité sont visibles publiquement.
+            </p>
+          </section>
+        {{/if}}
       </div>
     </div>
 
@@ -411,22 +427,86 @@
                   </div>
 
                   <div class="shinobi-v2-button-column">
-                    <button
-                      type="button"
-                      class="inventory-use-combat-item"
-                      data-item-id="{{item.id}}"
-                    >
-                      Utiliser
-                    </button>
-
-                    {{#if item.hasDamage}}
+                    {{#if item.isHeld}}
                       <button
                         type="button"
-                        class="inventory-roll-damage"
+                        class="inventory-use-combat-item"
                         data-item-id="{{item.id}}"
                       >
-                        Dégâts
+                        Attaque / utiliser
                       </button>
+
+                      {{#if item.hasDamage}}
+                        <button
+                          type="button"
+                          class="inventory-roll-damage"
+                          data-item-id="{{item.id}}"
+                        >
+                          Dégâts
+                        </button>
+                      {{/if}}
+
+                      <div class="shinobi-v2-mini-actions">
+                        <button
+                          type="button"
+                          class="inventory-carry-action"
+                          data-item-id="{{item.id}}"
+                          data-carry-state="notHeld"
+                        >
+                          Rengainer
+                        </button>
+
+                        <button
+                          type="button"
+                          class="inventory-carry-action"
+                          data-item-id="{{item.id}}"
+                          data-carry-state="dropped"
+                        >
+                          Lâcher
+                        </button>
+                      </div>
+
+                      <div class="shinobi-v2-grip-actions">
+                        <span>Changer de prise</span>
+
+                        {{#each item.changeGripOptions as |grip|}}
+                          <button
+                            type="button"
+                            class="inventory-carry-action"
+                            data-item-id="{{item.id}}"
+                            data-carry-state="{{grip.key}}"
+                            title="{{grip.fullLabel}}"
+                          >
+                            {{grip.label}}
+                          </button>
+                        {{/each}}
+                      </div>
+                    {{else}}
+                      {{#if item.canHold}}
+                        <div class="shinobi-v2-grip-actions">
+                          <span>Dégainer</span>
+
+                          {{#each item.drawOptions as |grip|}}
+                            <button
+                              type="button"
+                              class="inventory-carry-action"
+                              data-item-id="{{item.id}}"
+                              data-carry-state="{{grip.key}}"
+                              title="{{grip.fullLabel}}"
+                            >
+                              {{grip.label}}
+                            </button>
+                          {{/each}}
+                        </div>
+                      {{else}}
+                        <button
+                          type="button"
+                          class="inventory-use-combat-item"
+                          data-item-id="{{item.id}}"
+                        >
+                          Utiliser
+                        </button>
+                      {{/if}}
                     {{/if}}
                   </div>
                 </article>
@@ -539,7 +619,7 @@
           <h2>Piste santé complète</h2>
 
           <div class="shinobi-v2-data-grid">
-            <div><strong>Piste</strong><span>{{v2.health.track.value}} / {{v2.health.track.max}}</span></div>
+            <div><strong>Dégâts subis</strong><span>{{v2.health.track.value}} / {{v2.health.track.max}}</span></div>
             <div><strong>État effectif</strong><span>{{v2.health.stateLabel}}</span></div>
             <div><strong>Source</strong><span>{{v2.health.stateSource}}</span></div>
             <div><strong>Palier Chakra</strong><span>{{combatSummary.chakraStateLabel}}</span></div>
@@ -1778,7 +1858,14 @@
           <h2>Expérience</h2>
 
           <div class="shinobi-v2-data-grid">
-            <div><strong>XP totale</strong><span>{{v2.progression.experience.total}}</span></div>
+            <div
+              class="shinobi-v2-xp-total-control"
+              data-v2-resource-control="experience"
+              title="{{#if isGM}}MJ : cliquer pour accorder ou retirer de l’XP totale{{/if}}"
+            >
+              <strong>XP totale</strong>
+              <span>{{v2.progression.experience.total}}</span>
+            </div>
             <div><strong>XP dépensée</strong><span>{{v2.progression.experience.spent}}</span></div>
             <div><strong>XP Bases</strong><span>{{v2.progression.experience.baseSpent}}</span></div>
             <div><strong>XP Compétences</strong><span>{{v2.progression.experience.skillSpent}}</span></div>

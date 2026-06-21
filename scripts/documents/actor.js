@@ -5967,10 +5967,12 @@ async decreaseBase(baseKey) {
   _prepareInventoryCarryData(item = {}, type = "misc") {
     const carry = item.carry ?? {};
 
+    const inferredHoldable = type === "weapon" || this._isInventoryExplosiveItem(item);
+
     const holdable = Boolean(
       carry.holdable
       ?? item.holdable
-      ?? type === "weapon"
+      ?? inferredHoldable
     );
 
     const wearable = Boolean(

@@ -240,6 +240,7 @@ Hooks.once("init", async function () {
   Actors.unregisterSheet("core", ActorSheet);
   Actors.registerSheet("naruto-25e", Naruto25eShinobiSheet, {
     types: ["shinobi"],
+    label: "Fiche Tetris",
     makeDefault: true
   });
 

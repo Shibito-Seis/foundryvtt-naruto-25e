@@ -1349,3 +1349,150 @@
 .shinobi-v2-skill-name .shinobi-v2-help-badge {
   flex: 0 0 auto;
 }
+
+/* ----------------------------------------- */
+/* 0.1.43.3 — V2 lisibilité / public / combat */
+/* ----------------------------------------- */
+
+/* Listes déroulantes sombres */
+
+.naruto-25e-shinobi-sheet-v2 select,
+.naruto-25e-shinobi-sheet-v2 select:focus {
+  color: var(--v2-text);
+  border-color: rgba(201, 163, 93, 0.55);
+  background-color: #05070b;
+}
+
+.naruto-25e-shinobi-sheet-v2 select option {
+  color: #efe3cc;
+  background-color: #111217;
+}
+
+.naruto-25e-shinobi-sheet-v2 select option:checked,
+.naruto-25e-shinobi-sheet-v2 select option:hover {
+  color: #fff4d8;
+  background-color: #4b261c;
+}
+
+/* Ressources cliquables MJ */
+
+.shinobi-v2-track-card[data-v2-resource-control],
+.shinobi-v2-xp-total-control[data-v2-resource-control] {
+  cursor: pointer;
+}
+
+.shinobi-v2-track-card[data-v2-resource-control]:hover,
+.shinobi-v2-xp-total-control[data-v2-resource-control]:hover {
+  border-color: rgba(255, 220, 140, 0.82);
+  box-shadow: 0 0 0.45rem rgba(201, 163, 93, 0.18);
+}
+
+/* Santé : lecture “dégâts subis”, plus proche d’une vraie jauge */
+
+.shinobi-v2-track-card.is-health {
+  background:
+    linear-gradient(90deg, rgba(74, 11, 12, 0.72), transparent 70%),
+    var(--v2-panel);
+}
+
+.shinobi-v2-track-card.is-health .shinobi-v2-track-header span {
+  color: #ffd3c0;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.shinobi-v2-health-segments {
+  gap: 0;
+  overflow: hidden;
+  border: 1px solid rgba(190, 70, 62, 0.42);
+  background:
+    linear-gradient(180deg, rgba(34, 8, 10, 0.9), rgba(9, 5, 7, 0.95));
+}
+
+.shinobi-v2-health-segments span {
+  position: relative;
+  min-height: 1.65rem;
+  padding: 0.25rem 0.2rem;
+  border: 0;
+  border-right: 1px solid rgba(222, 184, 105, 0.22);
+  background: transparent;
+}
+
+.shinobi-v2-health-segments span:last-child {
+  border-right: 0;
+}
+
+.shinobi-v2-health-segments span.is-complete {
+  background:
+    linear-gradient(180deg, rgba(207, 58, 42, 0.92), rgba(112, 18, 16, 0.96));
+  box-shadow:
+    inset 0 0 0.8rem rgba(255, 178, 122, 0.12),
+    inset 0 -0.45rem 0.7rem rgba(0, 0, 0, 0.22);
+}
+
+.shinobi-v2-health-segments small {
+  color: rgba(255, 226, 202, 0.7);
+  font-size: 0.6rem;
+}
+
+.shinobi-v2-health-segments strong {
+  color: #ffe4d6;
+  font-size: 0.62rem;
+}
+
+.shinobi-v2-health-segments.is-large span {
+  min-height: 2.8rem;
+}
+
+/* Dialogues de contrôle MJ */
+
+.shinobi-v2-control-dialog {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.shinobi-v2-control-dialog p {
+  margin: 0;
+}
+
+.shinobi-v2-control-dialog label {
+  display: grid;
+  gap: 0.25rem;
+  font-weight: 800;
+}
+
+.shinobi-v2-control-dialog input {
+  width: 100%;
+}
+
+/* Actions de prise / dégainage */
+
+.shinobi-v2-mini-actions,
+.shinobi-v2-grip-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  align-items: center;
+}
+
+.shinobi-v2-grip-actions {
+  padding-top: 0.35rem;
+  border-top: 1px solid rgba(201, 163, 93, 0.18);
+}
+
+.shinobi-v2-grip-actions span {
+  flex: 1 0 100%;
+  color: var(--v2-muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.shinobi-v2-mini-actions button,
+.shinobi-v2-grip-actions button {
+  flex: 1 1 auto;
+  min-width: 3rem;
+  padding: 0.25rem 0.35rem;
+  font-size: 0.68rem;
+}

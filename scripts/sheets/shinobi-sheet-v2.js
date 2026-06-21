@@ -134,10 +134,49 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
 
       await this._openV2PortraitDialog();
     });
+    html.find("[data-v2-resource-control]").on("click", async (event) => {
+      event.preventDefault();
+
+      if (!game.user?.isGM) return;
+
+      const control = event.currentTarget?.dataset?.v2ResourceControl ?? "";
+
+      if (control === "health") {
+        await this._openV2HealthControlDialog();
+        return;
+      }
+
+      if (control === "chakra") {
+        await this._openV2ChakraControlDialog();
+        return;
+      }
+
+      if (control === "experience") {
+        await this._openV2ExperienceControlDialog();
+      }
+    });
+
+    html.find(".inventory-carry-action").on("click", async (event) => {
+      event.preventDefault();
+
+      const itemId = event.currentTarget?.dataset?.itemId;
+      const carryState = event.currentTarget?.dataset?.carryState;
+
+      if (!itemId || !carryState) return;
+
+      await this.actor.setInventoryItemCarryState(itemId, carryState);
+      this.render(false);
+    });
   }
 
   _activateV2StoredTab() {
-    const tabKey = this.actor.getFlag?.("naruto-25e", "shinobiSheetV2ActiveTab") ?? "summary";
+    const canSeePrivateLineage = Boolean(this.actor?.isOwner || game.user?.isGM);
+    let tabKey = this.actor.getFlag?.("naruto-25e", "shinobiSheetV2ActiveTab") ?? "summary";
+
+    if (!canSeePrivateLineage) {
+      tabKey = "summary";
+    }
+
     if (!tabKey) return;
 
     const tabController = Array.isArray(this._tabs) ? this._tabs[0] : null;
@@ -335,6 +374,247 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
     }).render(true);
   }
 
+  _getV2DialogNumber(html) {
+    const rawValue = html.find('[name="value"]').val();
+    const value = Math.max(0, Number(rawValue ?? 0));
+
+    if (!Number.isFinite(value)) return 0;
+
+    return value;
+  }
+
+  async _openV2HealthControlDialog() {
+    if (!game.user?.isGM) {
+      ui.notifications.warn("Seul le MJ peut modifier directement la piste de santé.");
+      return;
+    }
+
+    const track = this.actor.getHealthTrackSummary?.() ?? {
+      value: 0,
+      max: 0,
+      activeLabel: "—"
+    };
+
+    const content = `
+      <form class="shinobi-v2-control-dialog">
+        <p>
+          Cette jauge représente les <strong>dégâts subis</strong>, pas les PV restants.
+        </p>
+
+        <p>
+          État actuel : <strong>${track.activeLabel ?? "—"}</strong><br />
+          Dégâts subis : <strong>${track.value ?? 0} / ${track.max ?? 0}</strong>
+        </p>
+
+        <label>
+          Valeur
+          <input type="number" name="value" value="5" min="0" />
+        </label>
+      </form>
+    `;
+
+    await new Dialog({
+      title: `Modifier la santé — ${this.actor.name}`,
+      content,
+      buttons: {
+        damage: {
+          label: "Infliger des dégâts",
+          callback: async (html) => {
+            const value = this._getV2DialogNumber(html);
+            if (value <= 0) return;
+
+            await this.actor.adjustHealthTrack(value, {
+              sourceName: "Ajustement MJ",
+              reason: "Dégâts infligés depuis la fiche V2"
+            });
+          }
+        },
+        heal: {
+          label: "Soigner des dégâts",
+          callback: async (html) => {
+            const value = this._getV2DialogNumber(html);
+            if (value <= 0) return;
+
+            await this.actor.adjustHealthTrack(-value, {
+              sourceName: "Ajustement MJ",
+              reason: "Dégâts soignés depuis la fiche V2"
+            });
+          }
+        },
+        resetZero: {
+          label: "Remettre en forme : 0 dégât subi",
+          callback: async () => {
+            await this.actor.resetHealthTrack?.();
+          }
+        },
+        fillTrack: {
+          label: "Remplir la piste : état critique",
+          callback: async () => {
+            const currentTrack = this.actor.getHealthTrackSummary?.() ?? {
+              max: 0
+            };
+
+            await this.actor.update({
+              "system.combat.health.damageTrack.value": Math.max(0, Number(currentTrack.max ?? 0))
+            });
+
+            ui.notifications.warn(`${this.actor.name} : piste de santé remplie au maximum.`);
+          }
+        },
+        cancel: {
+          label: "Annuler"
+        }
+      },
+      default: "damage"
+    }).render(true);
+  }
+
+  async _openV2ChakraControlDialog() {
+    if (!game.user?.isGM) {
+      ui.notifications.warn("Seul le MJ peut modifier directement le Chakra.");
+      return;
+    }
+
+    const chakra = this.actor.system?.resources?.chakra ?? {};
+    const current = Math.max(0, Number(chakra.value ?? 0));
+    const max = Math.max(0, Number(chakra.max ?? 0));
+
+    const content = `
+      <form class="shinobi-v2-control-dialog">
+        <p>
+          Chakra actuel : <strong>${current} / ${max}</strong>
+        </p>
+
+        <label>
+          Valeur
+          <input type="number" name="value" value="10" min="0" />
+        </label>
+      </form>
+    `;
+
+    const setChakra = async (nextValue) => {
+      const value = Math.max(0, Math.min(max, Number(nextValue ?? 0)));
+
+      await this.actor.update({
+        "system.resources.chakra.value": value
+      });
+
+      ui.notifications.info(`${this.actor.name} : Chakra ${current} → ${value}.`);
+    };
+
+    await new Dialog({
+      title: `Modifier le Chakra — ${this.actor.name}`,
+      content,
+      buttons: {
+        restore: {
+          label: "Restaurer du Chakra",
+          callback: async (html) => {
+            const value = this._getV2DialogNumber(html);
+            await setChakra(current + value);
+          }
+        },
+        spend: {
+          label: "Dépenser / retirer du Chakra",
+          callback: async (html) => {
+            const value = this._getV2DialogNumber(html);
+            await setChakra(current - value);
+          }
+        },
+        zero: {
+          label: "Mettre à 0",
+          callback: async () => {
+            await setChakra(0);
+          }
+        },
+        full: {
+          label: "Restaurer au maximum",
+          callback: async () => {
+            await setChakra(max);
+          }
+        },
+        cancel: {
+          label: "Annuler"
+        }
+      },
+      default: "restore"
+    }).render(true);
+  }
+
+  async _openV2ExperienceControlDialog() {
+    if (!game.user?.isGM) {
+      ui.notifications.warn("Seul le MJ peut modifier directement l’XP totale.");
+      return;
+    }
+
+    const experience = this.actor.system?.progression?.experience ?? {};
+    const currentTotal = Math.max(0, Number(experience.total ?? 0));
+    const spent = Math.max(0, Number(experience.spent ?? 0));
+    const available = Math.max(0, Number(experience.available ?? 0));
+
+    const content = `
+      <form class="shinobi-v2-control-dialog">
+        <p>
+          L’XP totale est la réserve globale gagnée par le personnage.
+        </p>
+
+        <p>
+          XP totale : <strong>${currentTotal}</strong><br />
+          XP dépensée : <strong>${spent}</strong><br />
+          XP disponible : <strong>${available}</strong>
+        </p>
+
+        <label>
+          Valeur
+          <input type="number" name="value" value="25" min="0" />
+        </label>
+      </form>
+    `;
+
+    const setTotalExperience = async (nextTotal, reason = "Ajustement MJ") => {
+      const total = Math.max(0, Number(nextTotal ?? 0));
+
+      await this.actor.update({
+        "system.progression.experience.total": total
+      });
+
+      this.actor.prepareData();
+      this.render(false);
+
+      ui.notifications.info(`${this.actor.name} : XP totale ${currentTotal} → ${total} (${reason}).`);
+    };
+
+    await new Dialog({
+      title: `Modifier l’XP totale — ${this.actor.name}`,
+      content,
+      buttons: {
+        grant: {
+          label: "Accorder de l’XP",
+          callback: async (html) => {
+            const value = this._getV2DialogNumber(html);
+            await setTotalExperience(currentTotal + value, `+${value} XP`);
+          }
+        },
+        remove: {
+          label: "Retirer de l’XP",
+          callback: async (html) => {
+            const value = this._getV2DialogNumber(html);
+            await setTotalExperience(currentTotal - value, `-${value} XP`);
+          }
+        },
+        zero: {
+          label: "Mettre l’XP totale à 0",
+          callback: async () => {
+            await setTotalExperience(0, "remise à zéro");
+          }
+        },
+        cancel: {
+          label: "Annuler"
+        }
+      },
+      default: "grant"
+    }).render(true);
+  }
+
   _buildV2Context(context = {}) {
     const system = this.actor.system ?? {};
     const identity = system.identity ?? {};
@@ -366,7 +646,7 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
       inventory: this._buildV2InventoryContext(context),
       lineage: this._buildV2LineageContext(context, heritage, identityContext, canSeePrivateLineage),
       progression: this._buildV2ProgressionContext(context),
-      tabs: this._buildV2TabsContext()
+      tabs: this._buildV2TabsContext(canSeePrivateLineage)
     };
   }
 
@@ -681,6 +961,16 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
       ? this.actor._getInventoryCarryStateLabel(carryState)
       : carryState;
 
+    const heldStates = ["rightHand", "leftHand", "twoHands"];
+    const isHeld = heldStates.includes(carryState);
+    const canHold = Boolean(item.holdable || item.carry?.holdable || item.type === "weapon" || item.hasCombatUse);
+
+    const gripOptions = [
+      { key: "rightHand", label: "MD", fullLabel: "Main droite" },
+      { key: "leftHand", label: "MG", fullLabel: "Main gauche" },
+      { key: "twoHands", label: "2M", fullLabel: "Deux mains" }
+    ];
+
     return {
       id: item.id,
       name: item.name ?? "Objet",
@@ -689,6 +979,11 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
       equipped: Boolean(item.equipped),
       carryState,
       carryLabel,
+      canHold,
+      isHeld,
+      isDropped: carryState === "dropped",
+      drawOptions: gripOptions,
+      changeGripOptions: gripOptions.filter((option) => option.key !== carryState),
       damageFormula: damage.formula ?? "",
       damageType: NARUTO25E.damageTypes?.[damage.type] ?? damage.type ?? "",
       hasDamage: Boolean(damage.formula),
@@ -1057,7 +1352,13 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
     return "";
   }
 
-  _buildV2TabsContext() {
+  _buildV2TabsContext(canSeePrivateLineage = true) {
+    if (!canSeePrivateLineage) {
+      return [
+        { key: "summary", label: "Résumé" }
+      ];
+    }
+
     return [
       { key: "summary", label: "Résumé" },
       { key: "combat", label: "Combat" },

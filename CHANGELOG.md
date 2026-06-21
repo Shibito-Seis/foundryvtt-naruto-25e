@@ -2,6 +2,69 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.43.3 - Fiche Shinobi V2 : visibilité, santé et combat tenu
+
+### Ajouté
+
+- Ajout d’une lecture publique de la fiche Shinobi V2 :
+  - les non-propriétaires ne voient que l’onglet Résumé ;
+  - le Résumé public est limité à l’identité ;
+  - les PV / dégâts subis et le Chakra restent visibles dans le bandeau de ressources.
+- Ajout d’un affichage public non-spoilant de l’héritage :
+  - les clans cachés et hybridations ne révèlent plus le Réel Clan ou le clan secondaire aux non-propriétaires ;
+  - l’affichage public garde une forme simple de type `Clan : Nara`.
+- Ajout de dialogues MJ depuis le bandeau de ressources V2 :
+  - clic sur Santé / dégâts subis ;
+  - clic sur Chakra ;
+  - clic sur XP totale.
+- Ajout d’un dialogue MJ de santé avec libellés explicites :
+  - Infliger des dégâts ;
+  - Soigner des dégâts ;
+  - Remettre en forme : 0 dégât subi ;
+  - Remplir la piste : état critique.
+- Ajout d’un dialogue MJ de Chakra :
+  - Restaurer du Chakra ;
+  - Dépenser / retirer du Chakra ;
+  - Mettre à 0 ;
+  - Restaurer au maximum.
+- Ajout d’un dialogue MJ d’XP totale :
+  - Accorder de l’XP ;
+  - Retirer de l’XP ;
+  - Mettre l’XP totale à 0.
+- Ajout d’un premier affichage de combat basé sur l’état de tenue des objets :
+  - Dégainer en main droite ;
+  - Dégainer en main gauche ;
+  - Dégainer à deux mains ;
+  - Rengainer ;
+  - Lâcher ;
+  - Changer de prise.
+- Ajout de la possibilité de traiter les explosifs de combat comme des objets dégainables lorsqu’ils sont reconnus comme utilisables en combat.
+
+### Modifié
+
+- Renommage de l’ancienne fiche Shinobi en `Fiche Tetris` dans le sélecteur de feuille, pour mieux la distinguer de la `Fiche Shinobi V2`.
+- Les listes déroulantes de la fiche V2 utilisent désormais un fond sombre plus lisible.
+- La barre de Santé V2 est reformulée en piste de `Dégâts subis`, afin d’éviter la confusion avec une barre de PV classique.
+- Refonte visuelle de la piste de santé V2 :
+  - lecture plus proche de la barre Chakra ;
+  - conservation de la logique segmentée ;
+  - meilleure lisibilité des paliers.
+- Dans l’onglet Combat V2, les boutons Attaque / Dégâts des objets de combat ne s’affichent plus si l’objet n’est pas tenu en main.
+- Le Résumé V2 masque désormais les blocs sensibles aux non-propriétaires.
+
+### Corrigé
+
+- Correction d’un risque d’accès indirect aux onglets privés via le flag d’onglet actif.
+- Correction des boutons de changement de prise / dégainage pour assurer la bonne récupération de l’identifiant d’objet.
+- Correction de la lisibilité des menus déroulants trop clairs.
+- Correction de la confusion visuelle entre PV restants et dégâts subis.
+
+### Notes
+
+- La visibilité par bloc contrôlée par le joueur propriétaire est prévue pour une future mise à jour.
+- La gestion de main droite / main gauche / deux mains est une première version pratique ; les règles fines de prise, main occupée, objets lâchés au sol et interactions avancées pourront être enrichies plus tard.
+- Le recadrage interactif du portrait reste prévu pour plus tard.
+
 ## 0.1.43.2 - Correctifs et confort fiche Shinobi V2
 
 ### Ajouté
