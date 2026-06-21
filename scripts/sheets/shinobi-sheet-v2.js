@@ -573,8 +573,9 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
     if (!game.user?.isGM) return;
 
     const nindo = this.actor.system?.nindo ?? {};
-    const currentValue = Math.max(0, Number(nindo.value ?? 0));
+    const minValue = -10;
     const maxValue = Math.max(0, Number(nindo.max ?? 0));
+    const currentValue = Math.max(minValue, Math.min(maxValue, Number(nindo.value ?? 0)));
     const currentCharges = Math.max(0, Number(nindo.charges?.value ?? 0));
     const maxCharges = Math.max(0, Number(nindo.charges?.max ?? 0));
 
@@ -583,7 +584,7 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
       content: `
         <form class="shinobi-v2-dialog-form">
           <p>
-            Points actuels : <strong>${currentValue} / ${maxValue}</strong><br />
+            Points actuels : <strong>${currentValue} / ${maxValue}</strong> <small>(minimum ${minValue})</small><br />
             Charges Nindō : <strong>${currentCharges} / ${maxCharges}</strong>
           </p>
 
@@ -603,7 +604,7 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
           label: "Accorder points",
           callback: async (html) => {
             const value = this._getV2DialogNumber(html);
-            const nextValue = Math.max(0, Math.min(maxValue, currentValue + value));
+            const nextValue = Math.max(minValue, Math.min(maxValue, currentValue + value));
 
             await this.actor.update({
               "system.nindo.value": nextValue
@@ -614,7 +615,7 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
           label: "Retirer points",
           callback: async (html) => {
             const value = this._getV2DialogNumber(html);
-            const nextValue = Math.max(0, Math.min(maxValue, currentValue - value));
+            const nextValue = Math.max(minValue, Math.min(maxValue, currentValue - value));
 
             await this.actor.update({
               "system.nindo.value": nextValue
@@ -626,6 +627,14 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
           callback: async () => {
             await this.actor.update({
               "system.nindo.value": 0
+            });
+          }
+        },
+        minimum: {
+          label: "Points à -10",
+          callback: async () => {
+            await this.actor.update({
+              "system.nindo.value": minValue
             });
           }
         },
@@ -814,10 +823,11 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
       : 0;
 
     const nindo = this.actor.system?.nindo ?? {};
-    const nindoValue = Math.max(0, Number(nindo.value ?? 0));
+    const nindoValue = Math.max(-10, Math.min(Number(nindo.max ?? 0), Number(nindo.value ?? 0)));
     const nindoMax = Math.max(0, Number(nindo.max ?? 0));
     const nindoChargeValue = Math.max(0, Number(nindo.charges?.value ?? 0));
     const nindoChargeMax = Math.max(0, Number(nindo.charges?.max ?? 0));
+    const nindoNegative = nindoValue < 0;
 
     const initiative = Number(this.actor.system?.combat?.initiative?.total ?? 0);
 
@@ -837,8 +847,9 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
         max: nindoMax,
         chargeValue: nindoChargeValue,
         chargeMax: nindoChargeMax,
+        negative: nindoNegative,
         headerLabel: `${nindoValue} · ChN. ${nindoChargeValue}`,
-        title: `Points de Nindō actuels : ${nindoValue} / ${nindoMax} — Charges de Nindō : ${nindoChargeValue} / ${nindoChargeMax}`
+        title: `Points de Nindō actuels : ${nindoValue} / ${nindoMax} — Charges de Nindō : ${nindoChargeValue} / ${nindoChargeMax}${nindoNegative ? " — Attention : Nindō négatif" : ""}`
       },
       actions: {
         simple: Boolean(combatActions.simpleAvailable),

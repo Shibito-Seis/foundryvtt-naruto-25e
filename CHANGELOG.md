@@ -2,6 +2,41 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.44.1 - Hotfix lisibilité combat, Santé V2 et Nindō négatif
+
+### Corrigé
+
+- Amélioration de la lisibilité des cartes de dégâts :
+  - affichage vertical plus clair ;
+  - source, attaquant et cible mieux séparés ;
+  - noms d’acteurs affichés en couleur du propriétaire Foundry quand elle est disponible ;
+  - détail de formule, type et condition rendu plus lisible ;
+  - résumé dégâts bruts / défense passive / dégâts qui passent présenté en blocs.
+- Amélioration de la lisibilité des cartes Santé après application de dégâts :
+  - cible et source mieux mises en avant ;
+  - santé restante avant / après affichée clairement ;
+  - piste de dégâts avant / après conservée ;
+  - état avant / après affiché clairement ;
+  - dégâts qui passent, type et dégâts appliqués présentés en blocs.
+- Correction de l’orientation du kunaï dans les cartes de confrontation attaque / défense :
+  - rotation ajustée en `-45deg` pour correspondre au sens visuel attendu.
+- Correction de la gestion MJ des points de Nindō :
+  - le dialogue du header peut désormais descendre jusqu’à `-10` ;
+  - ajout d’un bouton MJ pour placer les points de Nindō directement à `-10`.
+
+### Ajouté
+
+- Ajout d’un style d’alerte rouge sur le rappel Nindō du header V2 lorsque les points de Nindō sont négatifs.
+- Réemploi de la barre Santé V2 améliorée dans le Résumé de la fiche Shinobi V2.
+- Réemploi de la barre Santé V2 améliorée dans l’onglet Combat de la fiche Shinobi V2.
+- Ajout d’un léger effet visuel de flux/reflet sur la barre Chakra du header V2.
+
+### Notes
+
+- Cette version reste un hotfix ciblé de la `0.1.44`.
+- Les effets Nindō avancés comme Accroissement du Chakra, Éveil et Unison ne sont pas encore appliqués mécaniquement de façon complète.
+- Les roues narratives / arcs narratifs restent prévus pour un chantier séparé.
+
 ## 0.1.44 - Hotfix défense par carte et Nindō V2
 
 ### Corrigé

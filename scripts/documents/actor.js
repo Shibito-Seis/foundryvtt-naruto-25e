@@ -3448,6 +3448,38 @@ async decreaseBase(baseKey) {
     `;
   }
 
+  _getPrimaryOwnerColor() {
+    const ownership = this.ownership ?? {};
+    const owner = Array.from(game.users ?? []).find((user) => {
+      if (!user || user.isGM) return false;
+
+      const level = Number(ownership[user.id] ?? ownership.default ?? 0);
+
+      return level >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER;
+    });
+
+    return owner?.color ?? "";
+  }
+
+  _getStyledActorNameHtml(actor = this) {
+    const safeName = foundry.utils.escapeHTML?.(actor?.name ?? "—") ?? (actor?.name ?? "—");
+    const ownership = actor?.ownership ?? {};
+
+    const owner = Array.from(game.users ?? []).find((user) => {
+      if (!user || user.isGM) return false;
+
+      const level = Number(ownership[user.id] ?? ownership.default ?? 0);
+
+      return level >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER;
+    });
+
+    const color = owner?.color ?? "";
+
+    if (!color) return `<strong>${safeName}</strong>`;
+
+    return `<strong class="naruto-chat-actor-name" style="color: ${foundry.utils.escapeHTML?.(color) ?? color};">${safeName}</strong>`;
+  }
+
   async _createDamageChatCard(payload = {}) {
     const damage = this._normalizeDamageData(payload.damage ?? {});
     const damageResult = this._calculateDamageData(damage, {
@@ -3468,12 +3500,13 @@ async decreaseBase(baseKey) {
       : damageResult.total;
 
     const safe = (value) => foundry.utils.escapeHTML?.(String(value ?? "")) ?? String(value ?? "");
-    const safeActorName = safe(this.name);
     const safeSourceName = safe(payload.sourceName ?? "Dégâts");
     const safeTargetName = targetActor ? safe(targetActor.name) : "—";
     const safeFormula = safe(damageResult.formula || "—");
     const safeType = safe(payload.damageType ?? damage.type ?? "physical");
     const safeCondition = safe(damageResult.condition ?? "");
+    const actorNameHtml = this._getStyledActorNameHtml(this);
+    const targetNameHtml = targetActor ? this._getStyledActorNameHtml(targetActor) : "<strong>—</strong>";
 
     const partsText = damageResult.parts?.length
       ? damageResult.parts.map((part) => `${safe(part.label)} ${Number(part.value ?? 0)}`).join(" + ")
@@ -3488,29 +3521,68 @@ async decreaseBase(baseKey) {
             <h3>Dégâts — ${safeSourceName}</h3>
           </header>
 
-          <div class="naruto-opposed-summary">
-            <div><strong>Source</strong><span>${safeSourceName}</span></div>
-            <div><strong>Cible</strong><span>${safeTargetName}</span></div>
+          <div class="naruto-chat-info-list">
+            <div>
+              <strong>Source</strong>
+              <span>${safeSourceName}</span>
+            </div>
+
+            <div>
+              <strong>Attaquant</strong>
+              <span>${actorNameHtml}</span>
+            </div>
+
+            <div>
+              <strong>Cible</strong>
+              <span>${targetNameHtml}</span>
+            </div>
           </div>
 
           ${damageResult.calculable ? `
-            <div class="naruto-roll-result">
+            <div class="naruto-roll-result naruto-damage-total">
               ${damageResult.total}
             </div>
 
-            <div class="naruto-roll-details">
-              <span>Attaquant : ${safeActorName}</span>
-              <span>Formule : ${safeFormula}</span>
-              <span>Détail : ${partsText}${damageResult.flat ? ` + ${damageResult.flat}` : ""}${damageResult.perItemBonus ? ` + cumul ${damageResult.perItemBonus}` : ""}</span>
-              <span>Type : ${safeType}</span>
-              ${safeCondition ? `<span>Condition : ${safeCondition}</span>` : ""}
+            <div class="naruto-chat-info-list">
+              <div>
+                <strong>Formule</strong>
+                <span>${safeFormula}</span>
+              </div>
+
+              <div>
+                <strong>Détail</strong>
+                <span>${partsText}${damageResult.flat ? ` + ${damageResult.flat}` : ""}${damageResult.perItemBonus ? ` + cumul ${damageResult.perItemBonus}` : ""}</span>
+              </div>
+
+              <div>
+                <strong>Type</strong>
+                <span>${safeType}</span>
+              </div>
+
+              ${safeCondition ? `
+                <div>
+                  <strong>Condition</strong>
+                  <span>${safeCondition}</span>
+                </div>
+              ` : ""}
             </div>
 
             ${targetActor ? `
-              <div class="naruto-damage-breakdown">
-                <div><span>Dégâts bruts</span><strong>${damageResult.total}</strong></div>
-                <div><span>${safe(defenseLabel)}</span><strong>-${defenseValue}</strong></div>
-                <div><span>Dégâts qui passent</span><strong>${passingDamage}</strong></div>
+              <div class="naruto-damage-breakdown is-readable">
+                <div>
+                  <span>Dégâts bruts</span>
+                  <strong>${damageResult.total}</strong>
+                </div>
+
+                <div>
+                  <span>${safe(defenseLabel)}</span>
+                  <strong>-${defenseValue}</strong>
+                </div>
+
+                <div>
+                  <span>Dégâts qui passent</span>
+                  <strong>${passingDamage}</strong>
+                </div>
               </div>
 
               ${passingDamage > 0 ? `
@@ -3527,7 +3599,7 @@ async decreaseBase(baseKey) {
                   </button>
                 </div>
               ` : `
-                <p>Aucun dégât ne passe la défense passive de ${safeTargetName}.</p>
+                <p>Aucun dégât ne passe la défense passive de ${targetNameHtml}.</p>
               `}
             ` : `
               <p>Aucune cible de dégâts renseignée : dégâts bruts ${damageResult.total}.</p>
@@ -5838,6 +5910,10 @@ async decreaseBase(baseKey) {
 
     const safeActorName = foundry.utils.escapeHTML?.(this.name) ?? this.name;
     const safeSourceName = foundry.utils.escapeHTML?.(sourceName) ?? sourceName;
+    const safeDamageType = foundry.utils.escapeHTML?.(damageType) ?? damageType;
+    const actorNameHtml = this._getStyledActorNameHtml(this);
+    const remainingBefore = Math.max(0, Number(preview.before.max ?? 0) - Number(preview.before.value ?? 0));
+    const remainingAfter = Math.max(0, Number(preview.after.max ?? 0) - Number(preview.after.value ?? 0));
     const criticalText = preview.criticalShock
       ? `Oui (+${preview.criticalBonus} dégâts de choc)`
       : "Non";
@@ -5846,19 +5922,60 @@ async decreaseBase(baseKey) {
       speaker: ChatMessage.getSpeaker({ actor: this }),
       flavor: `Santé — ${safeActorName}`,
       content: `
-        <div class="naruto-roll-card combat-wound-card">
+        <div class="naruto-roll-card combat-wound-card naruto-health-applied-card">
           <header class="naruto-roll-header">
             <h2>Santé — dégâts appliqués</h2>
           </header>
 
-          <div class="naruto-roll-details">
-            <div><strong>Acteur :</strong> ${safeActorName}</div>
-            <div><strong>Source :</strong> ${safeSourceName}</div>
-            <div><strong>Dégâts qui passent :</strong> ${preview.baseDamage} (${damageType})</div>
-            <div><strong>Coup violent :</strong> ${criticalText}</div>
-            <div><strong>Dégâts appliqués :</strong> ${preview.appliedDamage}</div>
-            <div><strong>Piste :</strong> ${preview.before.value} → ${preview.after.value} / ${preview.after.max}</div>
-            <div><strong>État :</strong> ${preview.before.activeLabel} → ${preview.after.activeLabel}</div>
+          <div class="naruto-chat-info-list">
+            <div>
+              <strong>Cible</strong>
+              <span>${actorNameHtml}</span>
+            </div>
+
+            <div>
+              <strong>Source</strong>
+              <span>${safeSourceName}</span>
+            </div>
+          </div>
+
+          <div class="naruto-damage-breakdown is-readable">
+            <div>
+              <span>Dégâts qui passent</span>
+              <strong>${preview.baseDamage}</strong>
+            </div>
+
+            <div>
+              <span>Type</span>
+              <strong>${safeDamageType}</strong>
+            </div>
+
+            <div>
+              <span>Dégâts appliqués</span>
+              <strong>${preview.appliedDamage}</strong>
+            </div>
+          </div>
+
+          <div class="naruto-chat-info-list">
+            <div>
+              <strong>Santé restante</strong>
+              <span>${remainingBefore} → ${remainingAfter} / ${preview.after.max}</span>
+            </div>
+
+            <div>
+              <strong>Piste de dégâts</strong>
+              <span>${preview.before.value} → ${preview.after.value} / ${preview.after.max}</span>
+            </div>
+
+            <div>
+              <strong>État</strong>
+              <span>${preview.before.activeLabel} → ${preview.after.activeLabel}</span>
+            </div>
+
+            <div>
+              <strong>Coup violent</strong>
+              <span>${criticalText}</span>
+            </div>
           </div>
 
           ${preview.after.isSonneOrWorse ? `

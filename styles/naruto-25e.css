@@ -1857,7 +1857,7 @@
   height: 1.8rem;
   object-fit: contain;
   filter: drop-shadow(0 0 0.18rem rgba(0, 0, 0, 0.85));
-  transform: translate(-50%, -50%) rotate(90deg);
+  transform: translate(-50%, -50%) rotate(-45deg);
 }
 
 .naruto-opposed-kunai.is-hit {
@@ -1874,21 +1874,21 @@
 
 @keyframes naruto-kunai-hit-defense {
   from {
-    transform: translate(-220%, -50%) rotate(90deg);
+    transform: translate(-220%, -50%) rotate(-45deg);
   }
 
   to {
-    transform: translate(-50%, -50%) rotate(90deg);
+    transform: translate(-50%, -50%) rotate(-45deg);
   }
 }
 
 @keyframes naruto-kunai-miss-ground {
   from {
-    transform: translate(-190%, -120%) rotate(90deg);
+    transform: translate(-190%, -120%) rotate(-45deg);
   }
 
   to {
-    transform: translate(-50%, -50%) rotate(130deg);
+    transform: translate(-50%, -50%) rotate(-12deg);
   }
 }
 
@@ -1906,4 +1906,67 @@
 
 .naruto-opposed-card.is-resolved {
   opacity: 0.82;
+}
+
+/* ----------------------------------------- */
+/* 0.1.44.1 — Cartes lisibles dégâts/santé   */
+/* ----------------------------------------- */
+
+.naruto-chat-info-list {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0.55rem 0;
+}
+
+.naruto-chat-info-list div {
+  display: grid;
+  grid-template-columns: minmax(5.5rem, 0.8fr) minmax(0, 1.2fr);
+  gap: 0.45rem;
+  align-items: start;
+  padding: 0.42rem 0.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.naruto-chat-info-list strong {
+  font-weight: 800;
+}
+
+.naruto-chat-info-list span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.naruto-chat-actor-name {
+  font-weight: 900;
+  text-shadow: 0 0 0.15rem rgba(0, 0, 0, 0.35);
+}
+
+.naruto-damage-total {
+  margin: 0.65rem 0;
+}
+
+.naruto-damage-breakdown.is-readable {
+  grid-template-columns: 1fr;
+}
+
+.naruto-damage-breakdown.is-readable div {
+  display: grid;
+  grid-template-columns: minmax(7rem, 1fr) auto;
+  gap: 0.45rem;
+  align-items: center;
+  text-align: left;
+}
+
+.naruto-damage-breakdown.is-readable span {
+  font-size: 0.74rem;
+}
+
+.naruto-damage-breakdown.is-readable strong {
+  text-align: right;
+}
+
+.naruto-health-applied-card .naruto-damage-breakdown.is-readable {
+  margin-top: 0.7rem;
+  margin-bottom: 0.7rem;
 }

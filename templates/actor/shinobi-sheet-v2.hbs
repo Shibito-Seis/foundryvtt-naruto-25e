@@ -140,7 +140,7 @@
     </div>
 
     <div
-      class="shinobi-v2-stat-card is-nindo"
+      class="shinobi-v2-stat-card is-nindo {{#if v2.resources.nindo.negative}}is-negative{{/if}}"
       data-v2-resource-control="nindo"
       title="{{v2.resources.nindo.title}}"
     >
@@ -204,13 +204,25 @@
             <div><strong>Actions</strong><span>{{v2.resources.actions.label}}</span></div>
           </div>
 
-          <div class="shinobi-v2-health-segments is-summary">
-            {{#each v2.health.track.segments as |segment|}}
-              <span class="{{#if segment.complete}}is-complete{{/if}}">
-                <small>{{segment.marks}}</small>
-                <strong>{{segment.label}}</strong>
-              </span>
-            {{/each}}
+          <div
+            class="shinobi-v2-progress shinobi-v2-health-progress is-summary"
+            title="Santé restante : {{v2.health.remaining.value}} / {{v2.health.remaining.max}} — Dégâts subis : {{v2.health.track.value}} / {{v2.health.track.max}}"
+          >
+            <span style="width: {{v2.health.remaining.percent}}%;"></span>
+
+            <div class="shinobi-v2-health-thresholds">
+              {{#each v2.health.thresholds as |threshold|}}
+                <i
+                  class="shinobi-v2-health-threshold is-{{threshold.severity}}"
+                  style="left: {{threshold.position}}%;"
+                  title="{{threshold.label}}"
+                ></i>
+              {{/each}}
+            </div>
+          </div>
+
+          <div class="shinobi-v2-track-caption">
+            Santé : {{v2.health.remaining.value}} / {{v2.health.remaining.max}} — État : {{v2.health.stateLabel}}
           </div>
         </section>
 
@@ -642,13 +654,25 @@
             <div><strong>Palier Chakra</strong><span>{{combatSummary.chakraStateLabel}}</span></div>
           </div>
 
-          <div class="shinobi-v2-health-segments is-large">
-            {{#each v2.health.track.segments as |segment|}}
-              <span class="{{#if segment.complete}}is-complete{{/if}}">
-                <small>{{segment.marks}}</small>
-                <strong>{{segment.label}}</strong>
-              </span>
-            {{/each}}
+          <div
+            class="shinobi-v2-progress shinobi-v2-health-progress is-large"
+            title="Santé restante : {{v2.health.remaining.value}} / {{v2.health.remaining.max}} — Dégâts subis : {{v2.health.track.value}} / {{v2.health.track.max}}"
+          >
+            <span style="width: {{v2.health.remaining.percent}}%;"></span>
+
+            <div class="shinobi-v2-health-thresholds">
+              {{#each v2.health.thresholds as |threshold|}}
+                <i
+                  class="shinobi-v2-health-threshold is-{{threshold.severity}}"
+                  style="left: {{threshold.position}}%;"
+                  title="{{threshold.label}}"
+                ></i>
+              {{/each}}
+            </div>
+          </div>
+
+          <div class="shinobi-v2-track-caption">
+            Santé : {{v2.health.remaining.value}} / {{v2.health.remaining.max}} — Dégâts subis : {{v2.health.track.value}} / {{v2.health.track.max}} — État : {{v2.health.stateLabel}}
           </div>
 
           {{#if effectiveHealthState.effectHints.length}}
