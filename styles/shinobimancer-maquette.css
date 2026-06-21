@@ -331,90 +331,157 @@
 
 /*
   La colonne d'étapes reste à gauche.
-  Le cadre dossier commence après elle.
+  Le cadre dossier central utilise les vrais assets fournis
+  par la graphiste.
 */
 
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main .shinobimancer-layout {
-  grid-template-columns: 14rem minmax(0, 1fr);
-  overflow: hidden;
-  background:
-    linear-gradient(
-      90deg,
-      rgba(97, 55, 31, 0.20) 0,
-      rgba(97, 55, 31, 0.20) calc(14rem - 1px),
-      rgba(58, 35, 20, 0.36) calc(14rem - 1px),
-      rgba(58, 35, 20, 0.36) calc(14rem + 1px),
-      transparent calc(14rem + 1px),
-      transparent 100%
-    );
+/* ----------------------------------------- */
+/* Habillage assets graphiste — 0.1.43.5     */
+/* ----------------------------------------- */
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-shell {
+  --shinobi-step-width: 13.75rem;
+  --shinobi-summary-width: 15rem;
+  --shinobi-top-scroll-height: 5.3rem;
+  --shinobi-footer-height: 4.95rem;
+  --shinobi-tag-width: 3.2rem;
+  --shinobi-tag-height: 17rem;
 }
 
 /* ----------------------------------------- */
-/* Cadre central : contenu + résumé          */
+/* Structure principale stable               */
+/* ----------------------------------------- */
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main {
+  background: #ae9b79;
+}
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main > .shinobimancer-topbar {
+  display: none;
+}
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main .shinobimancer-layout {
+  grid-template-columns: var(--shinobi-step-width) minmax(0, 1fr);
+  align-items: start;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: none;
+}
+
+/* ----------------------------------------- */
+/* Colonne étapes : rouleau vertical         */
+/* ----------------------------------------- */
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main .shinobimancer-sidebar {
+  position: relative;
+  align-self: stretch;
+  min-height: 100%;
+  padding: 1rem 0.85rem 1.2rem;
+  border: 0;
+  background:
+    url("../assets/ui/shinobimancer/scroll-step.png")
+    no-repeat
+    center top / 100% 100%;
+  box-shadow: none;
+}
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main .shinobimancer-sidebar::before {
+  display: none;
+}
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main .shinobimancer-binding-title {
+  margin: 0 0 0.85rem;
+  padding: 0 0 0.5rem;
+  border-bottom: 1px solid rgba(32, 22, 14, 0.28);
+  color: var(--shinobi-red-dark);
+}
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main .shinobimancer-step-list {
+  gap: 0.5rem;
+}
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main .shinobimancer-step {
+  background: transparent;
+}
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main .shinobimancer-step.is-active {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* ----------------------------------------- */
+/* Dossier central                           */
 /* ----------------------------------------- */
 
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-dossier-frame {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(35rem, 1fr) 14.5rem;
-  min-width: calc(35rem + 14.5rem);
+  grid-template-columns: minmax(0, 1fr) var(--shinobi-summary-width);
   min-height: 0;
   overflow: hidden;
-  padding: 4.65rem 0.9rem 0.65rem;
+  padding: calc(var(--shinobi-top-scroll-height) + 0.35rem) 1rem 0.35rem;
+  background:
+    url("../assets/ui/shinobimancer/scroll-layout.png")
+    no-repeat
+    center center / 100% 100%;
 }
-
-/*
-  Rouleau supérieur :
-  il commence uniquement au-dessus du dossier central,
-  pas au-dessus de la colonne d'étapes.
-*/
 
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-dossier-frame::before {
   content: "";
   position: absolute;
   z-index: 0;
-  top: 0.2rem;
-  left: 0.2rem;
-  right: 0.2rem;
-  height: 5.25rem;
+  top: 0;
+  left: 0.15rem;
+  right: 0.15rem;
+  height: var(--shinobi-top-scroll-height);
   pointer-events: none;
-  background-image: url("../assets/ui/shinobimancer/scroll-top.png");
-  background-repeat: no-repeat;
-  background-position: center top;
-  background-size: 100% auto;
+  background:
+    url("../assets/ui/shinobimancer/scroll-top.png")
+    no-repeat
+    center top / 100% 100%;
 }
 
-/*
-  Les vrais panneaux du dossier restent au-dessus du rouleau.
-*/
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-dossier-frame::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: 0.55rem;
+  left: -2.35rem;
+  width: var(--shinobi-tag-width);
+  height: var(--shinobi-tag-height);
+  pointer-events: none;
+  background:
+    url("../assets/ui/shinobimancer/top-tag.png")
+    no-repeat
+    center top / contain;
+}
 
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-dossier-frame > .shinobimancer-content,
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-dossier-frame > .shinobimancer-summary {
   position: relative;
   z-index: 1;
   min-height: 0;
-  overflow-y: auto;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-dossier-frame > .shinobimancer-content {
-  padding: 0.75rem 0.75rem 0.8rem;
+  overflow: visible;
   background: transparent;
 }
 
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-dossier-frame > .shinobimancer-summary {
-  padding: 0.75rem 0.8rem;
-  border-left: 2px solid rgba(32, 22, 14, 0.24);
-  background: rgba(174, 155, 121, 0.14);
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-dossier-frame > .shinobimancer-content {
+  padding: 0.65rem 0.9rem 0.8rem;
 }
 
-/*
-  La page-header devient le vrai titre fonctionnel du corps.
-  Elle remplace visuellement l'ancien header "Shinobimancer".
-*/
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-dossier-frame > .shinobimancer-summary {
+  padding: 0.65rem 0.85rem 0.8rem 1rem;
+  border-left: 2px solid rgba(32, 22, 14, 0.24);
+  background: transparent;
+}
+
+/* ----------------------------------------- */
+/* Le vrai titre est porté par le corps      */
+/* ----------------------------------------- */
 
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-page-header {
-  background: rgba(174, 155, 121, 0.16);
-  border-color: rgba(32, 22, 14, 0.34);
+  background: transparent;
+  border-color: rgba(32, 22, 14, 0.30);
 }
 
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-page-header h2 {
@@ -423,26 +490,45 @@
 }
 
 /* ----------------------------------------- */
-/* Footer principal aligné au dossier        */
+/* Panneaux internes lisibles                */
 /* ----------------------------------------- */
 
-/*
-  Le footer reste fonctionnel, mais il ne couvre plus la colonne d'étapes.
-  Le rouleau bas sert de support visuel au footer de la zone dossier.
-*/
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-panel,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-summary,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-summary-portrait,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice-intro,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice-card {
+  background: rgba(174, 155, 121, 0.12);
+}
+
+/* ----------------------------------------- */
+/* Footer du dossier guidé                   */
+/* ----------------------------------------- */
 
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main > .shinobimancer-footer {
   position: relative;
-  margin-left: 14rem;
-  min-height: 4.2rem;
-  padding: 0.75rem 0.85rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: end;
+  column-gap: 1rem;
+  margin-left: var(--shinobi-step-width);
+  min-height: var(--shinobi-footer-height);
+  padding: 1.15rem 1.15rem 0.7rem;
   border-top: 0;
-  background-color: transparent;
-  background-image: url("../assets/ui/shinobimancer/scroll-bottom.png");
-  background-repeat: no-repeat;
-  background-position: center bottom;
-  background-size: 100% auto;
+  background: transparent;
   box-shadow: none;
+}
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main > .shinobimancer-footer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    url("../assets/ui/shinobimancer/scroll-bottom.png")
+    no-repeat
+    center bottom / 100% 100%;
 }
 
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main > .shinobimancer-footer > * {
@@ -450,53 +536,66 @@
   z-index: 1;
 }
 
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main .shinobimancer-previous-step {
+  justify-self: start;
+  min-width: 11rem;
+}
+
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main .shinobimancer-footer-note {
-  color: rgba(28, 20, 13, 0.78);
+  justify-self: center;
+  text-align: center;
+  color: rgba(28, 20, 13, 0.82);
 }
 
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main .shinobimancer-footer .shinobimancer-button.is-secondary {
-  background: rgba(205, 188, 150, 0.72);
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main .shinobimancer-footer .shinobimancer-button.is-primary {
-  background: var(--shinobi-red-dark);
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main .shinobimancer-footer-actions {
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
 }
 
 /* ----------------------------------------- */
 /* Écran de choix                            */
 /* ----------------------------------------- */
 
-/*
-  L'écran de choix n'a pas encore son rouleau d'étapes gauche.
-  On le stabilise quand même :
-  - le hero devient le titre du corps ;
-  - le rouleau haut reste décoratif au-dessus ;
-  - le footer reste fixe dans la fenêtre choice.
-*/
-
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice {
   position: relative;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
   height: min(704px, calc(100vh - 72px));
   min-height: 0;
   overflow: hidden;
-  background-color: #ae9b79;
+  background: #ae9b79;
 }
 
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice::before {
   content: "";
   position: absolute;
   z-index: 0;
-  top: 0.15rem;
+  top: 0;
   left: 10rem;
-  right: 1.2rem;
-  height: 5.25rem;
+  right: 1rem;
+  height: var(--shinobi-top-scroll-height);
   pointer-events: none;
-  background-image: url("../assets/ui/shinobimancer/scroll-top.png");
-  background-repeat: no-repeat;
-  background-position: center top;
-  background-size: 100% auto;
+  background:
+    url("../assets/ui/shinobimancer/scroll-top.png")
+    no-repeat
+    center top / 100% 100%;
+}
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: calc(var(--shinobi-top-scroll-height) - 0.15rem);
+  left: 0.95rem;
+  right: 0.95rem;
+  bottom: calc(var(--shinobi-footer-height) - 0.2rem);
+  pointer-events: none;
+  background:
+    url("../assets/ui/shinobimancer/scroll-layout.png")
+    no-repeat
+    center center / 100% 100%;
 }
 
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice > * {
@@ -505,46 +604,54 @@
 }
 
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice .shinobimancer-hero {
-  flex: 0 0 auto;
-  padding-top: 4.55rem;
-  border-bottom-color: rgba(32, 22, 14, 0.24);
+  padding-top: calc(var(--shinobi-top-scroll-height) - 0.55rem);
+  border: 0;
   background: transparent;
   box-shadow: none;
 }
 
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice .shinobimancer-hero-content h1 {
-  border-bottom-color: rgba(139, 47, 34, 0.55);
-}
-
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice .shinobimancer-choice-layout {
-  flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
 }
 
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice > .shinobimancer-footer {
-  flex: 0 0 auto;
-  min-height: 4.15rem;
-  padding: 0.8rem 1rem;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: end;
+  column-gap: 1rem;
+  min-height: var(--shinobi-footer-height);
+  padding: 1.15rem 1.15rem 0.7rem;
   border-top: 0;
-  background-color: transparent;
-  background-image: url("../assets/ui/shinobimancer/scroll-bottom.png");
-  background-repeat: no-repeat;
-  background-position: center bottom;
-  background-size: calc(100% - 2rem) auto;
+  background: transparent;
   box-shadow: none;
 }
 
-/* ----------------------------------------- */
-/* Panneaux internes lisibles                */
-/* ----------------------------------------- */
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice > .shinobimancer-footer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    url("../assets/ui/shinobimancer/scroll-bottom.png")
+    no-repeat
+    center bottom / 100% 100%;
+}
 
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice-intro,
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice-card,
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-panel,
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-summary,
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-summary-portrait {
-  background: rgba(174, 155, 121, 0.2);
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice > .shinobimancer-footer > * {
+  position: relative;
+  z-index: 1;
+}
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice > .shinobimancer-footer > :first-child {
+  justify-self: start;
+}
+
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice > .shinobimancer-footer > :last-child {
+  justify-self: end;
+  text-align: right;
 }
 
 /* ----------------------------------------- */
@@ -556,47 +663,33 @@
     grid-template-columns: 1fr;
   }
 
+  .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main .shinobimancer-sidebar {
+    min-height: auto;
+    background-size: cover;
+  }
+
   .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-dossier-frame {
     grid-template-columns: 1fr;
-    min-width: 0;
+  }
+
+  .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-dossier-frame::after {
+    display: none;
   }
 
   .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main > .shinobimancer-footer {
     margin-left: 0;
+    grid-template-columns: 1fr;
+    row-gap: 0.65rem;
   }
-}
 
-/* ----------------------------------------- */
-/* 0.1.40.1 — Correctif scroll global        */
-/* ----------------------------------------- */
+  .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main .shinobimancer-previous-step,
+  .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main .shinobimancer-footer-note,
+  .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main .shinobimancer-footer-actions {
+    justify-self: stretch;
+    text-align: left;
+  }
 
-/*
-  La structure actuelle du Shinobimancer est :
-  - .shinobimancer-layout
-    - .shinobimancer-sidebar
-    - .shinobimancer-dossier-frame
-      - .shinobimancer-content
-      - .shinobimancer-summary
-
-  Le scroll doit porter sur .shinobimancer-layout pour que les étapes,
-  le contenu central et le résumé permanent défilent ensemble.
-*/
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main .shinobimancer-layout {
-  grid-template-columns: 14rem minmax(0, 1fr);
-  align-items: start;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-dossier-frame {
-  min-height: 0;
-  overflow: visible;
-}
-
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-content,
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-summary,
-.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-sidebar {
-  max-height: none;
-  overflow: visible;
+  .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice::before {
+    left: 6.5rem;
+  }
 }

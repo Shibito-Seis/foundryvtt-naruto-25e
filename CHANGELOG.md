@@ -2,6 +2,34 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.43.5 - Shinobimancer : intégration propre des nouveaux assets de dossier
+
+### Modifié
+
+- Reprise du skin maquette du Shinobimancer pour utiliser les nouveaux assets fournis par la graphiste :
+  - `scroll-top.png`
+  - `scroll-bottom.png`
+  - `scroll-step.png`
+  - `top-tag.png`
+  - `scroll-layout.png`
+- Le `scroll-layout.png` est désormais traité comme le fond central parchemin uniquement.
+- Le rouleau supérieur remplace visuellement l’ancien header du dossier guidé.
+- Le rouleau inférieur sert désormais de support visuel au footer du Shinobimancer.
+- La colonne d’étapes utilise désormais son propre habillage via `scroll-step.png`.
+- L’étiquette suspendue gauche est intégrée via `top-tag.png`.
+- L’écran de choix utilise aussi le fond central parchemin et garde un footer visuellement cohérent.
+
+### Conservé
+
+- La structure fonctionnelle des templates HBS est conservée.
+- Le layout principal continue de reposer sur `shinobimancer.css`.
+- Le skin maquette reste une surcouche visuelle portée par `shinobimancer-maquette.css`.
+
+### Notes
+
+- Cette version prépare le terrain pour l’intégration finale des assets graphiques sans casser la structure actuelle.
+- Les ajustements fins de positionnement (notamment footer et alignements décoratifs) pourront encore être raffinés ensuite.
+
 ## 0.1.43.4 - Barre Santé V2 améliorée
 
 ### Modifié
