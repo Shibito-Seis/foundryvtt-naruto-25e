@@ -769,3 +769,91 @@
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice-card {
   background-color: rgba(174, 155, 121, 0.08);
 }
+
+/* ----------------------------------------- */
+/* 0.1.43.7 — Ajustements placement assets   */
+/* ----------------------------------------- */
+
+/*
+  Après test :
+  - l'étiquette portée par .shinobimancer-dossier-frame::after est trop fragile ;
+  - le rouleau d'étapes doit couvrir les étapes basses ;
+  - le footer doit se rapprocher du corps parchemin.
+*/
+
+/* Le layout devient le support de l'étiquette suspendue. */
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main .shinobimancer-layout {
+  position: relative;
+}
+
+/* On désactive l'ancienne étiquette portée par le cadre dossier. */
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-dossier-frame::after {
+  display: none;
+}
+
+/*
+  Nouvelle étiquette :
+  elle est attachée au layout complet, donc elle passe correctement
+  entre le rouleau d'étapes et le dossier central.
+*/
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main .shinobimancer-layout::after {
+  content: "";
+  position: absolute;
+  z-index: 12;
+  top: 1.15rem;
+  left: calc(var(--shinobi-step-width) - 2.65rem);
+  width: 4.15rem;
+  height: 19.5rem;
+  pointer-events: none;
+  background:
+    url("../assets/ui/shinobimancer/top-tag.png")
+    no-repeat
+    center top / contain;
+}
+
+/*
+  Le rouleau d'étapes doit être plus long que la zone visible :
+  il doit accompagner le scroll jusqu'aux étapes 8 et 9.
+*/
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main .shinobimancer-sidebar {
+  min-height: 61rem;
+  padding-bottom: 7.5rem;
+  background-size: 100% 100%;
+  background-position: center top;
+}
+
+/* On évite que les étapes basses viennent trop près du bouchon inférieur. */
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main .shinobimancer-step-list {
+  padding-bottom: 4.75rem;
+}
+
+/*
+  Le cadre central reste sous l'étiquette, mais le contenu reste au-dessus
+  du fond parchemin.
+*/
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-dossier-frame {
+  z-index: 1;
+  overflow: visible;
+}
+
+/*
+  Le footer parchemin remonte un peu plus pour réduire la bande de fond
+  entre le corps central et le rouleau bas.
+*/
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main > .shinobimancer-footer {
+  z-index: 5;
+  margin-top: -1.45rem;
+  padding-top: 1.55rem;
+  background: transparent;
+}
+
+/* Le rouleau bas doit rester le seul fond visible du footer. */
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main > .shinobimancer-footer::before {
+  opacity: 1;
+  background-size: 100% 100%;
+}
+
+/* Les boutons restent bien au-dessus du parchemin. */
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main > .shinobimancer-footer > * {
+  z-index: 6;
+}

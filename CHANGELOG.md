@@ -2,6 +2,21 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.43.7 - Ajustements placement Shinobimancer
+
+### Modifié
+
+- Repositionnement de l’étiquette suspendue `top-tag.png` sur le layout principal plutôt que sur le cadre dossier.
+- Le rouleau vertical des étapes est allongé afin de mieux couvrir les étapes basses.
+- Le footer parchemin est remonté pour réduire l’espace de fond visible entre le corps du dossier et le rouleau bas.
+- Le fond du footer reste transparent : seul l’asset `scroll-bottom.png` sert de support visuel.
+
+### Notes
+
+- Aucun changement de logique.
+- Aucun changement de template.
+- Correctif CSS uniquement.
+
 ## 0.1.43.6 - Ajustements assets Shinobimancer
 
 ### Modifié
