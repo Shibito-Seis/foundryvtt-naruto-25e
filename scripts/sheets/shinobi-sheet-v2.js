@@ -737,13 +737,60 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
       segments: []
     };
 
-    const percent = track.max > 0
-      ? Math.max(0, Math.min(100, Math.round((track.value / track.max) * 100)))
+    const max = Math.max(0, Number(track.max ?? 0));
+    const damageValue = Math.max(0, Math.min(max, Number(track.value ?? 0)));
+    const remainingValue = Math.max(0, max - damageValue);
+
+    const damagePercent = max > 0
+      ? Math.max(0, Math.min(100, Math.round((damageValue / max) * 100)))
       : 0;
+
+    const remainingPercent = max > 0
+      ? Math.max(0, Math.min(100, Math.round((remainingValue / max) * 100)))
+      : 0;
+
+    const segments = Array.isArray(track.segments) ? track.segments : [];
+    const thresholdCount = Math.max(0, segments.length - 1);
+
+    const thresholds = Array.from({
+      length: thresholdCount
+    }).map((_, index) => {
+      const nextSegment = segments[index + 1] ?? {};
+      const nextState = String(nextSegment.state ?? "");
+      const nextKey = String(nextSegment.key ?? "");
+      const position = segments.length > 0
+        ? ((index + 1) / segments.length) * 100
+        : 0;
+
+      let severity = "fatigue";
+
+      if (nextState === "sonne") {
+        severity = "shock";
+      } else if (
+        nextState.startsWith("blessure")
+        || nextKey.startsWith("wound")
+      ) {
+        severity = "wound";
+      }
+
+      return {
+        index,
+        position: position.toFixed(4),
+        severity,
+        label: nextSegment.label ?? ""
+      };
+    });
 
     return {
       track,
-      percent,
+      percent: remainingPercent,
+      damagePercent,
+      remaining: {
+        value: remainingValue,
+        max,
+        percent: remainingPercent
+      },
+      thresholds,
       effective: context.effectiveHealthState ?? this.actor.getEffectiveHealthStateSummary?.() ?? {
         label: "Pleine forme",
         source: "—",

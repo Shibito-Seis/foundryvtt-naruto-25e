@@ -2,6 +2,39 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.43.4 - Barre Santé V2 améliorée
+
+### Modifié
+
+- Refonte du bandeau Santé de la fiche Shinobi V2 :
+  - l’affichage principal utilise désormais la santé restante ;
+  - `30 / 30` représente une pleine forme ;
+  - la barre se vide de droite vers la gauche lorsque les dégâts subis augmentent.
+- La valeur affichée dans le header Santé est désormais calculée depuis la piste interne de dégâts subis :
+  - dégâts subis `0 / 30` → santé affichée `30 / 30` ;
+  - dégâts subis `5 / 30` → santé affichée `25 / 30` ;
+  - dégâts subis `30 / 30` → santé affichée `0 / 30`.
+- Ajout de séparateurs visuels de seuil dans la barre Santé :
+  - séparateurs simples pour les seuils de fatigue ;
+  - séparateurs plus marqués pour Sonné et les Blessures.
+- Ajout d’un effet visuel animé de type liquide / sang dans le remplissage de la barre Santé.
+- Le texte sous la barre affiche désormais l’état courant sous la forme `État : Fatigue 1`.
+
+### Conservé
+
+- La mécanique interne reste basée sur les dégâts subis.
+- Les dialogues MJ conservent leurs libellés explicites :
+  - Infliger des dégâts ;
+  - Soigner des dégâts ;
+  - Remettre en forme ;
+  - Remplir la piste.
+- Les détails techniques de dégâts subis restent visibles dans les blocs de résumé / combat.
+
+### Notes
+
+- Cette version est une micro-mise à jour visuelle de la fiche Shinobi V2.
+- Elle ne modifie pas les règles de santé, seulement la lecture du bandeau supérieur.
+
 ## 0.1.43.3 - Fiche Shinobi V2 : visibilité, santé et combat tenu
 
 ### Ajouté

@@ -80,20 +80,28 @@
     >
       <div class="shinobi-v2-track-header">
         <strong>Santé</strong>
-        <span>Dégâts subis {{v2.health.track.value}} / {{v2.health.track.max}}</span>
+        <span>{{v2.health.remaining.value}} / {{v2.health.remaining.max}}</span>
       </div>
 
-      <div class="shinobi-v2-health-segments">
-        {{#each v2.health.track.segments as |segment|}}
-          <span class="{{#if segment.complete}}is-complete{{/if}}">
-            <small>{{segment.marks}}</small>
-            <strong>{{segment.label}}</strong>
-          </span>
-        {{/each}}
+      <div
+        class="shinobi-v2-progress shinobi-v2-health-progress"
+        title="Santé restante : {{v2.health.remaining.value}} / {{v2.health.remaining.max}} — Dégâts subis : {{v2.health.track.value}} / {{v2.health.track.max}}"
+      >
+        <span style="width: {{v2.health.remaining.percent}}%;"></span>
+
+        <div class="shinobi-v2-health-thresholds">
+          {{#each v2.health.thresholds as |threshold|}}
+            <i
+              class="shinobi-v2-health-threshold is-{{threshold.severity}}"
+              style="left: {{threshold.position}}%;"
+              title="{{threshold.label}}"
+            ></i>
+          {{/each}}
+        </div>
       </div>
 
       <div class="shinobi-v2-track-caption">
-        {{v2.health.stateLabel}} — {{v2.health.stateSource}}
+        État : {{v2.health.stateLabel}}
       </div>
     </div>
 
