@@ -88,8 +88,8 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
   _buildV2IdentityContext(context, identity, heritage, progression, canSeePrivateLineage) {
     const villageKey = String(heritage.village || identity.village || "");
     const villageStatusKey = String(heritage.villageStatus || "loyal");
-    const villageLabel = NARUTO25E.villages?.[villageKey]?.label ?? villageKey || "—";
-    const statusLabel = NARUTO25E.villageStatuses?.[villageStatusKey] ?? villageStatusKey || "—";
+    const villageLabel = NARUTO25E.villages?.[villageKey]?.label ?? villageKey;
+    const statusLabel = NARUTO25E.villageStatuses?.[villageStatusKey] ?? villageStatusKey;
     const villageIcon = this._getV2VillageIcon(villageKey, villageStatusKey);
 
     const heritageMode = typeof this.actor._getNormalizedHeritageMode === "function"
@@ -710,12 +710,12 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
   _getV2PublicHeritageLabel(heritage, heritageMode) {
     if (heritageMode === "voie") {
       const voieKey = String(heritage.voie ?? "");
-      return NARUTO25E.voies?.[voieKey]?.label ?? voieKey || "—";
+      return NARUTO25E.voies?.[voieKey]?.label ?? (voieKey || "—");
     }
 
     if (heritageMode === "hiddenClan" && typeof this.actor._getSocialClanKey === "function") {
       const socialClanKey = this.actor._getSocialClanKey();
-      return NARUTO25E.clans?.[socialClanKey]?.label ?? socialClanKey || "—";
+      return NARUTO25E.clans?.[socialClanKey]?.label ?? (socialClanKey || "—");
     }
 
     const clanKey = String(heritage.clan ?? "");

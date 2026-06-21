@@ -2,6 +2,12 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.43.1 - Correction synthaxe fiche shinobi V2 JS
+
+### Modifié
+
+- Quatres lignes avec oublie de parenthèses empêchant le script de se lancer, c'est triste. Rajouts des parenthèses.
+
 ## 0.1.43 - Fiche Shinobi V2
 
 ### Ajouté
