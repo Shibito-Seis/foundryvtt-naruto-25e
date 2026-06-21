@@ -2,6 +2,146 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.43 - Fiche Shinobi V2
+
+### Ajouté
+
+- Ajout d’une nouvelle fiche Shinobi V2 sélectionnable depuis la configuration de feuille Foundry.
+- Ajout d’un header permanent V2 :
+  - portrait éditable ;
+  - nom ;
+  - surnom shinobi ;
+  - rang ;
+  - village et statut ;
+  - héritage visible ;
+  - sensei ;
+  - équipe ;
+  - Nindō court.
+- Ajout de l’affichage des icônes de natures, maîtrises ou orientations sous le portrait :
+  - Katon ;
+  - Suiton ;
+  - Doton ;
+  - Raïton ;
+  - Fūton ;
+  - Iryō ;
+  - Taijutsu ;
+  - Armes.
+- Ajout d’un bandeau permanent V2 :
+  - Santé ;
+  - Chakra ;
+  - Vigueur ;
+  - Caractère ;
+  - Initiative ;
+  - actions simples, complexes et retardées.
+- Ajout des onglets V2 :
+  - Résumé ;
+  - Combat ;
+  - Techniques ;
+  - Inventaire ;
+  - Personnage ;
+  - Lignée ;
+  - Progression.
+- Ajout d’un onglet Résumé V2 regroupant :
+  - identité ;
+  - état de combat ;
+  - équipement équipé ;
+  - techniques et pouvoirs ;
+  - état de création.
+- Ajout d’un onglet Personnage V2 regroupant :
+  - identité civile ;
+  - encadrement ninja ;
+  - doctrine ;
+  - loyauté ;
+  - vie quotidienne ;
+  - religion ;
+  - préjugés ;
+  - notes.
+- Ajout d’un onglet Combat V2 regroupant :
+  - actions disponibles ;
+  - jets rapides ;
+  - attaques ARM ;
+  - attaques TAI ;
+  - armes et objets de combat exploitables ;
+  - défenses et interceptions ;
+  - piste de santé complète ;
+  - dégâts, soins et remise à zéro MJ ;
+  - effets maintenus ;
+  - conditions et blessures.
+- Ajout d’un onglet Techniques V2 regroupant :
+  - entretien actif ;
+  - pouvoirs de lignée ;
+  - techniques groupées par famille ;
+  - coûts de Chakra ;
+  - entretien ;
+  - portée ;
+  - durée ;
+  - cible ;
+  - dégâts si disponibles.
+- Ajout d’un onglet Inventaire V2 regroupant :
+  - Ryō ;
+  - résumé d’inventaire ;
+  - toxicité ;
+  - ajout d’objet ;
+  - groupes d’objets ;
+  - actions d’utilisation.
+- Ajout d’un onglet Lignée V2 regroupant :
+  - synthèse de lignée ;
+  - clan principal ;
+  - voie ;
+  - clan secondaire ;
+  - clan caché ;
+  - compétences obligatoires ;
+  - options MJ ;
+  - dōjutsu ;
+  - Mangekyō Sharingan ;
+  - santé oculaire ;
+  - pouvoirs de lignée ;
+  - progression de lignée ;
+  - emplacement futur pour greffes et implants.
+- Ajout d’un onglet Progression V2 regroupant :
+  - rang actuel ;
+  - prochain rang ;
+  - conditions de promotion ;
+  - XP totale, dépensée et disponible ;
+  - validation de création ;
+  - missions réussies et échouées ;
+  - bases ;
+  - compétences.
+- Ajout d’une gestion d’affichage public / privé de la lignée dans la V2 :
+  - le propriétaire et le MJ voient les détails ;
+  - les autres utilisateurs ne voient que l’héritage public ;
+  - les clans cachés, hybridations et détails sensibles restent masqués.
+
+### Modifié
+
+- L’ancienne fiche Shinobi reste disponible.
+- L’ancienne fiche Shinobi reste la fiche par défaut.
+- La V2 réutilise les données, calculs et listeners existants au lieu de dupliquer les règles :
+  - attaques ;
+  - dégâts ;
+  - santé ;
+  - techniques ;
+  - inventaire ;
+  - pouvoirs de lignée ;
+  - Mangekyō ;
+  - progression ;
+  - missions.
+- La V2 prépare une lecture plus moderne et jouable de la fiche sans migration destructive.
+
+### Notes
+
+- Cette première version de la fiche V2 est une base jouable et sélectionnable, mais elle reste volontairement non imposée par défaut.
+- Certaines automatisations avancées restent prévues pour de futures versions :
+  - gestion complète des mains ;
+  - favoris de techniques ;
+  - greffes ;
+  - implants ;
+  - états avancés ;
+  - buffs ;
+  - conditions structurées ;
+  - soins automatisés.
+- Les tests Foundry réels doivent être effectués après release et mise à jour The Forge.
+
 ## 0.1.42 - Santé / Blessures / États V1
 
 ### Ajouté

@@ -2,7 +2,7 @@
   "id": "naruto-25e",
   "title": "Naruto 2.5e",
   "description": "Système maison Naruto 2.5e pour Foundry VTT v13.",
-  "version": "0.1.42",
+  "version": "0.1.43",
   "compatibility": {
     "minimum": "13",
     "verified": "13.351"
@@ -24,6 +24,7 @@
   ],
   "styles": [
     "styles/naruto-25e.css",
+    "styles/shinobi-sheet-v2.css",
     "styles/shinobimancer.css",
     "styles/shinobimancer-maquette.css"
   ],

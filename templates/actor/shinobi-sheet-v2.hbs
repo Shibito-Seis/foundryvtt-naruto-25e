@@ -1,0 +1,1894 @@
+<form class="{{cssClass}} naruto-25e-shinobi-sheet-v2" autocomplete="off">
+
+  <header class="shinobi-v2-header">
+    <aside class="shinobi-v2-portrait-column">
+      <img class="shinobi-v2-portrait" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+
+      <div class="shinobi-v2-chakra-icons">
+        {{#if v2.identity.chakraIcons.length}}
+          {{#each v2.identity.chakraIcons as |icon|}}
+            <img src="{{icon.src}}" alt="{{icon.label}}" title="{{icon.label}}" />
+          {{/each}}
+        {{else}}
+          <span class="shinobi-v2-muted">Aucune nature</span>
+        {{/if}}
+      </div>
+    </aside>
+
+    <section class="shinobi-v2-identity">
+      <div class="shinobi-v2-title-row">
+        <div>
+          <p class="shinobi-v2-kicker">Dossier Shinobi</p>
+          <h1>
+            <input name="name" type="text" value="{{actor.name}}" placeholder="Nom du ninja" />
+          </h1>
+        </div>
+
+        <div class="shinobi-v2-rank-badge">
+          <span>Rang</span>
+          <strong>{{v2.identity.rankLabel}}</strong>
+        </div>
+      </div>
+
+      <div class="shinobi-v2-identity-grid">
+        <label>
+          Surnom
+          <input name="system.identity.prenom" type="text" value="{{system.identity.prenom}}" />
+        </label>
+
+        <div class="shinobi-v2-info-pill">
+          {{#if v2.identity.villageIcon}}
+            <img src="{{v2.identity.villageIcon}}" alt="{{v2.identity.villageLabel}}" />
+          {{/if}}
+          <span>{{v2.identity.villageLabel}} · {{v2.identity.statusLabel}}</span>
+        </div>
+
+        <div class="shinobi-v2-info-pill">
+          <strong>{{v2.identity.publicHeritageModeLabel}}</strong>
+          <span>{{v2.identity.publicHeritageLabel}}</span>
+        </div>
+
+        <div class="shinobi-v2-info-pill">
+          <strong>Sensei</strong>
+          <span>{{v2.identity.sensei}}</span>
+        </div>
+
+        <div class="shinobi-v2-info-pill">
+          <strong>Équipe</strong>
+          <span>{{v2.identity.team}}</span>
+        </div>
+
+        <div class="shinobi-v2-info-pill is-wide">
+          <strong>Nindō</strong>
+          <span>{{v2.identity.nindo}}</span>
+        </div>
+      </div>
+    </section>
+  </header>
+
+  <section class="shinobi-v2-resource-bar">
+    <div class="shinobi-v2-track-card is-health {{#if v2.health.effective.hasPenalty}}is-alert{{/if}}">
+      <div class="shinobi-v2-track-header">
+        <strong>Santé</strong>
+        <span>{{v2.health.track.value}} / {{v2.health.track.max}}</span>
+      </div>
+
+      <div class="shinobi-v2-health-segments">
+        {{#each v2.health.track.segments as |segment|}}
+          <span class="{{#if segment.complete}}is-complete{{/if}}">
+            <small>{{segment.marks}}</small>
+            <strong>{{segment.label}}</strong>
+          </span>
+        {{/each}}
+      </div>
+
+      <div class="shinobi-v2-track-caption">
+        {{v2.health.stateLabel}} — {{v2.health.stateSource}}
+      </div>
+    </div>
+
+    <div class="shinobi-v2-track-card is-chakra">
+      <div class="shinobi-v2-track-header">
+        <strong>Chakra</strong>
+        <span>{{v2.resources.chakra.value}} / {{v2.resources.chakra.max}}</span>
+      </div>
+
+      <div class="shinobi-v2-progress">
+        <span style="width: {{v2.resources.chakra.percent}}%;"></span>
+      </div>
+
+      <div class="shinobi-v2-track-caption">
+        Régén. passive {{v2.resources.chakra.passiveRegen}} · active {{v2.resources.chakra.activeRegen}}
+      </div>
+    </div>
+
+    <div class="shinobi-v2-stat-card">
+      <span>Vigueur</span>
+      <strong>{{v2.resources.vigor}}</strong>
+    </div>
+
+    <div class="shinobi-v2-stat-card">
+      <span>Caractère</span>
+      <strong>{{v2.resources.character}}</strong>
+    </div>
+
+    <div class="shinobi-v2-stat-card">
+      <span>Initiative</span>
+      <strong>{{v2.resources.initiative}}</strong>
+    </div>
+
+    <div class="shinobi-v2-stat-card is-actions">
+      <span>Actions</span>
+      <strong>{{v2.resources.actions.label}}</strong>
+    </div>
+  </section>
+
+  <nav class="sheet-tabs tabs shinobi-v2-tabs" data-group="primary">
+    {{#each v2.tabs as |tab|}}
+      <a class="item" data-tab="{{tab.key}}">{{tab.label}}</a>
+    {{/each}}
+  </nav>
+
+  <section class="sheet-body shinobi-v2-body">
+
+    <div class="tab" data-group="primary" data-tab="summary">
+      <div class="shinobi-v2-grid">
+
+        <section class="shinobi-v2-panel shinobi-v2-summary-card is-identity">
+          <h2>Identité</h2>
+
+          <div class="shinobi-v2-data-grid">
+            <div><strong>Nom</strong><span>{{actor.name}}</span></div>
+            <div><strong>Surnom</strong><span>{{v2.identity.nickname}}</span></div>
+            <div><strong>Âge</strong><span>{{v2.identity.age}}</span></div>
+            <div><strong>Sexe</strong><span>{{v2.identity.sex}}</span></div>
+            <div><strong>Naissance</strong><span>{{v2.identity.birth}}</span></div>
+            <div><strong>Rang</strong><span>{{v2.identity.rankLabel}}</span></div>
+            <div><strong>Village</strong><span>{{v2.identity.villageLabel}}</span></div>
+            <div><strong>Statut</strong><span>{{v2.identity.statusLabel}}</span></div>
+            <div><strong>Héritage visible</strong><span>{{v2.identity.publicHeritageLabel}}</span></div>
+            <div><strong>Type visible</strong><span>{{v2.identity.publicHeritageModeLabel}}</span></div>
+            <div><strong>Sensei</strong><span>{{v2.identity.sensei}}</span></div>
+            <div><strong>Équipe</strong><span>{{v2.identity.team}}</span></div>
+          </div>
+
+          <div class="shinobi-v2-nindo-box">
+            <strong>Nindō</strong>
+            <p>{{v2.identity.nindo}}</p>
+          </div>
+        </section>
+
+        <section class="shinobi-v2-panel shinobi-v2-summary-card is-combat">
+          <h2>État de combat</h2>
+
+          <div class="shinobi-v2-data-grid">
+            <div><strong>État effectif</strong><span>{{v2.health.stateLabel}}</span></div>
+            <div><strong>Source</strong><span>{{v2.health.stateSource}}</span></div>
+            <div><strong>Piste santé</strong><span>{{v2.health.track.value}} / {{v2.health.track.max}}</span></div>
+            <div><strong>Chakra</strong><span>{{v2.resources.chakra.value}} / {{v2.resources.chakra.max}}</span></div>
+            <div><strong>Vigueur</strong><span>{{v2.resources.vigor}}</span></div>
+            <div><strong>Caractère</strong><span>{{v2.resources.character}}</span></div>
+            <div><strong>Initiative</strong><span>{{v2.resources.initiative}}</span></div>
+            <div><strong>Actions</strong><span>{{v2.resources.actions.label}}</span></div>
+          </div>
+
+          <div class="shinobi-v2-health-segments is-summary">
+            {{#each v2.health.track.segments as |segment|}}
+              <span class="{{#if segment.complete}}is-complete{{/if}}">
+                <small>{{segment.marks}}</small>
+                <strong>{{segment.label}}</strong>
+              </span>
+            {{/each}}
+          </div>
+        </section>
+
+        <section class="shinobi-v2-panel shinobi-v2-summary-card is-equipment">
+          <h2>Équipement équipé</h2>
+
+          <div class="shinobi-v2-list">
+            <strong>Armes</strong>
+            {{#if v2.summary.equippedWeapons.length}}
+              {{#each v2.summary.equippedWeapons as |weapon|}}
+                <span>{{weapon.name}}</span>
+              {{/each}}
+            {{else}}
+              <span class="shinobi-v2-muted">Aucune arme équipée.</span>
+            {{/if}}
+          </div>
+
+          <div class="shinobi-v2-list">
+            <strong>Protections</strong>
+            {{#if v2.summary.equippedArmors.length}}
+              {{#each v2.summary.equippedArmors as |armor|}}
+                <span>{{armor.name}}</span>
+              {{/each}}
+            {{else}}
+              <span class="shinobi-v2-muted">Aucune protection équipée.</span>
+            {{/if}}
+          </div>
+        </section>
+
+        <section class="shinobi-v2-panel shinobi-v2-summary-card is-techniques">
+          <h2>Techniques / pouvoirs</h2>
+
+          {{#if v2.summary.hasTechniqueItems}}
+            <div class="shinobi-v2-list">
+              <strong>Total techniques</strong>
+              <span>{{v2.summary.techniqueTotal}}</span>
+            </div>
+
+            <div class="shinobi-v2-technique-family-summary">
+              {{#each v2.summary.techniqueGroups as |group|}}
+                <div>
+                  <strong>{{group.label}}</strong>
+                  <span>{{group.count}}</span>
+                </div>
+              {{/each}}
+            </div>
+          {{else}}
+            <p class="shinobi-v2-muted">Aucune technique enregistrée.</p>
+          {{/if}}
+
+          {{#if v2.summary.hasActiveLineagePowers}}
+            <div class="shinobi-v2-list">
+              <strong>Pouvoirs maintenus actifs</strong>
+              {{#each v2.summary.activeLineagePowers as |power|}}
+                <span>{{power.name}} — entretien {{power.maintenanceCost}}</span>
+              {{/each}}
+            </div>
+          {{/if}}
+        </section>
+
+        <section class="shinobi-v2-panel shinobi-v2-summary-card is-creation">
+          <h2>Création / dossier</h2>
+
+          <div class="shinobi-v2-data-grid">
+            <div><strong>État</strong><span>{{v2.creation.state.label}}</span></div>
+            <div><strong>Mode</strong><span>{{v2.creation.mode}}</span></div>
+            <div><strong>Étape</strong><span>{{v2.creation.currentStep}}</span></div>
+            <div><strong>XP totale</strong><span>{{v2.creation.xpTotal}}</span></div>
+            <div><strong>XP dépensée</strong><span>{{v2.creation.xpSpent}}</span></div>
+            <div><strong>XP disponible</strong><span>{{v2.creation.xpAvailable}}</span></div>
+            <div><strong>Compétences initiales</strong><span>{{creationValidation.summary.initialSkillsUsed}} / {{creationValidation.summary.maxInitialSkills}}</span></div>
+          </div>
+
+          {{#if v2.creation.locked}}
+            <div class="shinobi-v2-ok">
+              Création validée{{#if v2.creation.validatedBy}} par {{v2.creation.validatedBy}}{{/if}}.
+            </div>
+          {{else}}
+            <div class="shinobi-v2-warning">
+              Dossier de création non verrouillé.
+            </div>
+          {{/if}}
+
+          {{#unless creationValidation.valid}}
+            <div class="shinobi-v2-warning">
+              Dossier incomplet ou à corriger.
+            </div>
+          {{/unless}}
+        </section>
+
+      </div>
+    </div>
+
+    <div class="tab" data-group="primary" data-tab="combat">
+      <div class="shinobi-v2-grid">
+
+        <section class="shinobi-v2-panel">
+          <h2>Actions disponibles</h2>
+
+          <div class="shinobi-v2-action-row">
+            <span class="{{#if v2.resources.actions.simple}}is-available{{else}}is-spent{{/if}}">Simple</span>
+            <span class="{{#if v2.resources.actions.complex}}is-available{{else}}is-spent{{/if}}">Complexe</span>
+            <span class="{{#if v2.resources.actions.delayed}}is-available{{else}}is-spent{{/if}}">Retardée</span>
+          </div>
+
+          <div class="shinobi-v2-form-grid">
+            <label>
+              <input
+                name="system.combat.actions.simpleAvailable"
+                type="checkbox"
+                {{checked system.combat.actions.simpleAvailable}}
+              />
+              Action simple disponible
+            </label>
+
+            <label>
+              <input
+                name="system.combat.actions.complexAvailable"
+                type="checkbox"
+                {{checked system.combat.actions.complexAvailable}}
+              />
+              Action complexe disponible
+            </label>
+
+            <label>
+              <input
+                name="system.combat.actions.delayedAvailable"
+                type="checkbox"
+                {{checked system.combat.actions.delayedAvailable}}
+              />
+              Action retardée en réserve
+            </label>
+
+            <label>
+              Notes d’action
+              <input
+                name="system.combat.actions.notes"
+                type="text"
+                value="{{system.combat.actions.notes}}"
+                placeholder="Dégainage, posture, action préparée..."
+              />
+            </label>
+          </div>
+        </section>
+
+        <section class="shinobi-v2-panel">
+          <h2>Jet rapide</h2>
+
+          <label>
+            Compétence
+            <select name="system.combat.quickSkill">
+              <option value="">— Choisir —</option>
+              {{#each v2.combat.quickSkillOptions as |skill|}}
+                <option value="{{skill.key}}" {{#if skill.selected}}selected{{/if}}>
+                  {{skill.label}}
+                </option>
+              {{/each}}
+            </select>
+          </label>
+
+          <div class="shinobi-v2-button-row">
+            <button type="button" class="combat-roll-skill">
+              Lancer la compétence
+            </button>
+
+            <button type="button" class="combat-roll-mental-test">
+              Test Genjutsu
+            </button>
+          </div>
+
+          <p class="shinobi-v2-muted">
+            Jet : 1d10 explosif + total de compétence.
+          </p>
+        </section>
+
+        <section class="shinobi-v2-panel shinobi-v2-combat-main">
+          <h2>Attaques ARM</h2>
+
+          <div class="shinobi-v2-data-grid">
+            <div><strong>Attaque</strong><span>{{v2.combat.attacks.arm.total}}</span></div>
+            <div><strong>Compétence</strong><span>{{v2.combat.attacks.arm.skillLabel}}</span></div>
+            <div><strong>Dégâts basiques</strong><span>{{v2.combat.attacks.arm.damageTotal}}</span></div>
+            <div><strong>Bonus arme</strong><span>{{v2.combat.attacks.arm.weaponBonus}}</span></div>
+          </div>
+
+          <div class="shinobi-v2-button-row">
+            <button type="button" class="combat-roll-attack" data-kind="arm">
+              Attaque ARM basique
+            </button>
+          </div>
+
+          <div class="shinobi-v2-form-grid">
+            <label>
+              Bonus attaque ARM
+              <input name="system.combat.attacks.arm.bonus" type="number" value="{{system.combat.attacks.arm.bonus}}" />
+            </label>
+
+            <label>
+              Bonus arme provisoire
+              <input name="system.combat.damage.arm.weaponBonus" type="number" value="{{system.combat.damage.arm.weaponBonus}}" />
+            </label>
+
+            <label>
+              Bonus dégâts ARM
+              <input name="system.combat.damage.arm.bonus" type="number" value="{{system.combat.damage.arm.bonus}}" />
+            </label>
+          </div>
+
+          <h3>Armes / objets de combat équipés</h3>
+
+          {{#if v2.combat.hasCombatItems}}
+            <div class="shinobi-v2-card-list">
+              {{#each v2.combat.combatItems as |item|}}
+                <article class="shinobi-v2-item-card {{#if item.equipped}}is-equipped{{/if}}">
+                  <div>
+                    <strong>{{item.name}}</strong>
+                    <span>{{item.carryLabel}} · Qté {{item.quantity}}</span>
+
+                    {{#if item.damageFormula}}
+                      <small>Dégâts : {{item.damageFormula}} {{item.damageType}}</small>
+                    {{else}}
+                      <small>Dégâts non automatisés.</small>
+                    {{/if}}
+                  </div>
+
+                  <div class="shinobi-v2-button-column">
+                    <button
+                      type="button"
+                      class="inventory-use-combat-item"
+                      data-item-id="{{item.id}}"
+                    >
+                      Utiliser
+                    </button>
+
+                    {{#if item.hasDamage}}
+                      <button
+                        type="button"
+                        class="inventory-roll-damage"
+                        data-item-id="{{item.id}}"
+                      >
+                        Dégâts
+                      </button>
+                    {{/if}}
+                  </div>
+                </article>
+              {{/each}}
+            </div>
+          {{else}}
+            <p class="shinobi-v2-muted">Aucune arme ou objet de combat exploitable.</p>
+          {{/if}}
+        </section>
+
+        <section class="shinobi-v2-panel shinobi-v2-combat-main">
+          <h2>Attaques TAI</h2>
+
+          <div class="shinobi-v2-data-grid">
+            <div><strong>Attaque</strong><span>{{v2.combat.attacks.tai.total}}</span></div>
+            <div><strong>Compétence</strong><span>{{v2.combat.attacks.tai.skillLabel}}</span></div>
+            <div><strong>Dégâts basiques</strong><span>{{v2.combat.attacks.tai.damageTotal}}</span></div>
+            <div><strong>Bonus dégâts</strong><span>{{v2.combat.attacks.tai.damageBonus}}</span></div>
+          </div>
+
+          <div class="shinobi-v2-button-row">
+            <button type="button" class="combat-roll-attack" data-kind="tai">
+              Attaque TAI basique
+            </button>
+          </div>
+
+          <div class="shinobi-v2-form-grid">
+            <label>
+              Bonus attaque TAI
+              <input name="system.combat.attacks.tai.bonus" type="number" value="{{system.combat.attacks.tai.bonus}}" />
+            </label>
+
+            <label>
+              Bonus dégâts TAI
+              <input name="system.combat.damage.tai.bonus" type="number" value="{{system.combat.damage.tai.bonus}}" />
+            </label>
+          </div>
+
+          <h3>Styles / écoles disponibles</h3>
+
+          {{#if v2.combat.taijutsuStyles.length}}
+            <div class="shinobi-v2-style-list">
+              {{#each v2.combat.taijutsuStyles as |style|}}
+                <article>
+                  <strong>{{style.label}}</strong>
+                  <span>Total : {{style.value}}</span>
+                  <small>{{style.hint}}</small>
+                </article>
+              {{/each}}
+            </div>
+          {{else}}
+            <p class="shinobi-v2-muted">
+              Aucun style Taijutsu spécifique détecté.
+            </p>
+          {{/if}}
+        </section>
+
+        <section class="shinobi-v2-panel">
+          <h2>Défenses / interceptions</h2>
+
+          <div class="shinobi-v2-data-grid">
+            <div><strong>Vigueur</strong><span>{{v2.resources.vigor}}</span></div>
+            <div><strong>Caractère</strong><span>{{v2.resources.character}}</span></div>
+            <div><strong>Esquive</strong><span>{{v2.combat.counters.esquive.remaining}} / {{v2.combat.counters.esquive.max}}</span></div>
+            <div><strong>Parade</strong><span>{{v2.combat.counters.parade.remaining}} / {{v2.combat.counters.parade.max}}</span></div>
+            <div><strong>Interception ARM</strong><span>{{v2.combat.counters.interceptionsArm.remaining}} / {{v2.combat.counters.interceptionsArm.max}}</span></div>
+            <div><strong>Interception TAI</strong><span>{{v2.combat.counters.interceptionsTai.remaining}} / {{v2.combat.counters.interceptionsTai.max}}</span></div>
+          </div>
+
+          <div class="shinobi-v2-button-row">
+            <button
+              type="button"
+              class="combat-roll-interception"
+              data-kind="arm"
+              {{#unless system.combat.counters.interceptions.arm.remaining}}disabled{{/unless}}
+            >
+              Intercepter ARM
+            </button>
+
+            <button
+              type="button"
+              class="combat-roll-interception"
+              data-kind="tai"
+              {{#unless system.combat.counters.interceptions.tai.remaining}}disabled{{/unless}}
+            >
+              Intercepter TAI
+            </button>
+
+            {{#if isGM}}
+              <button type="button" class="combat-reset-counters" data-scope="round">
+                MJ : reset round
+              </button>
+            {{/if}}
+          </div>
+
+          <div class="shinobi-v2-form-grid">
+            <label>
+              Bonus interception ARM
+              <input name="system.combat.interceptions.arm.bonus" type="number" value="{{system.combat.interceptions.arm.bonus}}" />
+            </label>
+
+            <label>
+              Bonus interception TAI
+              <input name="system.combat.interceptions.tai.bonus" type="number" value="{{system.combat.interceptions.tai.bonus}}" />
+            </label>
+          </div>
+        </section>
+
+        <section class="shinobi-v2-panel">
+          <h2>Piste santé complète</h2>
+
+          <div class="shinobi-v2-data-grid">
+            <div><strong>Piste</strong><span>{{v2.health.track.value}} / {{v2.health.track.max}}</span></div>
+            <div><strong>État effectif</strong><span>{{v2.health.stateLabel}}</span></div>
+            <div><strong>Source</strong><span>{{v2.health.stateSource}}</span></div>
+            <div><strong>Palier Chakra</strong><span>{{combatSummary.chakraStateLabel}}</span></div>
+          </div>
+
+          <div class="shinobi-v2-health-segments is-large">
+            {{#each v2.health.track.segments as |segment|}}
+              <span class="{{#if segment.complete}}is-complete{{/if}}">
+                <small>{{segment.marks}}</small>
+                <strong>{{segment.label}}</strong>
+              </span>
+            {{/each}}
+          </div>
+
+          {{#if effectiveHealthState.effectHints.length}}
+            <div class="shinobi-v2-warning">
+              <strong>Rappels d’état</strong>
+              <ul>
+                {{#each effectiveHealthState.effectHints as |hint|}}
+                  <li>{{hint}}</li>
+                {{/each}}
+              </ul>
+            </div>
+          {{/if}}
+
+          <div class="shinobi-v2-form-grid">
+            <label>
+              Palier manuel
+              <select name="system.combat.health.manualState">
+                {{#each combatHealthStates as |state|}}
+                  <option value="{{state.key}}" {{#if state.selected}}selected{{/if}}>
+                    {{state.label}}
+                  </option>
+                {{/each}}
+              </select>
+            </label>
+
+            <label>
+              Dégâts qui passent
+              <input
+                name="system.combat.health.woundCalculator.incomingDamage"
+                type="number"
+                value="{{system.combat.health.woundCalculator.incomingDamage}}"
+                min="0"
+              />
+            </label>
+
+            <label>
+              Type de dégâts
+              <select name="system.combat.health.woundCalculator.damageType">
+                <option value="PHY" {{#if (eq system.combat.health.woundCalculator.damageType "PHY")}}selected{{/if}}>PHY</option>
+                <option value="ELEM" {{#if (eq system.combat.health.woundCalculator.damageType "ELEM")}}selected{{/if}}>ELEM</option>
+                <option value="ENVI" {{#if (eq system.combat.health.woundCalculator.damageType "ENVI")}}selected{{/if}}>ENVI</option>
+                <option value="EMO" {{#if (eq system.combat.health.woundCalculator.damageType "EMO")}}selected{{/if}}>EMO</option>
+                <option value="PSY" {{#if (eq system.combat.health.woundCalculator.damageType "PSY")}}selected{{/if}}>PSY</option>
+                <option value="MYTH" {{#if (eq system.combat.health.woundCalculator.damageType "MYTH")}}selected{{/if}}>MYTH</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="shinobi-v2-button-row">
+            <button type="button" class="combat-calculate-wounds">
+              Prévisualiser
+            </button>
+
+            <button type="button" class="combat-apply-health-damage">
+              Infliger à la piste
+            </button>
+
+            <button type="button" class="combat-recover-health-damage">
+              Récupérer / soigner
+            </button>
+
+            {{#if isGM}}
+              <button type="button" class="combat-reset-health-track">
+                MJ : remise à zéro
+              </button>
+            {{/if}}
+          </div>
+        </section>
+
+        <section class="shinobi-v2-panel">
+          <h2>Effets maintenus</h2>
+
+          <div class="shinobi-v2-data-grid">
+            <div><strong>Effets actifs</strong><span>{{v2.combat.maintenance.activeCount}}</span></div>
+            <div><strong>Entretien total</strong><span>{{v2.combat.maintenance.totalMaintenance}}</span></div>
+            <div><strong>Régén. passive</strong><span>{{v2.combat.maintenance.passiveRegen}}</span></div>
+            <div><strong>Coût net</strong><span>{{v2.combat.maintenance.netCost}}</span></div>
+            <div><strong>Chakra</strong><span>{{v2.combat.maintenance.currentChakra}} → {{v2.combat.maintenance.nextChakra}}</span></div>
+          </div>
+
+          {{#if v2.combat.maintenance.crossesCriticalThreshold}}
+            <div class="shinobi-v2-warning">
+              L’entretien franchit un seuil critique de Chakra.
+            </div>
+          {{/if}}
+
+          {{#if isGM}}
+            <div class="shinobi-v2-button-row">
+              <button type="button" class="lineage-power-upkeep-check">
+                MJ : résoudre l’entretien
+              </button>
+            </div>
+          {{/if}}
+
+          <h3>Utilisations de lignée</h3>
+
+          <div class="shinobi-v2-data-grid">
+            <div><strong>Base</strong><span>{{v2.combat.counters.lineagePowers.base}}</span></div>
+            <div><strong>Bonus</strong><span>{{v2.combat.counters.lineagePowers.bonus}}</span></div>
+            <div><strong>Restantes</strong><span>{{v2.combat.counters.lineagePowers.remaining}} / {{v2.combat.counters.lineagePowers.max}}</span></div>
+            <div><strong>Ce tour</strong><span>{{#if v2.combat.counters.lineagePowers.usedThisTurn}}Utilisée{{else}}Disponible{{/if}}</span></div>
+          </div>
+
+          <div class="shinobi-v2-button-row">
+            <button
+              type="button"
+              class="combat-spend-lineage-power"
+              {{#if system.combat.counters.lineagePowers.usedThisTurn}}disabled{{/if}}
+              {{#unless system.combat.counters.lineagePowers.remaining}}disabled{{/unless}}
+            >
+              Dépenser une utilisation de lignée
+            </button>
+
+            {{#if isGM}}
+              <button type="button" class="combat-reset-counters" data-scope="session">
+                MJ : reset session
+              </button>
+            {{/if}}
+          </div>
+        </section>
+
+        <section class="shinobi-v2-panel">
+          <h2>Conditions / blessures</h2>
+
+          <label>
+            Conditions
+            <textarea name="system.combat.health.conditions">{{system.combat.health.conditions}}</textarea>
+          </label>
+
+          <label>
+            Aggravations
+            <textarea name="system.combat.health.aggravations">{{system.combat.health.aggravations}}</textarea>
+          </label>
+
+          <label>
+            Faiblesses
+            <textarea name="system.combat.health.weaknesses">{{system.combat.health.weaknesses}}</textarea>
+          </label>
+
+          <label>
+            Notes de combat / blessures
+            <textarea name="system.combat.health.notes">{{system.combat.health.notes}}</textarea>
+          </label>
+        </section>
+
+      </div>
+    </div>
+
+    <div class="tab" data-group="primary" data-tab="techniques">
+      <div class="shinobi-v2-grid">
+
+        <section class="shinobi-v2-panel">
+          <h2>Entretien actif</h2>
+
+          <div class="shinobi-v2-data-grid">
+            <div><strong>Effets actifs</strong><span>{{v2.techniques.maintenance.activeCount}}</span></div>
+            <div><strong>Entretien total</strong><span>{{v2.techniques.maintenance.totalMaintenance}}</span></div>
+            <div><strong>Régén. passive</strong><span>{{v2.techniques.maintenance.passiveRegen}}</span></div>
+            <div><strong>Coût net</strong><span>{{v2.techniques.maintenance.netCost}}</span></div>
+            <div><strong>Chakra après entretien</strong><span>{{v2.techniques.maintenance.currentChakra}} → {{v2.techniques.maintenance.nextChakra}}</span></div>
+          </div>
+
+          {{#if v2.techniques.maintenance.crossesCriticalThreshold}}
+            <div class="shinobi-v2-warning">
+              L’entretien franchit un seuil critique de Chakra.
+            </div>
+          {{/if}}
+
+          {{#if isGM}}
+            <div class="shinobi-v2-button-row">
+              <button type="button" class="lineage-power-upkeep-check">
+                MJ : résoudre l’entretien
+              </button>
+            </div>
+          {{/if}}
+        </section>
+
+        <section class="shinobi-v2-panel">
+          <h2>Pouvoirs de lignée</h2>
+
+          {{#if v2.techniques.hasLineagePowers}}
+            <div class="shinobi-v2-card-list">
+              {{#each v2.techniques.lineagePowers as |power|}}
+                <article class="shinobi-v2-item-card {{#if power.active}}is-active{{/if}}">
+                  <div>
+                    <strong>{{power.name}}</strong>
+                    <span>{{power.typeLabel}}</span>
+                    <small>
+                      Activation {{power.activationCost}}
+                      {{#if power.maintenanceCost}}
+                        · Entretien {{power.maintenanceCost}}
+                      {{/if}}
+                    </small>
+                    {{#if power.effect}}
+                      <small>{{power.effect}}</small>
+                    {{/if}}
+                  </div>
+
+                  <div class="shinobi-v2-button-column">
+                    {{#if power.isActivable}}
+                      <button
+                        type="button"
+                        class="lineage-power-toggle"
+                        data-item-id="{{power.id}}"
+                      >
+                        {{#if power.active}}Désactiver{{else}}Activer{{/if}}
+                      </button>
+                    {{/if}}
+                  </div>
+                </article>
+              {{/each}}
+            </div>
+          {{else}}
+            <p class="shinobi-v2-muted">Aucun pouvoir de lignée sur cette fiche.</p>
+          {{/if}}
+        </section>
+
+      </div>
+
+      <section class="shinobi-v2-panel">
+        <h2>Techniques</h2>
+
+        {{#if v2.techniques.hasGroups}}
+          {{#each v2.techniques.groups as |group|}}
+            <section class="shinobi-v2-subpanel">
+              <h3>{{group.label}}</h3>
+
+              <div class="shinobi-v2-technique-list">
+                {{#each group.techniques as |technique|}}
+                  <article class="{{#if technique.active}}is-active{{/if}}">
+                    <header class="shinobi-v2-technique-header">
+                      <div>
+                        <strong>{{technique.name}}</strong>
+                        <span>
+                          {{technique.rankLabel}}
+                          · {{technique.actionLabel}}
+                          · {{technique.skillLabel}}
+                        </span>
+                      </div>
+
+                      <div class="shinobi-v2-button-column">
+                        <button
+                          type="button"
+                          class="technique-use"
+                          data-item-id="{{technique.id}}"
+                        >
+                          Utiliser
+                        </button>
+
+                        {{#if technique.damageFormula}}
+                          <button
+                            type="button"
+                            class="technique-roll-damage"
+                            data-item-id="{{technique.id}}"
+                          >
+                            Dégâts
+                          </button>
+                        {{/if}}
+
+                        {{#if technique.active}}
+                          <button
+                            type="button"
+                            class="technique-stop-maintained"
+                            data-item-id="{{technique.id}}"
+                          >
+                            Arrêter
+                          </button>
+                        {{/if}}
+                      </div>
+                    </header>
+
+                    <div class="shinobi-v2-technique-meta">
+                      <span>Chakra {{technique.chakraInitial}}</span>
+
+                      {{#if technique.hasMaintenance}}
+                        <span>Entretien {{technique.chakraMaintenance}} / tour</span>
+                      {{/if}}
+
+                      {{#if technique.range}}
+                        <span>Portée {{technique.range}}</span>
+                      {{/if}}
+
+                      {{#if technique.duration}}
+                        <span>Durée {{technique.duration}}</span>
+                      {{/if}}
+
+                      {{#if technique.target}}
+                        <span>Cible {{technique.target}}</span>
+                      {{/if}}
+                    </div>
+
+                    {{#if technique.damageFormula}}
+                      <p class="shinobi-v2-muted">
+                        Dégâts : {{technique.damageFormula}} {{technique.damageType}}
+                      </p>
+                    {{/if}}
+
+                    {{#if technique.effect}}
+                      <p class="shinobi-v2-technique-effect">
+                        {{technique.effect}}
+                      </p>
+                    {{/if}}
+                  </article>
+                {{/each}}
+              </div>
+            </section>
+          {{/each}}
+        {{else}}
+          <p class="shinobi-v2-muted">Aucune technique sur cette fiche.</p>
+        {{/if}}
+      </section>
+    </div>
+
+    <div class="tab" data-group="primary" data-tab="inventory">
+      <div class="shinobi-v2-grid">
+
+        <section class="shinobi-v2-panel">
+          <h2>Ryō</h2>
+
+          <div class="shinobi-v2-ryo-display">
+            <strong>{{v2.inventory.ryo}}</strong>
+            <span>両</span>
+          </div>
+
+          {{#if permissionsState.canEditRyo}}
+            <div class="shinobi-v2-ryo-controls">
+              <input name="system.inventory.ryoDelta" type="number" value="{{system.inventory.ryoDelta}}" min="0" placeholder="Montant" />
+
+              <button type="button" class="ryo-adjust" data-mode="add">
+                Ajouter
+              </button>
+
+              <button type="button" class="ryo-adjust" data-mode="remove">
+                Retirer
+              </button>
+            </div>
+          {{else}}
+            <p class="shinobi-v2-muted">
+              Les Ryō sont gérés par le MJ.
+            </p>
+          {{/if}}
+
+          {{#if isGM}}
+            <label>
+              <input class="ryo-permission-toggle" type="checkbox" {{#if permissionsState.allowPlayerRyoEdit}}checked{{/if}} />
+              MJ : autoriser ce joueur à modifier ses Ryō
+            </label>
+          {{/if}}
+        </section>
+
+        <section class="shinobi-v2-panel">
+          <h2>Résumé d’inventaire</h2>
+
+          <div class="shinobi-v2-data-grid">
+            <div><strong>Objets</strong><span>{{v2.inventory.summary.totalItems}}</span></div>
+            <div><strong>Poids total</strong><span>{{v2.inventory.summary.totalWeight}}</span></div>
+            <div><strong>Poids équipé</strong><span>{{v2.inventory.summary.equippedWeight}}</span></div>
+            <div><strong>Valeur totale</strong><span>{{v2.inventory.summary.totalValue}} 両</span></div>
+            <div><strong>Armes</strong><span>{{v2.inventory.counts.weapons}}</span></div>
+            <div><strong>Protections</strong><span>{{v2.inventory.counts.armors}}</span></div>
+            <div><strong>Consommables</strong><span>{{v2.inventory.counts.consumables}}</span></div>
+            <div><strong>Objets</strong><span>{{v2.inventory.counts.misc}}</span></div>
+          </div>
+
+          <p class="shinobi-v2-muted">
+            {{v2.inventory.encumbrance.penaltyText}}
+          </p>
+        </section>
+
+        <section class="shinobi-v2-panel">
+          <h2>Toxicité / drogues</h2>
+
+          <div class="shinobi-v2-data-grid">
+            <div><strong>Total</strong><span>{{v2.inventory.toxicity.value}} / {{v2.inventory.toxicity.max}}</span></div>
+            <div><strong>Jour</strong><span>{{v2.inventory.toxicity.dailyValue}} / {{v2.inventory.toxicity.dailyMax}}</span></div>
+            <div><strong>Semaine</strong><span>{{v2.inventory.toxicity.weeklyValue}} / {{v2.inventory.toxicity.weeklyMax}}</span></div>
+          </div>
+
+          {{#if isGM}}
+            <div class="shinobi-v2-button-row">
+              <button type="button" class="toxicity-reset" data-toxicity-reset="day">
+                MJ : reset jour
+              </button>
+
+              <button type="button" class="toxicity-reset" data-toxicity-reset="week">
+                MJ : reset semaine
+              </button>
+
+              <button type="button" class="toxicity-reset" data-toxicity-reset="all">
+                MJ : reset total
+              </button>
+            </div>
+          {{/if}}
+
+          <label>
+            Notes toxicité
+            <textarea name="system.consumables.toxicity.notes">{{system.consumables.toxicity.notes}}</textarea>
+          </label>
+        </section>
+
+        <section class="shinobi-v2-panel">
+          <h2>Ajouter un objet</h2>
+
+          <div class="shinobi-v2-form-grid">
+            <label>
+              Nom
+              <input name="system.inventory.newItem.name" type="text" value="{{system.inventory.newItem.name}}" />
+            </label>
+
+            <label>
+              Type
+              <select name="system.inventory.newItem.type">
+                {{#each inventoryTypes as |type|}}
+                  <option value="{{type.key}}" {{#if type.selected}}selected{{/if}}>
+                    {{type.label}}
+                  </option>
+                {{/each}}
+              </select>
+            </label>
+
+            <label>
+              Quantité
+              <input name="system.inventory.newItem.quantity" type="number" value="{{system.inventory.newItem.quantity}}" min="1" />
+            </label>
+          </div>
+
+          <div class="shinobi-v2-button-row">
+            <button type="button" class="inventory-add-item">
+              Ajouter
+            </button>
+          </div>
+        </section>
+
+      </div>
+
+      {{#each v2.inventory.groups as |group|}}
+        <section class="shinobi-v2-panel shinobi-v2-inventory-group">
+          <h2>{{group.label}}</h2>
+
+          {{#if group.items.length}}
+            <div class="shinobi-v2-inventory-table">
+              <div class="shinobi-v2-inventory-row is-header">
+                <span>Nom</span>
+                <span>Qté</span>
+                <span>Valeur</span>
+                <span>Poids</span>
+                <span>Tenue</span>
+                <span>Notes</span>
+                <span>Action</span>
+                <span></span>
+              </div>
+
+              {{#each group.items as |item|}}
+                <div class="shinobi-v2-inventory-row">
+                  <input
+                    class="inventory-item-field"
+                    data-item-id="{{item.id}}"
+                    data-field="name"
+                    type="text"
+                    value="{{item.name}}"
+                  />
+
+                  <input
+                    class="inventory-item-field"
+                    data-item-id="{{item.id}}"
+                    data-field="quantity"
+                    type="number"
+                    value="{{item.quantity}}"
+                    min="1"
+                  />
+
+                  {{#if ../../permissionsState.canEditInventoryEconomy}}
+                    <input
+                      class="inventory-item-field"
+                      data-item-id="{{item.id}}"
+                      data-field="value"
+                      type="number"
+                      value="{{item.value}}"
+                      min="0"
+                    />
+                  {{else}}
+                    <span>{{item.value}}</span>
+                  {{/if}}
+
+                  {{#if ../../permissionsState.canEditInventoryEconomy}}
+                    <input
+                      class="inventory-item-field"
+                      data-item-id="{{item.id}}"
+                      data-field="weight"
+                      type="number"
+                      value="{{item.weight}}"
+                      min="0"
+                    />
+                  {{else}}
+                    <span>{{item.weight}}</span>
+                  {{/if}}
+
+                  {{#if item.carryOptions.length}}
+                    <select
+                      class="inventory-carry-state"
+                      data-item-id="{{item.id}}"
+                    >
+                      {{#each item.carryOptions as |state|}}
+                        <option value="{{state.key}}" {{#if state.selected}}selected{{/if}}>
+                          {{state.label}}
+                        </option>
+                      {{/each}}
+                    </select>
+                  {{else}}
+                    <span class="shinobi-v2-muted">—</span>
+                  {{/if}}
+
+                  <input
+                    class="inventory-item-field"
+                    data-item-id="{{item.id}}"
+                    data-field="notes"
+                    type="text"
+                    value="{{item.notes}}"
+                  />
+
+                  <div class="shinobi-v2-inventory-actions">
+                    {{#if item.hasCombatUse}}
+                      <button
+                        type="button"
+                        class="inventory-use-combat-item"
+                        data-item-id="{{item.id}}"
+                        title="Utiliser en combat"
+                      >
+                        Combat
+                      </button>
+
+                      <button
+                        type="button"
+                        class="inventory-roll-damage"
+                        data-item-id="{{item.id}}"
+                        title="Calculer les dégâts"
+                      >
+                        Dégâts
+                      </button>
+                    {{else}}
+                      {{#if (eq item.type "consumable")}}
+                        <button
+                          type="button"
+                          class="inventory-use-consumable"
+                          data-item-id="{{item.id}}"
+                          title="Utiliser"
+                        >
+                          Utiliser
+                        </button>
+                      {{else}}
+                        {{#if item.hasUses}}
+                          <button
+                            type="button"
+                            class="inventory-use-charge"
+                            data-item-id="{{item.id}}"
+                            title="Utiliser une charge"
+                          >
+                            Usage {{item.uses.value}} / {{item.uses.max}}
+                          </button>
+                        {{else}}
+                          <span class="shinobi-v2-muted">—</span>
+                        {{/if}}
+                      {{/if}}
+                    {{/if}}
+                  </div>
+
+                  <button
+                    type="button"
+                    class="inventory-delete-item"
+                    data-item-id="{{item.id}}"
+                    title="Supprimer"
+                  >
+                    ✕
+                  </button>
+                </div>
+              {{/each}}
+            </div>
+          {{else}}
+            <p class="shinobi-v2-muted">Aucun élément.</p>
+          {{/if}}
+        </section>
+      {{/each}}
+    </div>
+
+    <div class="tab" data-group="primary" data-tab="character">
+      <div class="shinobi-v2-grid">
+
+        <section class="shinobi-v2-panel">
+          <h2>Identité civile / dossier</h2>
+
+          <div class="shinobi-v2-form-grid">
+            <label>Âge<input name="system.identity.age" type="text" value="{{system.identity.age}}" /></label>
+            <label>Naissance<input name="system.identity.birth" type="text" value="{{system.identity.birth}}" /></label>
+            <label>Sexe<input name="system.identity.sex" type="text" value="{{system.identity.sex}}" /></label>
+            <label>Taille<input name="system.identity.height" type="text" value="{{system.identity.height}}" /></label>
+            <label>Poids<input name="system.identity.weight" type="text" value="{{system.identity.weight}}" /></label>
+            <label>Cheveux<input name="system.identity.hair" type="text" value="{{system.identity.hair}}" /></label>
+            <label>Yeux<input name="system.identity.eyes" type="text" value="{{system.identity.eyes}}" /></label>
+          </div>
+        </section>
+
+        <section class="shinobi-v2-panel">
+          <h2>Encadrement ninja</h2>
+
+          <div class="shinobi-v2-form-grid">
+            <label>Sensei<input name="system.identity.sensei" type="text" value="{{system.identity.sensei}}" /></label>
+            <label>Équipe<input name="system.identity.team" type="text" value="{{system.identity.team}}" /></label>
+          </div>
+
+          <label>
+            Notes personnelles
+            <textarea name="system.identity.notes">{{system.identity.notes}}</textarea>
+          </label>
+        </section>
+
+        <section class="shinobi-v2-panel">
+          <h2>Doctrine et loyauté</h2>
+
+          <label>
+            Loyauté
+            <textarea name="system.identity.loyalty">{{system.identity.loyalty}}</textarea>
+          </label>
+
+          <label>
+            Doctrine
+            <textarea name="system.identity.doctrine">{{system.identity.doctrine}}</textarea>
+          </label>
+        </section>
+
+        <section class="shinobi-v2-panel">
+          <h2>Vie personnelle</h2>
+
+          <label>
+            Vie quotidienne
+            <textarea name="system.identity.dailyLife">{{system.identity.dailyLife}}</textarea>
+          </label>
+
+          <label>
+            Religion / croyances
+            <textarea name="system.identity.religion">{{system.identity.religion}}</textarea>
+          </label>
+
+          <label>
+            Préjugés
+            <textarea name="system.identity.prejudices">{{system.identity.prejudices}}</textarea>
+          </label>
+        </section>
+
+      </div>
+    </div>
+
+    <div class="tab" data-group="primary" data-tab="lineage">
+      {{#unless v2.lineage.canSeePrivateLineage}}
+        <section class="shinobi-v2-panel">
+          <h2>Lignée visible</h2>
+
+          <div class="shinobi-v2-data-grid">
+            <div><strong>Type</strong><span>{{v2.lineage.public.modeLabel}}</span></div>
+            <div><strong>Héritage</strong><span>{{v2.lineage.public.heritageLabel}}</span></div>
+          </div>
+
+          <p class="shinobi-v2-muted">
+            Les détails d’hybridation, de clan caché, de dōjutsu ou de greffe sont masqués.
+          </p>
+        </section>
+      {{/unless}}
+
+      {{#if v2.lineage.canSeePrivateLineage}}
+        <div class="shinobi-v2-grid">
+
+          <section class="shinobi-v2-panel">
+            <h2>Synthèse de lignée</h2>
+
+            <div class="shinobi-v2-data-grid">
+              <div><strong>Mode</strong><span>{{v2.lineage.modeLabel}}</span></div>
+              <div><strong>Affichage public</strong><span>{{v2.lineage.public.heritageLabel}}</span></div>
+              <div><strong>Clan principal</strong><span>{{v2.lineage.primaryClan.label}}</span></div>
+              <div><strong>Voie</strong><span>{{v2.lineage.voie.label}}</span></div>
+              <div><strong>Clan secondaire</strong><span>{{v2.lineage.secondaryClan.label}}</span></div>
+              <div><strong>Lignée effective</strong><span>{{v2.lineage.lineageValue}}</span></div>
+            </div>
+
+            {{#if v2.lineage.hasMechanicalClans}}
+              <div class="shinobi-v2-chip-list">
+                <strong>Clans mécaniques</strong>
+                {{#each v2.lineage.mechanicalClanLabels as |clan|}}
+                  <span>{{clan.label}}</span>
+                {{/each}}
+              </div>
+            {{/if}}
+
+            {{#if v2.lineage.hasMandatorySkills}}
+              <div class="shinobi-v2-chip-list">
+                <strong>Compétences obligatoires</strong>
+                {{#each v2.lineage.mandatorySkills as |skill|}}
+                  <span>{{skill.sourceLabel}} — {{skill.skillLabel}}</span>
+                {{/each}}
+              </div>
+            {{/if}}
+          </section>
+
+          <section class="shinobi-v2-panel">
+            <h2>Clan caché / hybridation</h2>
+
+            {{#if (eq v2.lineage.mode "hiddenClan")}}
+              <div class="shinobi-v2-data-grid">
+                <div><strong>Clan officiel</strong><span>{{v2.lineage.hiddenClan.officialClanLabel}}</span></div>
+                <div><strong>Réel Clan</strong><span>{{v2.lineage.hiddenClan.realClanLabel}}</span></div>
+                <div><strong>État</strong><span>{{v2.lineage.hiddenClan.awarenessLabel}}</span></div>
+                <div><strong>Débloqué MJ</strong><span>{{#if v2.lineage.hiddenClan.unlocked}}Oui{{else}}Non{{/if}}</span></div>
+                <div><strong>Lignée effective</strong><span>{{v2.lineage.hiddenClan.effectiveLineageValue}}</span></div>
+                <div><strong>Cap narratif</strong><span>{{v2.lineage.hiddenClan.effectiveLineageCap}}</span></div>
+              </div>
+
+              <p class="shinobi-v2-muted">{{v2.lineage.hiddenClan.awarenessSummary}}</p>
+
+              <label>
+                Notes de clan caché
+                <textarea name="system.heritage.hiddenClan.notes">{{system.heritage.hiddenClan.notes}}</textarea>
+              </label>
+            {{else}}
+              <p class="shinobi-v2-muted">
+                Aucun clan caché actif pour cette fiche. Les détails d’hybridation sont affichés dans la synthèse si applicables.
+              </p>
+            {{/if}}
+          </section>
+
+          {{#if isGM}}
+            <section class="shinobi-v2-panel">
+              <h2>Options MJ</h2>
+
+              <div class="shinobi-v2-checkbox-grid">
+                <label>
+                  <input
+                    type="checkbox"
+                    class="heritage-gm-option"
+                    data-field="allowHybridClan"
+                    {{#if v2.lineage.gmOptions.allowHybridClan}}checked{{/if}}
+                  />
+                  Autoriser le Clan hybride
+                </label>
+
+                <label>
+                  <input
+                    type="checkbox"
+                    class="heritage-gm-option"
+                    data-field="allowHybridVoie"
+                    {{#if v2.lineage.gmOptions.allowHybridVoie}}checked{{/if}}
+                  />
+                  Autoriser la Voie hybridée
+                </label>
+
+                <label>
+                  <input
+                    type="checkbox"
+                    class="heritage-gm-option"
+                    data-field="allowCustomClan"
+                    {{#if v2.lineage.gmOptions.allowCustomClan}}checked{{/if}}
+                  />
+                  Autoriser le Clan custom
+                </label>
+
+                <label>
+                  <input
+                    type="checkbox"
+                    class="heritage-gm-option"
+                    data-field="hasMangekyoSharingan"
+                    {{#if v2.lineage.gmOptions.hasMangekyoSharingan}}checked{{/if}}
+                  />
+                  Mangekyō Sharingan validé
+                </label>
+
+                <label>
+                  <input
+                    type="checkbox"
+                    class="heritage-gm-option"
+                    data-field="hasEternalMangekyoSharingan"
+                    {{#if v2.lineage.gmOptions.hasEternalMangekyoSharingan}}checked{{/if}}
+                  />
+                  Mangekyō Éternel validé
+                </label>
+
+                <label>
+                  <input
+                    type="checkbox"
+                    class="heritage-gm-option"
+                    data-field="hasSenjuCells"
+                    {{#if v2.lineage.gmOptions.hasSenjuCells}}checked{{/if}}
+                  />
+                  Cellules Senju / greffe
+                </label>
+
+                <label>
+                  <input
+                    type="checkbox"
+                    class="heritage-gm-option"
+                    data-field="hasRinnegan"
+                    {{#if v2.lineage.gmOptions.hasRinnegan}}checked{{/if}}
+                  />
+                  Rinnegan validé
+                </label>
+
+                <label>
+                  <input
+                    type="checkbox"
+                    class="heritage-gm-option"
+                    data-field="hasTenseigan"
+                    {{#if v2.lineage.gmOptions.hasTenseigan}}checked{{/if}}
+                  />
+                  Tenseigan validé
+                </label>
+              </div>
+            </section>
+          {{/if}}
+
+          <section class="shinobi-v2-panel">
+            <h2>Dōjutsu / éveils</h2>
+
+            <div class="shinobi-v2-data-grid">
+              <div><strong>Lignée Uchiha</strong><span>{{#if v2.lineage.dojutsu.hasUchihaLineage}}Oui{{else}}Non{{/if}}</span></div>
+              <div><strong>Lignée Hyūga</strong><span>{{#if v2.lineage.dojutsu.hasHyugaLineage}}Oui{{else}}Non{{/if}}</span></div>
+              <div><strong>Senju / cellules</strong><span>{{#if v2.lineage.dojutsu.hasSenjuCells}}Oui{{else}}Non{{/if}}</span></div>
+              <div><strong>Rinnegan possible</strong><span>{{#if v2.lineage.dojutsu.canAwakenRinnegan}}Oui{{else}}Non{{/if}}</span></div>
+              <div><strong>Rinnegan</strong><span>{{#if v2.lineage.dojutsu.hasRinnegan}}Validé{{else}}Non validé{{/if}}</span></div>
+              <div><strong>Tenseigan</strong><span>{{#if v2.lineage.dojutsu.hasTenseigan}}Validé{{else}}Non validé{{/if}}</span></div>
+            </div>
+
+            {{#if v2.lineage.dojutsu.hasUchihaLineage}}
+              <section class="shinobi-v2-subpanel">
+                <h3>Mangekyō Sharingan</h3>
+
+                <div class="shinobi-v2-data-grid">
+                  <div><strong>Mode Uchiha</strong><span>{{v2.lineage.uchihaPowerModeData.label}}</span></div>
+                  <div><strong>Utilisations</strong><span>{{v2.lineage.mangekyo.uses}}</span></div>
+                  <div><strong>Seuil</strong><span>{{v2.lineage.mangekyo.usageState.thresholdLabel}}</span></div>
+                  <div><strong>Malus Vigilance</strong><span>{{v2.lineage.mangekyo.usageState.vigilancePenalty}}</span></div>
+                </div>
+
+                {{#if v2.lineage.mangekyo.usageState.warning}}
+                  <div class="shinobi-v2-warning">
+                    {{v2.lineage.mangekyo.usageState.warning}}
+                  </div>
+                {{/if}}
+
+                <div class="shinobi-v2-button-row">
+                  <button type="button" class="mangekyo-uses-adjust" data-delta="-1">-1 utilisation</button>
+                  <button type="button" class="mangekyo-uses-adjust" data-delta="1">+1 utilisation</button>
+                  <button type="button" class="mangekyo-uses-adjust" data-delta="5">+5 utilisations</button>
+                </div>
+
+                <div class="shinobi-v2-eye-grid">
+                  <article class="shinobi-v2-eye-card">
+                    <h4>Œil droit</h4>
+
+                    <label>
+                      Pouvoir
+                      <select
+                        class="uchiha-eye-power-choice"
+                        data-eye="right"
+                        {{#unless v2.lineage.mangekyo.canEditRightEye}}disabled{{/unless}}
+                      >
+                        <option value="">— Aucun —</option>
+                        {{#each v2.lineage.mangekyo.rightEyePowerOptions as |power|}}
+                          <option value="{{power.key}}" {{#if power.selected}}selected{{/if}} {{#if power.disabled}}disabled{{/if}}>
+                            {{power.label}}
+                          </option>
+                        {{/each}}
+                      </select>
+                    </label>
+
+                    <div class="shinobi-v2-data-grid">
+                      <div><strong>Pouvoir actuel</strong><span>{{v2.lineage.mangekyo.rightEyePowerLabel}}</span></div>
+                      <div><strong>État</strong><span>{{v2.lineage.mangekyo.rightEyeStateLabel}}</span></div>
+                      <div><strong>PJ</strong><span>{{#if v2.lineage.mangekyo.rightEyePlayerValidated}}Validé{{else}}À confirmer{{/if}}</span></div>
+                      <div><strong>MJ</strong><span>{{#if v2.lineage.mangekyo.rightEyeGmValidated}}Validé{{else}}À valider{{/if}}</span></div>
+                    </div>
+
+                    {{#unless v2.lineage.mangekyo.rightEyeValidation.valid}}
+                      <div class="shinobi-v2-warning">{{v2.lineage.mangekyo.rightEyeValidation.reason}}</div>
+                    {{/unless}}
+
+                    <div class="shinobi-v2-button-row">
+                      <button
+                        type="button"
+                        class="uchiha-eye-player-validate"
+                        data-eye="right"
+                        {{#unless v2.lineage.mangekyo.canValidateRightEyeAsPlayer}}disabled{{/unless}}
+                      >
+                        Confirmer PJ
+                      </button>
+
+                      {{#if isGM}}
+                        <button type="button" class="uchiha-eye-reset" data-eye="right">
+                          MJ : annuler
+                        </button>
+                      {{/if}}
+                    </div>
+
+                    {{#if isGM}}
+                      <label>
+                        Validation MJ
+                        <input
+                          type="checkbox"
+                          class="uchiha-eye-gm-validate"
+                          data-eye="right"
+                          {{#if v2.lineage.mangekyo.rightEyeGmValidated}}checked{{/if}}
+                          {{#unless v2.lineage.mangekyo.rightEyePlayerValidated}}disabled{{/unless}}
+                        />
+                      </label>
+
+                      <label>
+                        État de l’œil
+                        <select class="uchiha-eye-state" data-eye="right">
+                          {{#each v2.lineage.mangekyo.rightEyeStateOptions as |state|}}
+                            <option value="{{state.key}}" {{#if state.selected}}selected{{/if}}>
+                              {{state.label}}
+                            </option>
+                          {{/each}}
+                        </select>
+                      </label>
+                    {{/if}}
+                  </article>
+
+                  <article class="shinobi-v2-eye-card">
+                    <h4>Œil gauche</h4>
+
+                    {{#if v2.lineage.mangekyo.leftEyeChoiceLocked}}
+                      <div class="shinobi-v2-warning">
+                        L’œil gauche se débloque après confirmation PJ de l’œil droit.
+                      </div>
+                    {{/if}}
+
+                    <label>
+                      Pouvoir
+                      <select
+                        class="uchiha-eye-power-choice"
+                        data-eye="left"
+                        {{#unless v2.lineage.mangekyo.canEditLeftEye}}disabled{{/unless}}
+                      >
+                        <option value="">— Aucun —</option>
+                        {{#each v2.lineage.mangekyo.leftEyePowerOptions as |power|}}
+                          <option value="{{power.key}}" {{#if power.selected}}selected{{/if}} {{#if power.disabled}}disabled{{/if}}>
+                            {{power.label}}
+                          </option>
+                        {{/each}}
+                      </select>
+                    </label>
+
+                    <div class="shinobi-v2-data-grid">
+                      <div><strong>Pouvoir actuel</strong><span>{{v2.lineage.mangekyo.leftEyePowerLabel}}</span></div>
+                      <div><strong>État</strong><span>{{v2.lineage.mangekyo.leftEyeStateLabel}}</span></div>
+                      <div><strong>PJ</strong><span>{{#if v2.lineage.mangekyo.leftEyePlayerValidated}}Validé{{else}}À confirmer{{/if}}</span></div>
+                      <div><strong>MJ</strong><span>{{#if v2.lineage.mangekyo.leftEyeGmValidated}}Validé{{else}}À valider{{/if}}</span></div>
+                    </div>
+
+                    {{#unless v2.lineage.mangekyo.leftEyeValidation.valid}}
+                      <div class="shinobi-v2-warning">{{v2.lineage.mangekyo.leftEyeValidation.reason}}</div>
+                    {{/unless}}
+
+                    <div class="shinobi-v2-button-row">
+                      <button
+                        type="button"
+                        class="uchiha-eye-player-validate"
+                        data-eye="left"
+                        {{#unless v2.lineage.mangekyo.canValidateLeftEyeAsPlayer}}disabled{{/unless}}
+                      >
+                        Confirmer PJ
+                      </button>
+
+                      {{#if isGM}}
+                        <button type="button" class="uchiha-eye-reset" data-eye="left">
+                          MJ : annuler
+                        </button>
+                      {{/if}}
+                    </div>
+
+                    {{#if isGM}}
+                      <label>
+                        Validation MJ
+                        <input
+                          type="checkbox"
+                          class="uchiha-eye-gm-validate"
+                          data-eye="left"
+                          {{#if v2.lineage.mangekyo.leftEyeGmValidated}}checked{{/if}}
+                          {{#unless v2.lineage.mangekyo.leftEyePlayerValidated}}disabled{{/unless}}
+                        />
+                      </label>
+
+                      <label>
+                        État de l’œil
+                        <select class="uchiha-eye-state" data-eye="left">
+                          {{#each v2.lineage.mangekyo.leftEyeStateOptions as |state|}}
+                            <option value="{{state.key}}" {{#if state.selected}}selected{{/if}}>
+                              {{state.label}}
+                            </option>
+                          {{/each}}
+                        </select>
+                      </label>
+                    {{/if}}
+                  </article>
+                </div>
+              </section>
+            {{/if}}
+          </section>
+
+          <section class="shinobi-v2-panel">
+            <h2>Pouvoirs de lignée</h2>
+
+            {{#if v2.lineage.hasPowers}}
+              <div class="shinobi-v2-card-list">
+                {{#each v2.lineage.powers as |power|}}
+                  <article class="shinobi-v2-item-card {{#if power.active}}is-active{{/if}}">
+                    <div>
+                      <strong>{{power.name}}</strong>
+                      <span>{{power.typeLabel}}</span>
+                      <small>
+                        Activation {{power.activationCost}}
+                        {{#if power.maintenanceCost}}
+                          · Entretien {{power.maintenanceCost}}
+                        {{/if}}
+                      </small>
+                      {{#if power.effect}}
+                        <small>{{power.effect}}</small>
+                      {{/if}}
+                    </div>
+
+                    <div class="shinobi-v2-button-column">
+                      {{#if power.isActivable}}
+                        <button
+                          type="button"
+                          class="lineage-power-toggle"
+                          data-item-id="{{power.id}}"
+                        >
+                          {{#if power.active}}Désactiver{{else}}Activer{{/if}}
+                        </button>
+                      {{/if}}
+                    </div>
+                  </article>
+                {{/each}}
+              </div>
+            {{else}}
+              <p class="shinobi-v2-muted">Aucun pouvoir de lignée sur cette fiche.</p>
+            {{/if}}
+          </section>
+
+          <section class="shinobi-v2-panel">
+            <h2>Progression de lignée</h2>
+
+            {{#if v2.lineage.hasTracks}}
+              {{#each v2.lineage.tracks as |track|}}
+                <section class="shinobi-v2-lineage-track">
+                  <h3>{{track.role}} — {{track.label}}</h3>
+
+                  {{#if track.note}}
+                    <p class="shinobi-v2-muted">{{track.note}}</p>
+                  {{/if}}
+
+                  <div class="shinobi-v2-lineage-ranks">
+                    {{#each track.ranks as |rank|}}
+                      <article class="shinobi-v2-lineage-rank {{#if rank.unlocked}}is-unlocked{{else}}is-locked{{/if}} {{#if rank.narrativeLocked}}is-narrative-locked{{/if}} {{#if rank.current}}is-current{{/if}}">
+                        <header>
+                          <strong>Rang {{rank.rank}}</strong>
+                          <span>{{#if rank.unlocked}}Déverrouillé{{else}}Verrouillé{{/if}}</span>
+                        </header>
+
+                        {{#if rank.narrativeLocked}}
+                          <div class="shinobi-v2-warning">{{rank.lockReason}}</div>
+                        {{/if}}
+
+                        {{#if rank.hasFeatures}}
+                          {{#each rank.features as |feature|}}
+                            <div class="shinobi-v2-lineage-feature">
+                              <strong>{{feature.label}}{{#unless feature.label}}{{feature.title}}{{/unless}}</strong>
+
+                              {{#if feature.type}}
+                                <span>{{feature.type}}</span>
+                              {{/if}}
+
+                              {{#if feature.summary}}
+                                <p>{{feature.summary}}</p>
+                              {{/if}}
+
+                              {{#if feature.description}}
+                                <p>{{feature.description}}</p>
+                              {{/if}}
+
+                              {{#if feature.mechanical}}
+                                <p><strong>Effet :</strong> {{feature.mechanical}}</p>
+                              {{/if}}
+                            </div>
+                          {{/each}}
+                        {{else}}
+                          <p class="shinobi-v2-muted">{{rank.placeholder}}</p>
+                        {{/if}}
+                      </article>
+                    {{/each}}
+                  </div>
+                </section>
+              {{/each}}
+            {{else}}
+              <p class="shinobi-v2-muted">Aucune piste de lignée disponible.</p>
+            {{/if}}
+          </section>
+
+          <section class="shinobi-v2-panel">
+            <h2>Greffes / implants</h2>
+
+            <p class="shinobi-v2-muted">
+              Emplacement préparé pour les greffes futures : Sharingan, Byakugan, Rinnegan, cellules Senju et autres implants narratifs.
+            </p>
+          </section>
+
+        </div>
+      {{/if}}
+    </div>
+
+    <div class="tab" data-group="primary" data-tab="progression">
+      <div class="shinobi-v2-grid">
+
+        <section class="shinobi-v2-panel">
+          <h2>Rang</h2>
+
+          <div class="shinobi-v2-data-grid">
+            <div><strong>Rang actuel</strong><span>{{v2.progression.rank.currentLabel}}</span></div>
+            <div><strong>Plafond de Bases</strong><span>{{v2.progression.rank.currentBaseCap}}</span></div>
+
+            {{#if v2.progression.rank.next}}
+              <div><strong>Prochain rang</strong><span>{{v2.progression.rank.next.label}}</span></div>
+              <div><strong>XP requise</strong><span>{{v2.progression.rank.next.xp}}</span></div>
+            {{else}}
+              <div><strong>Prochain rang</strong><span>Rang maximal atteint</span></div>
+            {{/if}}
+          </div>
+
+          {{#if v2.progression.rank.next}}
+            <div class="shinobi-v2-rank-checks">
+              <h3>Conditions de promotion</h3>
+
+              {{#each v2.progression.rank.checks as |check|}}
+                <div class="shinobi-v2-rank-check {{#if check.passed}}is-passed{{else}}is-failed{{/if}}">
+                  <span>{{#if check.passed}}✓{{else}}✗{{/if}}</span>
+
+                  <div>
+                    <strong>{{check.label}}</strong>
+                    <small>{{check.detail}}</small>
+                  </div>
+                </div>
+              {{/each}}
+            </div>
+
+            {{#if isGM}}
+              <div class="shinobi-v2-button-row">
+                <button type="button" class="rank-promote" {{#unless v2.progression.rank.canPromote}}disabled{{/unless}}>
+                  Valider le passage au rang suivant
+                </button>
+              </div>
+            {{else}}
+              <p class="shinobi-v2-muted">Seul le MJ peut valider un passage de rang.</p>
+            {{/if}}
+          {{else}}
+            <p class="shinobi-v2-muted">Ce personnage a atteint le sommet officiel de la hiérarchie ninja.</p>
+          {{/if}}
+        </section>
+
+        <section class="shinobi-v2-panel">
+          <h2>Expérience</h2>
+
+          <div class="shinobi-v2-data-grid">
+            <div><strong>XP totale</strong><span>{{v2.progression.experience.total}}</span></div>
+            <div><strong>XP dépensée</strong><span>{{v2.progression.experience.spent}}</span></div>
+            <div><strong>XP Bases</strong><span>{{v2.progression.experience.baseSpent}}</span></div>
+            <div><strong>XP Compétences</strong><span>{{v2.progression.experience.skillSpent}}</span></div>
+            <div><strong>XP disponible</strong><span>{{v2.progression.experience.available}}</span></div>
+          </div>
+        </section>
+
+        <section class="shinobi-v2-panel">
+          <h2>Création / validation</h2>
+
+          <div class="shinobi-v2-data-grid">
+            <div><strong>État</strong><span>{{v2.creation.state.label}}</span></div>
+            <div><strong>Mode</strong><span>{{v2.creation.mode}}</span></div>
+            <div><strong>Compétences initiales</strong><span>{{v2.progression.creationSkillSummary.used}} / {{v2.progression.creationSkillSummary.max}}</span></div>
+            <div><strong>Restantes</strong><span>{{v2.progression.creationSkillSummary.remaining}}</span></div>
+          </div>
+
+          {{#if v2.progression.creation.valid}}
+            <div class="shinobi-v2-ok">Création conforme.</div>
+          {{else}}
+            <div class="shinobi-v2-warning">Création incomplète ou à corriger.</div>
+          {{/if}}
+
+          {{#if v2.progression.creation.errors.length}}
+            <div class="shinobi-v2-warning">
+              <strong>Erreurs</strong>
+              <ul>
+                {{#each v2.progression.creation.errors as |error|}}
+                  <li>{{error}}</li>
+                {{/each}}
+              </ul>
+            </div>
+          {{/if}}
+
+          {{#if v2.progression.creation.warnings.length}}
+            <div class="shinobi-v2-warning">
+              <strong>Avertissements</strong>
+              <ul>
+                {{#each v2.progression.creation.warnings as |warning|}}
+                  <li>{{warning}}</li>
+                {{/each}}
+              </ul>
+            </div>
+          {{/if}}
+        </section>
+
+        <section class="shinobi-v2-panel">
+          <h2>Missions</h2>
+
+          <div class="shinobi-v2-mission-table">
+            <div class="shinobi-v2-mission-row is-header">
+              <span>Rang</span>
+              <span>Réussies</span>
+              <span>Échouées</span>
+            </div>
+
+            {{#each v2.progression.missions.ranks as |mission|}}
+              <div class="shinobi-v2-mission-row">
+                <strong>{{mission.label}}</strong>
+
+                <input
+                  name="system.missions.{{mission.key}}.completed"
+                  type="number"
+                  value="{{mission.data.completed}}"
+                  min="0"
+                  {{#unless @root.isGM}}disabled{{/unless}}
+                />
+
+                <input
+                  name="system.missions.{{mission.key}}.failed"
+                  type="number"
+                  value="{{mission.data.failed}}"
+                  min="0"
+                  {{#unless @root.isGM}}disabled{{/unless}}
+                />
+              </div>
+            {{/each}}
+          </div>
+
+          <div class="shinobi-v2-data-grid">
+            <div><strong>Total réussies</strong><span>{{v2.progression.missions.totalCompleted}}</span></div>
+            <div><strong>Total échouées</strong><span>{{v2.progression.missions.totalFailed}}</span></div>
+          </div>
+        </section>
+
+      </div>
+
+      <section class="shinobi-v2-panel">
+        <h2>Bases</h2>
+
+        <div class="shinobi-v2-bases-grid">
+          {{#each v2.progression.bases as |base|}}
+            <article class="shinobi-v2-base-card {{#if base.hasHiddenEffectiveValue}}has-effective-lineage{{/if}}">
+              <header>
+                <strong>{{base.label}}</strong>
+                <span>{{base.value}} + {{base.bonus}}</span>
+              </header>
+
+              {{#if base.hasHiddenEffectiveValue}}
+                <div class="shinobi-v2-warning">
+                  Lignée effective : {{base.effectiveLineage}}.
+                </div>
+              {{/if}}
+
+              <div class="shinobi-v2-base-controls">
+                <button type="button" class="base-decrease" data-base="{{base.key}}" {{#unless base.canDecrease}}disabled{{/unless}}>-</button>
+                <span>{{base.value}}</span>
+                <button type="button" class="base-increase" data-base="{{base.key}}" {{#unless base.canIncrease}}disabled{{/unless}}>+</button>
+              </div>
+
+              <small>
+                Cap {{base.cap}} · XP dépensée {{base.xpSpent}}
+                {{#if base.nextCost}}· prochain coût {{base.nextCost}}{{/if}}
+              </small>
+            </article>
+          {{/each}}
+        </div>
+      </section>
+
+      <section class="shinobi-v2-panel">
+        <h2>Compétences</h2>
+
+        {{#each v2.progression.skillGroups as |group|}}
+          <section class="shinobi-v2-subpanel">
+            <h3>{{group.label}}</h3>
+
+            <div class="shinobi-v2-skill-table">
+              <div class="shinobi-v2-skill-row is-header">
+                <span>Compétence</span>
+                <span>Base</span>
+                <span>Naturel</span>
+                <span>Bonus</span>
+                <span>Total</span>
+                <span>Sources</span>
+                <span>XP</span>
+                <span>Contrôle</span>
+              </div>
+
+              {{#each group.skills as |skill|}}
+                <div class="shinobi-v2-skill-row {{#unless skill.owned}}is-unowned{{/unless}}">
+                  <strong>{{skill.label}}</strong>
+                  <span>{{skill.baseLabel}}</span>
+                  <span>{{skill.natural}}</span>
+                  <span>{{skill.bonus}}</span>
+                  <span>{{skill.total}}</span>
+
+                  <span>
+                    {{#if skill.sourceLabels.length}}
+                      {{#each skill.sourceLabels as |source|}}
+                        <em>{{source.label}}</em>
+                      {{/each}}
+                    {{else}}
+                      —
+                    {{/if}}
+                  </span>
+
+                  <span>
+                    {{skill.xpSpent}}
+                    {{#if skill.nextCost}}
+                      / prochain {{skill.nextCost}}
+                    {{/if}}
+                  </span>
+
+                  <span class="shinobi-v2-skill-controls">
+                    <button type="button" class="skill-decrease" data-skill="{{skill.key}}" {{#unless skill.canDecrease}}disabled{{/unless}}>-</button>
+                    <button type="button" class="skill-increase" data-skill="{{skill.key}}" {{#unless skill.canIncrease}}disabled{{/unless}}>+</button>
+                  </span>
+                </div>
+              {{/each}}
+            </div>
+          </section>
+        {{/each}}
+      </section>
+    </div>
+
+  </section>
+</form>

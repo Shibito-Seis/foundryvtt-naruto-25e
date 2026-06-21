@@ -1,0 +1,1128 @@
+/* ----------------------------------------- */
+/* Naruto 2.5e — Shinobi Sheet V2            */
+/* Passe 1 : squelette sélectionnable        */
+/* ----------------------------------------- */
+
+.naruto-25e.sheet.actor.shinobi-v2 .window-content {
+  padding: 0;
+  color: #e9dfcb;
+  background:
+    radial-gradient(circle at top left, rgba(120, 24, 24, 0.25), transparent 28rem),
+    linear-gradient(135deg, #15171d 0%, #211b1c 52%, #121318 100%);
+}
+
+.naruto-25e-shinobi-sheet-v2 {
+  --v2-bg: #15171d;
+  --v2-panel: rgba(30, 31, 38, 0.92);
+  --v2-panel-soft: rgba(45, 39, 42, 0.82);
+  --v2-border: rgba(199, 163, 93, 0.38);
+  --v2-border-strong: rgba(222, 184, 105, 0.66);
+  --v2-text: #efe3cc;
+  --v2-muted: rgba(239, 227, 204, 0.66);
+  --v2-gold: #c9a35d;
+  --v2-red: #9f2725;
+  --v2-red-dark: #431111;
+  --v2-blue: #2d86d3;
+  --v2-blue-dark: #11314e;
+  --v2-green: #4c9a61;
+
+  min-height: 100%;
+  padding: 0.85rem;
+  color: var(--v2-text);
+}
+
+.naruto-25e-shinobi-sheet-v2 input,
+.naruto-25e-shinobi-sheet-v2 textarea,
+.naruto-25e-shinobi-sheet-v2 select {
+  color: var(--v2-text);
+  border: 1px solid rgba(201, 163, 93, 0.35);
+  background: rgba(5, 7, 11, 0.62);
+}
+
+.naruto-25e-shinobi-sheet-v2 input:focus,
+.naruto-25e-shinobi-sheet-v2 textarea:focus,
+.naruto-25e-shinobi-sheet-v2 select:focus {
+  box-shadow: 0 0 0 1px rgba(201, 163, 93, 0.65);
+}
+
+.shinobi-v2-header {
+  display: grid;
+  grid-template-columns: 9rem 1fr;
+  gap: 1rem;
+  padding: 0.9rem;
+  border: 1px solid var(--v2-border-strong);
+  background:
+    linear-gradient(90deg, rgba(90, 24, 20, 0.25), transparent 44%),
+    rgba(15, 17, 23, 0.88);
+}
+
+.shinobi-v2-portrait-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.shinobi-v2-portrait {
+  width: 8.25rem;
+  height: 8.25rem;
+  object-fit: cover;
+  border: 2px solid var(--v2-border-strong);
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.shinobi-v2-chakra-icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.28rem;
+  justify-content: center;
+  padding: 0.35rem;
+  border: 1px solid rgba(201, 163, 93, 0.28);
+  background: rgba(0, 0, 0, 0.28);
+}
+
+.shinobi-v2-chakra-icons img {
+  width: 1.45rem;
+  height: 1.45rem;
+  object-fit: contain;
+  border: 1px solid rgba(201, 163, 93, 0.35);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.shinobi-v2-identity {
+  min-width: 0;
+}
+
+.shinobi-v2-title-row {
+  display: grid;
+  grid-template-columns: 1fr 8rem;
+  gap: 1rem;
+  align-items: start;
+}
+
+.shinobi-v2-kicker {
+  margin: 0 0 0.2rem;
+  color: var(--v2-gold);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.shinobi-v2-title-row h1 {
+  margin: 0;
+}
+
+.shinobi-v2-title-row h1 input {
+  height: 2.75rem;
+  color: var(--v2-text);
+  border: 0;
+  border-bottom: 1px solid var(--v2-border-strong);
+  background: transparent;
+  font-size: 1.75rem;
+  font-weight: 800;
+}
+
+.shinobi-v2-rank-badge,
+.shinobi-v2-stat-card,
+.shinobi-v2-info-pill {
+  border: 1px solid rgba(201, 163, 93, 0.32);
+  background: rgba(0, 0, 0, 0.28);
+}
+
+.shinobi-v2-rank-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 4.2rem;
+  text-align: center;
+}
+
+.shinobi-v2-rank-badge span,
+.shinobi-v2-stat-card span,
+.shinobi-v2-info-pill strong {
+  color: var(--v2-muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.shinobi-v2-rank-badge strong {
+  color: var(--v2-gold);
+  font-size: 1.05rem;
+}
+
+.shinobi-v2-identity-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(10rem, 1fr));
+  gap: 0.55rem;
+  margin-top: 0.85rem;
+}
+
+.shinobi-v2-identity-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  color: var(--v2-muted);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.shinobi-v2-info-pill {
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+  min-height: 2.65rem;
+  padding: 0.4rem 0.55rem;
+}
+
+.shinobi-v2-info-pill.is-wide {
+  grid-column: span 2;
+}
+
+.shinobi-v2-info-pill img {
+  width: 1.9rem;
+  height: 1.9rem;
+  object-fit: contain;
+}
+
+.shinobi-v2-info-pill span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.shinobi-v2-resource-bar {
+  display: grid;
+  grid-template-columns: minmax(18rem, 1.55fr) minmax(16rem, 1.25fr) repeat(4, minmax(6rem, 0.65fr));
+  gap: 0.55rem;
+  margin-top: 0.65rem;
+}
+
+.shinobi-v2-track-card,
+.shinobi-v2-stat-card,
+.shinobi-v2-panel,
+.shinobi-v2-subpanel {
+  border: 1px solid var(--v2-border);
+  background: var(--v2-panel);
+}
+
+.shinobi-v2-track-card {
+  padding: 0.55rem;
+}
+
+.shinobi-v2-track-card.is-alert {
+  border-color: rgba(210, 66, 54, 0.72);
+}
+
+.shinobi-v2-track-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.35rem;
+}
+
+.shinobi-v2-track-header strong {
+  color: var(--v2-gold);
+  text-transform: uppercase;
+}
+
+.shinobi-v2-health-segments {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.shinobi-v2-health-segments span {
+  flex: 1;
+  min-width: 0;
+  padding: 0.25rem 0.3rem;
+  border: 1px solid rgba(190, 70, 62, 0.36);
+  background: linear-gradient(180deg, rgba(82, 16, 16, 0.62), rgba(28, 6, 8, 0.88));
+  text-align: center;
+}
+
+.shinobi-v2-health-segments span.is-complete {
+  border-color: rgba(255, 119, 96, 0.75);
+  background: linear-gradient(180deg, #b92b27, #671513);
+  box-shadow: inset 0 0 0.7rem rgba(255, 166, 130, 0.12);
+}
+
+.shinobi-v2-health-segments small {
+  display: block;
+  color: rgba(255, 220, 200, 0.62);
+  font-size: 0.65rem;
+  letter-spacing: 0.04em;
+}
+
+.shinobi-v2-health-segments strong {
+  display: block;
+  overflow: hidden;
+  color: #ffe1d0;
+  font-size: 0.68rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shinobi-v2-health-segments.is-large span {
+  min-height: 3.4rem;
+}
+
+.shinobi-v2-progress {
+  height: 0.85rem;
+  overflow: hidden;
+  border: 1px solid rgba(86, 157, 225, 0.55);
+  background: linear-gradient(180deg, var(--v2-blue-dark), #061522);
+}
+
+.shinobi-v2-progress span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #2d86d3, #79c7ff);
+}
+
+.shinobi-v2-track-caption {
+  margin-top: 0.32rem;
+  color: var(--v2-muted);
+  font-size: 0.72rem;
+}
+
+.shinobi-v2-stat-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 4.2rem;
+  padding: 0.45rem;
+  text-align: center;
+}
+
+.shinobi-v2-stat-card strong {
+  color: var(--v2-text);
+  font-size: 1.25rem;
+}
+
+.shinobi-v2-stat-card.is-actions strong {
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+
+.shinobi-v2-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin: 0.65rem 0;
+  border: 0;
+}
+
+.shinobi-v2-tabs .item {
+  padding: 0.45rem 0.65rem;
+  border: 1px solid rgba(201, 163, 93, 0.28);
+  color: var(--v2-muted);
+  background: rgba(0, 0, 0, 0.25);
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.shinobi-v2-tabs .item.active {
+  color: var(--v2-text);
+  border-color: var(--v2-border-strong);
+  background: rgba(118, 35, 29, 0.55);
+}
+
+.shinobi-v2-body {
+  min-height: 24rem;
+}
+
+.shinobi-v2-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(18rem, 1fr));
+  gap: 0.75rem;
+}
+
+.shinobi-v2-panel {
+  padding: 0.85rem;
+}
+
+.shinobi-v2-panel h2,
+.shinobi-v2-subpanel h3 {
+  margin: 0 0 0.65rem;
+  color: var(--v2-gold);
+  border-bottom: 1px solid rgba(201, 163, 93, 0.28);
+  text-transform: uppercase;
+}
+
+.shinobi-v2-subpanel {
+  margin-top: 0.75rem;
+  padding: 0.65rem;
+}
+
+.shinobi-v2-data-grid,
+.shinobi-v2-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(10rem, 1fr));
+  gap: 0.45rem;
+}
+
+.shinobi-v2-data-grid div {
+  padding: 0.45rem;
+  border: 1px solid rgba(201, 163, 93, 0.22);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.shinobi-v2-data-grid strong {
+  display: block;
+  color: var(--v2-muted);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+}
+
+.shinobi-v2-data-grid span {
+  display: block;
+  margin-top: 0.15rem;
+  font-weight: 700;
+}
+
+.shinobi-v2-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.65rem;
+}
+
+.shinobi-v2-list strong {
+  color: var(--v2-gold);
+}
+
+.shinobi-v2-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.shinobi-v2-action-row span {
+  padding: 0.45rem 0.7rem;
+  border: 1px solid rgba(201, 163, 93, 0.26);
+  background: rgba(0, 0, 0, 0.28);
+  font-weight: 800;
+}
+
+.shinobi-v2-action-row span.is-available {
+  color: #ddffdf;
+  border-color: rgba(76, 154, 97, 0.65);
+  background: rgba(30, 96, 51, 0.36);
+}
+
+.shinobi-v2-action-row span.is-spent {
+  color: #ffd0c7;
+  border-color: rgba(159, 39, 37, 0.5);
+  background: rgba(96, 24, 24, 0.32);
+}
+
+.shinobi-v2-technique-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 0.45rem;
+}
+
+.shinobi-v2-technique-list article {
+  padding: 0.5rem;
+  border: 1px solid rgba(201, 163, 93, 0.22);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.shinobi-v2-technique-list strong,
+.shinobi-v2-technique-list span {
+  display: block;
+}
+
+.shinobi-v2-technique-list span {
+  color: var(--v2-muted);
+  font-size: 0.75rem;
+}
+
+.shinobi-v2-form-grid label,
+.naruto-25e-shinobi-sheet-v2 label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  color: var(--v2-muted);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.naruto-25e-shinobi-sheet-v2 textarea {
+  min-height: 5.5rem;
+  margin-bottom: 0.55rem;
+}
+
+.shinobi-v2-muted {
+  color: var(--v2-muted);
+  font-style: italic;
+}
+
+.shinobi-v2-warning {
+  margin-top: 0.65rem;
+  padding: 0.5rem;
+  border: 1px solid rgba(226, 132, 59, 0.55);
+  color: #ffd9b5;
+  background: rgba(116, 61, 18, 0.34);
+}
+
+@media (max-width: 980px) {
+  .shinobi-v2-resource-bar,
+  .shinobi-v2-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .shinobi-v2-header {
+    grid-template-columns: 1fr;
+  }
+
+  .shinobi-v2-portrait-column {
+    align-items: center;
+  }
+
+  .shinobi-v2-title-row,
+  .shinobi-v2-identity-grid,
+  .shinobi-v2-data-grid,
+  .shinobi-v2-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .shinobi-v2-info-pill.is-wide {
+    grid-column: auto;
+  }
+}
+
+/* ----------------------------------------- */
+/* Passe 2 — Résumé et Personnage            */
+/* ----------------------------------------- */
+
+.shinobi-v2-summary-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.shinobi-v2-summary-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.12;
+}
+
+.shinobi-v2-summary-card.is-identity::before {
+  background: radial-gradient(circle at top right, rgba(201, 163, 93, 0.55), transparent 16rem);
+}
+
+.shinobi-v2-summary-card.is-combat::before {
+  background: radial-gradient(circle at top right, rgba(159, 39, 37, 0.65), transparent 16rem);
+}
+
+.shinobi-v2-summary-card.is-equipment::before {
+  background: radial-gradient(circle at top right, rgba(130, 116, 92, 0.55), transparent 16rem);
+}
+
+.shinobi-v2-summary-card.is-techniques::before {
+  background: radial-gradient(circle at top right, rgba(45, 134, 211, 0.45), transparent 16rem);
+}
+
+.shinobi-v2-summary-card.is-creation::before {
+  background: radial-gradient(circle at top right, rgba(76, 154, 97, 0.45), transparent 16rem);
+}
+
+.shinobi-v2-nindo-box {
+  margin-top: 0.75rem;
+  padding: 0.65rem;
+  border: 1px solid rgba(201, 163, 93, 0.28);
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.shinobi-v2-nindo-box strong {
+  display: block;
+  color: var(--v2-gold);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.shinobi-v2-nindo-box p {
+  margin: 0.35rem 0 0;
+  color: var(--v2-text);
+  font-style: italic;
+}
+
+.shinobi-v2-health-segments.is-summary {
+  margin-top: 0.75rem;
+}
+
+.shinobi-v2-technique-family-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  gap: 0.45rem;
+  margin-top: 0.55rem;
+}
+
+.shinobi-v2-technique-family-summary div {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.45rem;
+  border: 1px solid rgba(201, 163, 93, 0.22);
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.shinobi-v2-technique-family-summary strong {
+  color: var(--v2-muted);
+  font-size: 0.72rem;
+}
+
+.shinobi-v2-technique-family-summary span {
+  color: var(--v2-gold);
+  font-weight: 800;
+}
+
+.shinobi-v2-ok {
+  margin-top: 0.65rem;
+  padding: 0.5rem;
+  border: 1px solid rgba(76, 154, 97, 0.58);
+  color: #d8ffdd;
+  background: rgba(30, 96, 51, 0.28);
+}
+
+.shinobi-v2-form-grid input {
+  min-height: 2rem;
+}
+
+.shinobi-v2-panel > label {
+  margin-top: 0.65rem;
+}
+
+.shinobi-v2-panel textarea {
+  min-height: 6.25rem;
+}
+
+/* ----------------------------------------- */
+/* Passe 3 — Combat / Techniques / Inventaire */
+/* ----------------------------------------- */
+
+.shinobi-v2-button-row,
+.shinobi-v2-button-column {
+  display: flex;
+  gap: 0.45rem;
+}
+
+.shinobi-v2-button-row {
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 0.65rem;
+}
+
+.shinobi-v2-button-column {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.naruto-25e-shinobi-sheet-v2 button {
+  border: 1px solid rgba(201, 163, 93, 0.36);
+  color: var(--v2-text);
+  background: rgba(75, 35, 30, 0.72);
+  font-weight: 800;
+}
+
+.naruto-25e-shinobi-sheet-v2 button:hover {
+  filter: brightness(1.08);
+}
+
+.naruto-25e-shinobi-sheet-v2 button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.shinobi-v2-combat-main {
+  grid-row: span 2;
+}
+
+.shinobi-v2-card-list,
+.shinobi-v2-style-list {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 0.65rem;
+}
+
+.shinobi-v2-item-card,
+.shinobi-v2-style-list article {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.7rem;
+  align-items: center;
+  padding: 0.65rem;
+  border: 1px solid rgba(201, 163, 93, 0.24);
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.shinobi-v2-item-card.is-equipped,
+.shinobi-v2-item-card.is-active,
+.shinobi-v2-technique-list article.is-active {
+  border-color: rgba(76, 154, 97, 0.65);
+  background:
+    linear-gradient(90deg, rgba(35, 104, 58, 0.24), transparent 50%),
+    rgba(0, 0, 0, 0.22);
+}
+
+.shinobi-v2-item-card strong,
+.shinobi-v2-style-list strong {
+  display: block;
+  color: var(--v2-text);
+}
+
+.shinobi-v2-item-card span,
+.shinobi-v2-style-list span,
+.shinobi-v2-item-card small,
+.shinobi-v2-style-list small {
+  display: block;
+  color: var(--v2-muted);
+  font-size: 0.75rem;
+}
+
+.shinobi-v2-style-list article {
+  grid-template-columns: 1fr;
+}
+
+.shinobi-v2-technique-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.7rem;
+  align-items: start;
+}
+
+.shinobi-v2-technique-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.5rem;
+}
+
+.shinobi-v2-technique-meta span {
+  display: inline-flex;
+  padding: 0.18rem 0.45rem;
+  border: 1px solid rgba(201, 163, 93, 0.22);
+  color: var(--v2-muted);
+  background: rgba(0, 0, 0, 0.24);
+  font-size: 0.72rem;
+}
+
+.shinobi-v2-technique-effect {
+  margin: 0.55rem 0 0;
+  padding: 0.55rem;
+  border-left: 3px solid rgba(201, 163, 93, 0.45);
+  color: var(--v2-muted);
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.shinobi-v2-ryo-display {
+  display: flex;
+  gap: 0.45rem;
+  align-items: baseline;
+  margin-bottom: 0.65rem;
+  padding: 0.75rem;
+  border: 1px solid rgba(201, 163, 93, 0.28);
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.shinobi-v2-ryo-display strong {
+  color: var(--v2-gold);
+  font-size: 2rem;
+}
+
+.shinobi-v2-ryo-display span {
+  color: var(--v2-muted);
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.shinobi-v2-ryo-controls {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.shinobi-v2-inventory-group {
+  margin-top: 0.75rem;
+}
+
+.shinobi-v2-inventory-table {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.shinobi-v2-inventory-row {
+  display: grid;
+  grid-template-columns: minmax(12rem, 1.35fr) 4rem 5rem 5rem minmax(7rem, 0.8fr) minmax(10rem, 1fr) minmax(8rem, 0.85fr) 2.4rem;
+  gap: 0.35rem;
+  align-items: center;
+  padding: 0.35rem;
+  border: 1px solid rgba(201, 163, 93, 0.18);
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.shinobi-v2-inventory-row.is-header {
+  color: var(--v2-gold);
+  background: rgba(0, 0, 0, 0.36);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.shinobi-v2-inventory-row input,
+.shinobi-v2-inventory-row select {
+  min-width: 0;
+}
+
+.shinobi-v2-inventory-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.shinobi-v2-inventory-actions button {
+  padding: 0.2rem 0.35rem;
+  font-size: 0.72rem;
+}
+
+@media (max-width: 1080px) {
+  .shinobi-v2-inventory-row {
+    grid-template-columns: 1fr 4rem 5rem 5rem;
+  }
+
+  .shinobi-v2-inventory-row > *:nth-child(n+5) {
+    grid-column: span 2;
+  }
+
+  .shinobi-v2-technique-header,
+  .shinobi-v2-item-card {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ----------------------------------------- */
+/* Passe 4 — Lignée / Progression            */
+/* ----------------------------------------- */
+
+.shinobi-v2-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.65rem;
+}
+
+.shinobi-v2-chip-list strong {
+  flex-basis: 100%;
+  color: var(--v2-gold);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.shinobi-v2-chip-list span {
+  display: inline-flex;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid rgba(201, 163, 93, 0.26);
+  color: var(--v2-text);
+  background: rgba(0, 0, 0, 0.24);
+  font-size: 0.75rem;
+}
+
+.shinobi-v2-checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 0.45rem;
+}
+
+.shinobi-v2-checkbox-grid label,
+.shinobi-v2-eye-card label {
+  padding: 0.45rem;
+  border: 1px solid rgba(201, 163, 93, 0.18);
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.shinobi-v2-checkbox-grid input[type="checkbox"],
+.shinobi-v2-eye-card input[type="checkbox"] {
+  width: auto;
+  margin-right: 0.35rem;
+}
+
+.shinobi-v2-eye-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(18rem, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.shinobi-v2-eye-card {
+  padding: 0.75rem;
+  border: 1px solid rgba(201, 163, 93, 0.25);
+  background:
+    radial-gradient(circle at top right, rgba(150, 30, 30, 0.18), transparent 12rem),
+    rgba(0, 0, 0, 0.2);
+}
+
+.shinobi-v2-eye-card h4 {
+  margin: 0 0 0.55rem;
+  color: var(--v2-gold);
+  text-transform: uppercase;
+}
+
+.shinobi-v2-lineage-track {
+  margin-top: 0.85rem;
+}
+
+.shinobi-v2-lineage-track h3 {
+  margin: 0 0 0.65rem;
+  color: var(--v2-gold);
+  border-bottom: 1px solid rgba(201, 163, 93, 0.24);
+  text-transform: uppercase;
+}
+
+.shinobi-v2-lineage-ranks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  gap: 0.55rem;
+}
+
+.shinobi-v2-lineage-rank {
+  padding: 0.65rem;
+  border: 1px solid rgba(201, 163, 93, 0.22);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.shinobi-v2-lineage-rank.is-unlocked {
+  border-color: rgba(76, 154, 97, 0.58);
+  background:
+    linear-gradient(90deg, rgba(35, 104, 58, 0.18), transparent 60%),
+    rgba(0, 0, 0, 0.2);
+}
+
+.shinobi-v2-lineage-rank.is-current {
+  outline: 1px solid rgba(201, 163, 93, 0.58);
+}
+
+.shinobi-v2-lineage-rank.is-narrative-locked {
+  border-color: rgba(226, 132, 59, 0.55);
+}
+
+.shinobi-v2-lineage-rank header {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.45rem;
+}
+
+.shinobi-v2-lineage-rank header strong {
+  color: var(--v2-text);
+}
+
+.shinobi-v2-lineage-rank header span {
+  color: var(--v2-muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.shinobi-v2-lineage-feature {
+  margin-top: 0.45rem;
+  padding: 0.45rem;
+  border-left: 3px solid rgba(201, 163, 93, 0.35);
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.shinobi-v2-lineage-feature strong,
+.shinobi-v2-lineage-feature span,
+.shinobi-v2-lineage-feature p {
+  display: block;
+}
+
+.shinobi-v2-lineage-feature span {
+  color: var(--v2-muted);
+  font-size: 0.72rem;
+}
+
+.shinobi-v2-lineage-feature p {
+  margin: 0.25rem 0 0;
+  color: var(--v2-muted);
+}
+
+.shinobi-v2-rank-checks {
+  display: grid;
+  gap: 0.45rem;
+  margin-top: 0.75rem;
+}
+
+.shinobi-v2-rank-checks h3 {
+  margin: 0;
+  color: var(--v2-gold);
+  text-transform: uppercase;
+}
+
+.shinobi-v2-rank-check {
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  gap: 0.55rem;
+  align-items: center;
+  padding: 0.5rem;
+  border: 1px solid rgba(201, 163, 93, 0.22);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.shinobi-v2-rank-check > span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.65rem;
+  height: 1.65rem;
+  border-radius: 999px;
+  font-weight: 900;
+}
+
+.shinobi-v2-rank-check.is-passed > span {
+  color: #d8ffdd;
+  background: rgba(30, 96, 51, 0.72);
+}
+
+.shinobi-v2-rank-check.is-failed > span {
+  color: #ffd0c7;
+  background: rgba(96, 24, 24, 0.72);
+}
+
+.shinobi-v2-rank-check small {
+  display: block;
+  color: var(--v2-muted);
+}
+
+.shinobi-v2-mission-table,
+.shinobi-v2-skill-table {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.shinobi-v2-mission-row {
+  display: grid;
+  grid-template-columns: 1fr 6rem 6rem;
+  gap: 0.35rem;
+  align-items: center;
+  padding: 0.35rem;
+  border: 1px solid rgba(201, 163, 93, 0.16);
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.shinobi-v2-mission-row.is-header,
+.shinobi-v2-skill-row.is-header {
+  color: var(--v2-gold);
+  background: rgba(0, 0, 0, 0.36);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.shinobi-v2-bases-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: 0.65rem;
+}
+
+.shinobi-v2-base-card {
+  padding: 0.65rem;
+  border: 1px solid rgba(201, 163, 93, 0.24);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.shinobi-v2-base-card.has-effective-lineage {
+  border-color: rgba(226, 132, 59, 0.5);
+}
+
+.shinobi-v2-base-card header {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.45rem;
+  margin-bottom: 0.45rem;
+}
+
+.shinobi-v2-base-card header strong {
+  color: var(--v2-gold);
+}
+
+.shinobi-v2-base-card small {
+  display: block;
+  margin-top: 0.45rem;
+  color: var(--v2-muted);
+}
+
+.shinobi-v2-base-controls {
+  display: grid;
+  grid-template-columns: 2.2rem 1fr 2.2rem;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.shinobi-v2-base-controls span {
+  display: flex;
+  justify-content: center;
+  padding: 0.35rem;
+  border: 1px solid rgba(201, 163, 93, 0.18);
+  background: rgba(0, 0, 0, 0.2);
+  font-weight: 800;
+}
+
+.shinobi-v2-skill-row {
+  display: grid;
+  grid-template-columns: minmax(12rem, 1.2fr) 6rem 5rem 5rem 5rem minmax(10rem, 1fr) minmax(8rem, 0.8fr) 5rem;
+  gap: 0.35rem;
+  align-items: center;
+  padding: 0.35rem;
+  border: 1px solid rgba(201, 163, 93, 0.16);
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.shinobi-v2-skill-row.is-unowned {
+  opacity: 0.52;
+}
+
+.shinobi-v2-skill-row em {
+  display: inline-flex;
+  margin: 0.1rem;
+  padding: 0.1rem 0.25rem;
+  border: 1px solid rgba(201, 163, 93, 0.18);
+  color: var(--v2-muted);
+  background: rgba(0, 0, 0, 0.18);
+  font-style: normal;
+  font-size: 0.7rem;
+}
+
+.shinobi-v2-skill-controls {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.shinobi-v2-skill-controls button {
+  min-width: 2rem;
+  padding: 0.2rem;
+}
+
+@media (max-width: 1080px) {
+  .shinobi-v2-eye-grid,
+  .shinobi-v2-lineage-ranks {
+    grid-template-columns: 1fr;
+  }
+
+  .shinobi-v2-skill-row {
+    grid-template-columns: 1fr 5rem 5rem 5rem;
+  }
+
+  .shinobi-v2-skill-row > *:nth-child(n+5) {
+    grid-column: span 2;
+  }
+}

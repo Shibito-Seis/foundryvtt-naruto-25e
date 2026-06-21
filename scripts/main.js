@@ -1,6 +1,7 @@
 import { Naruto25eActor } from "./documents/actor.js";
 import { Naruto25eItem } from "./documents/item.js";
 import { Naruto25eShinobiSheet } from "./sheets/shinobi-sheet.js";
+import { Naruto25eShinobiSheetV2 } from "./sheets/shinobi-sheet-v2.js";
 import { Naruto25eItemSheet } from "./sheets/item-sheet.js";
 import {
   autoImportMissingNaruto25eDataPacks,
@@ -240,6 +241,12 @@ Hooks.once("init", async function () {
   Actors.registerSheet("naruto-25e", Naruto25eShinobiSheet, {
     types: ["shinobi"],
     makeDefault: true
+  });
+
+  Actors.registerSheet("naruto-25e", Naruto25eShinobiSheetV2, {
+    types: ["shinobi"],
+    label: "Fiche Shinobi V2",
+    makeDefault: false
   });
 
   Items.unregisterSheet("core", ItemSheet);
