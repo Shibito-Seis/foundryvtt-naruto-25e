@@ -857,3 +857,87 @@
 .naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main > .shinobimancer-footer > * {
   z-index: 6;
 }
+
+/* ----------------------------------------- */
+/* 0.1.43.8 — Recadrage visuel Shinobimancer */
+/* ----------------------------------------- */
+
+/*
+  Après test :
+  - l'étiquette doit sembler suspendue au rouleau haut ;
+  - les étapes doivent redescendre dans le rouleau vertical ;
+  - le contenu central doit mieux respirer dans le parchemin.
+*/
+
+/* Le rouleau d'étapes reste assez long, mais son contenu descend. */
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main .shinobimancer-sidebar {
+  padding-top: 3.35rem;
+  padding-right: 0.75rem;
+  padding-left: 0.75rem;
+  padding-bottom: 7.75rem;
+}
+
+/* Le titre "Étapes" ne doit plus flotter dans le haut du rouleau. */
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main .shinobimancer-binding-title {
+  margin-bottom: 0.7rem;
+  padding-left: 0.25rem;
+}
+
+/* Les cartes d'étapes descendent et respirent mieux dans le parchemin vertical. */
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main .shinobimancer-step-list {
+  gap: 0.55rem;
+  padding-bottom: 5.25rem;
+}
+
+/*
+  Le tag doit être perçu comme suspendu au rouleau haut.
+  On le remonte fortement et on le rapproche du bord gauche du dossier.
+*/
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main .shinobimancer-layout::after {
+  top: 0.05rem;
+  left: calc(var(--shinobi-step-width) - 2.25rem);
+  width: 3.85rem;
+  height: 17.9rem;
+  z-index: 18;
+}
+
+/*
+  Le dossier central garde le même asset,
+  mais son contenu est un peu mieux posé dans la surface parcheminée.
+*/
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-dossier-frame {
+  padding-top: calc(var(--shinobi-top-scroll-height) + 0.85rem);
+  padding-right: 1.25rem;
+  padding-left: 1.25rem;
+  padding-bottom: 0.75rem;
+}
+
+/* Le contenu principal ne doit pas coller au bord gauche du parchemin. */
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-dossier-frame > .shinobimancer-content {
+  padding: 0.75rem 1.05rem 0.95rem;
+}
+
+/* Le résumé reste lisible mais moins collé au bord droit. */
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-dossier-frame > .shinobimancer-summary {
+  padding: 0.75rem 1rem 0.95rem 1.1rem;
+}
+
+/* La page-header prend un peu moins de place verticale et s'inscrit mieux dans le corps. */
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-page-header {
+  margin-bottom: 0.65rem;
+  padding: 0.75rem 0.9rem;
+}
+
+/* Les panneaux internes restent transparents mais un peu mieux contenus. */
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-panel {
+  margin-bottom: 0.75rem;
+}
+
+/*
+  Le footer reste proche du corps, sans trop masquer le bas du contenu.
+  On garde l'esprit "boutons posés sur le rouleau".
+*/
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main > .shinobimancer-footer {
+  margin-top: -1.25rem;
+  padding-top: 1.45rem;
+}

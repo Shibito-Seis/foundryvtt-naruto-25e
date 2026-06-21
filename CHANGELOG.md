@@ -2,6 +2,24 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.43.8 - Recadrage visuel Shinobimancer
+
+### Modifié
+
+- Repositionnement de l’étiquette suspendue afin qu’elle semble davantage accrochée au rouleau supérieur.
+- Redescente du contenu de la colonne d’étapes pour éviter que les premières étapes mordent sur le haut du rouleau vertical.
+- Recadrage léger du dossier central :
+  - plus d’air sous le rouleau supérieur ;
+  - contenu principal légèrement recentré dans le parchemin ;
+  - résumé permanent mieux calé dans le cadre.
+- Ajustement du footer parchemin pour conserver son alignement avec le corps central.
+
+### Notes
+
+- Aucun changement de logique.
+- Aucun changement de template.
+- Correctif CSS uniquement sur la surcouche maquette.
+
 ## 0.1.43.7 - Ajustements placement Shinobimancer
 
 ### Modifié
