@@ -693,3 +693,79 @@
     left: 6.5rem;
   }
 }
+
+/* ----------------------------------------- */
+/* 0.1.43.6 — Ajustements assets graphiste   */
+/* ----------------------------------------- */
+
+/*
+  Correctifs visuels après test :
+  - le footer doit toucher davantage le corps parchemin ;
+  - la colonne d'étapes doit être assez haute pour couvrir tous les pas ;
+  - l'étiquette suspendue doit passer au-dessus des calques voisins.
+*/
+
+/* La colonne d'étapes doit avoir assez de matière verticale pour les 9 étapes. */
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main .shinobimancer-sidebar {
+  z-index: 2;
+  min-height: max(100%, 44rem);
+  padding-bottom: 2.8rem;
+  background-size: 100% 100%;
+}
+
+/* L'étiquette doit être devant la séparation entre colonne et dossier. */
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-dossier-frame::after {
+  z-index: 5;
+  top: 1.05rem;
+  left: -2.8rem;
+  width: 3.7rem;
+  height: 18.5rem;
+}
+
+/* Le dossier central reste sous l'étiquette, mais au-dessus du fond parchemin. */
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-dossier-frame > .shinobimancer-content,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-dossier-frame > .shinobimancer-summary {
+  z-index: 2;
+}
+
+/* Le bas du corps et le footer doivent former un seul ensemble visuel. */
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main > .shinobimancer-footer {
+  margin-top: -0.65rem;
+  padding-top: 1.35rem;
+  background: transparent;
+}
+
+/* On force vraiment les anciens fonds éventuels du footer à disparaître. */
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main > .shinobimancer-footer,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice > .shinobimancer-footer {
+  border-color: transparent;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+/* Le rouleau bas reste le seul vrai fond visible du footer. */
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main > .shinobimancer-footer::before,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice > .shinobimancer-footer::before {
+  z-index: 0;
+  opacity: 1;
+}
+
+/* Les contrôles restent posés au-dessus du parchemin. */
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-main > .shinobimancer-footer > *,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice > .shinobimancer-footer > * {
+  z-index: 2;
+}
+
+/* Le footer de l'écran de choix doit lui aussi éviter l'impression de bande séparée. */
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice > .shinobimancer-footer {
+  margin-top: -0.45rem;
+  background: transparent;
+}
+
+/* Un peu moins de fond sur les panneaux pour laisser respirer le parchemin central. */
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-panel,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-summary,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice-intro,
+.naruto-25e.shinobimancer-maquette-v2 .shinobimancer-choice-card {
+  background-color: rgba(174, 155, 121, 0.08);
+}

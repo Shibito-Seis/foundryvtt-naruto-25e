@@ -2,6 +2,22 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.43.6 - Ajustements assets Shinobimancer
+
+### Modifié
+
+- Ajustement du cadre visuel du Shinobimancer après intégration des nouveaux assets graphiste.
+- Le footer parchemin est rapproché du corps central pour réduire la bande de fond visible entre le dossier et le rouleau bas.
+- Le rouleau vertical des étapes reçoit une hauteur minimale plus importante afin de mieux couvrir toute la colonne.
+- L’étiquette suspendue `top-tag.png` passe au-dessus des autres éléments visuels.
+- Le fond du footer reste transparent : seul le rouleau bas sert de support graphique.
+
+### Notes
+
+- Aucun changement de logique.
+- Aucun changement de template.
+- Correctif CSS uniquement sur la surcouche maquette.
+
 ## 0.1.43.5 - Shinobimancer : intégration propre des nouveaux assets de dossier
 
 ### Modifié
