@@ -173,10 +173,43 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
       this.render(false);
     });
 
+    html.find(".combat-spend-simple-action").on("click", async (event) => {
+      event.preventDefault();
+
+      await this.actor.spendCombatAction("simple", "Action simple manuelle");
+      this.render(false);
+    });
+
+    html.find(".combat-spend-complex-action").on("click", async (event) => {
+      event.preventDefault();
+
+      await this.actor.spendCombatAction("complex", "Action complexe manuelle");
+      this.render(false);
+    });
+
     html.find(".combat-delay-complex-action").on("click", async (event) => {
       event.preventDefault();
 
       await this.actor.delayComplexAction();
+      this.render(false);
+    });
+
+    html.find(".combat-spend-delayed-action").on("click", async (event) => {
+      event.preventDefault();
+
+      await this.actor.spendDelayedAction("Action retardée manuelle");
+      this.render(false);
+    });
+
+    html.find(".combat-reset-turn-actions").on("click", async (event) => {
+      event.preventDefault();
+
+      if (!game.user?.isGM) return;
+
+      await this.actor.resetCombatCounters("turn", {
+        notify: true,
+        requireGM: true
+      });
       this.render(false);
     });
 

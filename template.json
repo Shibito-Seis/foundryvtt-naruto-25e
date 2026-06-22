@@ -257,6 +257,10 @@
             "simpleAvailable": true,
             "complexAvailable": true,
             "delayedAvailable": false,
+            "delayedTurnGraceUsed": false,
+            "delayedCreatedRound": 0,
+            "delayedCreatedTurn": 0,
+            "delayedCreatedCombatantId": "",
             "notes": ""
           },
           "counters": {

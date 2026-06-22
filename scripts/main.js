@@ -409,6 +409,13 @@ Hooks.on("updateCombat", async function (combat, changed) {
 
   if (!actor || actor.type !== "shinobi") return;
 
+  if (turnChanged && typeof actor.resetCombatCounters === "function") {
+    await actor.resetCombatCounters("turn", {
+      notify: false,
+      requireGM: false
+    });
+  }
+
   if (typeof actor.expireNindoAwakeningAtTurnStart === "function") {
     await actor.expireNindoAwakeningAtTurnStart({
       combat,

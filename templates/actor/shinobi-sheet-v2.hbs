@@ -376,11 +376,44 @@
           <div class="shinobi-v2-button-row">
             <button
               type="button"
+              class="combat-spend-simple-action"
+              {{#unless v2.resources.actions.simple}}disabled{{/unless}}
+            >
+              Dépenser simple
+            </button>
+
+            <button
+              type="button"
+              class="combat-spend-complex-action"
+              {{#unless v2.resources.actions.complex}}disabled{{/unless}}
+            >
+              Dépenser complexe
+            </button>
+
+            <button
+              type="button"
               class="combat-delay-complex-action"
               {{#unless v2.resources.actions.complex}}disabled{{/unless}}
             >
-              Reporter l’action complexe
+              Reporter complexe
             </button>
+
+            <button
+              type="button"
+              class="combat-spend-delayed-action"
+              {{#unless v2.resources.actions.delayed}}disabled{{/unless}}
+            >
+              Utiliser retardée
+            </button>
+
+            {{#if isGM}}
+              <button
+                type="button"
+                class="combat-reset-turn-actions"
+              >
+                Reset tour
+              </button>
+            {{/if}}
           </div>
 
           <div class="shinobi-v2-form-grid">

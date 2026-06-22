@@ -2,6 +2,44 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.46 - Actions V1 : tour, retardée et attaques
+
+### Corrigé
+
+- Correction de la boucle de consommation des actions complexes :
+  - action complexe normale utilisée en priorité ;
+  - action retardée utilisée si l’action complexe normale n’est plus disponible ;
+  - action d’Éveil proposée seulement si aucune action complexe ni retardée n’est disponible.
+- Correction des attaques / utilisations d’armes en combat :
+  - les attaques d’armes consomment désormais une action complexe, et non une action simple.
+- Correction du reset des actions :
+  - les actions simple et complexe sont restaurées au début du tour du personnage actif ;
+  - le reset global de round ne restaure plus les actions de tous les combattants.
+- L’action retardée devient réellement jouable :
+  - reporter son action complexe crée une action retardée ;
+  - l’action retardée peut être utilisée jusqu’au prochain tour du personnage inclus ;
+  - elle expire ensuite si elle n’a pas été utilisée.
+- Les objets d’inventaire utilisés hors attaque consomment une action simple :
+  - consommation d’un consommable ;
+  - utilisation d’une charge d’objet.
+- Lâcher un objet reste une action gratuite.
+
+### Ajouté
+
+- Ajout de boutons manuels dans l’onglet Combat de la fiche Shinobi V2 :
+  - dépenser une action simple ;
+  - dépenser une action complexe ;
+  - reporter une action complexe ;
+  - utiliser une action retardée ;
+  - reset MJ des actions du tour.
+
+### Notes
+
+- Les actions de lignée restent séparées des actions simples / complexes.
+- Les actions de lignée continuent d’utiliser leur propre compteur ou une action d’Éveil si nécessaire.
+- Aucun changement Mangekyō.
+- Aucun changement Roue Narrative ou Relations PNJ dans cette version.
+
 ## 0.1.45.5 - Hotfix header Éveil V2
 
 ### Corrigé

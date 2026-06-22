@@ -1932,6 +1932,12 @@ export class Naruto25eActor extends Actor {
         updateData["system.combat.actions.notes"] = note;
       } else if (type === "complex") {
         if (!Boolean(actions.complexAvailable)) {
+          if (Boolean(actions.delayedAvailable)) {
+            return this.spendDelayedAction(label, {
+              notify: options.notify
+            });
+          }
+
           return this.spendNindoAwakeningAction(label, {
             actionType: "complex",
             confirm: options.confirmAwakening !== false,
@@ -1955,6 +1961,49 @@ export class Naruto25eActor extends Actor {
       return true;
     }
 
+    async spendDelayedAction(label = "Action retardée", options = {}) {
+      if (this.type !== "shinobi") return false;
+
+      const actions = this._getCombatActionState();
+
+      if (!Boolean(actions.delayedAvailable)) {
+        ui.notifications.warn(`${this.name} n’a pas d’action retardée disponible.`);
+        return false;
+      }
+
+      const note = this._buildCombatActionNotes(
+        actions.notes,
+        `${label} : action retardée utilisée`
+      );
+
+      await this.update({
+        "system.combat.actions.delayedAvailable": false,
+        "system.combat.actions.delayedTurnGraceUsed": false,
+        "system.combat.actions.delayedCreatedRound": 0,
+        "system.combat.actions.delayedCreatedTurn": 0,
+        "system.combat.actions.delayedCreatedCombatantId": "",
+        "system.combat.actions.notes": note
+      });
+
+      await ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor: this }),
+        content: `
+          <div class="naruto-roll-card">
+            <h2>Action retardée utilisée</h2>
+            <p><strong>${foundry.utils.escapeHTML?.(this.name) ?? this.name}</strong> utilise son action complexe retardée.</p>
+            <p><strong>Action :</strong> ${foundry.utils.escapeHTML?.(label) ?? label}</p>
+          </div>
+        `
+      });
+
+      if (options.notify !== false) {
+        ui.notifications.info(`${this.name} : action retardée consommée.`);
+      }
+
+      return true;
+    }
+
+
     async delayComplexAction() {
       if (this.type !== "shinobi") return false;
 
@@ -1962,6 +2011,11 @@ export class Naruto25eActor extends Actor {
 
       if (!Boolean(actions.complexAvailable)) {
         ui.notifications.warn(`${this.name} n’a plus d’action complexe à reporter.`);
+        return false;
+      }
+
+      if (Boolean(actions.delayedAvailable)) {
+        ui.notifications.warn(`${this.name} possède déjà une action retardée en réserve.`);
         return false;
       }
 
@@ -1973,6 +2027,10 @@ export class Naruto25eActor extends Actor {
       await this.update({
         "system.combat.actions.complexAvailable": false,
         "system.combat.actions.delayedAvailable": true,
+        "system.combat.actions.delayedTurnGraceUsed": false,
+        "system.combat.actions.delayedCreatedRound": Math.max(0, Number(game.combat?.round ?? 0)),
+        "system.combat.actions.delayedCreatedTurn": Math.max(0, Number(game.combat?.turn ?? 0)),
+        "system.combat.actions.delayedCreatedCombatantId": String(game.combat?.combatant?.id ?? ""),
         "system.combat.actions.notes": note
       });
 
@@ -1982,13 +2040,14 @@ export class Naruto25eActor extends Actor {
           <div class="naruto-roll-card">
             <h2>Action reportée</h2>
             <p><strong>${foundry.utils.escapeHTML?.(this.name) ?? this.name}</strong> reporte son action complexe.</p>
-            <p>Action complexe consommée. Action retardée disponible.</p>
+            <p>Action complexe consommée. Action retardée disponible jusqu’au prochain tour du personnage inclus.</p>
           </div>
         `
       });
 
       return true;
     }
+
 
     async useNindoAction(actionKey) {
       if (this.type !== "shinobi") return;
@@ -4432,7 +4491,18 @@ async decreaseBase(baseKey) {
     combat.actions.simpleAvailable = combat.actions.simpleAvailable !== false;
     combat.actions.complexAvailable = combat.actions.complexAvailable !== false;
     combat.actions.delayedAvailable = Boolean(combat.actions.delayedAvailable);
+    combat.actions.delayedTurnGraceUsed = Boolean(combat.actions.delayedTurnGraceUsed);
+    combat.actions.delayedCreatedRound = Math.max(0, Number(combat.actions.delayedCreatedRound ?? 0));
+    combat.actions.delayedCreatedTurn = Math.max(0, Number(combat.actions.delayedCreatedTurn ?? 0));
+    combat.actions.delayedCreatedCombatantId = String(combat.actions.delayedCreatedCombatantId ?? "");
     combat.actions.notes = combat.actions.notes ?? "";
+
+    if (!combat.actions.delayedAvailable) {
+      combat.actions.delayedTurnGraceUsed = false;
+      combat.actions.delayedCreatedRound = 0;
+      combat.actions.delayedCreatedTurn = 0;
+      combat.actions.delayedCreatedCombatantId = "";
+    }
 
     combat.counters = combat.counters ?? {};
     combat.counters.interceptions = combat.counters.interceptions ?? {};
@@ -6831,10 +6901,37 @@ async decreaseBase(baseKey) {
       updates["system.combat.counters.interceptions.tai.remaining"] = taiMax;
       updates["system.combat.counters.defenses.esquive.remaining"] = 1;
       updates["system.combat.counters.defenses.parade.remaining"] = 1;
+    }
+
+    if (scope === "turn") {
+      const actions = this._getCombatActionState();
+      const delayedAvailable = Boolean(actions.delayedAvailable);
+      const delayedGraceUsed = Boolean(actions.delayedTurnGraceUsed);
+
+      let keepDelayedAction = delayedAvailable;
+      let delayedNote = "";
+
+      if (delayedAvailable && delayedGraceUsed) {
+        keepDelayedAction = false;
+        delayedNote = "Action retardée expirée";
+      }
+
+      const nextNotes = delayedNote
+        ? this._buildCombatActionNotes(actions.notes, delayedNote)
+        : actions.notes ?? "";
+
       updates["system.combat.actions.simpleAvailable"] = true;
       updates["system.combat.actions.complexAvailable"] = true;
-      updates["system.combat.actions.delayedAvailable"] = false;
+      updates["system.combat.actions.delayedAvailable"] = keepDelayedAction;
+      updates["system.combat.actions.delayedTurnGraceUsed"] = keepDelayedAction;
+      updates["system.combat.actions.notes"] = nextNotes;
       updates["system.combat.counters.lineagePowers.usedThisTurn"] = false;
+
+      if (!keepDelayedAction) {
+        updates["system.combat.actions.delayedCreatedRound"] = 0;
+        updates["system.combat.actions.delayedCreatedTurn"] = 0;
+        updates["system.combat.actions.delayedCreatedCombatantId"] = "";
+      }
     }
 
     if (scope === "session") {
@@ -6844,16 +6941,28 @@ async decreaseBase(baseKey) {
       updates["system.combat.counters.lineagePowers.usedThisTurn"] = false;
     }
 
-    await this.update(updates);
+    if (!["round", "turn", "session"].includes(scope)) {
+      ui.notifications.warn(`Type de réinitialisation inconnu : ${scope}.`);
+      return;
+    }
+
+    if (Object.keys(updates).length > 0) {
+      await this.update(updates);
+    }
 
     if (notify && scope === "round") {
       ui.notifications.info("Compteurs de round réinitialisés.");
+    }
+
+    if (notify && scope === "turn") {
+      ui.notifications.info("Actions du tour réinitialisées.");
     }
 
     if (notify && scope === "session") {
       ui.notifications.info("Compteurs de session réinitialisés.");
     }
   }
+
 
   _prepareInventory(system) {
     if (!system.inventory) system.inventory = {};
@@ -8423,6 +8532,10 @@ async decreaseBase(baseKey) {
       return;
     }
 
+    const actionSpent = await this.spendCombatAction("simple", `${item.name} — utilisation d’une charge`);
+
+    if (!actionSpent) return;
+
     item.uses = {
       enabled: true,
       value: Math.max(0, currentUses - 1),
@@ -8959,7 +9072,7 @@ async decreaseBase(baseKey) {
       return null;
     }
 
-    const actionSpent = await this.spendCombatAction("simple", `${item.name} — utilisation`);
+    const actionSpent = await this.spendCombatAction("complex", `${item.name} — attaque / utilisation`);
 
     if (!actionSpent) return null;
 
@@ -9191,6 +9304,10 @@ async decreaseBase(baseKey) {
 
       notificationText = `${item.name} utilisé : +${regenGain} régénération active de Chakra.`;
     }
+
+    const actionSpent = await this.spendCombatAction("simple", `${item.name} — consommation`);
+
+    if (!actionSpent) return;
 
     if (effect.consumeOnUse) {
       item.quantity = Math.max(1, Number(item.quantity ?? 1)) - 1;
