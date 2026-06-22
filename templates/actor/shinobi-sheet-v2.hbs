@@ -1548,6 +1548,104 @@
           </section>
         </section>
 
+        <section class="shinobi-v2-panel shinobi-v2-narrative-arcs-panel">
+          <h2>Arcs narratifs</h2>
+
+          <div class="shinobi-v2-narrative-arcs-header">
+            <p class="shinobi-v2-muted">
+              {{v2.character.narrativeArcs.count}} / {{v2.character.narrativeArcs.max}} arcs narratifs.
+              Minimum {{v2.character.narrativeArcs.min}}, maximum {{v2.character.narrativeArcs.max}}.
+              La progression et le statut sont contrôlés par le MJ.
+            </p>
+
+            {{#if v2.character.narrativeArcs.canAdd}}
+              <button type="button" class="narrative-arc-add">
+                Ajouter un arc
+              </button>
+            {{/if}}
+          </div>
+
+          <div class="shinobi-v2-narrative-arcs-list">
+            {{#each v2.character.narrativeArcs.items as |arc|}}
+              <article class="shinobi-v2-narrative-arc is-{{arc.status}}">
+                <header class="shinobi-v2-narrative-arc-header">
+                  <label class="shinobi-v2-narrative-arc-title">
+                    Titre
+                    <input
+                      name="system.background.narrativeArcs.{{arc.index}}.title"
+                      type="text"
+                      value="{{arc.title}}"
+                    />
+                  </label>
+
+                  <label>
+                    Roue
+                    <select name="system.background.narrativeArcs.{{arc.index}}.wheelSize">
+                      <option value="3" {{#if (eq arc.wheelSize 3)}}selected{{/if}}>3 segments</option>
+                      <option value="5" {{#if (eq arc.wheelSize 5)}}selected{{/if}}>5 segments</option>
+                      <option value="7" {{#if (eq arc.wheelSize 7)}}selected{{/if}}>7 segments</option>
+                    </select>
+                  </label>
+
+                  <div class="shinobi-v2-narrative-arc-status">
+                    <strong>Statut</strong>
+                    {{#if @root.isGM}}
+                      <select class="narrative-arc-status-select" data-arc-id="{{arc.id}}">
+                        <option value="active" {{#if (eq arc.status "active")}}selected{{/if}}>Actif</option>
+                        <option value="completed" {{#if (eq arc.status "completed")}}selected{{/if}}>Terminé</option>
+                        <option value="abandoned" {{#if (eq arc.status "abandoned")}}selected{{/if}}>Abandonné</option>
+                      </select>
+                    {{else}}
+                      <span>{{arc.statusLabel}}</span>
+                    {{/if}}
+                  </div>
+
+                  {{#if @root.v2.character.narrativeArcs.canDelete}}
+                    <button
+                      type="button"
+                      class="narrative-arc-delete"
+                      data-arc-id="{{arc.id}}"
+                    >
+                      Supprimer
+                    </button>
+                  {{/if}}
+                </header>
+
+                <div class="shinobi-v2-narrative-wheel" title="Progression : {{arc.progress}} / {{arc.wheelSize}}">
+                  {{#each arc.segments as |segment|}}
+                    <button
+                      type="button"
+                      class="shinobi-v2-narrative-segment narrative-arc-segment {{#if segment.filled}}is-filled{{/if}}"
+                      data-arc-id="{{arc.id}}"
+                      data-progress="{{segment.value}}"
+                      data-current-progress="{{arc.progress}}"
+                      {{#unless @root.isGM}}disabled{{/unless}}
+                      title="Segment {{segment.value}} / {{arc.wheelSize}}"
+                    ></button>
+                  {{/each}}
+                </div>
+
+                <div class="shinobi-v2-form-grid">
+                  <label>
+                    Description
+                    <textarea name="system.background.narrativeArcs.{{arc.index}}.description">{{arc.description}}</textarea>
+                  </label>
+
+                  <label>
+                    Enjeu
+                    <textarea name="system.background.narrativeArcs.{{arc.index}}.stakes">{{arc.stakes}}</textarea>
+                  </label>
+                </div>
+
+                <label>
+                  Notes
+                  <textarea name="system.background.narrativeArcs.{{arc.index}}.notes">{{arc.notes}}</textarea>
+                </label>
+              </article>
+            {{/each}}
+          </div>
+        </section>
+
         <section class="shinobi-v2-panel">
           <h2>Doctrine et loyauté</h2>
 

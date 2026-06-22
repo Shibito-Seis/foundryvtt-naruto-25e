@@ -2,6 +2,36 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.47 - Roues narratives / Arcs narratifs V1
+
+### Ajouté
+
+- Ajout d’une vraie structure d’arcs narratifs sur les fiches Shinobi :
+  - minimum 3 arcs narratifs ;
+  - maximum 7 arcs narratifs ;
+  - roue à 3, 5 ou 7 segments par arc ;
+  - titre, description, enjeu et notes par arc ;
+  - statut d’arc : actif, terminé ou abandonné.
+- Ajout d’un bloc Arcs narratifs dans l’onglet Personnage de la fiche Shinobi V2.
+- Ajout de boutons pour ajouter ou supprimer un arc narratif dans les limites autorisées.
+
+### Modifié
+
+- L’ancienne structure `background.narrativeWheel` est conservée pour compatibilité, mais la V1 utilise désormais `background.narrativeArcs`.
+
+### Sécurité / droits
+
+- Le propriétaire de la fiche et le MJ peuvent renseigner les textes des arcs.
+- Seul le MJ peut modifier la progression des segments.
+- Seul le MJ peut modifier le statut d’un arc narratif.
+
+### Notes
+
+- Aucun changement Actions.
+- Aucun changement Mangekyō.
+- Aucun changement Relations PNJ.
+- Les Relations PNJ restent prévues pour `0.1.48`.
+
 ## 0.1.46 - Actions V1 : tour, retardée et attaques
 
 ### Corrigé

@@ -39,6 +39,13 @@ const NARUTO25E_STARTING_TECHNIQUES = {
   }
 };
 
+const NARUTO25E_NARRATIVE_ARC_LIMITS = {
+  min: 3,
+  max: 7,
+  wheelSizes: [3, 5, 7],
+  statuses: ["active", "completed", "abandoned"]
+};
+
 export class Naruto25eActor extends Actor {
   prepareDerivedData() {
     super.prepareDerivedData();
@@ -3199,7 +3206,185 @@ _prepareExperience(system) {
     system.background.narrativeWheel.arcs = system.background.narrativeWheel.arcs ?? "";
     system.background.narrativeWheel.balance = Number(system.background.narrativeWheel.balance ?? 0);
     system.background.narrativeWheel.notes = system.background.narrativeWheel.notes ?? "";
+
+    const rawArcs = Array.isArray(system.background.narrativeArcs)
+      ? system.background.narrativeArcs
+      : [];
+
+    const normalizedArcs = rawArcs
+      .slice(0, NARUTO25E_NARRATIVE_ARC_LIMITS.max)
+      .map((arc, index) => this._normalizeNarrativeArcData(arc, index));
+
+    while (normalizedArcs.length < NARUTO25E_NARRATIVE_ARC_LIMITS.min) {
+      normalizedArcs.push(this._getDefaultNarrativeArc(normalizedArcs.length));
+    }
+
+    system.background.narrativeArcs = normalizedArcs;
   }
+
+  _getDefaultNarrativeArc(index = 0, id = "") {
+    const arcNumber = Math.max(1, Number(index ?? 0) + 1);
+
+    return {
+      id: id || `arc-${arcNumber}`,
+      title: `Arc narratif ${arcNumber}`,
+      wheelSize: 3,
+      progress: 0,
+      status: "active",
+      description: "",
+      stakes: "",
+      notes: ""
+    };
+  }
+
+  _normalizeNarrativeArcData(arc = {}, index = 0) {
+    const fallback = this._getDefaultNarrativeArc(index);
+    const allowedWheelSizes = NARUTO25E_NARRATIVE_ARC_LIMITS.wheelSizes;
+    const wheelSize = Number(arc.wheelSize ?? fallback.wheelSize);
+    const normalizedWheelSize = allowedWheelSizes.includes(wheelSize) ? wheelSize : fallback.wheelSize;
+    const rawStatus = String(arc.status ?? fallback.status);
+    const status = NARUTO25E_NARRATIVE_ARC_LIMITS.statuses.includes(rawStatus)
+      ? rawStatus
+      : fallback.status;
+    const progress = Math.min(
+      Math.max(0, Number(arc.progress ?? fallback.progress)),
+      normalizedWheelSize
+    );
+
+    return {
+      id: String(arc.id ?? fallback.id) || fallback.id,
+      title: String(arc.title ?? fallback.title),
+      wheelSize: normalizedWheelSize,
+      progress,
+      status,
+      description: String(arc.description ?? ""),
+      stakes: String(arc.stakes ?? ""),
+      notes: String(arc.notes ?? "")
+    };
+  }
+
+  _canUserEditNarrativeArcs(user = game.user) {
+    return Boolean(user?.isGM) || Boolean(this.isOwner);
+  }
+
+  async addNarrativeArc() {
+    if (this.type !== "shinobi") return false;
+
+    if (!this._canUserEditNarrativeArcs()) {
+      ui.notifications.warn("Tu n’as pas les droits nécessaires pour modifier les arcs narratifs.");
+      return false;
+    }
+
+    const arcs = foundry.utils.deepClone(this.system.background?.narrativeArcs ?? []);
+
+    if (arcs.length >= NARUTO25E_NARRATIVE_ARC_LIMITS.max) {
+      ui.notifications.warn(`Maximum ${NARUTO25E_NARRATIVE_ARC_LIMITS.max} arcs narratifs.`);
+      return false;
+    }
+
+    const id = foundry.utils.randomID?.(8) ?? `arc-${Date.now()}`;
+    arcs.push(this._getDefaultNarrativeArc(arcs.length, id));
+
+    await this.update({
+      "system.background.narrativeArcs": arcs
+    });
+
+    return true;
+  }
+
+  async deleteNarrativeArc(arcId) {
+    if (this.type !== "shinobi") return false;
+
+    if (!this._canUserEditNarrativeArcs()) {
+      ui.notifications.warn("Tu n’as pas les droits nécessaires pour modifier les arcs narratifs.");
+      return false;
+    }
+
+    const id = String(arcId ?? "");
+    const arcs = foundry.utils.deepClone(this.system.background?.narrativeArcs ?? []);
+
+    if (arcs.length <= NARUTO25E_NARRATIVE_ARC_LIMITS.min) {
+      ui.notifications.warn(`Minimum ${NARUTO25E_NARRATIVE_ARC_LIMITS.min} arcs narratifs.`);
+      return false;
+    }
+
+    const nextArcs = arcs.filter((arc) => String(arc.id ?? "") !== id);
+
+    if (nextArcs.length === arcs.length) {
+      ui.notifications.warn("Arc narratif introuvable.");
+      return false;
+    }
+
+    await this.update({
+      "system.background.narrativeArcs": nextArcs
+    });
+
+    return true;
+  }
+
+  async updateNarrativeArcProgress(arcId, progress) {
+    if (this.type !== "shinobi") return false;
+
+    if (!game.user?.isGM) {
+      ui.notifications.warn("Seul le MJ peut modifier la progression des arcs narratifs.");
+      return false;
+    }
+
+    const id = String(arcId ?? "");
+    const arcs = foundry.utils.deepClone(this.system.background?.narrativeArcs ?? []);
+    const arc = arcs.find((entry) => String(entry.id ?? "") === id);
+
+    if (!arc) {
+      ui.notifications.warn("Arc narratif introuvable.");
+      return false;
+    }
+
+    const wheelSize = NARUTO25E_NARRATIVE_ARC_LIMITS.wheelSizes.includes(Number(arc.wheelSize ?? 3))
+      ? Number(arc.wheelSize ?? 3)
+      : 3;
+
+    arc.progress = Math.min(Math.max(0, Number(progress ?? 0)), wheelSize);
+
+    await this.update({
+      "system.background.narrativeArcs": arcs
+    });
+
+    return true;
+  }
+
+  async updateNarrativeArcStatus(arcId, status) {
+    if (this.type !== "shinobi") return false;
+
+    if (!game.user?.isGM) {
+      ui.notifications.warn("Seul le MJ peut modifier le statut des arcs narratifs.");
+      return false;
+    }
+
+    const id = String(arcId ?? "");
+    const nextStatus = String(status ?? "active");
+
+    if (!NARUTO25E_NARRATIVE_ARC_LIMITS.statuses.includes(nextStatus)) {
+      ui.notifications.warn(`Statut d’arc narratif invalide : ${nextStatus}.`);
+      return false;
+    }
+
+    const arcs = foundry.utils.deepClone(this.system.background?.narrativeArcs ?? []);
+    const arc = arcs.find((entry) => String(entry.id ?? "") === id);
+
+    if (!arc) {
+      ui.notifications.warn("Arc narratif introuvable.");
+      return false;
+    }
+
+    arc.status = nextStatus;
+
+    await this.update({
+      "system.background.narrativeArcs": arcs
+    });
+
+    return true;
+  }
+
 
   _clampNumber(value, min, max) {
     const number = Number(value ?? 0);

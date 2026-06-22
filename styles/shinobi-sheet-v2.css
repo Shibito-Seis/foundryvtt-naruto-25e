@@ -2130,3 +2130,128 @@
     inset 0 0 0.45rem rgba(121, 199, 255, 0.12),
     0 0 0.5rem rgba(143, 78, 255, 0.2);
 }
+
+/* ----------------------------------------- */
+/* 0.1.47 — Roues narratives V1              */
+/* ----------------------------------------- */
+
+.shinobi-v2-narrative-arcs-panel {
+  grid-column: 1 / -1;
+}
+
+.shinobi-v2-narrative-arcs-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.shinobi-v2-narrative-arcs-header p {
+  margin: 0;
+}
+
+.shinobi-v2-narrative-arcs-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+  gap: 0.75rem;
+}
+
+.shinobi-v2-narrative-arc {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 0.75rem;
+  border: 1px solid rgba(201, 163, 93, 0.32);
+  background:
+    linear-gradient(135deg, rgba(28, 22, 24, 0.92), rgba(9, 11, 18, 0.92));
+}
+
+.shinobi-v2-narrative-arc.is-completed {
+  border-color: rgba(93, 190, 116, 0.62);
+  box-shadow: inset 0 0 0.75rem rgba(76, 154, 97, 0.12);
+}
+
+.shinobi-v2-narrative-arc.is-abandoned {
+  opacity: 0.78;
+  border-color: rgba(155, 67, 67, 0.55);
+  background:
+    linear-gradient(135deg, rgba(45, 20, 20, 0.86), rgba(12, 10, 14, 0.94));
+}
+
+.shinobi-v2-narrative-arc-header {
+  display: grid;
+  grid-template-columns: minmax(12rem, 1fr) 8rem 8rem auto;
+  gap: 0.55rem;
+  align-items: end;
+}
+
+.shinobi-v2-narrative-arc-title {
+  min-width: 0;
+}
+
+.shinobi-v2-narrative-arc-status {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.shinobi-v2-narrative-arc-status strong {
+  color: var(--v2-muted);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+}
+
+.shinobi-v2-narrative-arc-status span {
+  min-height: 1.8rem;
+  padding: 0.35rem 0.45rem;
+  border: 1px solid rgba(201, 163, 93, 0.28);
+  background: rgba(0, 0, 0, 0.24);
+  font-weight: 800;
+}
+
+.shinobi-v2-narrative-wheel {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem;
+  border: 1px solid rgba(201, 163, 93, 0.22);
+  background: rgba(0, 0, 0, 0.24);
+}
+
+.shinobi-v2-narrative-segment {
+  width: 1.45rem;
+  height: 1.45rem;
+  min-height: 0;
+  padding: 0;
+  border-radius: 999px;
+  border-color: rgba(201, 163, 93, 0.55);
+  background:
+    radial-gradient(circle, rgba(18, 12, 10, 0.96), rgba(6, 6, 8, 0.96));
+}
+
+.shinobi-v2-narrative-segment.is-filled {
+  border-color: rgba(255, 226, 142, 0.92);
+  background:
+    radial-gradient(circle at 35% 28%, #fff3bf 0%, #d7a84f 38%, #7d3b1d 100%);
+  box-shadow:
+    0 0 0.45rem rgba(215, 168, 79, 0.4),
+    inset 0 0 0.35rem rgba(255, 247, 202, 0.22);
+}
+
+.shinobi-v2-narrative-segment:disabled {
+  cursor: default;
+}
+
+.shinobi-v2-narrative-arc textarea {
+  min-height: 4.5rem;
+}
+
+@media (max-width: 980px) {
+  .shinobi-v2-narrative-arc-header {
+    grid-template-columns: 1fr;
+  }
+}

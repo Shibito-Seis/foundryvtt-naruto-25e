@@ -374,6 +374,38 @@
           "unlockedByGM": false
         },
         "background": {
+          "narrativeArcs": [
+            {
+              "id": "arc-1",
+              "title": "Arc narratif 1",
+              "wheelSize": 3,
+              "progress": 0,
+              "status": "active",
+              "description": "",
+              "stakes": "",
+              "notes": ""
+            },
+            {
+              "id": "arc-2",
+              "title": "Arc narratif 2",
+              "wheelSize": 3,
+              "progress": 0,
+              "status": "active",
+              "description": "",
+              "stakes": "",
+              "notes": ""
+            },
+            {
+              "id": "arc-3",
+              "title": "Arc narratif 3",
+              "wheelSize": 3,
+              "progress": 0,
+              "status": "active",
+              "description": "",
+              "stakes": "",
+              "notes": ""
+            }
+          ],
           "narrativeWheel": {
             "arcs": "",
             "balance": 0,

@@ -213,6 +213,48 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
       this.render(false);
     });
 
+    html.find(".narrative-arc-add").on("click", async (event) => {
+      event.preventDefault();
+
+      await this.actor.addNarrativeArc();
+      this.render(false);
+    });
+
+    html.find(".narrative-arc-delete").on("click", async (event) => {
+      event.preventDefault();
+
+      const arcId = event.currentTarget?.dataset?.arcId ?? "";
+
+      await this.actor.deleteNarrativeArc(arcId);
+      this.render(false);
+    });
+
+    html.find(".narrative-arc-segment").on("click", async (event) => {
+      event.preventDefault();
+
+      if (!game.user?.isGM) return;
+
+      const arcId = event.currentTarget?.dataset?.arcId ?? "";
+      const segment = Math.max(0, Number(event.currentTarget?.dataset?.progress ?? 0));
+      const currentProgress = Math.max(0, Number(event.currentTarget?.dataset?.currentProgress ?? 0));
+      const nextProgress = currentProgress >= segment ? Math.max(0, segment - 1) : segment;
+
+      await this.actor.updateNarrativeArcProgress(arcId, nextProgress);
+      this.render(false);
+    });
+
+    html.find(".narrative-arc-status-select").on("change", async (event) => {
+      event.preventDefault();
+
+      if (!game.user?.isGM) return;
+
+      const arcId = event.currentTarget?.dataset?.arcId ?? "";
+      const status = event.currentTarget?.value ?? "active";
+
+      await this.actor.updateNarrativeArcStatus(arcId, status);
+      this.render(false);
+    });
+
     html.find(".nindo-opportunity-consume").on("click", async (event) => {
       event.preventDefault();
 
@@ -828,7 +870,7 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
       awakening: this._buildV2AwakeningContext(),
       health: this._buildV2HealthContext(context),
       summary: this._buildV2SummaryContext(context, identityContext),
-      character: this._buildV2CharacterContext(identity),
+      character: this._buildV2CharacterContext(identity, system.background ?? {}),
       creation: this._buildV2CreationContext(context, progression),
       combat: this._buildV2CombatContext(context, combat),
       techniques: this._buildV2TechniqueContext(context),
@@ -1130,8 +1172,9 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
     };
   }
 
-  _buildV2CharacterContext(identity) {
+  _buildV2CharacterContext(identity, background = {}) {
     const nindo = this.actor.system?.nindo ?? {};
+    const narrativeArcs = this._buildV2NarrativeArcContext(background);
     const nindoValue = Number(nindo.value ?? 0);
     const nindoMax = Math.max(0, Number(nindo.max ?? 0));
     const nindoChargeValue = Math.max(0, Number(nindo.charges?.value ?? 0));
@@ -1163,6 +1206,7 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
     }));
 
     return {
+      narrativeArcs,
       nindo: {
         value: nindoValue,
         max: nindoMax,
@@ -1220,6 +1264,59 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
       )
     };
   }
+
+  _buildV2NarrativeArcContext(background = {}) {
+    const arcs = Array.isArray(background.narrativeArcs) ? background.narrativeArcs : [];
+    const statusLabels = {
+      active: "Actif",
+      completed: "Terminé",
+      abandoned: "Abandonné"
+    };
+
+    const canEdit = Boolean(this.actor?.isOwner || game.user?.isGM);
+    const canEditProgress = Boolean(game.user?.isGM);
+    const min = 3;
+    const max = 7;
+
+    const items = arcs.map((arc, index) => {
+      const wheelSize = [3, 5, 7].includes(Number(arc.wheelSize ?? 3))
+        ? Number(arc.wheelSize ?? 3)
+        : 3;
+      const progress = Math.min(Math.max(0, Number(arc.progress ?? 0)), wheelSize);
+      const status = statusLabels[String(arc.status ?? "active")]
+        ? String(arc.status ?? "active")
+        : "active";
+
+      return {
+        index,
+        id: String(arc.id ?? `arc-${index + 1}`),
+        title: String(arc.title ?? `Arc narratif ${index + 1}`),
+        wheelSize,
+        progress,
+        status,
+        statusLabel: statusLabels[status] ?? status,
+        description: String(arc.description ?? ""),
+        stakes: String(arc.stakes ?? ""),
+        notes: String(arc.notes ?? ""),
+        segments: Array.from({ length: wheelSize }, (_entry, segmentIndex) => ({
+          value: segmentIndex + 1,
+          filled: progress >= segmentIndex + 1
+        }))
+      };
+    });
+
+    return {
+      items,
+      count: items.length,
+      min,
+      max,
+      canAdd: canEdit && items.length < max,
+      canDelete: canEdit && items.length > min,
+      canEditProgress,
+      statusLabels
+    };
+  }
+
 
   _buildV2CreationContext(context, progression) {
     const creationState = context.creationState ?? {};
