@@ -627,6 +627,9 @@
 }
 
 .naruto-roll-card {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
   border: 1px solid #777;
   padding: 10px;
   background: rgba(20, 20, 20, 0.06);
@@ -637,6 +640,71 @@
   font-size: 16px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.25);
   padding-bottom: 4px;
+}
+
+.naruto-chat-kamon-host {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.naruto-chat-kamon-body {
+  position: relative;
+  z-index: 1;
+}
+
+.naruto-chat-kamon-watermark,
+.naruto-chat-kamon-stamp {
+  pointer-events: none;
+}
+
+.naruto-chat-kamon-watermark {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.naruto-chat-kamon-watermark img {
+  width: min(72%, 10rem);
+  max-width: 10rem;
+  max-height: 10rem;
+  object-fit: contain;
+  opacity: 0.08;
+  filter: grayscale(0.08) contrast(1.05);
+}
+
+.naruto-chat-kamon-stamp {
+  position: absolute;
+  right: 0.45rem;
+  bottom: 0.45rem;
+  z-index: 0;
+  width: 2.8rem;
+  height: 2.8rem;
+  opacity: 0.55;
+}
+
+.naruto-chat-kamon-stamp img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 0.25rem rgba(0, 0, 0, 0.28));
+}
+
+.message-content.naruto-chat-kamon-message {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  padding-bottom: 3rem;
+}
+
+.message-content.naruto-chat-kamon-message .naruto-chat-kamon-watermark img {
+  width: min(60%, 8rem);
+  max-width: 8rem;
+  max-height: 8rem;
+  opacity: 0.06;
 }
 
 .naruto-roll-result {

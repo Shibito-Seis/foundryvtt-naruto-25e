@@ -2,6 +2,36 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.49 - Kamon de clan dans le chat
+
+### Ajouté
+
+- Ajout du kamon de clan visible / social sur les messages de chat des Shinobi.
+- Le kamon est affiché sous deux formes :
+  - un watermark discret en fond des cartes de chat ;
+  - un tampon signature en bas à droite des cartes.
+- Le système utilise le clan visible / officiel-social :
+  - clan principal pour les fiches classiques ;
+  - clan officiel/social pour les clans cachés / dissimulés ;
+  - aucun dévoilement du Réel Clan caché.
+- Le kamon s’applique :
+  - aux cartes système utilisant `.naruto-roll-card` ;
+  - aux messages simples du chat lorsqu’ils sont envoyés avec un speaker Actor Shinobi.
+
+### Technique
+
+- Les kamon sont chargés depuis :
+  `systems/naruto-25e/assets/clans/kamon_<clan>.svg`
+- Le rendu des kamon est injecté au `renderChatMessage`.
+- Les messages sans speaker Shinobi ne reçoivent pas de kamon.
+
+### Notes
+
+- Aucun changement Actions.
+- Aucun changement Arcs narratifs.
+- Aucun changement Relations PNJ.
+- Aucun changement Mangekyō.
+
 ## 0.1.48 - Relations PNJ V1
 
 ### Ajouté

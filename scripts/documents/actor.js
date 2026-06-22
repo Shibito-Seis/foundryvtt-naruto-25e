@@ -406,6 +406,18 @@ export class Naruto25eActor extends Actor {
       return String(heritage.clan ?? "");
     }
 
+    getPublicClanKamonPath() {
+      if (this.type !== "shinobi") return "";
+
+      const clanKey = String(this._getSocialClanKey() ?? "").trim().toLowerCase();
+
+      if (!clanKey || !NARUTO25E.clans?.[clanKey]) {
+        return "";
+      }
+
+      return `systems/naruto-25e/assets/clans/kamon_${clanKey}.svg`;
+    }
+
     _hasMechanicalClan(clanKey, options = {}) {
       return this._getMechanicalClanKeys(options).includes(clanKey);
     }
@@ -9854,8 +9866,80 @@ async decreaseBase(baseKey) {
   }
 }
 
+function getNaruto25eChatSpeakerActor(message) {
+  const speaker = message?.speaker ?? {};
+
+  let actor = null;
+
+  if (speaker.actor) {
+    actor = game.actors?.get(speaker.actor) ?? null;
+  }
+
+  if (!actor && speaker.scene && speaker.token) {
+    actor = game.scenes?.get(speaker.scene)?.tokens?.get(speaker.token)?.actor ?? null;
+  }
+
+  if (!actor && speaker.token) {
+    actor = canvas?.tokens?.get(speaker.token)?.actor ?? null;
+  }
+
+  if (!actor && typeof ChatMessage.getSpeakerActor === "function") {
+    actor = ChatMessage.getSpeakerActor(speaker) ?? null;
+  }
+
+  return actor?.type === "shinobi" ? actor : null;
+}
+
+function applyNaruto25eClanKamonToElement(element, kamonPath, actorName = "") {
+  const $element = element instanceof jQuery ? element : $(element);
+
+  if (!$element.length || !kamonPath || $element.hasClass("naruto-chat-kamon-host")) {
+    return;
+  }
+
+  const currentContent = $element.html() ?? "";
+  const safeTitle = foundry.utils.escapeHTML?.(actorName || "Kamon de clan") ?? (actorName || "Kamon de clan");
+  const safePath = String(kamonPath);
+
+  $element
+    .addClass("naruto-chat-kamon-host")
+    .html(`
+      <div class="naruto-chat-kamon-watermark" aria-hidden="true">
+        <img src="${safePath}" alt="">
+      </div>
+      <div class="naruto-chat-kamon-body">
+        ${currentContent}
+      </div>
+      <div class="naruto-chat-kamon-stamp" aria-hidden="true" title="${safeTitle}">
+        <img src="${safePath}" alt="">
+      </div>
+    `);
+}
+
 Hooks.on("renderChatMessage", (message, html) => {
-    html.find(".naruto-chat-defense-select").on("click", async (event) => {
+  const speakerActor = getNaruto25eChatSpeakerActor(message);
+  const kamonPath = typeof speakerActor?.getPublicClanKamonPath === "function"
+    ? speakerActor.getPublicClanKamonPath()
+    : "";
+
+  if (kamonPath) {
+    const rollCards = html.find(".naruto-roll-card");
+
+    if (rollCards.length > 0) {
+      rollCards.each((_index, card) => {
+        applyNaruto25eClanKamonToElement(card, kamonPath, speakerActor?.name ?? "");
+      });
+    } else {
+      const messageContent = html.find(".message-content").first();
+
+      if (messageContent.length) {
+        messageContent.addClass("naruto-chat-kamon-message");
+        applyNaruto25eClanKamonToElement(messageContent, kamonPath, speakerActor?.name ?? "");
+      }
+    }
+  }
+
+  html.find(".naruto-chat-defense-select").on("click", async (event) => {
     event.preventDefault();
 
     const button = event.currentTarget;
