@@ -404,9 +404,25 @@ Hooks.on("updateCombat", async function (combat, changed) {
     }
   }
 
-  const actor = combat.combatant?.actor;
+  const combatant = combat.combatant;
+  const actor = combatant?.actor;
 
   if (!actor || actor.type !== "shinobi") return;
+
+  if (typeof actor.expireNindoAwakeningAtTurnStart === "function") {
+    await actor.expireNindoAwakeningAtTurnStart({
+      combat,
+      combatant
+    });
+  }
+
+  if (typeof actor.processNindoChakraBoostAtTurnStart === "function") {
+    await actor.processNindoChakraBoostAtTurnStart({
+      combat,
+      combatant
+    });
+  }
+
   if (typeof actor.applyMaintainedLineagePowerUpkeep !== "function") return;
 
   await actor.applyMaintainedLineagePowerUpkeep({ forceDialog: false });
@@ -445,7 +461,9 @@ Hooks.on("updateActor", async function (actor, changed) {
     || foundry.utils.hasProperty(changed, "system.heritage.uchiha.mangekyo.rightEyeState")
     || foundry.utils.hasProperty(changed, "system.heritage.uchiha.mangekyo.leftEyeState")
     || foundry.utils.hasProperty(changed, "system.bases.lign.value")
-    || foundry.utils.hasProperty(changed, "system.bases.lign.bonus");
+    || foundry.utils.hasProperty(changed, "system.bases.lign.bonus")
+    || foundry.utils.hasProperty(changed, "system.nindo.activeEffects.awakening.active")
+    || foundry.utils.hasProperty(changed, "system.nindo.activeEffects.awakening.actionsRemaining");
 
   if (!shouldSync) return;
 

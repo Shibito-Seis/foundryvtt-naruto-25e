@@ -173,6 +173,39 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
       this.render(false);
     });
 
+    html.find(".combat-delay-complex-action").on("click", async (event) => {
+      event.preventDefault();
+
+      await this.actor.delayComplexAction();
+      this.render(false);
+    });
+
+    html.find(".nindo-opportunity-consume").on("click", async (event) => {
+      event.preventDefault();
+
+      await this.actor.consumeNindoOpportunity();
+      this.render(false);
+    });
+
+    html.find(".nindo-chakra-boost-reduce").on("click", async (event) => {
+      event.preventDefault();
+
+      await this.actor.reduceNindoChakraBoostTurns(1, {
+        requireGM: true,
+        reason: "Réduction manuelle MJ"
+      });
+      this.render(false);
+    });
+
+    html.find(".nindo-chakra-boost-end").on("click", async (event) => {
+      event.preventDefault();
+
+      await this.actor.endNindoChakraBoost({
+        reason: "Suppression manuelle MJ"
+      });
+      this.render(false);
+    });
+
     html.find(".nindo-effects-reset").on("click", async (event) => {
       event.preventDefault();
 
@@ -712,6 +745,31 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
     }).render(true);
   }
 
+  _buildV2AwakeningContext() {
+    const awakening = this.actor.system?.nindo?.activeEffects?.awakening ?? {};
+    const active = Boolean(awakening.active);
+    const remaining = Math.max(0, Number(awakening.actionsRemaining ?? 0));
+    const max = Math.max(0, Number(awakening.maxActions ?? 3));
+    const spent = Math.max(0, Number(awakening.actionsSpent ?? Math.max(0, max - remaining)));
+    const bonus = active
+      ? Math.max(10, Number(awakening.bonus ?? 10))
+      : 0;
+
+    return {
+      active,
+      remaining,
+      max,
+      spent,
+      bonus,
+      label: active
+        ? `Éveil ${remaining} / ${max}`
+        : "",
+      title: active
+        ? `Éveil actif — ${remaining} action(s) d’Éveil restante(s) / ${max}. Bonus +${bonus} aux jets lancés via action d’Éveil. Lignée effective traitée comme 10 jusqu’au prochain tour du personnage.`
+        : ""
+    };
+  }
+
   _buildV2Context(context = {}) {
     const system = this.actor.system ?? {};
     const identity = system.identity ?? {};
@@ -734,6 +792,7 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
       canSeePrivateLineage,
       identity: identityContext,
       resources: this._buildV2ResourceContext(context, resources, combatActions),
+      awakening: this._buildV2AwakeningContext(),
       health: this._buildV2HealthContext(context),
       summary: this._buildV2SummaryContext(context, identityContext),
       character: this._buildV2CharacterContext(identity),
@@ -799,11 +858,33 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
   }
 
   _buildV2ResourceContext(context, resources, combatActions) {
-    const chakraValue = Math.max(0, Number(resources.chakra?.value ?? 0));
-    const chakraMax = Math.max(0, Number(resources.chakra?.max ?? 0));
+    const chakra = resources.chakra ?? {};
+    const chakraValue = Math.max(0, Number(chakra.value ?? 0));
+    const chakraMax = Math.max(0, Number(chakra.max ?? 0));
+    const chakraNaturalMax = Math.max(0, Number(chakra.naturalMax ?? chakra.rawMax ?? chakra.max ?? 0));
+    const chakraTemporaryBonus = chakra.temporaryBonus ?? {};
+    const chakraTemporaryTotal = Math.max(0, Number(chakraTemporaryBonus.total ?? 0));
+    const chakraNaturalValue = Math.max(0, Math.min(chakraValue, chakraNaturalMax));
+    const chakraTemporaryValue = Math.max(0, Math.min(chakraTemporaryTotal, chakraValue - chakraNaturalMax));
     const chakraPercent = chakraMax > 0
       ? Math.max(0, Math.min(100, Math.round((chakraValue / chakraMax) * 100)))
       : 0;
+    const chakraNaturalPercent = chakraMax > 0
+      ? Math.max(0, Math.min(100, Math.round((chakraNaturalValue / chakraMax) * 100)))
+      : 0;
+    const chakraTemporaryPercent = chakraMax > 0
+      ? Math.max(0, Math.min(100, Math.round((chakraTemporaryValue / chakraMax) * 100)))
+      : 0;
+    const chakraTemporaryStartPercent = chakraMax > 0
+      ? Math.max(0, Math.min(100, Math.round((chakraNaturalMax / chakraMax) * 100)))
+      : 0;
+    const chakraTemporarySources = Array.isArray(chakraTemporaryBonus.sources)
+      ? chakraTemporaryBonus.sources
+      : [];
+    const chakraTemporarySourceText = chakraTemporarySources.length
+      ? chakraTemporarySources.map((source) => `${source.label} +${source.amount}`).join(" — ")
+      : "";
+    const hasTemporaryChakra = chakraTemporaryTotal > 0;
 
     const nindo = this.actor.system?.nindo ?? {};
     const nindoValue = Math.max(-10, Math.min(Number(nindo.max ?? 0), Number(nindo.value ?? 0)));
@@ -818,9 +899,21 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
       chakra: {
         value: chakraValue,
         max: chakraMax,
+        naturalMax: chakraNaturalMax,
+        naturalValue: chakraNaturalValue,
+        temporaryValue: chakraTemporaryValue,
+        temporaryTotal: chakraTemporaryTotal,
         percent: chakraPercent,
-        passiveRegen: Number(resources.chakra?.passiveRegen ?? 0),
-        activeRegen: Number(resources.chakra?.activeRegen ?? 0)
+        naturalPercent: chakraNaturalPercent,
+        temporaryPercent: chakraTemporaryPercent,
+        temporaryStartPercent: chakraTemporaryStartPercent,
+        hasTemporaryBonus: hasTemporaryChakra,
+        temporarySourceText: chakraTemporarySourceText,
+        title: hasTemporaryChakra
+          ? `Chakra : ${chakraValue} / ${chakraMax} — Naturel : ${chakraNaturalValue} / ${chakraNaturalMax} — Bonus temporaire : +${chakraTemporaryTotal}${chakraTemporarySourceText ? ` — ${chakraTemporarySourceText}` : ""}`
+          : `Chakra : ${chakraValue} / ${chakraMax}`,
+        passiveRegen: Number(chakra.passiveRegen ?? 0),
+        activeRegen: Number(chakra.activeRegen ?? 0)
       },
       vigor: Number(resources.vigueur?.value ?? 0),
       character: Number(resources.caractere?.value ?? 0),

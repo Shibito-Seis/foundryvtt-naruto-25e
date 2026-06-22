@@ -2,6 +2,51 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+
+## 0.1.45 - Effets Nindō mécaniques et Éveil V2
+
+### Ajouté
+
+- Application mécanique de l’Accroissement du Chakra :
+  - bonus temporaire de Chakra maximum ;
+  - gain immédiat de Chakra actuel ;
+  - mémorisation du Chakra avant bonus ;
+  - restitution propre à la fin de l’effet.
+- Ajout de la barre Chakra V2 en deux couches :
+  - Chakra naturel ;
+  - Chakra temporaire violet/or pour les bonus actifs.
+- Application mécanique de l’Éveil :
+  - 3 actions d’Éveil suivies par la fiche ;
+  - +10 aux jets lancés via une action d’Éveil ;
+  - Lignée effective traitée comme 10 pendant l’état d’Éveil ;
+  - expiration automatique au prochain tour du personnage.
+- Ajout d’un skin visuel Éveil sur la fiche Shinobi V2 :
+  - aura violacée ;
+  - badge ÉVEIL ;
+  - header assombri ;
+  - pulsation des cartes Santé, Chakra, Nindō et Actions.
+- Application simple d’Unison :
+  - création d’une Opportunité suivie par la fiche ;
+  - bouton pour consommer l’Opportunité ;
+  - carte de chat lors de la consommation.
+- Décrément automatique de l’Accroissement du Chakra au début du tour du personnage.
+- Ajout de sécurités MJ pour Accroissement du Chakra :
+  - réduire la durée d’un tour ;
+  - supprimer immédiatement l’effet avec restitution propre du Chakra.
+
+### Modifié
+
+- Les techniques et jets de compétence consomment désormais l’action complexe.
+- Les actions d’équipement de combat consomment l’action simple lorsque nécessaire.
+- Les pouvoirs de lignée peuvent consommer une action d’Éveil lorsque l’utilisation normale du tour n’est plus disponible.
+- Le reset MJ des effets Nindō nettoie désormais Accroissement, Éveil et Opportunité de façon homogène.
+
+### Notes
+
+- Le système complet d’Opportunités automatiques sur marge de réussite reste prévu pour un futur chantier de résolution.
+- Le système complet de liens, relations PNJ et Lier nos destinées reste prévu pour un chantier séparé.
+- Un futur chantier d’effets actifs centralisés sera nécessaire pour remplacer progressivement les suivis spécifiques d’Accroissement, Éveil, maintiens et autres états temporaires.
+
 ## 0.1.44.2 - Correction double déclenchement Nindō V2
 
 ### Corrigé

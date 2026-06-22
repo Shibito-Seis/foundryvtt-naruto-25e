@@ -322,9 +322,18 @@ export class Naruto25eActor extends Actor {
       const rawLineage = Math.max(0, Number(this.system?.bases?.lign?.value ?? 0));
       const hiddenCap = this._getHiddenClanLineageCap();
 
-      if (hiddenCap === null) return rawLineage;
+      const effectiveLineage = hiddenCap === null
+        ? rawLineage
+        : Math.min(rawLineage, hiddenCap);
 
-      return Math.min(rawLineage, hiddenCap);
+      const awakening = this._getNindoAwakeningState?.() ?? {};
+      const awakeningActive = Boolean(awakening.active);
+
+      if (awakeningActive) {
+        return Math.max(effectiveLineage, 10);
+      }
+
+      return effectiveLineage;
     }
 
     _getMechanicalClanKeys(options = {}) {
@@ -1625,6 +1634,362 @@ export class Naruto25eActor extends Actor {
       ui.notifications.info(`Création déverrouillée pour ${this.name}.`);
     }
 
+    _getActiveNindoChakraBoostAmount(system = this.system) {
+      const boost = system.nindo?.activeEffects?.chakraBoost ?? {};
+
+      if (!Boolean(boost.active)) return 0;
+      if (Number(boost.remainingTurns ?? 0) <= 0) return 0;
+
+      return Math.max(0, Number(boost.amount ?? 0));
+    }
+
+    _getNindoChakraBoostEndData(system = this.system) {
+      const boost = system.nindo?.activeEffects?.chakraBoost ?? {};
+      const active = Boolean(boost.active) && Number(boost.remainingTurns ?? 0) > 0;
+      const amount = Math.max(0, Number(boost.amount ?? 0));
+      const chakra = system.resources?.chakra ?? {};
+      const currentChakra = Math.max(0, Number(chakra.value ?? 0));
+      const effectiveMax = Math.max(0, Number(chakra.max ?? 0));
+      const naturalMax = Math.max(0, Number(chakra.naturalMax ?? Math.max(0, effectiveMax - amount)));
+
+      if (!active || amount <= 0) {
+        return {
+          active: false,
+          amount,
+          currentChakra,
+          naturalMax,
+          storedChakraBeforeGain: Math.min(currentChakra, naturalMax),
+          nextChakra: Math.min(currentChakra, naturalMax)
+        };
+      }
+
+      const hasStoredValue = boost.storedChakraBeforeGain !== undefined
+        && boost.storedChakraBeforeGain !== null
+        && boost.storedChakraBeforeGain !== "";
+
+      const storedChakraBeforeGain = hasStoredValue
+        ? Math.max(0, Number(boost.storedChakraBeforeGain ?? 0))
+        : Math.min(currentChakra, naturalMax);
+
+      const nextChakra = Math.max(
+        0,
+        Math.min(
+          currentChakra,
+          storedChakraBeforeGain,
+          naturalMax
+        )
+      );
+
+      return {
+        active: true,
+        amount,
+        currentChakra,
+        naturalMax,
+        storedChakraBeforeGain,
+        nextChakra
+      };
+    }
+
+    _getInactiveNindoChakraBoostData() {
+      return {
+        active: false,
+        remainingTurns: 0,
+        amount: 0,
+        storedChakraBeforeGain: 0,
+        startedRound: 0,
+        startedTurn: 0
+      };
+    }
+
+    _getInactiveNindoOpportunityData() {
+      return {
+        available: false,
+        source: "",
+        createdRound: 0,
+        createdTurn: 0,
+        consumedRound: 0,
+        consumedTurn: 0
+      };
+    }
+
+    _getActiveNindoOpportunityData(system = this.system) {
+      const opportunity = system.nindo?.activeEffects?.opportunity ?? {};
+
+      return {
+        available: Boolean(opportunity.available),
+        source: String(opportunity.source ?? ""),
+        createdRound: Math.max(0, Number(opportunity.createdRound ?? 0)),
+        createdTurn: Math.max(0, Number(opportunity.createdTurn ?? 0)),
+        consumedRound: Math.max(0, Number(opportunity.consumedRound ?? 0)),
+        consumedTurn: Math.max(0, Number(opportunity.consumedTurn ?? 0))
+      };
+    }
+
+    _getTemporaryChakraBonusBreakdown(system = this.system) {
+      const nindoBoost = this._getActiveNindoChakraBoostAmount(system);
+      const mangekyoMode = this._getMangekyoChakraBonusMode();
+      const mangekyoBonus = mangekyoMode === "active"
+        ? this._getMangekyoChakraBonusForPrepare()
+        : 0;
+
+      const sources = [];
+
+      if (nindoBoost > 0) {
+        sources.push({
+          key: "nindoChakraBoost",
+          label: "Accroissement du Chakra",
+          amount: nindoBoost
+        });
+      }
+
+      if (mangekyoBonus > 0) {
+        sources.push({
+          key: "mangekyoActive",
+          label: "Mangekyō Sharingan actif",
+          amount: mangekyoBonus
+        });
+      }
+
+      return {
+        total: nindoBoost + mangekyoBonus,
+        nindoBoost,
+        mangekyoBonus,
+        sources
+      };
+    }
+
+    _getCombatActionState() {
+      return this.system.combat?.actions ?? {};
+    }
+
+    _buildCombatActionNotes(currentNotes = "", addedNote = "") {
+      const current = String(currentNotes ?? "").trim();
+      const added = String(addedNote ?? "").trim();
+
+      if (!added) return current;
+      if (!current) return added;
+
+      return `${current} | ${added}`;
+    }
+
+    _getInactiveNindoAwakeningData() {
+      return {
+        active: false,
+        actionsRemaining: 0,
+        maxActions: 0,
+        actionsSpent: 0,
+        bonus: 0,
+        startedRound: 0,
+        startedTurn: 0,
+        startedCombatantId: "",
+        expiresAtNextOwnTurn: true
+      };
+    }
+
+    _getNindoAwakeningState(system = this.system) {
+      const awakening = system.nindo?.activeEffects?.awakening ?? {};
+      const active = Boolean(awakening.active);
+      const actionsRemaining = Math.max(0, Number(awakening.actionsRemaining ?? 0));
+
+      return {
+        active,
+        actionsRemaining,
+        maxActions: Math.max(0, Number(awakening.maxActions ?? 3)),
+        actionsSpent: Math.max(0, Number(awakening.actionsSpent ?? 0)),
+        bonus: active && actionsRemaining > 0
+          ? Math.max(10, Number(awakening.bonus ?? 10))
+          : 0,
+        startedRound: Math.max(0, Number(awakening.startedRound ?? 0)),
+        startedTurn: Math.max(0, Number(awakening.startedTurn ?? 0)),
+        startedCombatantId: String(awakening.startedCombatantId ?? ""),
+        expiresAtNextOwnTurn: awakening.expiresAtNextOwnTurn !== false
+      };
+    }
+
+    _consumeNindoAwakeningRollBonus() {
+      const bonus = Math.max(0, Number(this._naruto25ePendingAwakeningRollBonus ?? 0));
+
+      this._naruto25ePendingAwakeningRollBonus = 0;
+
+      return bonus;
+    }
+
+    _canSpendNindoAwakeningAction() {
+      const awakening = this._getNindoAwakeningState();
+
+      return Boolean(awakening.active) && awakening.actionsRemaining > 0;
+    }
+
+    async _confirmSpendNindoAwakeningAction(label = "Action", actionType = "complex") {
+      const awakening = this._getNindoAwakeningState();
+      const safeLabel = foundry.utils.escapeHTML?.(label) ?? label;
+      const typeLabel = actionType === "lineage"
+        ? "action de lignée"
+        : actionType === "delayed"
+        ? "action retardée"
+        : "action complexe";
+
+      return Dialog.confirm({
+        title: "Utiliser une action d’Éveil ?",
+        content: `
+          <p><strong>${foundry.utils.escapeHTML?.(this.name) ?? this.name}</strong> n’a plus l’action normale nécessaire.</p>
+          <p>Utiliser <strong>1 action d’Éveil</strong> pour : <strong>${safeLabel}</strong> ?</p>
+          <p>Type : ${typeLabel}. Actions d’Éveil restantes : <strong>${awakening.actionsRemaining}</strong>.</p>
+        `,
+        yes: () => true,
+        no: () => false,
+        defaultYes: true
+      });
+    }
+
+    async spendNindoAwakeningAction(label = "Action", options = {}) {
+      if (this.type !== "shinobi") return false;
+
+      const awakening = this._getNindoAwakeningState();
+      const notify = options.notify !== false;
+      const actionType = String(options.actionType ?? "complex");
+
+      if (!awakening.active || awakening.actionsRemaining <= 0) {
+        if (notify) ui.notifications.warn(`${this.name} n’a plus d’action d’Éveil disponible.`);
+        return false;
+      }
+
+      if (options.confirm !== false) {
+        const confirmed = await this._confirmSpendNindoAwakeningAction(label, actionType);
+
+        if (!confirmed) return false;
+      }
+
+      const nextRemaining = Math.max(0, awakening.actionsRemaining - 1);
+      const nextSpent = awakening.actionsSpent + 1;
+      const note = this._buildCombatActionNotes(
+        this.system.combat?.actions?.notes,
+        `${label} : action d’Éveil utilisée`
+      );
+
+      await this.update({
+        "system.nindo.activeEffects.awakening.active": true,
+        "system.nindo.activeEffects.awakening.actionsRemaining": nextRemaining,
+        "system.nindo.activeEffects.awakening.maxActions": awakening.maxActions || 3,
+        "system.nindo.activeEffects.awakening.actionsSpent": nextSpent,
+        "system.nindo.activeEffects.awakening.bonus": awakening.bonus,
+        "system.nindo.activeEffects.awakening.startedRound": awakening.startedRound,
+        "system.nindo.activeEffects.awakening.startedTurn": awakening.startedTurn,
+        "system.nindo.activeEffects.awakening.startedCombatantId": awakening.startedCombatantId,
+        "system.nindo.activeEffects.awakening.expiresAtNextOwnTurn": awakening.expiresAtNextOwnTurn,
+        "system.combat.actions.notes": note
+      }, {
+        naruto25e: {
+          allowNindoActionUpdate: true
+        }
+      });
+
+      this._naruto25ePendingAwakeningRollBonus = Math.max(10, Number(awakening.bonus ?? 10));
+
+      await ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor: this }),
+        content: `
+          <div class="naruto-roll-card nindo-card">
+            <h2>Action d’Éveil utilisée</h2>
+            <p><strong>${foundry.utils.escapeHTML?.(this.name) ?? this.name}</strong> dépense 1 action d’Éveil.</p>
+            <p><strong>Action :</strong> ${foundry.utils.escapeHTML?.(label) ?? label}</p>
+            <p><strong>Actions d’Éveil restantes :</strong> ${nextRemaining} / ${awakening.maxActions || 3}</p>
+          </div>
+        `
+      });
+
+      if (notify) {
+        ui.notifications.info(`${this.name} : action d’Éveil consommée (${nextRemaining}/${awakening.maxActions || 3}).`);
+      }
+
+      return true;
+    }
+
+    async spendCombatAction(actionType = "complex", label = "Action", options = {}) {
+      if (this.type !== "shinobi") return false;
+
+      const type = String(actionType ?? "complex");
+      const free = type === "free";
+
+      if (free) {
+        return true;
+      }
+
+      const actions = this._getCombatActionState();
+      const updateData = {};
+      const note = this._buildCombatActionNotes(
+        actions.notes,
+        `${label} : ${type === "simple" ? "action simple" : "action complexe"} utilisée`
+      );
+
+      if (type === "simple") {
+        if (!Boolean(actions.simpleAvailable)) {
+          ui.notifications.warn(`${this.name} n’a plus d’action simple disponible.`);
+          return false;
+        }
+
+        updateData["system.combat.actions.simpleAvailable"] = false;
+        updateData["system.combat.actions.notes"] = note;
+      } else if (type === "complex") {
+        if (!Boolean(actions.complexAvailable)) {
+          return this.spendNindoAwakeningAction(label, {
+            actionType: "complex",
+            confirm: options.confirmAwakening !== false,
+            notify: options.notify
+          });
+        }
+
+        updateData["system.combat.actions.complexAvailable"] = false;
+        updateData["system.combat.actions.notes"] = note;
+      } else {
+        ui.notifications.warn(`Type d’action inconnu : ${type}.`);
+        return false;
+      }
+
+      await this.update(updateData);
+
+      if (options.notify !== false) {
+        ui.notifications.info(`${this.name} : ${type === "simple" ? "action simple" : "action complexe"} consommée.`);
+      }
+
+      return true;
+    }
+
+    async delayComplexAction() {
+      if (this.type !== "shinobi") return false;
+
+      const actions = this._getCombatActionState();
+
+      if (!Boolean(actions.complexAvailable)) {
+        ui.notifications.warn(`${this.name} n’a plus d’action complexe à reporter.`);
+        return false;
+      }
+
+      const note = this._buildCombatActionNotes(
+        actions.notes,
+        "Action complexe reportée : 1 action retardée disponible"
+      );
+
+      await this.update({
+        "system.combat.actions.complexAvailable": false,
+        "system.combat.actions.delayedAvailable": true,
+        "system.combat.actions.notes": note
+      });
+
+      await ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor: this }),
+        content: `
+          <div class="naruto-roll-card">
+            <h2>Action reportée</h2>
+            <p><strong>${foundry.utils.escapeHTML?.(this.name) ?? this.name}</strong> reporte son action complexe.</p>
+            <p>Action complexe consommée. Action retardée disponible.</p>
+          </div>
+        `
+      });
+
+      return true;
+    }
+
     async useNindoAction(actionKey) {
       if (this.type !== "shinobi") return;
 
@@ -1695,23 +2060,61 @@ export class Naruto25eActor extends Actor {
       }
 
       if (action.type === "chakraBoost") {
+        const chakra = this.system.resources?.chakra ?? {};
+        const currentChakra = Math.max(0, Number(chakra.value ?? 0));
+        const boostAmount = 500;
+        const existingBoost = this.system.nindo?.activeEffects?.chakraBoost ?? {};
+        const boostAlreadyActive = Boolean(existingBoost.active)
+          && Number(existingBoost.remainingTurns ?? 0) > 0;
+        const existingAmount = boostAlreadyActive
+          ? Math.max(0, Number(existingBoost.amount ?? 0))
+          : 0;
+        const additionalBoost = Math.max(0, boostAmount - existingAmount);
+        const naturalMax = Math.max(0, Number(chakra.naturalMax ?? chakra.rawMax ?? chakra.max ?? 0));
+
+        const storedChakraBeforeGain = boostAlreadyActive
+          ? Math.max(0, Number(existingBoost.storedChakraBeforeGain ?? Math.min(currentChakra, naturalMax)))
+          : Math.min(currentChakra, naturalMax || currentChakra);
+
         updateData["system.nindo.activeEffects.chakraBoost"] = {
           active: true,
           remainingTurns: 5,
-          amount: 500
+          amount: boostAmount,
+          storedChakraBeforeGain,
+          startedRound: boostAlreadyActive
+            ? Number(existingBoost.startedRound ?? game.combat?.round ?? 0)
+            : Number(game.combat?.round ?? 0),
+          startedTurn: boostAlreadyActive
+            ? Number(existingBoost.startedTurn ?? game.combat?.turn ?? 0)
+            : Number(game.combat?.turn ?? 0)
         };
+
+        updateData["system.resources.chakra.value"] = currentChakra + additionalBoost;
       }
 
       if (action.type === "awakening") {
         updateData["system.nindo.activeEffects.awakening"] = {
           active: true,
           actionsRemaining: 3,
-          bonus: 10
+          maxActions: 3,
+          actionsSpent: 0,
+          bonus: 10,
+          startedRound: Number(game.combat?.round ?? 0),
+          startedTurn: Number(game.combat?.turn ?? 0),
+          startedCombatantId: String(game.combat?.combatant?.id ?? ""),
+          expiresAtNextOwnTurn: true
         };
       }
 
       if (action.type === "opportunity") {
-        updateData["system.nindo.activeEffects.opportunity.available"] = true;
+        updateData["system.nindo.activeEffects.opportunity"] = {
+          available: true,
+          source: action.label ?? "Unison",
+          createdRound: Number(game.combat?.round ?? 0),
+          createdTurn: Number(game.combat?.turn ?? 0),
+          consumedRound: 0,
+          consumedTurn: 0
+        };
       }
 
       await this.update(updateData, {
@@ -1795,27 +2198,26 @@ export class Naruto25eActor extends Actor {
       });
     }
 
-    async resetNindoActiveEffects() {
-      if (this.type !== "shinobi") return;
+    async consumeNindoOpportunity(options = {}) {
+      if (this.type !== "shinobi") return false;
 
-      if (!game.user?.isGM) {
-        ui.notifications.warn("Seul le MJ peut réinitialiser les effets actifs de Nindō.");
-        return;
+      const opportunity = this._getActiveNindoOpportunityData();
+
+      if (!opportunity.available) {
+        ui.notifications.warn(`${this.name} n’a pas d’opportunité disponible.`);
+        return false;
       }
 
+      const source = opportunity.source || "Unison";
+
       await this.update({
-        "system.nindo.activeEffects.chakraBoost": {
-          active: false,
-          remainingTurns: 0,
-          amount: 0
-        },
-        "system.nindo.activeEffects.awakening": {
-          active: false,
-          actionsRemaining: 0,
-          bonus: 0
-        },
         "system.nindo.activeEffects.opportunity": {
-          available: false
+          available: false,
+          source,
+          createdRound: opportunity.createdRound,
+          createdTurn: opportunity.createdTurn,
+          consumedRound: Number(game.combat?.round ?? 0),
+          consumedTurn: Number(game.combat?.turn ?? 0)
         }
       }, {
         naruto25e: {
@@ -1827,13 +2229,241 @@ export class Naruto25eActor extends Actor {
         speaker: ChatMessage.getSpeaker({ actor: this }),
         content: `
           <div class="naruto-roll-card nindo-card">
+            <h2>Opportunité consommée</h2>
+            <p><strong>${foundry.utils.escapeHTML?.(this.name) ?? this.name}</strong> consomme l’opportunité obtenue grâce à ${foundry.utils.escapeHTML?.(source) ?? source}.</p>
+            <p>L’effet exact est choisi et résolu selon le contexte : combat, information, narration ou action spéciale.</p>
+          </div>
+        `
+      });
+
+      if (options.notify !== false) {
+        ui.notifications.info(`${this.name} : opportunité consommée.`);
+      }
+
+      return true;
+    }
+
+    async endNindoChakraBoost(options = {}) {
+      if (this.type !== "shinobi") return false;
+
+      const chakraBoostEnd = this._getNindoChakraBoostEndData();
+
+      if (!chakraBoostEnd.active) {
+        await this.update({
+          "system.nindo.activeEffects.chakraBoost": this._getInactiveNindoChakraBoostData()
+        }, {
+          naruto25e: {
+            allowNindoActionUpdate: true
+          }
+        });
+
+        return false;
+      }
+
+      const reason = String(options.reason ?? "Fin de l’effet");
+
+      await this.update({
+        "system.nindo.activeEffects.chakraBoost": this._getInactiveNindoChakraBoostData(),
+        "system.resources.chakra.value": chakraBoostEnd.nextChakra
+      }, {
+        naruto25e: {
+          allowNindoActionUpdate: true
+        }
+      });
+
+      await ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor: this }),
+        content: `
+          <div class="naruto-roll-card nindo-card">
+            <h2>Accroissement du Chakra terminé</h2>
+            <p><strong>${foundry.utils.escapeHTML?.(this.name) ?? this.name}</strong> perd son Chakra temporaire.</p>
+            <p><strong>Raison :</strong> ${foundry.utils.escapeHTML?.(reason) ?? reason}</p>
+            <p><strong>Chakra :</strong> ${chakraBoostEnd.currentChakra} → ${chakraBoostEnd.nextChakra} / ${chakraBoostEnd.naturalMax}</p>
+            <p class="hint">Valeur mémorisée avant bonus : ${chakraBoostEnd.storedChakraBeforeGain}.</p>
+          </div>
+        `
+      });
+
+      return true;
+    }
+
+    async reduceNindoChakraBoostTurns(amount = 1, options = {}) {
+      if (this.type !== "shinobi") return false;
+
+      if (options.requireGM !== false && !game.user?.isGM) {
+        ui.notifications.warn("Seul le MJ peut modifier la durée d’Accroissement du Chakra.");
+        return false;
+      }
+
+      const boost = this.system.nindo?.activeEffects?.chakraBoost ?? {};
+      const active = Boolean(boost.active) && Number(boost.remainingTurns ?? 0) > 0;
+
+      if (!active) {
+        ui.notifications.warn(`${this.name} n’a pas d’Accroissement du Chakra actif.`);
+        return false;
+      }
+
+      const currentTurns = Math.max(0, Number(boost.remainingTurns ?? 0));
+      const reduction = Math.max(1, Number(amount ?? 1));
+      const nextTurns = Math.max(0, currentTurns - reduction);
+
+      if (nextTurns <= 0) {
+        return this.endNindoChakraBoost({
+          reason: options.reason ?? "Durée réduite à 0"
+        });
+      }
+
+      await this.update({
+        "system.nindo.activeEffects.chakraBoost.remainingTurns": nextTurns
+      }, {
+        naruto25e: {
+          allowNindoActionUpdate: true
+        }
+      });
+
+      if (options.notify !== false) {
+        ui.notifications.info(`${this.name} : Accroissement du Chakra ${currentTurns} → ${nextTurns} tour(s).`);
+      }
+
+      return true;
+    }
+
+    async processNindoChakraBoostAtTurnStart(options = {}) {
+      if (this.type !== "shinobi") return false;
+
+      const combat = options.combat ?? game.combat;
+      const combatant = options.combatant ?? combat?.combatant ?? null;
+
+      if (!combat || !combatant) return false;
+      if (combatant.actor?.id !== this.id) return false;
+
+      const boost = this.system.nindo?.activeEffects?.chakraBoost ?? {};
+      const active = Boolean(boost.active) && Number(boost.remainingTurns ?? 0) > 0;
+
+      if (!active) return false;
+
+      const currentRound = Number(combat.round ?? 0);
+      const currentTurn = Number(combat.turn ?? 0);
+      const startedRound = Number(boost.startedRound ?? 0);
+      const startedTurn = Number(boost.startedTurn ?? 0);
+
+      const sameStartTurn = currentRound === startedRound && currentTurn === startedTurn;
+
+      if (sameStartTurn) return false;
+
+      return this.reduceNindoChakraBoostTurns(1, {
+        requireGM: false,
+        notify: false,
+        reason: "Durée écoulée au début du tour"
+      });
+    }
+
+
+    async resetNindoActiveEffects() {
+      if (this.type !== "shinobi") return;
+
+      if (!game.user?.isGM) {
+        ui.notifications.warn("Seul le MJ peut réinitialiser les effets actifs de Nindō.");
+        return;
+      }
+
+      const chakraBoostEnd = this._getNindoChakraBoostEndData();
+      const updateData = {
+        "system.nindo.activeEffects.chakraBoost": this._getInactiveNindoChakraBoostData(),
+        "system.nindo.activeEffects.awakening": this._getInactiveNindoAwakeningData(),
+        "system.nindo.activeEffects.opportunity": this._getInactiveNindoOpportunityData()
+      };
+
+      if (chakraBoostEnd.active) {
+        updateData["system.resources.chakra.value"] = chakraBoostEnd.nextChakra;
+      }
+
+      await this.update(updateData, {
+        naruto25e: {
+          allowNindoActionUpdate: true
+        }
+      });
+
+      const chakraLine = chakraBoostEnd.active
+        ? `
+          <p>
+            <strong>Accroissement du Chakra terminé :</strong>
+            ${chakraBoostEnd.currentChakra} → ${chakraBoostEnd.nextChakra} / ${chakraBoostEnd.naturalMax}.
+          </p>
+          <p class="hint">
+            Valeur mémorisée avant bonus : ${chakraBoostEnd.storedChakraBeforeGain}.
+          </p>
+        `
+        : "";
+
+      await ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor: this }),
+        content: `
+          <div class="naruto-roll-card nindo-card">
             <h2>Effets Nindō réinitialisés</h2>
             <p><strong>${foundry.utils.escapeHTML?.(this.name) ?? this.name}</strong> n’a plus d’effet actif de Nindō suivi par la fiche.</p>
+            ${chakraLine}
           </div>
         `
       });
 
       ui.notifications.info(`${this.name} : effets Nindō réinitialisés.`);
+    }
+
+    async expireNindoAwakeningAtTurnStart(options = {}) {
+      if (this.type !== "shinobi") return false;
+
+      const awakening = this._getNindoAwakeningState();
+
+      if (!awakening.active) return false;
+
+      const combat = options.combat ?? game.combat;
+      const combatant = options.combatant ?? combat?.combatant ?? null;
+
+      if (!combat || !combatant) return false;
+      if (combatant.actor?.id !== this.id) return false;
+
+      const currentRound = Number(combat.round ?? 0);
+      const currentTurn = Number(combat.turn ?? 0);
+      const currentCombatantId = String(combatant.id ?? "");
+
+      const sameStartTurn =
+        currentRound === awakening.startedRound
+        && currentTurn === awakening.startedTurn
+        && (!awakening.startedCombatantId || currentCombatantId === awakening.startedCombatantId);
+
+      if (sameStartTurn) return false;
+
+      const shouldExpire =
+        currentRound > awakening.startedRound
+        || currentTurn !== awakening.startedTurn
+        || (
+          awakening.startedCombatantId
+          && currentCombatantId !== awakening.startedCombatantId
+        );
+
+      if (!shouldExpire) return false;
+
+      await this.update({
+        "system.nindo.activeEffects.awakening": this._getInactiveNindoAwakeningData()
+      }, {
+        naruto25e: {
+          allowNindoActionUpdate: true
+        }
+      });
+
+      await ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor: this }),
+        content: `
+          <div class="naruto-roll-card nindo-card">
+            <h2>Éveil terminé</h2>
+            <p><strong>${foundry.utils.escapeHTML?.(this.name) ?? this.name}</strong> revient à son état normal.</p>
+            <p>Les actions d’Éveil non utilisées sont perdues.</p>
+          </div>
+        `
+      });
+
+      return true;
     }
 
   _prepareBases(system) {
@@ -2273,8 +2903,26 @@ export class Naruto25eActor extends Actor {
 
       const kikaichuAllocated = this._prepareKikaichuReserve(system, rawMax, lign);
       const mangekyoChakraBonus = this._getMangekyoChakraBonusForPrepare();
+      const mangekyoMode = this._getMangekyoChakraBonusMode();
+      const mangekyoPassiveBonus = mangekyoMode === "passive"
+        ? mangekyoChakraBonus
+        : 0;
+      const mangekyoActiveBonus = mangekyoMode === "active"
+        ? mangekyoChakraBonus
+        : 0;
+      const nindoChakraBoost = this._getActiveNindoChakraBoostAmount(system);
+      const naturalMax = Math.max(0, rawMax - kikaichuAllocated + mangekyoPassiveBonus);
+      const temporaryBonus = Math.max(0, nindoChakraBoost + mangekyoActiveBonus);
 
-      chakra.max = Math.max(0, rawMax - kikaichuAllocated + mangekyoChakraBonus);
+      chakra.naturalMax = naturalMax;
+      chakra.temporaryBonus = {
+        total: temporaryBonus,
+        nindoBoost: nindoChakraBoost,
+        mangekyoActive: mangekyoActiveBonus,
+        sources: this._getTemporaryChakraBonusBreakdown(system).sources
+      };
+
+      chakra.max = Math.max(0, naturalMax + temporaryBonus);
       chakra.value = this._clampNumber(chakra.value, 0, chakra.max);
 
       chakra.passiveRegenPercent = passiveRegenPercent;
@@ -2437,25 +3085,41 @@ _prepareExperience(system) {
       if (!nindo.activeEffects) nindo.activeEffects = {};
 
       if (!nindo.activeEffects.chakraBoost) {
-        nindo.activeEffects.chakraBoost = {
-          active: false,
-          remainingTurns: 0,
-          amount: 0
-        };
+        nindo.activeEffects.chakraBoost = this._getInactiveNindoChakraBoostData();
+      } else {
+        nindo.activeEffects.chakraBoost.active = Boolean(nindo.activeEffects.chakraBoost.active);
+        nindo.activeEffects.chakraBoost.remainingTurns = Math.max(0, Number(nindo.activeEffects.chakraBoost.remainingTurns ?? 0));
+        nindo.activeEffects.chakraBoost.amount = Math.max(0, Number(nindo.activeEffects.chakraBoost.amount ?? 0));
+        nindo.activeEffects.chakraBoost.storedChakraBeforeGain = Math.max(0, Number(nindo.activeEffects.chakraBoost.storedChakraBeforeGain ?? 0));
+        nindo.activeEffects.chakraBoost.startedRound = Math.max(0, Number(nindo.activeEffects.chakraBoost.startedRound ?? 0));
+        nindo.activeEffects.chakraBoost.startedTurn = Math.max(0, Number(nindo.activeEffects.chakraBoost.startedTurn ?? 0));
       }
 
       if (!nindo.activeEffects.awakening) {
-        nindo.activeEffects.awakening = {
-          active: false,
-          actionsRemaining: 0,
-          bonus: 0
-        };
+        nindo.activeEffects.awakening = this._getInactiveNindoAwakeningData();
+      } else {
+        nindo.activeEffects.awakening.active = Boolean(nindo.activeEffects.awakening.active);
+        nindo.activeEffects.awakening.actionsRemaining = Math.max(0, Number(nindo.activeEffects.awakening.actionsRemaining ?? 0));
+        nindo.activeEffects.awakening.maxActions = Math.max(0, Number(nindo.activeEffects.awakening.maxActions ?? 3));
+        nindo.activeEffects.awakening.actionsSpent = Math.max(0, Number(nindo.activeEffects.awakening.actionsSpent ?? 0));
+        nindo.activeEffects.awakening.bonus = Boolean(nindo.activeEffects.awakening.active)
+          ? Math.max(10, Number(nindo.activeEffects.awakening.bonus ?? 10))
+          : 0;
+        nindo.activeEffects.awakening.startedRound = Math.max(0, Number(nindo.activeEffects.awakening.startedRound ?? 0));
+        nindo.activeEffects.awakening.startedTurn = Math.max(0, Number(nindo.activeEffects.awakening.startedTurn ?? 0));
+        nindo.activeEffects.awakening.startedCombatantId = String(nindo.activeEffects.awakening.startedCombatantId ?? "");
+        nindo.activeEffects.awakening.expiresAtNextOwnTurn = nindo.activeEffects.awakening.expiresAtNextOwnTurn !== false;
       }
 
       if (!nindo.activeEffects.opportunity) {
-        nindo.activeEffects.opportunity = {
-          available: false
-        };
+        nindo.activeEffects.opportunity = this._getInactiveNindoOpportunityData();
+      } else {
+        nindo.activeEffects.opportunity.available = Boolean(nindo.activeEffects.opportunity.available);
+        nindo.activeEffects.opportunity.source = String(nindo.activeEffects.opportunity.source ?? "");
+        nindo.activeEffects.opportunity.createdRound = Math.max(0, Number(nindo.activeEffects.opportunity.createdRound ?? 0));
+        nindo.activeEffects.opportunity.createdTurn = Math.max(0, Number(nindo.activeEffects.opportunity.createdTurn ?? 0));
+        nindo.activeEffects.opportunity.consumedRound = Math.max(0, Number(nindo.activeEffects.opportunity.consumedRound ?? 0));
+        nindo.activeEffects.opportunity.consumedTurn = Math.max(0, Number(nindo.activeEffects.opportunity.consumedTurn ?? 0));
       }
 
       nindo.unlockedByGM = Boolean(nindo.unlockedByGM);
@@ -5474,6 +6138,12 @@ async decreaseBase(baseKey) {
       return null;
     }
 
+    const actionSpent = await this.spendCombatAction("complex", `Technique — ${item.name}`);
+
+    if (!actionSpent) return null;
+
+    const awakeningRollBonus = this._consumeNindoAwakeningRollBonus();
+
     const chakraSpend = await this._spendTechniqueChakra(item);
 
     if (!chakraSpend) return null;
@@ -5496,13 +6166,16 @@ async decreaseBase(baseKey) {
 
       return this._resolveTargetedAttack({
         label: `Technique — ${item.name}`,
-        attackTotal: Number(skillData.total ?? 0),
+        attackTotal: Number(skillData.total ?? 0) + awakeningRollBonus,
         kind: String(item.system?.skill ?? item.system?.family ?? "technique"),
         defenseType: this._getTechniqueDefenseType(item),
         damageFormula: String(item.system?.damage?.formula ?? ""),
         damageType: this._getTechniqueDamageType(item),
         damage: item.system?.damage ?? {},
-        effectText
+        effectText: [
+          effectText,
+          awakeningRollBonus > 0 ? `Éveil : +${awakeningRollBonus} au jet.` : ""
+        ].filter(Boolean).join("\n\n")
       });
     }
 
@@ -5510,7 +6183,7 @@ async decreaseBase(baseKey) {
     let rollTotal = null;
 
     if (rollEnabled && skillData) {
-      const rollData = await this._rollExplodingD10Data(Number(skillData.total ?? 0));
+      const rollData = await this._rollExplodingD10Data(Number(skillData.total ?? 0) + awakeningRollBonus);
 
       roll = rollData.roll;
       rollTotal = rollData.total;
@@ -5569,9 +6242,18 @@ async decreaseBase(baseKey) {
     }
 
     const total = Number(skill.total ?? 0);
+    const actionSpent = await this.spendCombatAction("complex", `Jet de compétence — ${definition.label}`);
 
-    return this._rollExplodingD10(definition.label, total, {
-      flavor: `Jet de compétence : ${definition.label} — ${this.name}`
+    if (!actionSpent) return null;
+
+    const awakeningRollBonus = this._consumeNindoAwakeningRollBonus();
+    const finalTotal = total + awakeningRollBonus;
+    const awakeningText = awakeningRollBonus > 0
+      ? ` — Éveil +${awakeningRollBonus}`
+      : "";
+
+    return this._rollExplodingD10(definition.label, finalTotal, {
+      flavor: `Jet de compétence : ${definition.label} — ${this.name}${awakeningText}`
     });
   }
 
@@ -5609,20 +6291,26 @@ async decreaseBase(baseKey) {
     if (this.type !== "shinobi") return false;
 
     const notify = options.notify !== false;
+    const label = options.label ?? "Action de lignée";
     const counter = this.system.combat?.counters?.lineagePowers;
-    if (!counter) return false;
+
+    if (!counter) {
+      return this.spendNindoAwakeningAction(label, {
+        actionType: "lineage",
+        confirm: options.confirmAwakening !== false,
+        notify
+      });
+    }
 
     const remaining = Number(counter.remaining ?? 0);
     const usedThisTurn = Boolean(counter.usedThisTurn);
 
-    if (usedThisTurn) {
-      if (notify) ui.notifications.warn("Une action de lignée a déjà été utilisée ce tour.");
-      return false;
-    }
-
-    if (remaining <= 0) {
-      if (notify) ui.notifications.warn("Aucune utilisation de pouvoir de lignée restante.");
-      return false;
+    if (usedThisTurn || remaining <= 0) {
+      return this.spendNindoAwakeningAction(label, {
+        actionType: "lineage",
+        confirm: options.confirmAwakening !== false,
+        notify
+      });
     }
 
     await this.update({
@@ -6457,6 +7145,12 @@ async decreaseBase(baseKey) {
       return;
     }
 
+    if (nextState !== "dropped") {
+      const actionSpent = await this.spendCombatAction("simple", `${item.name} — ${this._getInventoryCarryStateLabel(nextState)}`);
+
+      if (!actionSpent) return;
+    }
+
     items = this._applyInventoryHandConflicts(items, itemId, nextState);
 
     const updatedItem = items.find((entry) => entry.id === itemId);
@@ -7219,7 +7913,10 @@ async decreaseBase(baseKey) {
       return;
     }
 
-    const lineageUseSpent = await this.spendLineagePowerUse({ notify: false });
+    const lineageUseSpent = await this.spendLineagePowerUse({
+      notify: false,
+      label: `Pouvoir de lignée — ${item.name}`
+    });
 
     if (!lineageUseSpent) {
       return;
@@ -8261,6 +8958,10 @@ async decreaseBase(baseKey) {
       ui.notifications.warn("Cet objet n’est pas utilisable comme action de combat.");
       return null;
     }
+
+    const actionSpent = await this.spendCombatAction("simple", `${item.name} — utilisation`);
+
+    if (!actionSpent) return null;
 
     const damage = this._normalizeDamageData(item.damage ?? {});
     const damageFormula = damage.formula || this._extractInventoryDamageFormula(item);

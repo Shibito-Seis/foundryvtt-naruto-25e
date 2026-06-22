@@ -1,6 +1,14 @@
-<form class="{{cssClass}} naruto-25e-shinobi-sheet-v2" autocomplete="off">
+<form class="{{cssClass}} naruto-25e-shinobi-sheet-v2 {{#if v2.awakening.active}}is-awakened{{/if}}" autocomplete="off">
 
   <header class="shinobi-v2-header">
+    {{#if v2.awakening.active}}
+      <div class="shinobi-v2-awakening-clouds" aria-hidden="true"></div>
+
+      <div class="shinobi-v2-awakening-badge" title="{{v2.awakening.title}}">
+        <strong>ÉVEIL</strong>
+        <span>{{v2.awakening.remaining}} / {{v2.awakening.max}} actions · +{{v2.awakening.bonus}}</span>
+      </div>
+    {{/if}}
     <aside class="shinobi-v2-portrait-column">
       <div class="shinobi-v2-portrait-frame">
         <img class="shinobi-v2-portrait shinobi-v2-portrait-picker" src="{{actor.img}}" title="{{actor.name}}" />
@@ -115,12 +123,28 @@
         <span>{{v2.resources.chakra.value}} / {{v2.resources.chakra.max}}</span>
       </div>
 
-      <div class="shinobi-v2-progress">
-        <span style="width: {{v2.resources.chakra.percent}}%;"></span>
+      <div
+        class="shinobi-v2-progress shinobi-v2-chakra-progress {{#if v2.resources.chakra.hasTemporaryBonus}}has-temporary-bonus{{/if}}"
+        title="{{v2.resources.chakra.title}}"
+      >
+        <span
+          class="shinobi-v2-chakra-natural"
+          style="width: {{v2.resources.chakra.naturalPercent}}%;"
+        ></span>
+
+        {{#if v2.resources.chakra.hasTemporaryBonus}}
+          <span
+            class="shinobi-v2-chakra-temporary"
+            style="left: {{v2.resources.chakra.temporaryStartPercent}}%; width: {{v2.resources.chakra.temporaryPercent}}%;"
+          ></span>
+        {{/if}}
       </div>
 
       <div class="shinobi-v2-track-caption">
         Régén. passive {{v2.resources.chakra.passiveRegen}} · active {{v2.resources.chakra.activeRegen}}
+        {{#if v2.resources.chakra.hasTemporaryBonus}}
+          · Bonus temporaire +{{v2.resources.chakra.temporaryTotal}}
+        {{/if}}
       </div>
     </div>
 
@@ -148,9 +172,16 @@
       <strong>{{v2.resources.nindo.headerLabel}}</strong>
     </div>
 
-    <div class="shinobi-v2-stat-card is-actions">
+    <div
+      class="shinobi-v2-stat-card is-actions {{#if v2.awakening.active}}is-awakening{{/if}}"
+      title="{{#if v2.awakening.active}}{{v2.awakening.title}}{{/if}}"
+    >
       <span>Actions</span>
       <strong>{{v2.resources.actions.label}}</strong>
+
+      {{#if v2.awakening.active}}
+        <small>Éveil {{v2.awakening.remaining}} / {{v2.awakening.max}}</small>
+      {{/if}}
     </div>
   </section>
 
@@ -333,6 +364,16 @@
             <span class="{{#if v2.resources.actions.simple}}is-available{{else}}is-spent{{/if}}">Simple</span>
             <span class="{{#if v2.resources.actions.complex}}is-available{{else}}is-spent{{/if}}">Complexe</span>
             <span class="{{#if v2.resources.actions.delayed}}is-available{{else}}is-spent{{/if}}">Retardée</span>
+          </div>
+
+          <div class="shinobi-v2-button-row">
+            <button
+              type="button"
+              class="combat-delay-complex-action"
+              {{#unless v2.resources.actions.complex}}disabled{{/unless}}
+            >
+              Reporter l’action complexe
+            </button>
           </div>
 
           <div class="shinobi-v2-form-grid">
@@ -1422,13 +1463,26 @@
                 +{{v2.character.nindo.activeEffects.chakraBoost.amount}} Chakra,
                 {{v2.character.nindo.activeEffects.chakraBoost.remainingTurns}} tour(s) restant(s).
               </p>
+
+              {{#if isGM}}
+                <div class="button-row">
+                  <button type="button" class="nindo-chakra-boost-reduce">
+                    MJ : réduire d’1 tour
+                  </button>
+
+                  <button type="button" class="nindo-chakra-boost-end">
+                    MJ : supprimer Accroissement
+                  </button>
+                </div>
+              {{/if}}
             {{/if}}
 
             {{#if v2.character.nindo.activeEffects.awakening.active}}
-              <p class="nindo-active-effect">
+              <p class="nindo-active-effect is-awakening">
                 Éveil actif :
-                {{v2.character.nindo.activeEffects.awakening.actionsRemaining}} action(s) spéciale(s),
-                bonus +{{v2.character.nindo.activeEffects.awakening.bonus}}.
+                {{v2.character.nindo.activeEffects.awakening.actionsRemaining}} action(s) d’Éveil restante(s).
+                Les jets lancés via une action d’Éveil gagnent +{{v2.character.nindo.activeEffects.awakening.bonus}},
+                et la Lignée effective est traitée comme 10 jusqu’au prochain tour du personnage.
               </p>
             {{/if}}
 
@@ -1436,6 +1490,12 @@
               <p class="nindo-active-effect">
                 Opportunité disponible grâce à Unison.
               </p>
+
+              <div class="button-row">
+                <button type="button" class="nindo-opportunity-consume">
+                  Consommer l’opportunité
+                </button>
+              </div>
             {{/if}}
 
             {{#if isGM}}

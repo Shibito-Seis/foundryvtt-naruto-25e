@@ -1749,3 +1749,261 @@
     transform: translateX(115%);
   }
 }
+
+/* ----------------------------------------- */
+/* 0.1.45 — Chakra temporaire visuel          */
+/* ----------------------------------------- */
+
+.shinobi-v2-chakra-progress {
+  position: relative;
+  overflow: hidden;
+}
+
+.shinobi-v2-chakra-progress .shinobi-v2-chakra-natural,
+.shinobi-v2-chakra-progress .shinobi-v2-chakra-temporary {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: block;
+  height: 100%;
+}
+
+.shinobi-v2-chakra-progress .shinobi-v2-chakra-natural {
+  left: 0;
+  z-index: 1;
+  background:
+    linear-gradient(90deg, #2d86d3 0%, #79c7ff 72%, #e8fbff 100%);
+  box-shadow:
+    inset 0 0.18rem 0.25rem rgba(255, 255, 255, 0.2),
+    inset 0 -0.25rem 0.4rem rgba(0, 26, 72, 0.42);
+}
+
+.shinobi-v2-chakra-progress .shinobi-v2-chakra-natural::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.28) 42%, transparent 72%);
+  transform: translateX(-100%);
+  animation: shinobi-v2-chakra-shimmer 2.8s ease-in-out infinite;
+}
+
+.shinobi-v2-chakra-progress .shinobi-v2-chakra-temporary {
+  z-index: 2;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 18% 40%, rgba(255, 224, 119, 0.62), transparent 0.22rem),
+    radial-gradient(circle at 62% 55%, rgba(255, 245, 174, 0.42), transparent 0.18rem),
+    linear-gradient(90deg, #4a1a86 0%, #7d35c6 46%, #c09cff 100%);
+  box-shadow:
+    inset 0 0 0.55rem rgba(255, 221, 104, 0.22),
+    0 0 0.35rem rgba(166, 103, 255, 0.35);
+}
+
+.shinobi-v2-chakra-progress .shinobi-v2-chakra-temporary::before {
+  content: "";
+  position: absolute;
+  inset: -0.15rem;
+  opacity: 0.55;
+  background:
+    linear-gradient(115deg, transparent 0 22%, rgba(255, 219, 93, 0.85) 23% 25%, transparent 26% 46%, rgba(255, 239, 156, 0.75) 47% 49%, transparent 50% 100%);
+  background-size: 4.2rem 100%;
+  animation: shinobi-v2-chakra-lightning 1.35s linear infinite;
+  pointer-events: none;
+}
+
+.shinobi-v2-chakra-progress .shinobi-v2-chakra-temporary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.22) 44%, transparent 74%);
+  transform: translateX(-100%);
+  animation: shinobi-v2-chakra-shimmer 1.9s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.shinobi-v2-chakra-progress.has-temporary-bonus {
+  border-color: rgba(199, 163, 255, 0.78);
+  box-shadow:
+    inset 0 0 0.45rem rgba(121, 199, 255, 0.12),
+    0 0 0.5rem rgba(143, 78, 255, 0.2);
+}
+
+@keyframes shinobi-v2-chakra-lightning {
+  from {
+    background-position: -4.2rem 0;
+  }
+
+  to {
+    background-position: 4.2rem 0;
+  }
+}
+
+/* ----------------------------------------- */
+/* 0.1.45 — Éveil visuel fiche V2            */
+/* ----------------------------------------- */
+
+.naruto-25e-shinobi-sheet-v2.is-awakened {
+  position: relative;
+  isolation: isolate;
+  border-radius: 0.35rem;
+  box-shadow:
+    0 0 1.4rem rgba(111, 45, 194, 0.28),
+    inset 0 0 2.2rem rgba(51, 16, 82, 0.34);
+}
+
+.naruto-25e-shinobi-sheet-v2.is-awakened::before {
+  content: "";
+  position: absolute;
+  inset: 0.2rem;
+  z-index: -1;
+  pointer-events: none;
+  border: 1px solid rgba(185, 126, 255, 0.26);
+  border-radius: 0.45rem;
+  background:
+    radial-gradient(circle at 18% 8%, rgba(163, 87, 255, 0.22), transparent 16rem),
+    radial-gradient(circle at 82% 12%, rgba(75, 25, 115, 0.24), transparent 18rem),
+    linear-gradient(135deg, rgba(25, 10, 36, 0.32), transparent 48%, rgba(80, 22, 116, 0.22));
+  animation: shinobi-v2-awakening-aura 2.8s ease-in-out infinite;
+}
+
+.naruto-25e-shinobi-sheet-v2.is-awakened .shinobi-v2-header {
+  position: relative;
+  overflow: hidden;
+  border-color: rgba(204, 143, 255, 0.78);
+  background:
+    radial-gradient(circle at 12% 15%, rgba(193, 118, 255, 0.2), transparent 12rem),
+    linear-gradient(90deg, rgba(43, 12, 67, 0.82), rgba(110, 31, 74, 0.48) 46%, rgba(12, 10, 20, 0.95)),
+    rgba(12, 9, 18, 0.96);
+  box-shadow:
+    inset 0 0 1.1rem rgba(220, 176, 255, 0.08),
+    0 0 0.85rem rgba(143, 74, 255, 0.18);
+}
+
+.shinobi-v2-awakening-clouds {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.55;
+  background:
+    radial-gradient(ellipse at 12% 45%, rgba(32, 14, 43, 0.8), transparent 22%),
+    radial-gradient(ellipse at 55% 20%, rgba(88, 34, 118, 0.46), transparent 20%),
+    radial-gradient(ellipse at 86% 70%, rgba(18, 8, 26, 0.82), transparent 24%);
+  filter: blur(0.25rem);
+  animation: shinobi-v2-awakening-clouds 7s linear infinite;
+}
+
+.naruto-25e-shinobi-sheet-v2.is-awakened .shinobi-v2-header > *:not(.shinobi-v2-awakening-clouds) {
+  position: relative;
+  z-index: 1;
+}
+
+.shinobi-v2-awakening-badge {
+  position: absolute;
+  top: 0.75rem;
+  right: 9.35rem;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 0.08rem;
+  padding: 0.32rem 0.55rem;
+  border: 1px solid rgba(232, 194, 255, 0.68);
+  border-radius: 0.3rem;
+  color: #f3dcff;
+  background:
+    linear-gradient(135deg, rgba(57, 17, 82, 0.92), rgba(13, 8, 22, 0.94));
+  box-shadow:
+    0 0 0.65rem rgba(174, 93, 255, 0.3),
+    inset 0 0 0.55rem rgba(255, 232, 170, 0.08);
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.shinobi-v2-awakening-badge strong {
+  color: #ffe9a8;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+}
+
+.shinobi-v2-awakening-badge span {
+  color: #e7c6ff;
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+.naruto-25e-shinobi-sheet-v2.is-awakened .shinobi-v2-track-card.is-health,
+.naruto-25e-shinobi-sheet-v2.is-awakened .shinobi-v2-track-card.is-chakra,
+.naruto-25e-shinobi-sheet-v2.is-awakened .shinobi-v2-stat-card.is-nindo,
+.naruto-25e-shinobi-sheet-v2.is-awakened .shinobi-v2-stat-card.is-actions {
+  border-color: rgba(203, 145, 255, 0.72);
+  box-shadow:
+    0 0 0.65rem rgba(150, 78, 255, 0.18),
+    inset 0 0 0.7rem rgba(106, 37, 145, 0.22);
+  animation: shinobi-v2-awakening-pulse 1.85s ease-in-out infinite;
+}
+
+.naruto-25e-shinobi-sheet-v2.is-awakened .shinobi-v2-track-card.is-health .shinobi-v2-track-header strong,
+.naruto-25e-shinobi-sheet-v2.is-awakened .shinobi-v2-track-card.is-chakra .shinobi-v2-track-header strong,
+.naruto-25e-shinobi-sheet-v2.is-awakened .shinobi-v2-stat-card.is-nindo span,
+.naruto-25e-shinobi-sheet-v2.is-awakened .shinobi-v2-stat-card.is-actions span {
+  color: #e8c4ff;
+}
+
+.shinobi-v2-stat-card.is-actions.is-awakening small {
+  margin-top: 0.12rem;
+  color: #ffe9a8;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.nindo-active-effect.is-awakening {
+  border-left: 3px solid rgba(198, 126, 255, 0.82);
+  padding-left: 0.55rem;
+  color: #f0d7ff;
+  text-shadow: 0 0 0.35rem rgba(156, 74, 255, 0.22);
+}
+
+@keyframes shinobi-v2-awakening-aura {
+  0%,
+  100% {
+    opacity: 0.72;
+    box-shadow:
+      0 0 1rem rgba(126, 62, 214, 0.15),
+      inset 0 0 1.4rem rgba(73, 22, 112, 0.18);
+  }
+
+  50% {
+    opacity: 1;
+    box-shadow:
+      0 0 1.6rem rgba(181, 102, 255, 0.28),
+      inset 0 0 2.2rem rgba(112, 32, 168, 0.25);
+  }
+}
+
+@keyframes shinobi-v2-awakening-clouds {
+  from {
+    transform: translateX(-8%) scale(1.04);
+  }
+
+  to {
+    transform: translateX(8%) scale(1.08);
+  }
+}
+
+@keyframes shinobi-v2-awakening-pulse {
+  0%,
+  100% {
+    transform: translateY(0);
+    filter: brightness(1);
+  }
+
+  50% {
+    transform: translateY(-0.03rem);
+    filter: brightness(1.12);
+  }
+}
