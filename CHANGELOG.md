@@ -2,6 +2,77 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.48 - Relations PNJ V1
+
+### Ajouté
+
+- Ajout d’un nouvel onglet Relations sur la fiche Shinobi V2.
+- Ajout d’une structure `background.relationships` sur les fiches Shinobi.
+- Ajout de relations PNJ manuelles :
+  - nom ;
+  - Actor UUID optionnel ;
+  - rôle ;
+  - faction ;
+  - score de relation ;
+  - tag personnel ;
+  - tag cible ;
+  - notes du PJ ;
+  - notes cible ;
+  - notes MJ secrètes ;
+  - relation secrète visible seulement par le MJ.
+- Ajout d’une jauge relationnelle de -150 à +150 :
+  - +50 / +100 / +150 : Allié rang 1 / 2 / 3 ;
+  - -50 / -100 / -150 : Antagoniste rang 1 / 2 / 3 ;
+  - 0 : Neutre.
+- Ajout de tags relationnels :
+  - Aucun ;
+  - Inconnu ;
+  - Connaissance ;
+  - Amitié ;
+  - Meilleur ami ;
+  - Respect ;
+  - Rivalité ;
+  - Crush ;
+  - Amour ;
+  - Famille ;
+  - Mentor ;
+  - Méfiance ;
+  - Haine ;
+  - Peur.
+- Ajout d’un impact visuel selon les tags :
+  - relation romantique ;
+  - relation romantique réciproque ;
+  - relation romantique asymétrique ;
+  - relation amicale ;
+  - relation familiale / mentorale ;
+  - relation hostile.
+
+### Sécurité / droits
+
+- Le propriétaire de la fiche et le MJ peuvent ajouter ou supprimer une relation.
+- Le propriétaire de la fiche et le MJ peuvent modifier :
+  - nom ;
+  - Actor UUID ;
+  - rôle ;
+  - faction ;
+  - tag personnel ;
+  - notes du PJ.
+- Seul le MJ peut modifier :
+  - score de relation ;
+  - tag cible ;
+  - notes cible ;
+  - notes MJ ;
+  - relation secrète.
+- Les relations marquées secrètes ne sont visibles que par le MJ.
+
+### Notes
+
+- Les relations sont gérées par méthodes Actor dédiées.
+- Les relations ne passent pas par la sauvegarde formulaire native de Foundry afin d’éviter les problèmes de tableaux d’objets rencontrés avec les arcs narratifs.
+- Aucun changement Actions.
+- Aucun changement Mangekyō.
+- Aucun changement Arcs narratifs.
+
 ## 0.1.47.1 - Hotfix sauvegarde Arcs narratifs V1
 
 ### Corrigé

@@ -2255,3 +2255,229 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ----------------------------------------- */
+/* 0.1.48 — Relations PNJ V1                 */
+/* ----------------------------------------- */
+
+.shinobi-v2-relationships-panel {
+  grid-column: 1 / -1;
+}
+
+.shinobi-v2-relationships-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.shinobi-v2-relationships-header p {
+  margin: 0;
+}
+
+.shinobi-v2-relationships-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
+  gap: 0.75rem;
+}
+
+.shinobi-v2-relationship-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  overflow: hidden;
+  padding: 0.75rem;
+  border: 1px solid rgba(201, 163, 93, 0.34);
+  background:
+    linear-gradient(135deg, rgba(27, 23, 25, 0.93), rgba(8, 10, 16, 0.94));
+}
+
+.shinobi-v2-relationship-card.is-secret {
+  border-style: dashed;
+  box-shadow: inset 0 0 0.75rem rgba(160, 120, 255, 0.08);
+}
+
+.shinobi-v2-relationship-card.is-score-positive {
+  border-color: rgba(91, 184, 111, 0.5);
+}
+
+.shinobi-v2-relationship-card.is-score-negative {
+  border-color: rgba(183, 67, 62, 0.62);
+}
+
+.shinobi-v2-relationship-card.is-tag-friendly {
+  box-shadow: inset 0 0 0.8rem rgba(76, 154, 97, 0.1);
+}
+
+.shinobi-v2-relationship-card.is-tag-family {
+  box-shadow: inset 0 0 0.8rem rgba(201, 163, 93, 0.12);
+}
+
+.shinobi-v2-relationship-card.is-tag-hostile {
+  background:
+    linear-gradient(135deg, rgba(48, 18, 18, 0.9), rgba(10, 8, 12, 0.96));
+}
+
+.shinobi-v2-relationship-card.is-tag-romantic,
+.shinobi-v2-relationship-card.is-tag-asymmetric-romantic {
+  box-shadow: inset 0 0 0.9rem rgba(208, 85, 160, 0.13);
+}
+
+.shinobi-v2-relationship-card.is-tag-mutual-romantic {
+  border-color: rgba(255, 138, 205, 0.82);
+  background:
+    linear-gradient(135deg, rgba(72, 24, 54, 0.88), rgba(24, 12, 25, 0.96));
+  box-shadow:
+    inset 0 0 1rem rgba(255, 128, 200, 0.18),
+    0 0 0.65rem rgba(255, 128, 200, 0.12);
+}
+
+.shinobi-v2-relationship-hearts {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.6rem;
+  color: rgba(255, 165, 215, 0.82);
+  font-size: 0.9rem;
+  letter-spacing: 0.25rem;
+  pointer-events: none;
+  text-shadow: 0 0 0.45rem rgba(255, 128, 200, 0.45);
+}
+
+.shinobi-v2-relationship-header {
+  display: grid;
+  grid-template-columns: minmax(12rem, 1fr) minmax(12rem, 1fr) auto;
+  gap: 0.55rem;
+  align-items: end;
+}
+
+.shinobi-v2-relationship-tags {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(10rem, 1fr));
+  gap: 0.55rem;
+}
+
+.shinobi-v2-relationship-score {
+  padding: 0.55rem;
+  border: 1px solid rgba(201, 163, 93, 0.24);
+  background: rgba(0, 0, 0, 0.24);
+}
+
+.shinobi-v2-relationship-score-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.65rem;
+  margin-bottom: 0.35rem;
+}
+
+.shinobi-v2-relationship-score-header strong {
+  color: var(--v2-gold);
+}
+
+.shinobi-v2-relationship-gauge {
+  position: relative;
+  height: 0.95rem;
+  overflow: hidden;
+  border: 1px solid rgba(201, 163, 93, 0.28);
+  background:
+    linear-gradient(90deg, rgba(105, 26, 24, 0.75) 0%, rgba(34, 26, 28, 0.9) 50%, rgba(36, 93, 49, 0.75) 100%);
+}
+
+.shinobi-v2-relationship-gauge::before {
+  content: "";
+  position: absolute;
+  top: -0.2rem;
+  bottom: -0.2rem;
+  left: 50%;
+  width: 2px;
+  background: rgba(239, 227, 204, 0.65);
+  transform: translateX(-1px);
+}
+
+.shinobi-v2-relationship-gauge-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, rgba(211, 93, 86, 0.88), rgba(229, 185, 91, 0.9), rgba(91, 184, 111, 0.88));
+}
+
+.is-tag-romantic .shinobi-v2-relationship-gauge-fill,
+.is-tag-asymmetric-romantic .shinobi-v2-relationship-gauge-fill {
+  background: linear-gradient(90deg, rgba(152, 83, 196, 0.9), rgba(231, 112, 184, 0.92));
+}
+
+.is-tag-mutual-romantic .shinobi-v2-relationship-gauge-fill {
+  background: linear-gradient(90deg, rgba(255, 122, 205, 0.95), rgba(255, 184, 223, 0.98));
+}
+
+.is-tag-hostile .shinobi-v2-relationship-gauge-fill {
+  background: linear-gradient(90deg, rgba(168, 38, 36, 0.96), rgba(226, 92, 54, 0.9));
+}
+
+.shinobi-v2-relationship-gauge-marker {
+  position: absolute;
+  top: -0.25rem;
+  bottom: -0.25rem;
+  width: 3px;
+  background: #fff0bd;
+  box-shadow: 0 0 0.45rem rgba(255, 240, 189, 0.8);
+  transform: translateX(-1px);
+}
+
+.shinobi-v2-relationship-score-controls {
+  display: grid;
+  grid-template-columns: repeat(2, 3rem) minmax(5rem, 1fr) repeat(2, 3rem);
+  gap: 0.35rem;
+  margin-top: 0.45rem;
+}
+
+.shinobi-v2-relationship-score-controls input {
+  text-align: center;
+}
+
+.shinobi-v2-relationship-target-readonly {
+  padding: 0.55rem;
+  border: 1px solid rgba(201, 163, 93, 0.22);
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.shinobi-v2-relationship-target-readonly strong {
+  color: var(--v2-gold);
+}
+
+.shinobi-v2-relationship-target-readonly p {
+  margin: 0.35rem 0 0;
+  white-space: pre-wrap;
+}
+
+.shinobi-v2-checkbox-line {
+  display: flex;
+  flex-direction: row;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.shinobi-v2-checkbox-line input[type="checkbox"] {
+  width: auto;
+}
+
+.shinobi-v2-relationship-card textarea {
+  min-height: 4.5rem;
+}
+
+@media (max-width: 980px) {
+  .shinobi-v2-relationship-header,
+  .shinobi-v2-relationship-tags {
+    grid-template-columns: 1fr;
+  }
+
+  .shinobi-v2-relationship-score-controls {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .shinobi-v2-relationship-score-controls input {
+    grid-column: 1 / -1;
+  }
+}

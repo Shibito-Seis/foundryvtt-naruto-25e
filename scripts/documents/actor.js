@@ -46,6 +46,12 @@ const NARUTO25E_NARRATIVE_ARC_LIMITS = {
   statuses: ["active", "completed", "abandoned"]
 };
 
+const NARUTO25E_RELATIONSHIP_LIMITS = {
+  max: 50,
+  minScore: -150,
+  maxScore: 150
+};
+
 export class Naruto25eActor extends Actor {
   prepareDerivedData() {
     super.prepareDerivedData();
@@ -3227,6 +3233,21 @@ _prepareExperience(system) {
     }
 
     system.background.narrativeArcs = normalizedArcs;
+
+    const relationshipSource = system.background.relationships;
+
+    const rawRelationships = Array.isArray(relationshipSource)
+      ? relationshipSource
+      : relationshipSource && typeof relationshipSource === "object"
+        ? Object.keys(relationshipSource)
+            .filter((key) => /^\d+$/.test(String(key)))
+            .sort((a, b) => Number(a) - Number(b))
+            .map((key) => relationshipSource[key])
+        : [];
+
+    system.background.relationships = rawRelationships
+      .slice(0, NARUTO25E_RELATIONSHIP_LIMITS.max)
+      .map((relationship, index) => this._normalizeRelationshipData(relationship, index));
   }
 
   _getDefaultNarrativeArc(index = 0, id = "") {
@@ -3439,6 +3460,213 @@ _prepareExperience(system) {
 
     await this.update({
       "system.background.narrativeArcs": arcs
+    });
+
+    return true;
+  }
+
+  _getDefaultRelationship(index = 0, id = "") {
+    const relationshipNumber = Math.max(1, Number(index ?? 0) + 1);
+
+    return {
+      id: id || `relationship-${relationshipNumber}`,
+      name: `Relation ${relationshipNumber}`,
+      actorUuid: "",
+      role: "",
+      faction: "",
+      score: 0,
+      personalTag: "none",
+      targetTag: "unknown",
+      personalNotes: "",
+      targetNotes: "",
+      gmNotes: "",
+      isSecret: false
+    };
+  }
+
+  _normalizeRelationshipTag(tagKey, fallback = "none") {
+    const key = String(tagKey ?? fallback);
+
+    return NARUTO25E.relationshipTags?.[key] ? key : fallback;
+  }
+
+  _normalizeRelationshipData(relationship = {}, index = 0) {
+    const fallback = this._getDefaultRelationship(index);
+    const score = this._clampNumber(
+      Number(relationship.score ?? fallback.score),
+      NARUTO25E_RELATIONSHIP_LIMITS.minScore,
+      NARUTO25E_RELATIONSHIP_LIMITS.maxScore
+    );
+
+    return {
+      id: String(relationship.id ?? fallback.id) || fallback.id,
+      name: String(relationship.name ?? fallback.name),
+      actorUuid: String(relationship.actorUuid ?? ""),
+      role: String(relationship.role ?? ""),
+      faction: String(relationship.faction ?? ""),
+      score,
+      personalTag: this._normalizeRelationshipTag(relationship.personalTag, "none"),
+      targetTag: this._normalizeRelationshipTag(relationship.targetTag, "unknown"),
+      personalNotes: String(relationship.personalNotes ?? ""),
+      targetNotes: String(relationship.targetNotes ?? ""),
+      gmNotes: String(relationship.gmNotes ?? ""),
+      isSecret: Boolean(relationship.isSecret)
+    };
+  }
+
+  _canUserEditRelationships(user = game.user) {
+    return Boolean(user?.isGM) || Boolean(this.isOwner);
+  }
+
+  _canUserEditRelationshipField(fieldKey, user = game.user) {
+    if (user?.isGM) return true;
+
+    if (!this._canUserEditRelationships(user)) return false;
+
+    return new Set([
+      "name",
+      "actorUuid",
+      "role",
+      "faction",
+      "personalTag",
+      "personalNotes"
+    ]).has(String(fieldKey ?? ""));
+  }
+
+  async addRelationship() {
+    if (this.type !== "shinobi") return false;
+
+    if (!this._canUserEditRelationships()) {
+      ui.notifications.warn("Tu n’as pas les droits nécessaires pour modifier les relations.");
+      return false;
+    }
+
+    const relationships = foundry.utils.deepClone(this.system.background?.relationships ?? []);
+
+    if (relationships.length >= NARUTO25E_RELATIONSHIP_LIMITS.max) {
+      ui.notifications.warn(`Maximum ${NARUTO25E_RELATIONSHIP_LIMITS.max} relations.`);
+      return false;
+    }
+
+    const id = foundry.utils.randomID?.(8) ?? `relationship-${Date.now()}`;
+    relationships.push(this._getDefaultRelationship(relationships.length, id));
+
+    await this.update({
+      "system.background.relationships": relationships
+    });
+
+    return true;
+  }
+
+  async deleteRelationship(relationshipId) {
+    if (this.type !== "shinobi") return false;
+
+    if (!this._canUserEditRelationships()) {
+      ui.notifications.warn("Tu n’as pas les droits nécessaires pour modifier les relations.");
+      return false;
+    }
+
+    const id = String(relationshipId ?? "");
+    const relationships = foundry.utils.deepClone(this.system.background?.relationships ?? []);
+    const nextRelationships = relationships.filter((relationship) => String(relationship.id ?? "") !== id);
+
+    if (nextRelationships.length === relationships.length) {
+      ui.notifications.warn("Relation introuvable.");
+      return false;
+    }
+
+    await this.update({
+      "system.background.relationships": nextRelationships
+    });
+
+    return true;
+  }
+
+  async updateRelationshipField(relationshipId, field, value) {
+    if (this.type !== "shinobi") return false;
+
+    const id = String(relationshipId ?? "");
+    const fieldKey = String(field ?? "");
+
+    const allowedFields = new Set([
+      "name",
+      "actorUuid",
+      "role",
+      "faction",
+      "score",
+      "personalTag",
+      "targetTag",
+      "personalNotes",
+      "targetNotes",
+      "gmNotes",
+      "isSecret"
+    ]);
+
+    if (!allowedFields.has(fieldKey)) {
+      ui.notifications.warn(`Champ de relation invalide : ${fieldKey}.`);
+      return false;
+    }
+
+    if (!this._canUserEditRelationshipField(fieldKey)) {
+      ui.notifications.warn("Tu n’as pas les droits nécessaires pour modifier ce champ de relation.");
+      return false;
+    }
+
+    const relationships = foundry.utils.deepClone(this.system.background?.relationships ?? []);
+    const relationship = relationships.find((entry) => String(entry.id ?? "") === id);
+
+    if (!relationship) {
+      ui.notifications.warn("Relation introuvable.");
+      return false;
+    }
+
+    if (fieldKey === "score") {
+      relationship.score = this._clampNumber(
+        Number(value ?? 0),
+        NARUTO25E_RELATIONSHIP_LIMITS.minScore,
+        NARUTO25E_RELATIONSHIP_LIMITS.maxScore
+      );
+    } else if (fieldKey === "personalTag" || fieldKey === "targetTag") {
+      relationship[fieldKey] = this._normalizeRelationshipTag(value, fieldKey === "targetTag" ? "unknown" : "none");
+    } else if (fieldKey === "isSecret") {
+      relationship.isSecret = Boolean(value);
+    } else {
+      relationship[fieldKey] = String(value ?? "");
+    }
+
+    await this.update({
+      "system.background.relationships": relationships
+    });
+
+    return true;
+  }
+
+  async adjustRelationshipScore(relationshipId, delta) {
+    if (this.type !== "shinobi") return false;
+
+    if (!game.user?.isGM) {
+      ui.notifications.warn("Seul le MJ peut modifier le score de relation.");
+      return false;
+    }
+
+    const id = String(relationshipId ?? "");
+    const scoreDelta = Number(delta ?? 0);
+    const relationships = foundry.utils.deepClone(this.system.background?.relationships ?? []);
+    const relationship = relationships.find((entry) => String(entry.id ?? "") === id);
+
+    if (!relationship) {
+      ui.notifications.warn("Relation introuvable.");
+      return false;
+    }
+
+    relationship.score = this._clampNumber(
+      Number(relationship.score ?? 0) + scoreDelta,
+      NARUTO25E_RELATIONSHIP_LIMITS.minScore,
+      NARUTO25E_RELATIONSHIP_LIMITS.maxScore
+    );
+
+    await this.update({
+      "system.background.relationships": relationships
     });
 
     return true;

@@ -1700,6 +1700,219 @@
       </div>
     </div>
 
+    <div class="tab" data-group="primary" data-tab="relations">
+      <div class="shinobi-v2-grid">
+
+        <section class="shinobi-v2-panel shinobi-v2-relationships-panel">
+          <h2>Relations PNJ</h2>
+
+          <div class="shinobi-v2-relationships-header">
+            <p class="shinobi-v2-muted">
+              {{v2.relationships.count}} relation(s) visible(s)
+              {{#if isGM}}sur {{v2.relationships.total}}{{/if}}.
+              Score de -150 à +150, avec paliers tous les 50.
+            </p>
+
+            {{#if v2.relationships.canAdd}}
+              <button type="button" class="relationship-add">
+                Ajouter une relation
+              </button>
+            {{/if}}
+          </div>
+
+          {{#if v2.relationships.items.length}}
+            <div class="shinobi-v2-relationships-list">
+              {{#each v2.relationships.items as |relationship|}}
+                <article class="shinobi-v2-relationship-card is-score-{{relationship.scoreTone}} is-tag-{{relationship.tagTone}} {{#if relationship.isSecret}}is-secret{{/if}}">
+                  {{#if relationship.hasHeart}}
+                    <div class="shinobi-v2-relationship-hearts" aria-hidden="true">♥ ♥</div>
+                  {{/if}}
+
+                  <header class="shinobi-v2-relationship-header">
+                    <label>
+                      Nom / PNJ
+                      <input
+                        class="relationship-field"
+                        data-relationship-id="{{relationship.id}}"
+                        data-field="name"
+                        type="text"
+                        value="{{relationship.name}}"
+                      />
+                    </label>
+
+                    <label>
+                      Actor UUID optionnel
+                      <input
+                        class="relationship-field"
+                        data-relationship-id="{{relationship.id}}"
+                        data-field="actorUuid"
+                        type="text"
+                        value="{{relationship.actorUuid}}"
+                        placeholder="Actor.xxxxx ou Scene...Token..."
+                      />
+                    </label>
+
+                    {{#if @root.v2.relationships.canDelete}}
+                      <button
+                        type="button"
+                        class="relationship-delete"
+                        data-relationship-id="{{relationship.id}}"
+                      >
+                        Supprimer
+                      </button>
+                    {{/if}}
+                  </header>
+
+                  <div class="shinobi-v2-form-grid">
+                    <label>
+                      Rôle
+                      <input
+                        class="relationship-field"
+                        data-relationship-id="{{relationship.id}}"
+                        data-field="role"
+                        type="text"
+                        value="{{relationship.role}}"
+                        placeholder="Sensei, rival, civil, marchand..."
+                      />
+                    </label>
+
+                    <label>
+                      Faction
+                      <input
+                        class="relationship-field"
+                        data-relationship-id="{{relationship.id}}"
+                        data-field="faction"
+                        type="text"
+                        value="{{relationship.faction}}"
+                        placeholder="Konoha, clan, équipe, organisation..."
+                      />
+                    </label>
+                  </div>
+
+                  <div class="shinobi-v2-relationship-tags">
+                    <label>
+                      Tag personnel
+                      <select
+                        class="relationship-field"
+                        data-relationship-id="{{relationship.id}}"
+                        data-field="personalTag"
+                      >
+                        {{#each @root.v2.relationships.tagOptions as |tag|}}
+                          <option value="{{tag.key}}" {{#if (eq relationship.personalTag tag.key)}}selected{{/if}}>{{tag.label}}</option>
+                        {{/each}}
+                      </select>
+                    </label>
+
+                    <label>
+                      Tag cible
+                      <select
+                        class="relationship-field"
+                        data-relationship-id="{{relationship.id}}"
+                        data-field="targetTag"
+                        {{#unless @root.isGM}}disabled{{/unless}}
+                      >
+                        {{#each @root.v2.relationships.tagOptions as |tag|}}
+                          <option value="{{tag.key}}" {{#if (eq relationship.targetTag tag.key)}}selected{{/if}}>{{tag.label}}</option>
+                        {{/each}}
+                      </select>
+                    </label>
+                  </div>
+
+                  <div class="shinobi-v2-relationship-score">
+                    <div class="shinobi-v2-relationship-score-header">
+                      <strong>{{relationship.rankLabel}}</strong>
+                      <span>{{relationship.score}} / 150</span>
+                    </div>
+
+                    <div class="shinobi-v2-relationship-gauge">
+                      <span
+                        class="shinobi-v2-relationship-gauge-fill"
+                        style="left: {{relationship.gauge.fillLeft}}%; width: {{relationship.gauge.fillWidth}}%;"
+                      ></span>
+                      <i
+                        class="shinobi-v2-relationship-gauge-marker"
+                        style="left: {{relationship.gauge.markerPercent}}%;"
+                      ></i>
+                    </div>
+
+                    {{#if @root.isGM}}
+                      <div class="shinobi-v2-relationship-score-controls">
+                        <button type="button" class="relationship-score-adjust" data-relationship-id="{{relationship.id}}" data-delta="-10">-10</button>
+                        <button type="button" class="relationship-score-adjust" data-relationship-id="{{relationship.id}}" data-delta="-1">-1</button>
+                        <input
+                          class="relationship-field"
+                          data-relationship-id="{{relationship.id}}"
+                          data-field="score"
+                          type="number"
+                          min="-150"
+                          max="150"
+                          step="1"
+                          value="{{relationship.score}}"
+                        />
+                        <button type="button" class="relationship-score-adjust" data-relationship-id="{{relationship.id}}" data-delta="1">+1</button>
+                        <button type="button" class="relationship-score-adjust" data-relationship-id="{{relationship.id}}" data-delta="10">+10</button>
+                      </div>
+                    {{/if}}
+                  </div>
+
+                  <label>
+                    Notes du PJ — ce que mon personnage pense / ressent
+                    <textarea
+                      class="relationship-field"
+                      data-relationship-id="{{relationship.id}}"
+                      data-field="personalNotes"
+                    >{{relationship.personalNotes}}</textarea>
+                  </label>
+
+                  {{#if @root.isGM}}
+                    <label>
+                      Notes cible — ce que la cible pense / montre
+                      <textarea
+                        class="relationship-field"
+                        data-relationship-id="{{relationship.id}}"
+                        data-field="targetNotes"
+                      >{{relationship.targetNotes}}</textarea>
+                    </label>
+
+                    <label>
+                      Notes MJ secrètes
+                      <textarea
+                        class="relationship-field"
+                        data-relationship-id="{{relationship.id}}"
+                        data-field="gmNotes"
+                      >{{relationship.gmNotes}}</textarea>
+                    </label>
+
+                    <label class="shinobi-v2-checkbox-line">
+                      <input
+                        class="relationship-field"
+                        data-relationship-id="{{relationship.id}}"
+                        data-field="isSecret"
+                        type="checkbox"
+                        {{#if relationship.isSecret}}checked{{/if}}
+                      />
+                      Relation secrète, visible seulement par le MJ
+                    </label>
+                  {{else}}
+                    {{#if relationship.targetNotes}}
+                      <div class="shinobi-v2-relationship-target-readonly">
+                        <strong>Ce que la cible semble penser</strong>
+                        <p>{{relationship.targetNotes}}</p>
+                      </div>
+                    {{/if}}
+                  {{/if}}
+                </article>
+              {{/each}}
+            </div>
+          {{else}}
+            <p class="shinobi-v2-muted">Aucune relation visible.</p>
+          {{/if}}
+        </section>
+
+      </div>
+    </div>
+
+
     <div class="tab" data-group="primary" data-tab="lineage">
       {{#unless v2.lineage.canSeePrivateLineage}}
         <section class="shinobi-v2-panel">

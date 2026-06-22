@@ -466,6 +466,23 @@ NARUTO25E.villageStatuses = {
   independent: "Indépendant"
 };
 
+NARUTO25E.relationshipTags = {
+  none: "Aucun",
+  unknown: "Inconnu",
+  acquaintance: "Connaissance",
+  friendship: "Amitié",
+  bestFriend: "Meilleur ami",
+  respect: "Respect",
+  rivalry: "Rivalité",
+  crush: "Crush",
+  love: "Amour",
+  family: "Famille",
+  mentor: "Mentor",
+  distrust: "Méfiance",
+  hatred: "Haine",
+  fear: "Peur"
+};
+
 NARUTO25E.heritageModes = {
   clan: "Clan",
   voie: "Voie",

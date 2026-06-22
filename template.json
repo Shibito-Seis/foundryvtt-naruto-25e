@@ -411,6 +411,7 @@
             "balance": 0,
             "notes": ""
             },
+          "relationships": [],
           "notes": ""
         },
         "inventory": {

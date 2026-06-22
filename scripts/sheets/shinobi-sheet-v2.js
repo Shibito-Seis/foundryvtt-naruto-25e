@@ -270,6 +270,51 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
       this.render(false);
     });
 
+    html.find(".relationship-add").on("click", async (event) => {
+      event.preventDefault();
+
+      await this.actor.addRelationship();
+      this.render(false);
+    });
+
+    html.find(".relationship-delete").on("click", async (event) => {
+      event.preventDefault();
+
+      const relationshipId = event.currentTarget?.dataset?.relationshipId ?? "";
+
+      await this.actor.deleteRelationship(relationshipId);
+      this.render(false);
+    });
+
+    html.find(".relationship-field").on("change", async (event) => {
+      event.preventDefault();
+
+      const element = event.currentTarget;
+      const relationshipId = element?.dataset?.relationshipId ?? "";
+      const field = element?.dataset?.field ?? "";
+      const value = element?.type === "checkbox"
+        ? Boolean(element.checked)
+        : element?.value ?? "";
+
+      const updated = await this.actor.updateRelationshipField(relationshipId, field, value);
+
+      if (updated && ["score", "personalTag", "targetTag", "isSecret"].includes(field)) {
+        this.render(false);
+      }
+    });
+
+    html.find(".relationship-score-adjust").on("click", async (event) => {
+      event.preventDefault();
+
+      if (!game.user?.isGM) return;
+
+      const relationshipId = event.currentTarget?.dataset?.relationshipId ?? "";
+      const delta = Number(event.currentTarget?.dataset?.delta ?? 0);
+
+      await this.actor.adjustRelationshipScore(relationshipId, delta);
+      this.render(false);
+    });
+
     html.find(".nindo-opportunity-consume").on("click", async (event) => {
       event.preventDefault();
 
@@ -886,6 +931,7 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
       health: this._buildV2HealthContext(context),
       summary: this._buildV2SummaryContext(context, identityContext),
       character: this._buildV2CharacterContext(identity, system.background ?? {}),
+      relationships: this._buildV2RelationshipsContext(system.background ?? {}),
       creation: this._buildV2CreationContext(context, progression),
       combat: this._buildV2CombatContext(context, combat),
       techniques: this._buildV2TechniqueContext(context),
@@ -1330,6 +1376,100 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
       canEditProgress,
       statusLabels
     };
+  }
+
+  _buildV2RelationshipsContext(background = {}) {
+    const relationships = Array.isArray(background.relationships) ? background.relationships : [];
+    const canEdit = Boolean(this.actor?.isOwner || game.user?.isGM);
+    const canEditTarget = Boolean(game.user?.isGM);
+    const tagOptions = Object.entries(NARUTO25E.relationshipTags ?? {}).map(([key, label]) => ({
+      key,
+      label
+    }));
+
+    const items = relationships
+      .filter((relationship) => game.user?.isGM || !Boolean(relationship.isSecret))
+      .map((relationship, index) => {
+        const score = Math.min(Math.max(Number(relationship.score ?? 0), -150), 150);
+        const markerPercent = Math.min(Math.max(((score + 150) / 300) * 100, 0), 100);
+        const fillWidth = Math.min(Math.abs(score) / 150 * 50, 50);
+        const fillLeft = score >= 0 ? 50 : 50 - fillWidth;
+        const personalTag = String(relationship.personalTag ?? "none");
+        const targetTag = String(relationship.targetTag ?? "unknown");
+        const scoreTone = score >= 50 ? "positive" : score <= -50 ? "negative" : "neutral";
+        const tagTone = this._getV2RelationshipTagTone(personalTag, targetTag, score);
+
+        return {
+          index,
+          id: String(relationship.id ?? `relationship-${index + 1}`),
+          name: String(relationship.name ?? `Relation ${index + 1}`),
+          actorUuid: String(relationship.actorUuid ?? ""),
+          role: String(relationship.role ?? ""),
+          faction: String(relationship.faction ?? ""),
+          score,
+          scoreTone,
+          rankLabel: this._getV2RelationshipRankLabel(score),
+          personalTag,
+          personalTagLabel: NARUTO25E.relationshipTags?.[personalTag] ?? personalTag,
+          targetTag,
+          targetTagLabel: NARUTO25E.relationshipTags?.[targetTag] ?? targetTag,
+          tagTone,
+          hasHeart: ["romantic", "mutual-romantic", "asymmetric-romantic"].includes(tagTone),
+          personalNotes: String(relationship.personalNotes ?? ""),
+          targetNotes: String(relationship.targetNotes ?? ""),
+          gmNotes: String(relationship.gmNotes ?? ""),
+          isSecret: Boolean(relationship.isSecret),
+          gauge: {
+            markerPercent,
+            fillLeft,
+            fillWidth
+          }
+        };
+      });
+
+    return {
+      items,
+      count: items.length,
+      total: relationships.length,
+      max: 50,
+      canAdd: canEdit && relationships.length < 50,
+      canDelete: canEdit,
+      canEdit,
+      canEditTarget,
+      tagOptions
+    };
+  }
+
+  _getV2RelationshipRankLabel(score) {
+    const value = Number(score ?? 0);
+
+    if (value >= 150) return "Allié rang 3";
+    if (value >= 100) return "Allié rang 2";
+    if (value >= 50) return "Allié rang 1";
+    if (value <= -150) return "Antagoniste rang 3";
+    if (value <= -100) return "Antagoniste rang 2";
+    if (value <= -50) return "Antagoniste rang 1";
+
+    return "Neutre";
+  }
+
+  _getV2RelationshipTagTone(personalTag, targetTag, score) {
+    const personal = String(personalTag ?? "none");
+    const target = String(targetTag ?? "unknown");
+    const value = Number(score ?? 0);
+    const romanticTags = new Set(["crush", "love"]);
+    const hostileTags = new Set(["rivalry", "distrust", "hatred", "fear"]);
+    const friendlyTags = new Set(["friendship", "bestFriend", "respect"]);
+    const familyTags = new Set(["family", "mentor"]);
+
+    if (romanticTags.has(personal) && romanticTags.has(target)) return "mutual-romantic";
+    if (romanticTags.has(personal) && target !== "unknown" && !romanticTags.has(target)) return "asymmetric-romantic";
+    if (romanticTags.has(personal)) return "romantic";
+    if (hostileTags.has(personal) || hostileTags.has(target) || value <= -50) return "hostile";
+    if (familyTags.has(personal) || familyTags.has(target)) return "family";
+    if (friendlyTags.has(personal) || friendlyTags.has(target) || value >= 50) return "friendly";
+
+    return "neutral";
   }
 
 
@@ -1862,6 +2002,7 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
       { key: "techniques", label: "Techniques" },
       { key: "inventory", label: "Inventaire" },
       { key: "character", label: "Personnage" },
+      { key: "relations", label: "Relations" },
       { key: "lineage", label: "Lignée" },
       { key: "progression", label: "Progression" }
     ];
