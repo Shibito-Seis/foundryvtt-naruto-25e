@@ -2,6 +2,13 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.45.4 - Correction barre Chakra temporaire V2
+
+### Corrigé
+
+- Correction de l’affichage de la barre Chakra V2 sous Accroissement du Chakra :
+  - la barre doit se comporter correctement désormais, j'espère vraiment
+
 ## 0.1.45.3 - Correction barre Chakra temporaire V2
 
 ### Corrigé

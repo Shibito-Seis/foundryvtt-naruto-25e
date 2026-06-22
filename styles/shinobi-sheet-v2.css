@@ -1736,12 +1736,12 @@
   box-shadow: inset 0 0 0.45rem rgba(121, 199, 255, 0.12);
 }
 
-.shinobi-v2-track-card.is-chakra .shinobi-v2-progress span {
+.shinobi-v2-track-card.is-chakra .shinobi-v2-progress:not(.shinobi-v2-chakra-progress) span {
   position: relative;
   overflow: hidden;
 }
 
-.shinobi-v2-track-card.is-chakra .shinobi-v2-progress span::after {
+.shinobi-v2-track-card.is-chakra .shinobi-v2-progress:not(.shinobi-v2-chakra-progress) span::after {
   content: "";
   position: absolute;
   inset: 0;
