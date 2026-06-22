@@ -2025,27 +2025,98 @@
 }
 
 /* =============================== */
-/* 0.1.45.1 - Chakra overlay fix   */
+/* 0.1.45.2 - Chakra V2 temporaire */
 /* =============================== */
 
 .shinobi-v2-chakra-progress {
   position: relative;
-  overflow: hidden;
   isolation: isolate;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(7, 19, 34, 0.98), rgba(3, 8, 17, 0.98));
 }
 
-.shinobi-v2-chakra-natural {
-  position: relative;
-  z-index: 1;
-}
-
-.shinobi-v2-chakra-temporary {
+.shinobi-v2-chakra-progress .shinobi-v2-chakra-natural,
+.shinobi-v2-chakra-progress .shinobi-v2-chakra-temporary-zone,
+.shinobi-v2-chakra-progress .shinobi-v2-chakra-temporary {
   position: absolute;
   top: 0;
-  left: 0;
+  bottom: 0;
+  display: block;
   height: 100%;
-  z-index: 2;
+  min-width: 0;
   pointer-events: none;
-  background: linear-gradient(90deg, #b46cff, #ff7ad9);
-  opacity: 0.85;
+}
+
+.shinobi-v2-chakra-progress .shinobi-v2-chakra-temporary-zone {
+  z-index: 1;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, rgba(49, 12, 74, 0.82), rgba(87, 22, 116, 0.72), rgba(38, 8, 62, 0.88));
+  box-shadow:
+    inset 0 0 0.45rem rgba(205, 123, 255, 0.22),
+    inset 0 0 0.85rem rgba(41, 4, 60, 0.72);
+}
+
+.shinobi-v2-chakra-progress .shinobi-v2-chakra-natural {
+  left: 0;
+  z-index: 2;
+  background:
+    linear-gradient(90deg, #2d86d3 0%, #79c7ff 72%, #e8fbff 100%);
+  box-shadow:
+    inset 0 0.18rem 0.25rem rgba(255, 255, 255, 0.2),
+    inset 0 -0.25rem 0.4rem rgba(0, 26, 72, 0.42);
+}
+
+.shinobi-v2-chakra-progress .shinobi-v2-chakra-natural::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.28) 42%, transparent 72%);
+  transform: translateX(-100%);
+  animation: shinobi-v2-chakra-shimmer 2.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.shinobi-v2-chakra-progress .shinobi-v2-chakra-temporary {
+  z-index: 3;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 18% 40%, rgba(255, 224, 119, 0.62), transparent 0.22rem),
+    radial-gradient(circle at 62% 55%, rgba(255, 245, 174, 0.42), transparent 0.18rem),
+    linear-gradient(90deg, #6a20b8 0%, #9d3ee8 52%, #ffc2ff 100%);
+  box-shadow:
+    inset 0 0 0.55rem rgba(255, 221, 104, 0.22),
+    0 0 0.35rem rgba(166, 103, 255, 0.35);
+}
+
+.shinobi-v2-chakra-progress .shinobi-v2-chakra-temporary::before {
+  content: "";
+  position: absolute;
+  inset: -0.15rem;
+  opacity: 0.62;
+  background:
+    linear-gradient(115deg, transparent 0 22%, rgba(255, 219, 93, 0.85) 23% 25%, transparent 26% 46%, rgba(255, 239, 156, 0.75) 47% 49%, transparent 50% 100%);
+  background-size: 4.2rem 100%;
+  animation: shinobi-v2-chakra-lightning 1.35s linear infinite;
+  pointer-events: none;
+}
+
+.shinobi-v2-chakra-progress .shinobi-v2-chakra-temporary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.22) 44%, transparent 74%);
+  transform: translateX(-100%);
+  animation: shinobi-v2-chakra-shimmer 1.9s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.shinobi-v2-chakra-progress.has-temporary-bonus {
+  border-color: rgba(199, 163, 255, 0.78);
+  box-shadow:
+    inset 0 0 0.45rem rgba(121, 199, 255, 0.12),
+    0 0 0.5rem rgba(143, 78, 255, 0.2);
 }

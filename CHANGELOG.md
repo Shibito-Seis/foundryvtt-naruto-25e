@@ -2,6 +2,23 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.45.2 - Correction barre Chakra temporaire V2
+
+### Corrigé
+
+- Correction de l’affichage de la barre Chakra V2 sous Accroissement du Chakra :
+  - la barre utilise désormais le maximum réel avec bonus temporaire comme référence d’affichage ;
+  - le Chakra présent avant l’Accroissement reste affiché comme remplissage naturel bleu ;
+  - la réserve temporaire ajoutée est affichée comme zone violette agressive ;
+  - le Chakra temporaire effectivement gagné est affiché comme remplissage violet vif ;
+  - l’espace temporaire non rempli reste visible en violet sombre.
+
+### Notes
+
+- Cette correction ne modifie pas la mécanique Actor du Chakra.
+- Cette correction exploite les données déjà suivies par l’Accroissement du Chakra, notamment le Chakra mémorisé avant gain.
+- Aucun changement Éveil, Mangekyō, actions ou consommables n’est inclus dans ce patch.
+
 ## 0.1.45.1 - Hotfix affichage Chakra et Éveil V2
 
 ### Corrigé

@@ -127,6 +127,13 @@
         class="shinobi-v2-progress shinobi-v2-chakra-progress {{#if v2.resources.chakra.hasTemporaryBonus}}has-temporary-bonus{{/if}}"
         title="{{v2.resources.chakra.title}}"
       >
+        {{#if v2.resources.chakra.hasTemporaryBonus}}
+          <span
+            class="shinobi-v2-chakra-temporary-zone"
+            style="left: {{v2.resources.chakra.temporaryZoneStartPercent}}%; width: {{v2.resources.chakra.temporaryZonePercent}}%;"
+          ></span>
+        {{/if}}
+
         <span
           class="shinobi-v2-chakra-natural"
           style="width: {{v2.resources.chakra.naturalPercent}}%;"

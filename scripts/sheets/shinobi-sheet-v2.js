@@ -864,27 +864,68 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
     const chakraNaturalMax = Math.max(0, Number(chakra.naturalMax ?? chakra.rawMax ?? chakra.max ?? 0));
     const chakraTemporaryBonus = chakra.temporaryBonus ?? {};
     const chakraTemporaryTotal = Math.max(0, Number(chakraTemporaryBonus.total ?? 0));
-    const chakraNaturalValue = Math.max(0, Math.min(chakraValue, chakraNaturalMax));
-    const chakraTemporaryValue = Math.max(0, Math.min(chakraTemporaryTotal, chakraValue - chakraNaturalMax));
-    const chakraPercent = chakraMax > 0
-      ? Math.max(0, Math.min(100, Math.round((chakraValue / chakraMax) * 100)))
+
+    const chakraBoost = this.actor.system?.nindo?.activeEffects?.chakraBoost ?? {};
+    const chakraBoostActive = Boolean(chakraBoost.active)
+      && Number(chakraBoost.remainingTurns ?? 0) > 0;
+
+    const hasStoredChakraBeforeGain =
+      chakraBoost.storedChakraBeforeGain !== undefined
+      && chakraBoost.storedChakraBeforeGain !== null
+      && chakraBoost.storedChakraBeforeGain !== "";
+
+    const storedChakraBeforeGain = hasStoredChakraBeforeGain
+      ? Math.max(0, Number(chakraBoost.storedChakraBeforeGain ?? 0))
       : 0;
-    const chakraNaturalPercent = chakraMax > 0
-      ? Math.max(0, Math.min(100, Math.round((chakraNaturalValue / chakraMax) * 100)))
+
+    const hasTemporaryChakra = chakraTemporaryTotal > 0;
+    const chakraDisplayMax = chakraMax;
+
+    const chakraTemporaryAnchorValue = hasTemporaryChakra
+      ? Math.max(
+          0,
+          Math.min(
+            chakraDisplayMax,
+            chakraBoostActive && hasStoredChakraBeforeGain
+              ? storedChakraBeforeGain
+              : chakraNaturalMax
+          )
+        )
       : 0;
-    const chakraTemporaryPercent = chakraMax > 0
-      ? Math.max(0, Math.min(100, Math.round((chakraTemporaryValue / chakraMax) * 100)))
+
+    const chakraNaturalValue = hasTemporaryChakra
+      ? Math.max(0, Math.min(chakraValue, chakraTemporaryAnchorValue))
+      : Math.max(0, Math.min(chakraValue, chakraNaturalMax));
+
+    const chakraTemporaryValue = hasTemporaryChakra
+      ? Math.max(0, Math.min(chakraValue, chakraDisplayMax) - chakraTemporaryAnchorValue)
       : 0;
-    const chakraTemporaryStartPercent = chakraMax > 0
-      ? Math.max(0, Math.min(100, Math.round((chakraNaturalMax / chakraMax) * 100)))
+
+    const chakraTemporaryZoneValue = hasTemporaryChakra
+      ? Math.max(0, chakraDisplayMax - chakraTemporaryAnchorValue)
       : 0;
+
+    const getChakraPercent = (value) => {
+      if (chakraDisplayMax <= 0) return 0;
+
+      const percent = (Math.max(0, Number(value ?? 0)) / chakraDisplayMax) * 100;
+
+      return Math.max(0, Math.min(100, Number(percent.toFixed(4))));
+    };
+
+    const chakraPercent = getChakraPercent(chakraValue);
+    const chakraNaturalPercent = getChakraPercent(chakraNaturalValue);
+    const chakraTemporaryPercent = getChakraPercent(chakraTemporaryValue);
+    const chakraTemporaryStartPercent = getChakraPercent(chakraTemporaryAnchorValue);
+    const chakraTemporaryZoneStartPercent = getChakraPercent(chakraTemporaryAnchorValue);
+    const chakraTemporaryZonePercent = getChakraPercent(chakraTemporaryZoneValue);
+
     const chakraTemporarySources = Array.isArray(chakraTemporaryBonus.sources)
       ? chakraTemporaryBonus.sources
       : [];
     const chakraTemporarySourceText = chakraTemporarySources.length
       ? chakraTemporarySources.map((source) => `${source.label} +${source.amount}`).join(" — ")
       : "";
-    const hasTemporaryChakra = chakraTemporaryTotal > 0;
 
     const nindo = this.actor.system?.nindo ?? {};
     const nindoValue = Math.max(-10, Math.min(Number(nindo.max ?? 0), Number(nindo.value ?? 0)));
@@ -899,14 +940,19 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
       chakra: {
         value: chakraValue,
         max: chakraMax,
+        displayMax: chakraDisplayMax,
         naturalMax: chakraNaturalMax,
         naturalValue: chakraNaturalValue,
         temporaryValue: chakraTemporaryValue,
         temporaryTotal: chakraTemporaryTotal,
+        temporaryAnchorValue: chakraTemporaryAnchorValue,
+        temporaryZoneValue: chakraTemporaryZoneValue,
         percent: chakraPercent,
         naturalPercent: chakraNaturalPercent,
         temporaryPercent: chakraTemporaryPercent,
         temporaryStartPercent: chakraTemporaryStartPercent,
+        temporaryZoneStartPercent: chakraTemporaryZoneStartPercent,
+        temporaryZonePercent: chakraTemporaryZonePercent,
         hasTemporaryBonus: hasTemporaryChakra,
         temporarySourceText: chakraTemporarySourceText,
         title: hasTemporaryChakra
