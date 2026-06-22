@@ -1911,7 +1911,8 @@
   animation: shinobi-v2-awakening-clouds 7s linear infinite;
 }
 
-.naruto-25e-shinobi-sheet-v2.is-awakened .shinobi-v2-header > *:not(.shinobi-v2-awakening-clouds) {
+.naruto-25e-shinobi-sheet-v2.is-awakened .shinobi-v2-header > .shinobi-v2-portrait-column,
+.naruto-25e-shinobi-sheet-v2.is-awakened .shinobi-v2-header > .shinobi-v2-identity {
   position: relative;
   z-index: 1;
 }

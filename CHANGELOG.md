@@ -2,6 +2,22 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.45.5 - Hotfix header Éveil V2
+
+### Corrigé
+
+- Correction du header de la fiche Shinobi V2 lorsque l’état Éveil est actif :
+  - le badge Éveil n’est plus traité comme un élément de grille du header ;
+  - seuls le portrait et le bloc d’identité sont replacés au-dessus des nuages d’Éveil ;
+  - le badge Éveil reste en overlay absolu ;
+  - la structure normale du header est conservée pendant l’Éveil.
+
+### Notes
+
+- Correction CSS uniquement.
+- Aucun changement Chakra, Mangekyō, actions ou consommables.
+- Aucun changement de logique Actor ou Sheet.
+
 ## 0.1.45.4 - Correction barre Chakra temporaire V2
 
 ### Corrigé
