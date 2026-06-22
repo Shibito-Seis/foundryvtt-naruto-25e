@@ -54,6 +54,21 @@
   background:
     linear-gradient(90deg, rgba(90, 24, 20, 0.25), transparent 44%),
     rgba(15, 17, 23, 0.88);
+
+  overflow: hidden;
+}
+
+.shinobi-v2-identity {
+  min-width: 0;
+}
+
+.shinobi-v2-identity-grid {
+  min-width: 0;
+}
+
+.shinobi-v2-info-pill {
+  min-width: 0;
+  overflow: hidden;
 }
 
 .shinobi-v2-portrait-column {
@@ -1871,6 +1886,7 @@
 .naruto-25e-shinobi-sheet-v2.is-awakened .shinobi-v2-header {
   position: relative;
   overflow: hidden;
+  isolation: isolate;
   border-color: rgba(204, 143, 255, 0.78);
   background:
     radial-gradient(circle at 12% 15%, rgba(193, 118, 255, 0.2), transparent 12rem),
@@ -2006,4 +2022,30 @@
     transform: translateY(-0.03rem);
     filter: brightness(1.12);
   }
+}
+
+/* =============================== */
+/* 0.1.45.1 - Chakra overlay fix   */
+/* =============================== */
+
+.shinobi-v2-chakra-progress {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.shinobi-v2-chakra-natural {
+  position: relative;
+  z-index: 1;
+}
+
+.shinobi-v2-chakra-temporary {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(90deg, #b46cff, #ff7ad9);
+  opacity: 0.85;
 }

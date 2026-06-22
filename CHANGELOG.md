@@ -2,6 +2,25 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.45.1 - Hotfix affichage Chakra et Éveil V2
+
+### Corrigé
+
+- Correction ciblée de l’affichage de la barre Chakra V2 en deux couches :
+
+  - stabilisation visuelle du Chakra naturel ;
+  - stabilisation visuelle du Chakra temporaire ;
+  - meilleure séparation des couches de rendu pour éviter les superpositions incohérentes.
+- Correction ciblée du rendu de la fiche Shinobi V2 lorsque l’état Éveil est actif :
+
+  - stabilisation du header sous effet visuel Éveil ;
+  - limitation des conflits de superposition entre le header, les nuages d’Éveil et les éléments dynamiques.
+
+### Notes
+
+- Cette version est un hotfix CSS uniquement.
+- Aucun changement de logique Actor, Item, Nindō, Mangekyō, actions ou consommables n’est inclus dans ce patch.
+- Les corrections plus larges sur le typage des actions, les consommables et le gating Mangekyō restent à traiter dans un patch séparé.
 
 ## 0.1.45 - Effets Nindō mécaniques et Éveil V2
 
