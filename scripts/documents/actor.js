@@ -3207,9 +3207,16 @@ _prepareExperience(system) {
     system.background.narrativeWheel.balance = Number(system.background.narrativeWheel.balance ?? 0);
     system.background.narrativeWheel.notes = system.background.narrativeWheel.notes ?? "";
 
-    const rawArcs = Array.isArray(system.background.narrativeArcs)
-      ? system.background.narrativeArcs
-      : [];
+    const narrativeArcSource = system.background.narrativeArcs;
+
+    const rawArcs = Array.isArray(narrativeArcSource)
+      ? narrativeArcSource
+      : narrativeArcSource && typeof narrativeArcSource === "object"
+        ? Object.keys(narrativeArcSource)
+            .filter((key) => /^\d+$/.test(String(key)))
+            .sort((a, b) => Number(a) - Number(b))
+            .map((key) => narrativeArcSource[key])
+        : [];
 
     const normalizedArcs = rawArcs
       .slice(0, NARUTO25E_NARRATIVE_ARC_LIMITS.max)
@@ -3385,6 +3392,57 @@ _prepareExperience(system) {
     return true;
   }
 
+  async updateNarrativeArcField(arcId, field, value) {
+    if (this.type !== "shinobi") return false;
+
+    if (!this._canUserEditNarrativeArcs()) {
+      ui.notifications.warn("Tu n’as pas les droits nécessaires pour modifier les arcs narratifs.");
+      return false;
+    }
+
+    const id = String(arcId ?? "");
+    const fieldKey = String(field ?? "");
+    const allowedFields = new Set([
+      "title",
+      "wheelSize",
+      "description",
+      "stakes",
+      "notes"
+    ]);
+
+    if (!allowedFields.has(fieldKey)) {
+      ui.notifications.warn(`Champ d’arc narratif invalide : ${fieldKey}.`);
+      return false;
+    }
+
+    const arcs = foundry.utils.deepClone(this.system.background?.narrativeArcs ?? []);
+    const arc = arcs.find((entry) => String(entry.id ?? "") === id);
+
+    if (!arc) {
+      ui.notifications.warn("Arc narratif introuvable.");
+      return false;
+    }
+
+    if (fieldKey === "wheelSize") {
+      const nextWheelSize = Number(value ?? 3);
+
+      if (!NARUTO25E_NARRATIVE_ARC_LIMITS.wheelSizes.includes(nextWheelSize)) {
+        ui.notifications.warn(`Taille de roue narrative invalide : ${nextWheelSize}.`);
+        return false;
+      }
+
+      arc.wheelSize = nextWheelSize;
+      arc.progress = Math.min(Math.max(0, Number(arc.progress ?? 0)), nextWheelSize);
+    } else {
+      arc[fieldKey] = String(value ?? "");
+    }
+
+    await this.update({
+      "system.background.narrativeArcs": arcs
+    });
+
+    return true;
+  }
 
   _clampNumber(value, min, max) {
     const number = Number(value ?? 0);

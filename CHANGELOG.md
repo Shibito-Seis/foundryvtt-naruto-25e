@@ -2,6 +2,28 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.47.1 - Hotfix sauvegarde Arcs narratifs V1
+
+### Corrigé
+
+- Correction de la sauvegarde des champs d’arcs narratifs dans la fiche Shinobi V2 :
+  - titre ;
+  - taille de roue ;
+  - description ;
+  - enjeu ;
+  - notes.
+- Les champs d’arcs narratifs ne passent plus par la sauvegarde formulaire native de Foundry.
+- Les arcs narratifs sont désormais modifiés uniquement via des méthodes Actor dédiées.
+- Correction du problème où modifier un champ ou une liste déroulante pouvait faire retomber une fiche de 4–7 arcs à seulement 3 arcs.
+- Ajout d’une récupération de sécurité si `background.narrativeArcs` a été temporairement transformé en objet indexé au lieu d’un tableau.
+
+### Notes
+
+- Aucun changement Actions.
+- Aucun changement Mangekyō.
+- Aucun changement Relations PNJ.
+- Aucun changement visuel CSS.
+
 ## 0.1.47 - Roues narratives / Arcs narratifs V1
 
 ### Ajouté

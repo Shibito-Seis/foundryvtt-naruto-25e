@@ -243,6 +243,21 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
       this.render(false);
     });
 
+    html.find(".narrative-arc-field").on("change", async (event) => {
+      event.preventDefault();
+
+      const element = event.currentTarget;
+      const arcId = element?.dataset?.arcId ?? "";
+      const field = element?.dataset?.field ?? "";
+      const value = element?.value ?? "";
+
+      const updated = await this.actor.updateNarrativeArcField(arcId, field, value);
+
+      if (updated && field === "wheelSize") {
+        this.render(false);
+      }
+    });
+
     html.find(".narrative-arc-status-select").on("change", async (event) => {
       event.preventDefault();
 

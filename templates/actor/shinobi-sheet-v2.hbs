@@ -1572,7 +1572,9 @@
                   <label class="shinobi-v2-narrative-arc-title">
                     Titre
                     <input
-                      name="system.background.narrativeArcs.{{arc.index}}.title"
+                      class="narrative-arc-field"
+                      data-arc-id="{{arc.id}}"
+                      data-field="title"
                       type="text"
                       value="{{arc.title}}"
                     />
@@ -1580,7 +1582,11 @@
 
                   <label>
                     Roue
-                    <select name="system.background.narrativeArcs.{{arc.index}}.wheelSize">
+                    <select
+                      class="narrative-arc-field"
+                      data-arc-id="{{arc.id}}"
+                      data-field="wheelSize"
+                    >
                       <option value="3" {{#if (eq arc.wheelSize 3)}}selected{{/if}}>3 segments</option>
                       <option value="5" {{#if (eq arc.wheelSize 5)}}selected{{/if}}>5 segments</option>
                       <option value="7" {{#if (eq arc.wheelSize 7)}}selected{{/if}}>7 segments</option>
@@ -1628,18 +1634,30 @@
                 <div class="shinobi-v2-form-grid">
                   <label>
                     Description
-                    <textarea name="system.background.narrativeArcs.{{arc.index}}.description">{{arc.description}}</textarea>
+                    <textarea
+                      class="narrative-arc-field"
+                      data-arc-id="{{arc.id}}"
+                      data-field="description"
+                    >{{arc.description}}</textarea>
                   </label>
 
                   <label>
                     Enjeu
-                    <textarea name="system.background.narrativeArcs.{{arc.index}}.stakes">{{arc.stakes}}</textarea>
+                    <textarea
+                      class="narrative-arc-field"
+                      data-arc-id="{{arc.id}}"
+                      data-field="stakes"
+                    >{{arc.stakes}}</textarea>
                   </label>
                 </div>
 
                 <label>
                   Notes
-                  <textarea name="system.background.narrativeArcs.{{arc.index}}.notes">{{arc.notes}}</textarea>
+                  <textarea
+                    class="narrative-arc-field"
+                    data-arc-id="{{arc.id}}"
+                    data-field="notes"
+                  >{{arc.notes}}</textarea>
                 </label>
               </article>
             {{/each}}
