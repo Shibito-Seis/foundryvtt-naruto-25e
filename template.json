@@ -373,6 +373,9 @@
           },
           "unlockedByGM": false
         },
+        "effects": {
+          "narutoEffects": []
+        },
         "background": {
           "narrativeArcs": [
             {

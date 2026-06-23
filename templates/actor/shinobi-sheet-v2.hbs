@@ -2633,5 +2633,315 @@
       </section>
     </div>
 
+        <div class="tab" data-group="primary" data-tab="effects">
+      <div class="shinobi-v2-grid">
+
+        <section class="shinobi-v2-panel shinobi-v2-effects-panel">
+          <h2>Effets actifs / passifs</h2>
+
+          <div class="shinobi-v2-effects-header">
+            <p class="shinobi-v2-muted">
+              {{v2.effects.count}} effet(s) visible(s)
+              {{#if isGM}}sur {{v2.effects.total}} · {{v2.effects.hiddenCount}} caché(s){{/if}}.
+              Actifs : {{v2.effects.activeCount}} · Inactifs : {{v2.effects.inactiveCount}} · États : {{v2.effects.conditionCount}} · Maintenus : {{v2.effects.maintainedCount}} · Passifs : {{v2.effects.passiveCount}}.
+            </p>
+
+            {{#if v2.effects.canAdd}}
+              <div class="shinobi-v2-effects-actions">
+                <button type="button" class="naruto-effect-add" data-category="condition">Ajouter état</button>
+                <button type="button" class="naruto-effect-add" data-category="buff">Ajouter bonus</button>
+                <button type="button" class="naruto-effect-add" data-category="custom">Ajouter effet</button>
+              </div>
+            {{/if}}
+          </div>
+
+          <p class="shinobi-v2-muted">
+            V1 : les effets sont suivis et structurés ici, mais leurs modificateurs ne sont pas encore automatiquement appliqués aux jets, attaques ou dégâts.
+          </p>
+
+          {{#if v2.effects.items.length}}
+            <div class="shinobi-v2-effects-list">
+              {{#each v2.effects.items as |effect|}}
+                <article class="shinobi-v2-effect-card is-effect-{{effect.tone}} {{#unless effect.enabled}}is-disabled{{/unless}} {{#if effect.isHidden}}is-hidden{{/if}}">
+                  <header class="shinobi-v2-effect-header">
+                    <label>
+                      Nom
+                      <input
+                        class="naruto-effect-field"
+                        data-effect-id="{{effect.id}}"
+                        data-field="name"
+                        type="text"
+                        value="{{effect.name}}"
+                        {{#unless @root.v2.effects.canEdit}}disabled{{/unless}}
+                      />
+                    </label>
+
+                    <div class="shinobi-v2-effect-badges">
+                      <span>{{effect.categoryLabel}}</span>
+                      <span>{{effect.modeLabel}}</span>
+                      <span>{{effect.durationLabel}}</span>
+                      {{#if effect.isHidden}}
+                        <span>MJ</span>
+                      {{/if}}
+                    </div>
+
+                    <div class="shinobi-v2-effect-buttons">
+                      {{#if @root.v2.effects.canEdit}}
+                        <button
+                          type="button"
+                          class="naruto-effect-toggle"
+                          data-effect-id="{{effect.id}}"
+                        >
+                          {{#if effect.enabled}}Désactiver{{else}}Activer{{/if}}
+                        </button>
+
+                        <button
+                          type="button"
+                          class="naruto-effect-delete"
+                          data-effect-id="{{effect.id}}"
+                        >
+                          Supprimer
+                        </button>
+                      {{/if}}
+                    </div>
+                  </header>
+
+                  <div class="shinobi-v2-form-grid">
+                    <label>
+                      Catégorie
+                      <select
+                        class="naruto-effect-field"
+                        data-effect-id="{{effect.id}}"
+                        data-field="category"
+                        {{#unless @root.v2.effects.canEdit}}disabled{{/unless}}
+                      >
+                        {{#each @root.v2.effects.categoryOptions as |option|}}
+                          <option value="{{option.key}}" {{#if (eq effect.category option.key)}}selected{{/if}}>{{option.label}}</option>
+                        {{/each}}
+                      </select>
+                    </label>
+
+                    <label>
+                      Mode
+                      <select
+                        class="naruto-effect-field"
+                        data-effect-id="{{effect.id}}"
+                        data-field="mode"
+                        {{#unless @root.v2.effects.canEdit}}disabled{{/unless}}
+                      >
+                        {{#each @root.v2.effects.modeOptions as |option|}}
+                          <option value="{{option.key}}" {{#if (eq effect.mode option.key)}}selected{{/if}}>{{option.label}}</option>
+                        {{/each}}
+                      </select>
+                    </label>
+
+                    <label>
+                      État / clé
+                      <select
+                        class="naruto-effect-field"
+                        data-effect-id="{{effect.id}}"
+                        data-field="statusKey"
+                        {{#unless @root.v2.effects.canEdit}}disabled{{/unless}}
+                      >
+                        {{#each @root.v2.effects.statusOptions as |option|}}
+                          <option value="{{option.key}}" {{#if (eq effect.statusKey option.key)}}selected{{/if}}>{{option.label}}</option>
+                        {{/each}}
+                      </select>
+                    </label>
+
+                    <label>
+                      Durée
+                      <select
+                        class="naruto-effect-field"
+                        data-effect-id="{{effect.id}}"
+                        data-field="durationType"
+                        {{#unless @root.v2.effects.canEdit}}disabled{{/unless}}
+                      >
+                        {{#each @root.v2.effects.durationTypeOptions as |option|}}
+                          <option value="{{option.key}}" {{#if (eq effect.durationType option.key)}}selected{{/if}}>{{option.label}}</option>
+                        {{/each}}
+                      </select>
+                    </label>
+
+                    <label>
+                      Source
+                      <select
+                        class="naruto-effect-field"
+                        data-effect-id="{{effect.id}}"
+                        data-field="sourceType"
+                        {{#unless @root.v2.effects.canEdit}}disabled{{/unless}}
+                      >
+                        {{#each @root.v2.effects.sourceTypeOptions as |option|}}
+                          <option value="{{option.key}}" {{#if (eq effect.sourceType option.key)}}selected{{/if}}>{{option.label}}</option>
+                        {{/each}}
+                      </select>
+                    </label>
+
+                    <label>
+                      Nom de source
+                      <input
+                        class="naruto-effect-field"
+                        data-effect-id="{{effect.id}}"
+                        data-field="sourceName"
+                        type="text"
+                        value="{{effect.sourceName}}"
+                        placeholder="Technique, pouvoir, objet..."
+                        {{#unless @root.v2.effects.canEdit}}disabled{{/unless}}
+                      />
+                    </label>
+
+                    <label>
+                      Source UUID
+                      <input
+                        class="naruto-effect-field"
+                        data-effect-id="{{effect.id}}"
+                        data-field="sourceUuid"
+                        type="text"
+                        value="{{effect.sourceUuid}}"
+                        placeholder="Item.xxxxx / Actor.xxxxx"
+                        {{#unless @root.v2.effects.canEdit}}disabled{{/unless}}
+                      />
+                    </label>
+
+                    <label>
+                      Cible
+                      <select
+                        class="naruto-effect-field"
+                        data-effect-id="{{effect.id}}"
+                        data-field="targetType"
+                        {{#unless @root.v2.effects.canEdit}}disabled{{/unless}}
+                      >
+                        {{#each @root.v2.effects.targetTypeOptions as |option|}}
+                          <option value="{{option.key}}" {{#if (eq effect.targetType option.key)}}selected{{/if}}>{{option.label}}</option>
+                        {{/each}}
+                      </select>
+                    </label>
+
+                    <label>
+                      Item ciblé
+                      <select
+                        class="naruto-effect-field"
+                        data-effect-id="{{effect.id}}"
+                        data-field="targetItemId"
+                        {{#unless @root.v2.effects.canEdit}}disabled{{/unless}}
+                      >
+                        <option value="">— Aucun item —</option>
+                        {{#each @root.v2.effects.targetItems as |item|}}
+                          <option value="{{item.id}}" {{#if (eq effect.targetItemId item.id)}}selected{{/if}}>{{item.name}} ({{item.type}})</option>
+                        {{/each}}
+                      </select>
+                    </label>
+
+                    <label>
+                      Rounds restants
+                      <input
+                        class="naruto-effect-field"
+                        data-effect-id="{{effect.id}}"
+                        data-field="remainingRounds"
+                        type="number"
+                        min="0"
+                        max="999"
+                        value="{{effect.remainingRounds}}"
+                        {{#unless @root.v2.effects.canEdit}}disabled{{/unless}}
+                      />
+                    </label>
+
+                    <label>
+                      Tours restants
+                      <input
+                        class="naruto-effect-field"
+                        data-effect-id="{{effect.id}}"
+                        data-field="remainingTurns"
+                        type="number"
+                        min="0"
+                        max="999"
+                        value="{{effect.remainingTurns}}"
+                        {{#unless @root.v2.effects.canEdit}}disabled{{/unless}}
+                      />
+                    </label>
+
+                    <label>
+                      Entretien Chakra
+                      <input
+                        class="naruto-effect-field"
+                        data-effect-id="{{effect.id}}"
+                        data-field="maintenanceCost"
+                        type="number"
+                        min="0"
+                        value="{{effect.maintenanceCost}}"
+                        {{#unless @root.v2.effects.canEdit}}disabled{{/unless}}
+                      />
+                    </label>
+
+                    <div class="shinobi-v2-effect-rank-control">
+                      <strong>Rang / intensité</strong>
+                      <div>
+                        {{#if @root.v2.effects.canEdit}}
+                          <button type="button" class="naruto-effect-rank-adjust" data-effect-id="{{effect.id}}" data-delta="-1">-</button>
+                        {{/if}}
+
+                        <input
+                          class="naruto-effect-field"
+                          data-effect-id="{{effect.id}}"
+                          data-field="rank"
+                          type="number"
+                          min="0"
+                          max="10"
+                          value="{{effect.rank}}"
+                          {{#unless @root.v2.effects.canEdit}}disabled{{/unless}}
+                        />
+
+                        {{#if @root.v2.effects.canEdit}}
+                          <button type="button" class="naruto-effect-rank-adjust" data-effect-id="{{effect.id}}" data-delta="1">+</button>
+                        {{/if}}
+                      </div>
+                    </div>
+                  </div>
+
+                  {{#if @root.v2.effects.canEditHidden}}
+                    <label class="shinobi-v2-checkbox-line">
+                      <input
+                        class="naruto-effect-field"
+                        data-effect-id="{{effect.id}}"
+                        data-field="isHidden"
+                        type="checkbox"
+                        {{#if effect.isHidden}}checked{{/if}}
+                      />
+                      Effet caché, visible seulement par le MJ
+                    </label>
+                  {{/if}}
+
+                  <label>
+                    Notes
+                    <textarea
+                      class="naruto-effect-field"
+                      data-effect-id="{{effect.id}}"
+                      data-field="notes"
+                      {{#unless @root.v2.effects.canEdit}}disabled{{/unless}}
+                    >{{effect.notes}}</textarea>
+                  </label>
+
+                  <label>
+                    Notes de modificateurs futurs
+                    <textarea
+                      class="naruto-effect-field"
+                      data-effect-id="{{effect.id}}"
+                      data-field="modifierNotes"
+                      placeholder="+X dégâts, malus de jet, arme ciblée, condition d’application..."
+                      {{#unless @root.v2.effects.canEdit}}disabled{{/unless}}
+                    >{{effect.modifierNotes}}</textarea>
+                  </label>
+                </article>
+              {{/each}}
+            </div>
+          {{else}}
+            <p class="shinobi-v2-muted">Aucun effet visible.</p>
+          {{/if}}
+        </section>
+
+      </div>
+    </div>
+
+
   </section>
 </form>

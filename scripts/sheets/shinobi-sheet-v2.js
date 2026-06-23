@@ -315,6 +315,60 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
       this.render(false);
     });
 
+    html.find(".naruto-effect-add").on("click", async (event) => {
+      event.preventDefault();
+
+      const category = event.currentTarget?.dataset?.category ?? "custom";
+
+      await this.actor.addNarutoEffect(category);
+      this.render(false);
+    });
+
+    html.find(".naruto-effect-delete").on("click", async (event) => {
+      event.preventDefault();
+
+      const effectId = event.currentTarget?.dataset?.effectId ?? "";
+
+      await this.actor.deleteNarutoEffect(effectId);
+      this.render(false);
+    });
+
+    html.find(".naruto-effect-toggle").on("click", async (event) => {
+      event.preventDefault();
+
+      const effectId = event.currentTarget?.dataset?.effectId ?? "";
+
+      await this.actor.toggleNarutoEffect(effectId);
+      this.render(false);
+    });
+
+    html.find(".naruto-effect-field").on("change", async (event) => {
+      event.preventDefault();
+
+      const element = event.currentTarget;
+      const effectId = element?.dataset?.effectId ?? "";
+      const field = element?.dataset?.field ?? "";
+      const value = element?.type === "checkbox"
+        ? Boolean(element.checked)
+        : element?.value ?? "";
+
+      const updated = await this.actor.updateNarutoEffectField(effectId, field, value);
+
+      if (updated && ["category", "mode", "statusKey", "rank", "enabled", "targetType", "durationType", "isHidden"].includes(field)) {
+        this.render(false);
+      }
+    });
+
+    html.find(".naruto-effect-rank-adjust").on("click", async (event) => {
+      event.preventDefault();
+
+      const effectId = event.currentTarget?.dataset?.effectId ?? "";
+      const delta = Number(event.currentTarget?.dataset?.delta ?? 0);
+
+      await this.actor.adjustNarutoEffectRank(effectId, delta);
+      this.render(false);
+    });
+
     html.find(".nindo-opportunity-consume").on("click", async (event) => {
       event.preventDefault();
 
@@ -932,6 +986,7 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
       summary: this._buildV2SummaryContext(context, identityContext),
       character: this._buildV2CharacterContext(identity, system.background ?? {}),
       relationships: this._buildV2RelationshipsContext(system.background ?? {}),
+      effects: this._buildV2EffectsContext(system.effects ?? {}),
       creation: this._buildV2CreationContext(context, progression),
       combat: this._buildV2CombatContext(context, combat),
       techniques: this._buildV2TechniqueContext(context),
@@ -1472,6 +1527,157 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
     return "neutral";
   }
 
+  _buildV2EffectsContext(effects = {}) {
+    const narutoEffects = Array.isArray(effects.narutoEffects) ? effects.narutoEffects : [];
+    const canEdit = Boolean(this.actor?.isOwner || game.user?.isGM);
+    const canEditHidden = Boolean(game.user?.isGM);
+
+    const categoryOptions = Object.entries(NARUTO25E.effectCategories ?? {}).map(([key, label]) => ({
+      key,
+      label
+    }));
+
+    const modeOptions = Object.entries(NARUTO25E.effectModes ?? {}).map(([key, label]) => ({
+      key,
+      label
+    }));
+
+    const statusOptions = Object.entries(NARUTO25E.effectStatusKeys ?? {}).map(([key, label]) => ({
+      key,
+      label
+    }));
+
+    const sourceTypeOptions = Object.entries(NARUTO25E.effectSourceTypes ?? {}).map(([key, label]) => ({
+      key,
+      label
+    }));
+
+    const targetTypeOptions = Object.entries(NARUTO25E.effectTargetTypes ?? {}).map(([key, label]) => ({
+      key,
+      label
+    }));
+
+    const durationTypeOptions = Object.entries(NARUTO25E.effectDurationTypes ?? {}).map(([key, label]) => ({
+      key,
+      label
+    }));
+
+    const targetItems = Array.from(this.actor?.items ?? [])
+      .filter((item) => ["arme", "armure", "technique", "equipement", "consommable", "pouvoirLignee"].includes(item.type))
+      .map((item) => ({
+        id: item.id,
+        uuid: item.uuid,
+        name: item.name,
+        type: item.type
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name, "fr"));
+
+    const targetItemLabels = new Map(targetItems.map((item) => [String(item.id), item.name]));
+
+    const items = narutoEffects
+      .filter((effect) => game.user?.isGM || !Boolean(effect.isHidden))
+      .map((effect, index) => {
+        const category = String(effect.category ?? "custom");
+        const mode = String(effect.mode ?? "active");
+        const statusKey = String(effect.statusKey ?? "none");
+        const sourceType = String(effect.sourceType ?? "manual");
+        const targetType = String(effect.targetType ?? "none");
+        const targetItemId = String(effect.targetItemId ?? "");
+        const durationType = String(effect.durationType ?? "manual");
+        const enabled = effect.enabled !== false;
+        const rank = Math.max(0, Number(effect.rank ?? 0));
+        const tone = this._getV2EffectTone(effect);
+        const targetItemLabel = targetItemLabels.get(targetItemId) ?? "";
+
+        return {
+          index,
+          id: String(effect.id ?? `effect-${index + 1}`),
+          name: String(effect.name ?? `Effet ${index + 1}`),
+          category,
+          categoryLabel: NARUTO25E.effectCategories?.[category] ?? category,
+          mode,
+          modeLabel: NARUTO25E.effectModes?.[mode] ?? mode,
+          statusKey,
+          statusLabel: NARUTO25E.effectStatusKeys?.[statusKey] ?? statusKey,
+          sourceType,
+          sourceTypeLabel: NARUTO25E.effectSourceTypes?.[sourceType] ?? sourceType,
+          targetType,
+          targetTypeLabel: NARUTO25E.effectTargetTypes?.[targetType] ?? targetType,
+          targetItemId,
+          targetItemLabel,
+          durationType,
+          durationTypeLabel: NARUTO25E.effectDurationTypes?.[durationType] ?? durationType,
+          durationLabel: this._getV2EffectDurationLabel(effect),
+          rank,
+          enabled,
+          enabledLabel: enabled ? "Actif" : "Inactif",
+          sourceName: String(effect.sourceName ?? ""),
+          sourceUuid: String(effect.sourceUuid ?? ""),
+          remainingRounds: Math.max(0, Number(effect.remainingRounds ?? 0)),
+          remainingTurns: Math.max(0, Number(effect.remainingTurns ?? 0)),
+          maintenanceCost: Math.max(0, Number(effect.maintenanceCost ?? 0)),
+          isHidden: Boolean(effect.isHidden),
+          notes: String(effect.notes ?? ""),
+          modifierNotes: String(effect.modifierNotes ?? ""),
+          modifierCount: Array.isArray(effect.modifiers) ? effect.modifiers.length : 0,
+          tone
+        };
+      });
+
+    return {
+      items,
+      count: items.length,
+      total: narutoEffects.length,
+      hiddenCount: narutoEffects.filter((effect) => Boolean(effect.isHidden)).length,
+      activeCount: items.filter((effect) => effect.enabled).length,
+      inactiveCount: items.filter((effect) => !effect.enabled).length,
+      conditionCount: items.filter((effect) => effect.category === "condition").length,
+      passiveCount: items.filter((effect) => effect.mode === "passive").length,
+      maintainedCount: items.filter((effect) => effect.mode === "maintained").length,
+      canAdd: canEdit && narutoEffects.length < 100,
+      canEdit,
+      canEditHidden,
+      categoryOptions,
+      modeOptions,
+      statusOptions,
+      sourceTypeOptions,
+      targetTypeOptions,
+      durationTypeOptions,
+      targetItems
+    };
+  }
+
+  _getV2EffectTone(effect = {}) {
+    if (effect.enabled === false) return "inactive";
+
+    const category = String(effect.category ?? "custom");
+    const mode = String(effect.mode ?? "active");
+    const statusKey = String(effect.statusKey ?? "none");
+
+    if (category === "condition" || category === "debuff") return "danger";
+    if (["fear", "terror", "surprise", "bleeding", "poison", "paralysis", "sleep", "stun", "burn"].includes(statusKey)) return "danger";
+    if (mode === "passive") return "passive";
+    if (mode === "maintained") return "maintained";
+    if (["buff", "lineage", "technique", "equipment", "nindo"].includes(category)) return "boon";
+
+    return "neutral";
+  }
+
+  _getV2EffectDurationLabel(effect = {}) {
+    const durationType = String(effect.durationType ?? "manual");
+    const remainingRounds = Math.max(0, Number(effect.remainingRounds ?? 0));
+    const remainingTurns = Math.max(0, Number(effect.remainingTurns ?? 0));
+
+    if (durationType === "turn") return remainingTurns > 0 ? `${remainingTurns} tour(s)` : "Tours";
+    if (durationType === "round") return remainingRounds > 0 ? `${remainingRounds} round(s)` : "Rounds";
+    if (durationType === "scene") return "Scène";
+    if (durationType === "session") return "Session";
+    if (durationType === "untilCancelled") return "Jusqu’à annulation";
+    if (durationType === "permanent") return "Permanent";
+
+    return "Manuel";
+  }
+
 
   _buildV2CreationContext(context, progression) {
     const creationState = context.creationState ?? {};
@@ -2004,7 +2210,8 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
       { key: "character", label: "Personnage" },
       { key: "relations", label: "Relations" },
       { key: "lineage", label: "Lignée" },
-      { key: "progression", label: "Progression" }
+      { key: "progression", label: "Progression" },
+      { key: "effects", label: "Effets" }
     ];
   }
 

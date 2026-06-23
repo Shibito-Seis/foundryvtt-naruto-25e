@@ -483,6 +483,93 @@ NARUTO25E.relationshipTags = {
   fear: "Peur"
 };
 
+NARUTO25E.effectCategories = {
+  condition: "État",
+  buff: "Bonus",
+  debuff: "Malus",
+  technique: "Technique active",
+  lineage: "Lignée / Dōjutsu",
+  equipment: "Équipement",
+  nindo: "Nindō",
+  clone: "Clone / Double",
+  custom: "Personnalisé"
+};
+
+NARUTO25E.effectModes = {
+  active: "Actif",
+  passive: "Passif",
+  maintained: "Maintenu",
+  temporary: "Temporaire"
+};
+
+NARUTO25E.effectDurationTypes = {
+  manual: "Manuel",
+  turn: "Tours",
+  round: "Rounds",
+  scene: "Scène",
+  session: "Session",
+  untilCancelled: "Jusqu’à annulation",
+  permanent: "Permanent"
+};
+
+NARUTO25E.effectStatusKeys = {
+  none: "Aucun",
+  fear: "Peur",
+  terror: "Terreur",
+  surprise: "Surprise",
+  bleeding: "Saignement",
+  poison: "Poison",
+  paralysis: "Paralysie",
+  sleep: "Sommeil",
+  stun: "Sonné",
+  restrained: "Entravé",
+  blinded: "Aveuglé",
+  deafened: "Assourdi",
+  burn: "Brûlure",
+  custom: "Personnalisé"
+};
+
+NARUTO25E.effectSourceTypes = {
+  manual: "Manuel",
+  technique: "Technique",
+  lineage: "Pouvoir de lignée",
+  equipment: "Équipement",
+  consumable: "Consommable",
+  nindo: "Nindō",
+  condition: "État",
+  custom: "Personnalisé"
+};
+
+NARUTO25E.effectTargetTypes = {
+  none: "Aucune",
+  actor: "Acteur",
+  weapon: "Arme",
+  technique: "Technique",
+  clone: "Clone",
+  summon: "Invocation",
+  custom: "Personnalisée"
+};
+
+NARUTO25E.effectModifierTargets = {
+  none: "Aucun",
+  attack: "Attaque",
+  damage: "Dégâts",
+  defense: "Défense",
+  skill: "Compétence",
+  base: "Base",
+  chakra: "Chakra",
+  health: "Santé",
+  custom: "Personnalisé"
+};
+
+NARUTO25E.effectModifierTypes = {
+  flat: "Bonus fixe",
+  bonus: "Bonus",
+  penalty: "Malus",
+  override: "Remplacement",
+  custom: "Personnalisé"
+};
+
 NARUTO25E.heritageModes = {
   clan: "Clan",
   voie: "Voie",

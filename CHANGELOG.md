@@ -2,6 +2,88 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.50 - Effets actifs / passifs V1
+
+### Ajouté
+
+- Ajout d’une structure centrale `system.effects.narutoEffects` sur les fiches Shinobi.
+- Ajout d’un nouvel onglet Effets en dernier onglet de la fiche Shinobi V2.
+- Ajout d’une gestion manuelle des effets :
+  - ajouter un effet ;
+  - ajouter un état ;
+  - ajouter un bonus ;
+  - activer / désactiver un effet ;
+  - supprimer un effet ;
+  - modifier les champs d’un effet ;
+  - modifier le rang / intensité d’un effet.
+- Ajout des catégories d’effets :
+  - État ;
+  - Bonus ;
+  - Malus ;
+  - Technique active ;
+  - Lignée / Dōjutsu ;
+  - Équipement ;
+  - Nindō ;
+  - Clone / Double ;
+  - Personnalisé.
+- Ajout des modes d’effets :
+  - Actif ;
+  - Passif ;
+  - Maintenu ;
+  - Temporaire.
+- Ajout des durées d’effets :
+  - Manuel ;
+  - Tours ;
+  - Rounds ;
+  - Scène ;
+  - Session ;
+  - Jusqu’à annulation ;
+  - Permanent.
+- Ajout des états standards :
+  - Peur ;
+  - Terreur ;
+  - Surprise ;
+  - Saignement ;
+  - Poison ;
+  - Paralysie ;
+  - Sommeil ;
+  - Sonné ;
+  - Entravé ;
+  - Aveuglé ;
+  - Assourdi ;
+  - Brûlure ;
+  - Personnalisé.
+- Ajout d’une cible optionnelle d’effet :
+  - acteur ;
+  - arme ;
+  - technique ;
+  - clone ;
+  - invocation ;
+  - cible personnalisée.
+- Ajout de champs de préparation pour les futurs modificateurs mécaniques.
+
+### Sécurité / droits
+
+- Le propriétaire de la fiche et le MJ peuvent gérer les effets visibles.
+- Seul le MJ peut créer ou modifier un effet caché.
+- Les effets cachés ne sont visibles que par le MJ.
+
+### Technique
+
+- Les effets sont gérés via des méthodes Actor dédiées.
+- Les effets ne passent pas par la sauvegarde formulaire native de Foundry afin d’éviter les problèmes de tableaux d’objets.
+- Ajout du type de durée `untilCancelled` pour les techniques qui durent jusqu’à annulation par le shinobi.
+- `permanent` est réservé aux effets réellement permanents, passifs ou structurels.
+
+### Notes
+
+- Les effets V1 sont suivis et affichés, mais ne modifient pas encore automatiquement les jets, dégâts, défenses ou ressources.
+- Aucun changement Santé / Blessures complet.
+- Aucun changement Actions.
+- Aucun changement Relations PNJ.
+- Aucun changement Kamon de clan.
+- Aucun changement Mangekyō.
+
 ## 0.1.49 - Kamon de clan dans le chat
 
 ### Ajouté

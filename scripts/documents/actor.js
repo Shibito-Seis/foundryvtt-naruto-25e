@@ -52,6 +52,13 @@ const NARUTO25E_RELATIONSHIP_LIMITS = {
   maxScore: 150
 };
 
+const NARUTO25E_EFFECT_LIMITS = {
+  max: 100,
+  minRank: 0,
+  maxRank: 10,
+  maxDuration: 999
+};
+
 export class Naruto25eActor extends Actor {
   prepareDerivedData() {
     super.prepareDerivedData();
@@ -74,6 +81,7 @@ export class Naruto25eActor extends Actor {
     this._prepareExperience(system);
     this._prepareMissions(system);
     this._prepareNindo(system);
+    this._prepareEffects(system);
     this._prepareBackground(system);
     this._prepareRankProgression(system);
   }
@@ -3683,6 +3691,369 @@ _prepareExperience(system) {
 
     return true;
   }
+
+  _prepareEffects(system) {
+    system.effects = system.effects ?? {};
+
+    const effectSource = system.effects.narutoEffects;
+
+    const rawEffects = Array.isArray(effectSource)
+      ? effectSource
+      : effectSource && typeof effectSource === "object"
+        ? Object.keys(effectSource)
+            .filter((key) => /^\d+$/.test(String(key)))
+            .sort((a, b) => Number(a) - Number(b))
+            .map((key) => effectSource[key])
+        : [];
+
+    system.effects.narutoEffects = rawEffects
+      .slice(0, NARUTO25E_EFFECT_LIMITS.max)
+      .map((effect, index) => this._normalizeNarutoEffectData(effect, index));
+  }
+
+  _getDefaultNarutoEffect(index = 0, id = "") {
+    const effectNumber = Math.max(1, Number(index ?? 0) + 1);
+
+    return {
+      id: id || `effect-${effectNumber}`,
+      name: `Effet ${effectNumber}`,
+      category: "custom",
+      mode: "active",
+      statusKey: "none",
+      rank: 0,
+      enabled: true,
+      sourceName: "",
+      sourceUuid: "",
+      sourceType: "manual",
+      targetType: "none",
+      targetItemId: "",
+      durationType: "manual",
+      remainingRounds: 0,
+      remainingTurns: 0,
+      maintenanceCost: 0,
+      isHidden: false,
+      notes: "",
+      modifierNotes: "",
+      modifiers: []
+    };
+  }
+
+  _normalizeNarutoEffectKey(collection, key, fallback = "") {
+    const normalizedKey = String(key ?? fallback);
+
+    return collection?.[normalizedKey] ? normalizedKey : fallback;
+  }
+
+  _normalizeNarutoEffectModifier(modifier = {}) {
+    return {
+      target: this._normalizeNarutoEffectKey(NARUTO25E.effectModifierTargets, modifier.target, "none"),
+      key: String(modifier.key ?? ""),
+      value: Number(modifier.value ?? 0),
+      type: this._normalizeNarutoEffectKey(NARUTO25E.effectModifierTypes, modifier.type, "flat"),
+      condition: String(modifier.condition ?? "")
+    };
+  }
+
+  _normalizeNarutoEffectData(effect = {}, index = 0) {
+    const fallback = this._getDefaultNarutoEffect(index);
+    const rank = this._clampNumber(
+      Number(effect.rank ?? fallback.rank),
+      NARUTO25E_EFFECT_LIMITS.minRank,
+      NARUTO25E_EFFECT_LIMITS.maxRank
+    );
+
+    const remainingRounds = this._clampNumber(
+      Number(effect.remainingRounds ?? 0),
+      0,
+      NARUTO25E_EFFECT_LIMITS.maxDuration
+    );
+
+    const remainingTurns = this._clampNumber(
+      Number(effect.remainingTurns ?? 0),
+      0,
+      NARUTO25E_EFFECT_LIMITS.maxDuration
+    );
+
+    const maintenanceCost = this._clampNumber(
+      Number(effect.maintenanceCost ?? 0),
+      0,
+      9999
+    );
+
+    const modifiers = Array.isArray(effect.modifiers)
+      ? effect.modifiers
+          .slice(0, 20)
+          .map((modifier) => this._normalizeNarutoEffectModifier(modifier))
+      : [];
+
+    return {
+      id: String(effect.id ?? fallback.id) || fallback.id,
+      name: String(effect.name ?? fallback.name),
+      category: this._normalizeNarutoEffectKey(NARUTO25E.effectCategories, effect.category, fallback.category),
+      mode: this._normalizeNarutoEffectKey(NARUTO25E.effectModes, effect.mode, fallback.mode),
+      statusKey: this._normalizeNarutoEffectKey(NARUTO25E.effectStatusKeys, effect.statusKey, fallback.statusKey),
+      rank,
+      enabled: effect.enabled !== false,
+      sourceName: String(effect.sourceName ?? ""),
+      sourceUuid: String(effect.sourceUuid ?? ""),
+      sourceType: this._normalizeNarutoEffectKey(NARUTO25E.effectSourceTypes, effect.sourceType, fallback.sourceType),
+      targetType: this._normalizeNarutoEffectKey(NARUTO25E.effectTargetTypes, effect.targetType, fallback.targetType),
+      targetItemId: String(effect.targetItemId ?? ""),
+      durationType: this._normalizeNarutoEffectKey(NARUTO25E.effectDurationTypes, effect.durationType, fallback.durationType),
+      remainingRounds,
+      remainingTurns,
+      maintenanceCost,
+      isHidden: Boolean(effect.isHidden),
+      notes: String(effect.notes ?? ""),
+      modifierNotes: String(effect.modifierNotes ?? ""),
+      modifiers
+    };
+  }
+
+  _canUserEditNarutoEffects(user = game.user) {
+    return Boolean(user?.isGM) || Boolean(this.isOwner);
+  }
+
+  _canUserEditNarutoEffectField(fieldKey, user = game.user) {
+    if (user?.isGM) return true;
+
+    if (!this._canUserEditNarutoEffects(user)) return false;
+
+    return new Set([
+      "name",
+      "category",
+      "mode",
+      "statusKey",
+      "rank",
+      "enabled",
+      "sourceName",
+      "sourceUuid",
+      "sourceType",
+      "targetType",
+      "targetItemId",
+      "durationType",
+      "remainingRounds",
+      "remainingTurns",
+      "maintenanceCost",
+      "notes",
+      "modifierNotes"
+    ]).has(String(fieldKey ?? ""));
+  }
+
+  async addNarutoEffect(category = "custom") {
+    if (this.type !== "shinobi") return false;
+
+    if (!this._canUserEditNarutoEffects()) {
+      ui.notifications.warn("Tu n’as pas les droits nécessaires pour modifier les effets.");
+      return false;
+    }
+
+    const effects = foundry.utils.deepClone(this.system.effects?.narutoEffects ?? []);
+
+    if (effects.length >= NARUTO25E_EFFECT_LIMITS.max) {
+      ui.notifications.warn(`Maximum ${NARUTO25E_EFFECT_LIMITS.max} effets suivis.`);
+      return false;
+    }
+
+    const id = foundry.utils.randomID?.(8) ?? `effect-${Date.now()}`;
+    const effect = this._getDefaultNarutoEffect(effects.length, id);
+    effect.category = this._normalizeNarutoEffectKey(NARUTO25E.effectCategories, category, "custom");
+
+    if (effect.category === "condition") {
+      effect.mode = "temporary";
+      effect.durationType = "manual";
+      effect.statusKey = "custom";
+    }
+
+    effects.push(effect);
+
+    await this.update({
+      "system.effects.narutoEffects": effects
+    });
+
+    return true;
+  }
+
+  async deleteNarutoEffect(effectId) {
+    if (this.type !== "shinobi") return false;
+
+    if (!this._canUserEditNarutoEffects()) {
+      ui.notifications.warn("Tu n’as pas les droits nécessaires pour modifier les effets.");
+      return false;
+    }
+
+    const id = String(effectId ?? "");
+    const effects = foundry.utils.deepClone(this.system.effects?.narutoEffects ?? []);
+    const nextEffects = effects.filter((effect) => String(effect.id ?? "") !== id);
+
+    if (nextEffects.length === effects.length) {
+      ui.notifications.warn("Effet introuvable.");
+      return false;
+    }
+
+    await this.update({
+      "system.effects.narutoEffects": nextEffects
+    });
+
+    return true;
+  }
+
+  async updateNarutoEffectField(effectId, field, value) {
+    if (this.type !== "shinobi") return false;
+
+    const id = String(effectId ?? "");
+    const fieldKey = String(field ?? "");
+
+    const allowedFields = new Set([
+      "name",
+      "category",
+      "mode",
+      "statusKey",
+      "rank",
+      "enabled",
+      "sourceName",
+      "sourceUuid",
+      "sourceType",
+      "targetType",
+      "targetItemId",
+      "durationType",
+      "remainingRounds",
+      "remainingTurns",
+      "maintenanceCost",
+      "isHidden",
+      "notes",
+      "modifierNotes"
+    ]);
+
+    if (!allowedFields.has(fieldKey)) {
+      ui.notifications.warn(`Champ d’effet invalide : ${fieldKey}.`);
+      return false;
+    }
+
+    if (!this._canUserEditNarutoEffectField(fieldKey)) {
+      ui.notifications.warn("Tu n’as pas les droits nécessaires pour modifier ce champ d’effet.");
+      return false;
+    }
+
+    const effects = foundry.utils.deepClone(this.system.effects?.narutoEffects ?? []);
+    const effect = effects.find((entry) => String(entry.id ?? "") === id);
+
+    if (!effect) {
+      ui.notifications.warn("Effet introuvable.");
+      return false;
+    }
+
+    if (fieldKey === "category") {
+      effect.category = this._normalizeNarutoEffectKey(NARUTO25E.effectCategories, value, "custom");
+    } else if (fieldKey === "mode") {
+      effect.mode = this._normalizeNarutoEffectKey(NARUTO25E.effectModes, value, "active");
+    } else if (fieldKey === "statusKey") {
+      effect.statusKey = this._normalizeNarutoEffectKey(NARUTO25E.effectStatusKeys, value, "none");
+    } else if (fieldKey === "sourceType") {
+      effect.sourceType = this._normalizeNarutoEffectKey(NARUTO25E.effectSourceTypes, value, "manual");
+    } else if (fieldKey === "targetType") {
+      effect.targetType = this._normalizeNarutoEffectKey(NARUTO25E.effectTargetTypes, value, "none");
+
+      if (effect.targetType === "none") {
+        effect.targetItemId = "";
+      }
+    } else if (fieldKey === "durationType") {
+      effect.durationType = this._normalizeNarutoEffectKey(NARUTO25E.effectDurationTypes, value, "manual");
+
+      if (["manual", "scene", "session", "untilCancelled", "permanent"].includes(effect.durationType)) {
+        effect.remainingRounds = 0;
+        effect.remainingTurns = 0;
+      }
+    } else if (fieldKey === "rank") {
+      effect.rank = this._clampNumber(
+        Number(value ?? 0),
+        NARUTO25E_EFFECT_LIMITS.minRank,
+        NARUTO25E_EFFECT_LIMITS.maxRank
+      );
+    } else if (fieldKey === "remainingRounds") {
+      effect.remainingRounds = this._clampNumber(
+        Number(value ?? 0),
+        0,
+        NARUTO25E_EFFECT_LIMITS.maxDuration
+      );
+    } else if (fieldKey === "remainingTurns") {
+      effect.remainingTurns = this._clampNumber(
+        Number(value ?? 0),
+        0,
+        NARUTO25E_EFFECT_LIMITS.maxDuration
+      );
+    } else if (fieldKey === "maintenanceCost") {
+      effect.maintenanceCost = this._clampNumber(Number(value ?? 0), 0, 9999);
+    } else if (fieldKey === "enabled" || fieldKey === "isHidden") {
+      effect[fieldKey] = Boolean(value);
+    } else {
+      effect[fieldKey] = String(value ?? "");
+    }
+
+    await this.update({
+      "system.effects.narutoEffects": effects
+    });
+
+    return true;
+  }
+
+  async toggleNarutoEffect(effectId) {
+    if (this.type !== "shinobi") return false;
+
+    if (!this._canUserEditNarutoEffects()) {
+      ui.notifications.warn("Tu n’as pas les droits nécessaires pour modifier les effets.");
+      return false;
+    }
+
+    const id = String(effectId ?? "");
+    const effects = foundry.utils.deepClone(this.system.effects?.narutoEffects ?? []);
+    const effect = effects.find((entry) => String(entry.id ?? "") === id);
+
+    if (!effect) {
+      ui.notifications.warn("Effet introuvable.");
+      return false;
+    }
+
+    effect.enabled = !Boolean(effect.enabled);
+
+    await this.update({
+      "system.effects.narutoEffects": effects
+    });
+
+    return true;
+  }
+
+  async adjustNarutoEffectRank(effectId, delta) {
+    if (this.type !== "shinobi") return false;
+
+    if (!this._canUserEditNarutoEffects()) {
+      ui.notifications.warn("Tu n’as pas les droits nécessaires pour modifier les effets.");
+      return false;
+    }
+
+    const id = String(effectId ?? "");
+    const rankDelta = Number(delta ?? 0);
+    const effects = foundry.utils.deepClone(this.system.effects?.narutoEffects ?? []);
+    const effect = effects.find((entry) => String(entry.id ?? "") === id);
+
+    if (!effect) {
+      ui.notifications.warn("Effet introuvable.");
+      return false;
+    }
+
+    effect.rank = this._clampNumber(
+      Number(effect.rank ?? 0) + rankDelta,
+      NARUTO25E_EFFECT_LIMITS.minRank,
+      NARUTO25E_EFFECT_LIMITS.maxRank
+    );
+
+    await this.update({
+      "system.effects.narutoEffects": effects
+    });
+
+    return true;
+  }
+
 
   _clampNumber(value, min, max) {
     const number = Number(value ?? 0);

@@ -2481,3 +2481,150 @@
     grid-column: 1 / -1;
   }
 }
+
+/* ----------------------------------------- */
+/* 0.1.50 — Effets actifs / passifs V1       */
+/* ----------------------------------------- */
+
+.shinobi-v2-effects-panel {
+  grid-column: 1 / -1;
+}
+
+.shinobi-v2-effects-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.shinobi-v2-effects-header p {
+  margin: 0;
+}
+
+.shinobi-v2-effects-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.shinobi-v2-effects-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(26rem, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.shinobi-v2-effect-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 0.75rem;
+  border: 1px solid rgba(201, 163, 93, 0.34);
+  background:
+    linear-gradient(135deg, rgba(27, 23, 25, 0.93), rgba(8, 10, 16, 0.94));
+}
+
+.shinobi-v2-effect-card.is-disabled {
+  opacity: 0.62;
+}
+
+.shinobi-v2-effect-card.is-hidden {
+  border-style: dashed;
+  box-shadow: inset 0 0 0.75rem rgba(160, 120, 255, 0.08);
+}
+
+.shinobi-v2-effect-card.is-effect-danger {
+  border-color: rgba(200, 66, 58, 0.68);
+  background:
+    linear-gradient(135deg, rgba(54, 16, 16, 0.9), rgba(10, 8, 12, 0.96));
+}
+
+.shinobi-v2-effect-card.is-effect-boon {
+  border-color: rgba(91, 184, 111, 0.55);
+  box-shadow: inset 0 0 0.8rem rgba(76, 154, 97, 0.1);
+}
+
+.shinobi-v2-effect-card.is-effect-maintained {
+  border-color: rgba(91, 145, 220, 0.62);
+  box-shadow: inset 0 0 0.8rem rgba(75, 132, 210, 0.12);
+}
+
+.shinobi-v2-effect-card.is-effect-passive {
+  border-color: rgba(201, 163, 93, 0.58);
+  box-shadow: inset 0 0 0.8rem rgba(201, 163, 93, 0.1);
+}
+
+.shinobi-v2-effect-card.is-effect-inactive {
+  border-color: rgba(160, 160, 160, 0.28);
+  background:
+    linear-gradient(135deg, rgba(30, 30, 34, 0.8), rgba(8, 8, 10, 0.92));
+}
+
+.shinobi-v2-effect-header {
+  display: grid;
+  grid-template-columns: minmax(12rem, 1fr) minmax(12rem, auto) auto;
+  gap: 0.55rem;
+  align-items: end;
+}
+
+.shinobi-v2-effect-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  align-items: center;
+}
+
+.shinobi-v2-effect-badges span {
+  padding: 0.18rem 0.42rem;
+  border: 1px solid rgba(201, 163, 93, 0.28);
+  color: var(--v2-muted);
+  background: rgba(0, 0, 0, 0.28);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.shinobi-v2-effect-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  justify-content: flex-end;
+}
+
+.shinobi-v2-effect-rank-control {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  color: var(--v2-muted);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.shinobi-v2-effect-rank-control > div {
+  display: grid;
+  grid-template-columns: 2rem minmax(4rem, 1fr) 2rem;
+  gap: 0.3rem;
+  align-items: center;
+}
+
+.shinobi-v2-effect-rank-control input {
+  text-align: center;
+}
+
+.shinobi-v2-effect-card textarea {
+  min-height: 4.5rem;
+}
+
+@media (max-width: 980px) {
+  .shinobi-v2-effect-header {
+    grid-template-columns: 1fr;
+  }
+
+  .shinobi-v2-effect-buttons {
+    justify-content: flex-start;
+  }
+}
