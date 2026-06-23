@@ -369,6 +369,41 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
       this.render(false);
     });
 
+    html.find(".naruto-effect-modifier-add").on("click", async (event) => {
+      event.preventDefault();
+
+      const effectId = event.currentTarget?.dataset?.effectId ?? "";
+
+      await this.actor.addNarutoEffectModifier(effectId);
+      this.render(false);
+    });
+
+    html.find(".naruto-effect-modifier-delete").on("click", async (event) => {
+      event.preventDefault();
+
+      const effectId = event.currentTarget?.dataset?.effectId ?? "";
+      const modifierId = event.currentTarget?.dataset?.modifierId ?? "";
+
+      await this.actor.deleteNarutoEffectModifier(effectId, modifierId);
+      this.render(false);
+    });
+
+    html.find(".naruto-effect-modifier-field").on("change", async (event) => {
+      event.preventDefault();
+
+      const element = event.currentTarget;
+      const effectId = element?.dataset?.effectId ?? "";
+      const modifierId = element?.dataset?.modifierId ?? "";
+      const field = element?.dataset?.field ?? "";
+      const value = element?.value ?? "";
+
+      const updated = await this.actor.updateNarutoEffectModifierField(effectId, modifierId, field, value);
+
+      if (updated && ["target", "type"].includes(field)) {
+        this.render(false);
+      }
+    });
+
     html.find(".nindo-opportunity-consume").on("click", async (event) => {
       event.preventDefault();
 
@@ -1562,6 +1597,16 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
       label
     }));
 
+    const modifierTargetOptions = Object.entries(NARUTO25E.effectModifierTargets ?? {}).map(([key, label]) => ({
+      key,
+      label
+    }));
+
+    const modifierTypeOptions = Object.entries(NARUTO25E.effectModifierTypes ?? {}).map(([key, label]) => ({
+      key,
+      label
+    }));
+
     const targetItems = Array.from(this.actor?.items ?? [])
       .filter((item) => ["arme", "armure", "technique", "equipement", "consommable", "pouvoirLignee"].includes(item.type))
       .map((item) => ({
@@ -1588,6 +1633,24 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
         const rank = Math.max(0, Number(effect.rank ?? 0));
         const tone = this._getV2EffectTone(effect);
         const targetItemLabel = targetItemLabels.get(targetItemId) ?? "";
+        const modifiers = Array.isArray(effect.modifiers)
+          ? effect.modifiers.map((modifier, modifierIndex) => {
+              const target = String(modifier.target ?? "none");
+              const type = String(modifier.type ?? "flat");
+
+              return {
+                index: modifierIndex,
+                id: String(modifier.id ?? `modifier-${modifierIndex + 1}`),
+                target,
+                targetLabel: NARUTO25E.effectModifierTargets?.[target] ?? target,
+                key: String(modifier.key ?? ""),
+                value: Number(modifier.value ?? 0),
+                type,
+                typeLabel: NARUTO25E.effectModifierTypes?.[type] ?? type,
+                condition: String(modifier.condition ?? "")
+              };
+            })
+          : [];
 
         return {
           index,
@@ -1619,7 +1682,8 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
           isHidden: Boolean(effect.isHidden),
           notes: String(effect.notes ?? ""),
           modifierNotes: String(effect.modifierNotes ?? ""),
-          modifierCount: Array.isArray(effect.modifiers) ? effect.modifiers.length : 0,
+          modifiers,
+          modifierCount: modifiers.length,
           tone
         };
       });
@@ -1643,6 +1707,8 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
       sourceTypeOptions,
       targetTypeOptions,
       durationTypeOptions,
+      modifierTargetOptions,
+      modifierTypeOptions,
       targetItems
     };
   }

@@ -76,12 +76,12 @@ export class Naruto25eActor extends Actor {
     this._prepareLineagePassiveBonuses(system);
     this._prepareChakraSpecializations(system);
     this._prepareResources(system);
+    this._prepareEffects(system);
     this._prepareCombat(system);
     this._prepareInventory(system);
     this._prepareExperience(system);
     this._prepareMissions(system);
     this._prepareNindo(system);
-    this._prepareEffects(system);
     this._prepareBackground(system);
     this._prepareRankProgression(system);
   }
@@ -3744,8 +3744,11 @@ _prepareExperience(system) {
     return collection?.[normalizedKey] ? normalizedKey : fallback;
   }
 
-  _normalizeNarutoEffectModifier(modifier = {}) {
+  _normalizeNarutoEffectModifier(modifier = {}, index = 0) {
+    const modifierNumber = Math.max(1, Number(index ?? 0) + 1);
+
     return {
+      id: String(modifier.id ?? "") || `modifier-${modifierNumber}`,
       target: this._normalizeNarutoEffectKey(NARUTO25E.effectModifierTargets, modifier.target, "none"),
       key: String(modifier.key ?? ""),
       value: Number(modifier.value ?? 0),
@@ -3783,7 +3786,7 @@ _prepareExperience(system) {
     const modifiers = Array.isArray(effect.modifiers)
       ? effect.modifiers
           .slice(0, 20)
-          .map((modifier) => this._normalizeNarutoEffectModifier(modifier))
+          .map((modifier, modifierIndex) => this._normalizeNarutoEffectModifier(modifier, modifierIndex))
       : [];
 
     return {
@@ -4052,6 +4055,302 @@ _prepareExperience(system) {
     });
 
     return true;
+  }
+
+  async addNarutoEffectModifier(effectId) {
+    if (this.type !== "shinobi") return false;
+
+    if (!this._canUserEditNarutoEffects()) {
+      ui.notifications.warn("Tu n’as pas les droits nécessaires pour modifier les effets.");
+      return false;
+    }
+
+    const id = String(effectId ?? "");
+    const effects = foundry.utils.deepClone(this.system.effects?.narutoEffects ?? []);
+    const effect = effects.find((entry) => String(entry.id ?? "") === id);
+
+    if (!effect) {
+      ui.notifications.warn("Effet introuvable.");
+      return false;
+    }
+
+    effect.modifiers = Array.isArray(effect.modifiers) ? effect.modifiers : [];
+
+    if (effect.modifiers.length >= 20) {
+      ui.notifications.warn("Maximum 20 modificateurs par effet.");
+      return false;
+    }
+
+    effect.modifiers.push(this._normalizeNarutoEffectModifier({
+      id: foundry.utils.randomID?.(8) ?? `modifier-${Date.now()}`,
+      target: "skill",
+      key: "",
+      value: 1,
+      type: "bonus",
+      condition: ""
+    }, effect.modifiers.length));
+
+    await this.update({
+      "system.effects.narutoEffects": effects
+    });
+
+    return true;
+  }
+
+  async deleteNarutoEffectModifier(effectId, modifierId) {
+    if (this.type !== "shinobi") return false;
+
+    if (!this._canUserEditNarutoEffects()) {
+      ui.notifications.warn("Tu n’as pas les droits nécessaires pour modifier les effets.");
+      return false;
+    }
+
+    const id = String(effectId ?? "");
+    const modifierKey = String(modifierId ?? "");
+    const effects = foundry.utils.deepClone(this.system.effects?.narutoEffects ?? []);
+    const effect = effects.find((entry) => String(entry.id ?? "") === id);
+
+    if (!effect) {
+      ui.notifications.warn("Effet introuvable.");
+      return false;
+    }
+
+    const modifiers = Array.isArray(effect.modifiers) ? effect.modifiers : [];
+    const nextModifiers = modifiers.filter((modifier) => String(modifier.id ?? "") !== modifierKey);
+
+    if (nextModifiers.length === modifiers.length) {
+      ui.notifications.warn("Modificateur introuvable.");
+      return false;
+    }
+
+    effect.modifiers = nextModifiers;
+
+    await this.update({
+      "system.effects.narutoEffects": effects
+    });
+
+    return true;
+  }
+
+  async updateNarutoEffectModifierField(effectId, modifierId, field, value) {
+    if (this.type !== "shinobi") return false;
+
+    if (!this._canUserEditNarutoEffects()) {
+      ui.notifications.warn("Tu n’as pas les droits nécessaires pour modifier les effets.");
+      return false;
+    }
+
+    const id = String(effectId ?? "");
+    const modifierKey = String(modifierId ?? "");
+    const fieldKey = String(field ?? "");
+
+    const allowedFields = new Set([
+      "target",
+      "key",
+      "value",
+      "type",
+      "condition"
+    ]);
+
+    if (!allowedFields.has(fieldKey)) {
+      ui.notifications.warn(`Champ de modificateur invalide : ${fieldKey}.`);
+      return false;
+    }
+
+    const effects = foundry.utils.deepClone(this.system.effects?.narutoEffects ?? []);
+    const effect = effects.find((entry) => String(entry.id ?? "") === id);
+
+    if (!effect) {
+      ui.notifications.warn("Effet introuvable.");
+      return false;
+    }
+
+    effect.modifiers = Array.isArray(effect.modifiers) ? effect.modifiers : [];
+
+    const modifier = effect.modifiers.find((entry) => String(entry.id ?? "") === modifierKey);
+
+    if (!modifier) {
+      ui.notifications.warn("Modificateur introuvable.");
+      return false;
+    }
+
+    if (fieldKey === "target") {
+      modifier.target = this._normalizeNarutoEffectKey(NARUTO25E.effectModifierTargets, value, "none");
+    } else if (fieldKey === "type") {
+      modifier.type = this._normalizeNarutoEffectKey(NARUTO25E.effectModifierTypes, value, "flat");
+    } else if (fieldKey === "value") {
+      modifier.value = this._clampNumber(Number(value ?? 0), -999, 999);
+    } else {
+      modifier[fieldKey] = String(value ?? "");
+    }
+
+    await this.update({
+      "system.effects.narutoEffects": effects
+    });
+
+    return true;
+  }
+
+  _isNarutoEffectCurrentlyActive(effect = {}) {
+    if (effect.enabled === false) return false;
+
+    const durationType = String(effect.durationType ?? "manual");
+
+    if (durationType === "turn") {
+      return Number(effect.remainingTurns ?? 0) > 0;
+    }
+
+    if (durationType === "round") {
+      return Number(effect.remainingRounds ?? 0) > 0;
+    }
+
+    return true;
+  }
+
+  _getActiveNarutoEffects(options = {}) {
+    const includeHidden = options.includeHidden !== false;
+    const effects = Array.isArray(this.system.effects?.narutoEffects)
+      ? this.system.effects.narutoEffects
+      : [];
+
+    return effects.filter((effect) => {
+      if (!this._isNarutoEffectCurrentlyActive(effect)) return false;
+      if (!includeHidden && effect.isHidden) return false;
+
+      return true;
+    });
+  }
+
+  _getSignedNarutoEffectModifierValue(modifier = {}) {
+    const rawValue = Number(modifier.value ?? 0);
+    const type = String(modifier.type ?? "flat");
+
+    if (type === "penalty") return -Math.abs(rawValue);
+    if (type === "override") return 0;
+
+    return rawValue;
+  }
+
+  _doesNarutoEffectModifierApply(effect = {}, modifier = {}, target = "", options = {}) {
+    const modifierTarget = String(modifier.target ?? "none");
+    const requestedTarget = String(target ?? "none");
+
+    if (!requestedTarget || requestedTarget === "none") return false;
+    if (modifierTarget !== requestedTarget) return false;
+
+    const effectTargetType = String(effect.targetType ?? "none");
+    const requestedTargetType = String(options.targetType ?? "");
+
+    if (effectTargetType !== "none" && requestedTargetType && effectTargetType !== requestedTargetType) {
+      return false;
+    }
+
+    const effectTargetItemId = String(effect.targetItemId ?? "");
+    const requestedItemId = String(options.itemId ?? "");
+
+    if (effectTargetItemId && !requestedItemId) return false;
+    if (effectTargetItemId && requestedItemId && effectTargetItemId !== requestedItemId) return false;
+
+    const modifierKey = String(modifier.key ?? "").trim();
+
+    if (!modifierKey || modifierKey === "all") return true;
+
+    const acceptedKeys = [
+      options.key,
+      options.skillKey,
+      options.baseKey,
+      options.kind,
+      options.damageType,
+      options.defenseKey,
+      options.itemId,
+      options.itemType,
+      options.targetType
+    ]
+      .map((entry) => String(entry ?? "").trim())
+      .filter(Boolean);
+
+    return acceptedKeys.includes(modifierKey);
+  }
+
+  _getNarutoEffectModifierSummary(target = "", options = {}) {
+    const items = [];
+    let total = 0;
+
+    for (const effect of this._getActiveNarutoEffects()) {
+      const modifiers = Array.isArray(effect.modifiers) ? effect.modifiers : [];
+
+      for (const modifier of modifiers) {
+        if (!this._doesNarutoEffectModifierApply(effect, modifier, target, options)) continue;
+
+        const value = this._getSignedNarutoEffectModifierValue(modifier);
+
+        if (value === 0) continue;
+
+        const entry = {
+          effectId: String(effect.id ?? ""),
+          effectName: String(effect.name ?? "Effet"),
+          target: String(modifier.target ?? target),
+          key: String(modifier.key ?? ""),
+          type: String(modifier.type ?? "flat"),
+          value,
+          condition: String(modifier.condition ?? "")
+        };
+
+        items.push(entry);
+        total += value;
+      }
+    }
+
+    return {
+      target: String(target ?? ""),
+      key: String(options.key ?? ""),
+      total,
+      items
+    };
+  }
+
+  _combineNarutoEffectModifierSummaries(...summaries) {
+    const items = summaries
+      .filter(Boolean)
+      .flatMap((summary) => Array.isArray(summary.items) ? summary.items : []);
+
+    const total = items.reduce((sum, item) => {
+      return sum + Number(item.value ?? 0);
+    }, 0);
+
+    return {
+      target: "combined",
+      key: "",
+      total,
+      items
+    };
+  }
+
+  _getNarutoEffectModifierSummaryHtml(summary = null) {
+    const items = Array.isArray(summary?.items) ? summary.items : [];
+
+    if (!items.length) return "";
+
+    const safe = (value) => foundry.utils.escapeHTML?.(String(value ?? "")) ?? String(value ?? "");
+
+    return `
+      <div class="naruto-effect-modifier-summary">
+        <strong>Effets appliqués</strong>
+        ${items.map((item) => {
+          const value = Number(item.value ?? 0);
+          const sign = value >= 0 ? "+" : "";
+
+          return `
+            <span>
+              ${safe(item.effectName)}
+              <em>${sign}${value}</em>
+              ${item.key ? `<small>${safe(item.key)}</small>` : ""}
+              ${item.condition ? `<small>${safe(item.condition)}</small>` : ""}
+            </span>
+          `;
+        }).join("")}
+      </div>
+    `;
   }
 
 
@@ -4926,7 +5225,13 @@ async decreaseBase(baseKey) {
 
     if (!base) return 0;
 
-    return Number(base.value ?? 0) + Number(base.bonus ?? 0);
+    const baseValue = Number(base.value ?? 0) + Number(base.bonus ?? 0);
+    const effectModifierSummary = this._getNarutoEffectModifierSummary("base", {
+      key,
+      baseKey: key
+    });
+
+    return Math.max(0, baseValue + Number(effectModifierSummary.total ?? 0));
   }
 
   _getDamageDefenseKey(damageType = "physical") {
@@ -4994,7 +5299,17 @@ async decreaseBase(baseKey) {
     const rawPerItemBonus = perItem * perItemCount;
     const perItemBonus = limit === null ? rawPerItemBonus : Math.min(rawPerItemBonus, limit);
 
-    const total = Math.max(0, baseTotal + flat + perItemBonus);
+    const effectModifierSummary = this._getNarutoEffectModifierSummary("damage", {
+      key: options.effectOptions?.key ?? normalized.type,
+      kind: options.effectOptions?.kind ?? "",
+      damageType: options.effectOptions?.damageType ?? normalized.type,
+      itemId: options.effectOptions?.itemId ?? "",
+      itemType: options.effectOptions?.itemType ?? "",
+      targetType: options.effectOptions?.targetType ?? ""
+    });
+
+    const effectBonus = Number(effectModifierSummary.total ?? 0);
+    const total = Math.max(0, baseTotal + flat + perItemBonus + effectBonus);
 
     return {
       calculable: true,
@@ -5004,6 +5319,8 @@ async decreaseBase(baseKey) {
       baseTotal,
       flat,
       perItemBonus,
+      effectBonus,
+      effectModifierSummary,
       perItemCount,
       perItem,
       perItemLimitBase: limitBaseKey,
@@ -5060,7 +5377,15 @@ async decreaseBase(baseKey) {
   async _createDamageChatCard(payload = {}) {
     const damage = this._normalizeDamageData(payload.damage ?? {});
     const damageResult = this._calculateDamageData(damage, {
-      perItemCount: Number(payload.perItemCount ?? 0)
+      perItemCount: Number(payload.perItemCount ?? 0),
+      effectOptions: {
+        key: payload.damageKey ?? payload.kind ?? payload.damageType ?? damage.type,
+        kind: payload.kind ?? "",
+        damageType: payload.damageType ?? damage.type,
+        itemId: payload.itemId ?? "",
+        itemType: payload.itemType ?? "",
+        targetType: payload.targetType ?? ""
+      }
     });
 
     const targetActor = payload.targetActorId
@@ -5088,6 +5413,7 @@ async decreaseBase(baseKey) {
     const partsText = damageResult.parts?.length
       ? damageResult.parts.map((part) => `${safe(part.label)} ${Number(part.value ?? 0)}`).join(" + ")
       : "—";
+    const effectModifierSummaryHtml = this._getNarutoEffectModifierSummaryHtml(damageResult.effectModifierSummary);
 
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: this }),
@@ -5128,7 +5454,7 @@ async decreaseBase(baseKey) {
 
               <div>
                 <strong>Détail</strong>
-                <span>${partsText}${damageResult.flat ? ` + ${damageResult.flat}` : ""}${damageResult.perItemBonus ? ` + cumul ${damageResult.perItemBonus}` : ""}</span>
+                <span>${partsText}${damageResult.flat ? ` + ${damageResult.flat}` : ""}${damageResult.perItemBonus ? ` + cumul ${damageResult.perItemBonus}` : ""}${damageResult.effectBonus ? ` + effets ${damageResult.effectBonus}` : ""}</span>
               </div>
 
               <div>
@@ -5143,6 +5469,8 @@ async decreaseBase(baseKey) {
                 </div>
               ` : ""}
             </div>
+
+            ${effectModifierSummaryHtml}
 
             ${targetActor ? `
               <div class="naruto-damage-breakdown is-readable">
@@ -5211,6 +5539,10 @@ async decreaseBase(baseKey) {
       sourceName: item.name,
       sourceType: "technique",
       itemId,
+      itemType: item.type,
+      targetType: "technique",
+      damageKey: item.system?.skill ?? item.system?.family ?? "technique",
+      kind: item.system?.skill ?? item.system?.family ?? "technique",
       targetActorId: targetActor?.id ?? "",
       damage: item.system.damage ?? {},
       damageType: this._getTechniqueDamageType(item)
@@ -5232,6 +5564,10 @@ async decreaseBase(baseKey) {
       sourceName: item.name,
       sourceType: "inventory",
       itemId,
+      itemType: item.type ?? "inventory",
+      targetType: item.type === "arme" ? "weapon" : "custom",
+      damageKey: item.type ?? "inventory",
+      kind: item.type ?? "inventory",
       targetActorId: targetActor?.id ?? "",
       damage: item.damage ?? {
         formula: this._extractInventoryDamageFormula(item),
@@ -6086,6 +6422,8 @@ async decreaseBase(baseKey) {
     const resultClass = exploded ? "naruto-roll-result exploded" : "naruto-roll-result";
 
     const flavor = options.flavor ?? label;
+    const effectModifierSummary = options.effectModifierSummary ?? null;
+    const effectModifierSummaryHtml = this._getNarutoEffectModifierSummaryHtml(effectModifierSummary);
 
     const content = `
       <div class="naruto-roll-card ${exploded ? "is-exploded" : ""}">
@@ -6101,6 +6439,8 @@ async decreaseBase(baseKey) {
           <span>D10 : ${diceText}</span>
           <span>Modificateur : ${modifierText}</span>
         </div>
+
+        ${effectModifierSummaryHtml}
 
         ${exploded ? `
           <div class="naruto-roll-explosion">
@@ -6122,10 +6462,16 @@ async decreaseBase(baseKey) {
 
   async rollInitiativeAction(options = {}) {
     const updateTracker = options.updateTracker !== false;
-    const total = Number(this.system.combat?.initiative?.total ?? 0);
+    const baseTotal = Number(this.system.combat?.initiative?.total ?? 0);
+    const effectModifierSummary = this._getNarutoEffectModifierSummary("skill", {
+      key: "physique",
+      skillKey: "physique"
+    });
+    const total = baseTotal + Number(effectModifierSummary.total ?? 0);
 
     const roll = await this._rollExplodingD10("Initiative", total, {
-      flavor: `Initiative — ${this.name}`
+      flavor: `Initiative — ${this.name}`,
+      effectModifierSummary
     });
 
     if (updateTracker && game.combat) {
@@ -6173,10 +6519,18 @@ async decreaseBase(baseKey) {
     if (!skill || !definition) return null;
     if (!skill.owned && !definition.ownedByDefault) return null;
 
+    const baseTotal = Number(skill.total ?? 0);
+    const effectModifierSummary = this._getNarutoEffectModifierSummary("skill", {
+      key: skillKey,
+      skillKey
+    });
+
     return {
       key: skillKey,
       label: definition.label,
-      total: Number(skill.total ?? 0)
+      baseTotal,
+      total: Math.max(0, baseTotal + Number(effectModifierSummary.total ?? 0)),
+      effectModifierSummary
     };
   }
 
@@ -6191,8 +6545,20 @@ async decreaseBase(baseKey) {
     const paradeRemaining = Number(defenseCounters.parade?.remaining ?? 0);
 
     if (esquive && esquiveRemaining > 0) {
+      const defenseEffectModifierSummary = this._getNarutoEffectModifierSummary("defense", {
+        key: "esquive",
+        defenseKey: "esquive",
+        skillKey: "esquive"
+      });
+      const effectModifierSummary = this._combineNarutoEffectModifierSummaries(
+        esquive.effectModifierSummary,
+        defenseEffectModifierSummary
+      );
+
       options.push({
         ...esquive,
+        total: Math.max(0, Number(esquive.total ?? 0) + Number(defenseEffectModifierSummary.total ?? 0)),
+        effectModifierSummary,
         mode: "active",
         counterKey: "esquive",
         limited: true,
@@ -6201,8 +6567,20 @@ async decreaseBase(baseKey) {
     }
 
     if (parade && paradeRemaining > 0) {
+      const defenseEffectModifierSummary = this._getNarutoEffectModifierSummary("defense", {
+        key: "parade",
+        defenseKey: "parade",
+        skillKey: "parade"
+      });
+      const effectModifierSummary = this._combineNarutoEffectModifierSummaries(
+        parade.effectModifierSummary,
+        defenseEffectModifierSummary
+      );
+
       options.push({
         ...parade,
+        total: Math.max(0, Number(parade.total ?? 0) + Number(defenseEffectModifierSummary.total ?? 0)),
+        effectModifierSummary,
         mode: "active",
         counterKey: "parade",
         limited: true,
@@ -6212,10 +6590,16 @@ async decreaseBase(baseKey) {
 
     const vigueur = Math.max(0, Number(this.system.resources?.vigueur?.value ?? 0));
 
+    const vigorDefenseEffectModifierSummary = this._getNarutoEffectModifierSummary("defense", {
+      key: "vigueur",
+      defenseKey: "vigueur"
+    });
+
     options.push({
       key: "encaisser",
       label: "Encaisser",
-      total: vigueur,
+      total: Math.max(0, vigueur + Number(vigorDefenseEffectModifierSummary.total ?? 0)),
+      effectModifierSummary: vigorDefenseEffectModifierSummary,
       mode: "passive",
       defenseKey: "vigueur",
       limited: false,
@@ -6241,8 +6625,20 @@ async decreaseBase(baseKey) {
       const mental = this._getSkillCombatTotal("mental");
 
       if (mental) {
+        const defenseEffectModifierSummary = this._getNarutoEffectModifierSummary("defense", {
+          key: "mental",
+          defenseKey: "mental",
+          skillKey: "mental"
+        });
+        const effectModifierSummary = this._combineNarutoEffectModifierSummaries(
+          mental.effectModifierSummary,
+          defenseEffectModifierSummary
+        );
+
         options.push({
           ...mental,
+          total: Math.max(0, Number(mental.total ?? 0) + Number(defenseEffectModifierSummary.total ?? 0)),
+          effectModifierSummary,
           mode: "active",
           counterKey: "",
           limited: false,
@@ -6254,10 +6650,16 @@ async decreaseBase(baseKey) {
 
     const caractere = Math.max(0, Number(this.system.resources?.caractere?.value ?? 0));
 
+    const characterDefenseEffectModifierSummary = this._getNarutoEffectModifierSummary("defense", {
+      key: "caractere",
+      defenseKey: "caractere"
+    });
+
     options.push({
       key: "encaisserCaractere",
       label: "Encaisser — Caractère",
-      total: caractere,
+      total: Math.max(0, caractere + Number(characterDefenseEffectModifierSummary.total ?? 0)),
+      effectModifierSummary: characterDefenseEffectModifierSummary,
       mode: "passive",
       defenseKey: "caractere",
       limited: false,
@@ -6455,6 +6857,8 @@ async decreaseBase(baseKey) {
 
         <p>${waitingText}</p>
 
+        ${this._getNarutoEffectModifierSummaryHtml(data.attackEffectModifierSummary)}
+
         <div class="naruto-defense-button-grid">
           ${buttons}
         </div>
@@ -6528,6 +6932,9 @@ async decreaseBase(baseKey) {
           <span>Défense choisie : ${safe(data.defenseLabel)}</span>
         </div>
 
+        ${this._getNarutoEffectModifierSummaryHtml(data.attackEffectModifierSummary)}
+        ${this._getNarutoEffectModifierSummaryHtml(data.defenseEffectModifierSummary)}
+
         ${data.damageFormula ? `
           <div class="naruto-roll-details">
             <span>Dégâts : ${safe(data.damageFormula)}</span>
@@ -6565,13 +6972,15 @@ async decreaseBase(baseKey) {
       }
     });
     const effectText = String(profile.effectText ?? "");
+    const attackEffectModifierSummary = profile.attackEffectModifierSummary ?? null;
 
     const targets = Array.from(game.user?.targets ?? []);
 
     if (targets.length !== 1) {
       ui.notifications.warn("Cible exactement un token pour créer une demande de défense.");
       return this._rollExplodingD10(label, attackTotal, {
-        flavor: `${label} — ${this.name}`
+        flavor: `${label} — ${this.name}`,
+        effectModifierSummary: attackEffectModifierSummary
       });
     }
 
@@ -6604,8 +7013,13 @@ async decreaseBase(baseKey) {
       targetName: targetActor.name,
       label,
       attackTotal,
+      attackEffectModifierSummary,
       defenseType,
       kind: String(profile.kind ?? defenseType),
+      itemId: String(profile.itemId ?? ""),
+      itemType: String(profile.itemType ?? ""),
+      targetType: String(profile.targetType ?? ""),
+      damageKey: String(profile.damageKey ?? profile.kind ?? damageType),
       damageFormula,
       damageType,
       damage: damageData,
@@ -6619,7 +7033,8 @@ async decreaseBase(baseKey) {
         limited: Boolean(option.limited),
         remaining: option.remaining === null || option.remaining === undefined ? null : Number(option.remaining),
         defenseKey: String(option.defenseKey ?? ""),
-        defenseFamily: String(option.defenseFamily ?? "")
+        defenseFamily: String(option.defenseFamily ?? ""),
+        effectModifierSummary: option.effectModifierSummary ?? null
       }))
     };
 
@@ -6715,6 +7130,8 @@ async decreaseBase(baseKey) {
       attackTotal: attackRoll.total,
       attackDiceText: attackRoll.diceText,
       attackModifier: attackRoll.modifier,
+      attackEffectModifierSummary: data.attackEffectModifierSummary ?? null,
+      defenseEffectModifierSummary: defense.effectModifierSummary ?? null,
       success,
       margin,
       impactPercent,
@@ -6731,6 +7148,11 @@ async decreaseBase(baseKey) {
             actorId: this.id,
             targetActorId: targetActor.id,
             sourceName: data.label,
+            itemId: data.itemId ?? "",
+            itemType: data.itemType ?? "",
+            targetType: data.targetType ?? "",
+            kind: data.kind ?? "",
+            damageKey: data.damageKey ?? data.kind ?? data.damageType,
             damage: data.damage,
             damageType: data.damageType
           } : null,
@@ -6769,7 +7191,12 @@ async decreaseBase(baseKey) {
     }
 
     const label = kind === "arm" ? "Attaque ARM basique" : "Attaque TAI basique";
-    const attackTotal = Number(attack.total ?? 0);
+    const attackEffectModifierSummary = this._getNarutoEffectModifierSummary("attack", {
+      key: kind,
+      kind,
+      targetType: kind === "arm" ? "weapon" : "actor"
+    });
+    const attackTotal = Number(attack.total ?? 0) + Number(attackEffectModifierSummary.total ?? 0);
 
     const damageFormula = kind === "arm"
       ? this.system.combat?.damage?.arm?.formula ?? ""
@@ -6804,7 +7231,10 @@ async decreaseBase(baseKey) {
     return this._resolveTargetedAttack({
       label,
       attackTotal,
+      attackEffectModifierSummary,
       kind,
+      targetType: kind === "arm" ? "weapon" : "actor",
+      damageKey: kind,
       defenseType: "physical",
       damageFormula,
       damageType: "physical",
@@ -6821,10 +7251,14 @@ async decreaseBase(baseKey) {
     const definition = NARUTO25E.skillDefinitions?.[skillKey];
 
     if (skillKey && skill && definition && (skill.owned || definition.ownedByDefault)) {
+      const skillData = this._getSkillCombatTotal(skillKey);
+
       return {
         key: skillKey,
         label: definition.label ?? skillKey,
-        total: Number(skill.total ?? 0)
+        baseTotal: Number(skill.total ?? 0),
+        total: Number(skillData?.total ?? skill.total ?? 0),
+        effectModifierSummary: skillData?.effectModifierSummary ?? null
       };
     }
 
@@ -6833,12 +7267,18 @@ async decreaseBase(baseKey) {
 
       if (base) {
         const label = NARUTO25E.baseLabels?.[baseKey] ?? base.label ?? baseKey;
-        const total = Number(base.value ?? 0) + Number(base.bonus ?? 0);
+        const baseTotal = Number(base.value ?? 0) + Number(base.bonus ?? 0);
+        const effectModifierSummary = this._getNarutoEffectModifierSummary("base", {
+          key: baseKey,
+          baseKey
+        });
 
         return {
           key: baseKey,
           label,
-          total
+          baseTotal,
+          total: Math.max(0, baseTotal + Number(effectModifierSummary.total ?? 0)),
+          effectModifierSummary
         };
       }
     }
@@ -6976,6 +7416,8 @@ async decreaseBase(baseKey) {
     const rankLabel = NARUTO25E.techniqueRanks?.[system.rank] ?? system.rank ?? "—";
     const actionLabel = NARUTO25E.techniqueActionTypes?.[system.actionType] ?? system.actionType ?? "—";
     const skillData = this._getTechniqueSkillTotal(item);
+    const effectModifierSummary = options.effectModifierSummary ?? skillData?.effectModifierSummary ?? null;
+    const effectModifierSummaryHtml = this._getNarutoEffectModifierSummaryHtml(effectModifierSummary);
 
     const safeTechniqueName = foundry.utils.escapeHTML?.(item.name) ?? item.name;
     const safeActorName = foundry.utils.escapeHTML?.(this.name) ?? this.name;
@@ -7029,6 +7471,8 @@ async decreaseBase(baseKey) {
             ${damageResult.calculable ? `<div><strong>Dégâts calculés :</strong> ${damageResult.total}</div>` : ""}
           </div>
 
+          ${effectModifierSummaryHtml}
+
           ${maintenanceCost > 0 ? `
             <p class="naruto-technique-maintained">
               Technique maintenue ajoutée à l’entretien actif.
@@ -7078,6 +7522,21 @@ async decreaseBase(baseKey) {
     const offensive = this._isTechniqueOffensive(item);
     const targets = Array.from(game.user?.targets ?? []);
 
+    const attackEffectModifierSummary = skillData
+      ? this._getNarutoEffectModifierSummary("attack", {
+          key: item.system?.skill ?? item.system?.family ?? "technique",
+          skillKey: item.system?.skill ?? "",
+          kind: item.system?.family ?? "technique",
+          itemId: item.id,
+          itemType: item.type,
+          targetType: "technique"
+        })
+      : null;
+    const combinedEffectModifierSummary = this._combineNarutoEffectModifierSummaries(
+      skillData?.effectModifierSummary,
+      attackEffectModifierSummary
+    );
+
     if (rollEnabled && offensive && targets.length === 1 && skillData) {
       const maintenanceCost = Math.max(0, Number(item.system?.chakra?.maintenance ?? 0));
       const effectText = [
@@ -7090,8 +7549,13 @@ async decreaseBase(baseKey) {
 
       return this._resolveTargetedAttack({
         label: `Technique — ${item.name}`,
-        attackTotal: Number(skillData.total ?? 0) + awakeningRollBonus,
+        attackTotal: Number(skillData.total ?? 0) + awakeningRollBonus + Number(attackEffectModifierSummary?.total ?? 0),
+        attackEffectModifierSummary: combinedEffectModifierSummary,
         kind: String(item.system?.skill ?? item.system?.family ?? "technique"),
+        itemId: item.id,
+        itemType: item.type,
+        targetType: "technique",
+        damageKey: item.system?.skill ?? item.system?.family ?? "technique",
         defenseType: this._getTechniqueDefenseType(item),
         damageFormula: String(item.system?.damage?.formula ?? ""),
         damageType: this._getTechniqueDamageType(item),
@@ -7107,7 +7571,11 @@ async decreaseBase(baseKey) {
     let rollTotal = null;
 
     if (rollEnabled && skillData) {
-      const rollData = await this._rollExplodingD10Data(Number(skillData.total ?? 0) + awakeningRollBonus);
+      const rollData = await this._rollExplodingD10Data(
+        Number(skillData.total ?? 0)
+        + awakeningRollBonus
+        + Number(attackEffectModifierSummary?.total ?? 0)
+      );
 
       roll = rollData.roll;
       rollTotal = rollData.total;
@@ -7116,7 +7584,8 @@ async decreaseBase(baseKey) {
     await this._createTechniqueChatCard(item, {
       chakraSpend,
       roll,
-      rollTotal
+      rollTotal,
+      effectModifierSummary: combinedEffectModifierSummary
     });
 
     return roll;
@@ -7152,32 +7621,27 @@ async decreaseBase(baseKey) {
       return null;
     }
 
-    const skill = this.system.skills?.[skillKey];
+    const skillData = this._getSkillCombatTotal(skillKey);
     const definition = NARUTO25E.skillDefinitions?.[skillKey];
 
-    if (!skill || !definition) {
-      ui.notifications.warn("Compétence introuvable.");
+    if (!skillData || !definition) {
+      ui.notifications.warn("Compétence introuvable ou non possédée.");
       return null;
     }
 
-    if (!skill.owned && !definition.ownedByDefault) {
-      ui.notifications.warn("Cette compétence n’est pas possédée.");
-      return null;
-    }
-
-    const total = Number(skill.total ?? 0);
     const actionSpent = await this.spendCombatAction("complex", `Jet de compétence — ${definition.label}`);
 
     if (!actionSpent) return null;
 
     const awakeningRollBonus = this._consumeNindoAwakeningRollBonus();
-    const finalTotal = total + awakeningRollBonus;
+    const finalTotal = Number(skillData.total ?? 0) + awakeningRollBonus;
     const awakeningText = awakeningRollBonus > 0
       ? ` — Éveil +${awakeningRollBonus}`
       : "";
 
     return this._rollExplodingD10(definition.label, finalTotal, {
-      flavor: `Jet de compétence : ${definition.label} — ${this.name}${awakeningText}`
+      flavor: `Jet de compétence : ${definition.label} — ${this.name}${awakeningText}`,
+      effectModifierSummary: skillData.effectModifierSummary
     });
   }
 

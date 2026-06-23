@@ -737,6 +737,38 @@
   opacity: 0.85;
 }
 
+.naruto-effect-modifier-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin: 0.45rem 0;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid rgba(60, 120, 80, 0.38);
+  background: rgba(50, 120, 80, 0.1);
+  font-size: 12px;
+}
+
+.naruto-effect-modifier-summary strong {
+  color: #2f7d55;
+  text-transform: uppercase;
+}
+
+.naruto-effect-modifier-summary span {
+  display: flex;
+  gap: 0.35rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.naruto-effect-modifier-summary em {
+  font-style: normal;
+  font-weight: 800;
+}
+
+.naruto-effect-modifier-summary small {
+  opacity: 0.75;
+}
+
 .naruto-roll-explosion {
   margin-top: 8px;
   padding: 6px 8px;

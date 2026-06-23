@@ -2931,6 +2931,114 @@
                       {{#unless @root.v2.effects.canEdit}}disabled{{/unless}}
                     >{{effect.modifierNotes}}</textarea>
                   </label>
+
+                  <div class="shinobi-v2-effect-modifiers">
+                    <div class="shinobi-v2-effect-modifiers-header">
+                      <strong>Modificateurs structurés</strong>
+
+                      {{#if @root.v2.effects.canEdit}}
+                        <button
+                          type="button"
+                          class="naruto-effect-modifier-add"
+                          data-effect-id="{{effect.id}}"
+                        >
+                          Ajouter modificateur
+                        </button>
+                      {{/if}}
+                    </div>
+
+                    {{#if effect.modifiers.length}}
+                      <div class="shinobi-v2-effect-modifier-list">
+                        {{#each effect.modifiers as |modifier|}}
+                          <div class="shinobi-v2-effect-modifier-row">
+                            <label>
+                              Cible
+                              <select
+                                class="naruto-effect-modifier-field"
+                                data-effect-id="{{effect.id}}"
+                                data-modifier-id="{{modifier.id}}"
+                                data-field="target"
+                                {{#unless @root.v2.effects.canEdit}}disabled{{/unless}}
+                              >
+                                {{#each @root.v2.effects.modifierTargetOptions as |option|}}
+                                  <option value="{{option.key}}" {{#if (eq modifier.target option.key)}}selected{{/if}}>{{option.label}}</option>
+                                {{/each}}
+                              </select>
+                            </label>
+
+                            <label>
+                              Clé
+                              <input
+                                class="naruto-effect-modifier-field"
+                                data-effect-id="{{effect.id}}"
+                                data-modifier-id="{{modifier.id}}"
+                                data-field="key"
+                                type="text"
+                                value="{{modifier.key}}"
+                                placeholder="all, armesSimples, arm, tai, raiton..."
+                                {{#unless @root.v2.effects.canEdit}}disabled{{/unless}}
+                              />
+                            </label>
+
+                            <label>
+                              Valeur
+                              <input
+                                class="naruto-effect-modifier-field"
+                                data-effect-id="{{effect.id}}"
+                                data-modifier-id="{{modifier.id}}"
+                                data-field="value"
+                                type="number"
+                                value="{{modifier.value}}"
+                                {{#unless @root.v2.effects.canEdit}}disabled{{/unless}}
+                              />
+                            </label>
+
+                            <label>
+                              Type
+                              <select
+                                class="naruto-effect-modifier-field"
+                                data-effect-id="{{effect.id}}"
+                                data-modifier-id="{{modifier.id}}"
+                                data-field="type"
+                                {{#unless @root.v2.effects.canEdit}}disabled{{/unless}}
+                              >
+                                {{#each @root.v2.effects.modifierTypeOptions as |option|}}
+                                  <option value="{{option.key}}" {{#if (eq modifier.type option.key)}}selected{{/if}}>{{option.label}}</option>
+                                {{/each}}
+                              </select>
+                            </label>
+
+                            <label class="is-wide">
+                              Condition
+                              <input
+                                class="naruto-effect-modifier-field"
+                                data-effect-id="{{effect.id}}"
+                                data-modifier-id="{{modifier.id}}"
+                                data-field="condition"
+                                type="text"
+                                value="{{modifier.condition}}"
+                                placeholder="Ex : seulement avec Sharingan actif, arme ciblée, etc."
+                                {{#unless @root.v2.effects.canEdit}}disabled{{/unless}}
+                              />
+                            </label>
+
+                            {{#if @root.v2.effects.canEdit}}
+                              <button
+                                type="button"
+                                class="naruto-effect-modifier-delete"
+                                data-effect-id="{{effect.id}}"
+                                data-modifier-id="{{modifier.id}}"
+                              >
+                                Supprimer
+                              </button>
+                            {{/if}}
+                          </div>
+                        {{/each}}
+                      </div>
+                    {{else}}
+                      <p class="shinobi-v2-muted">Aucun modificateur structuré.</p>
+                    {{/if}}
+                  </div>
                 </article>
               {{/each}}
             </div>

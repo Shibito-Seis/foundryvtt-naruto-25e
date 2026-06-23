@@ -2,6 +2,58 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.51 - Effets et jets V1.1
+
+### Ajouté
+
+- Ajout de modificateurs structurés dans les effets actifs / passifs.
+- Chaque effet peut désormais contenir plusieurs modificateurs avec :
+  - cible ;
+  - clé ;
+  - valeur ;
+  - type ;
+  - condition descriptive.
+- Ajout de la lecture des modificateurs actifs sur :
+  - jets de compétence ;
+  - initiative via Physique ;
+  - attaques basiques ARM / TAI ;
+  - techniques avec jet ;
+  - défenses simples ;
+  - défenses mentales ;
+  - dégâts calculés.
+- Ajout d’un affichage “Effets appliqués” dans les cartes de chat lorsque des modificateurs sont utilisés.
+
+### Modificateurs supportés en V1.1
+
+- `skill` : modifie une compétence.
+- `base` : modifie une Base lors des calculs qui lisent cette Base.
+- `attack` : modifie une attaque.
+- `defense` : modifie une défense.
+- `damage` : modifie les dégâts calculés.
+- `bonus`, `flat` et `penalty` sont supportés.
+- `override` est conservé dans la structure mais n’est pas encore appliqué mécaniquement.
+
+### Notes d’usage
+
+- La clé vide ou `all` applique le modificateur à toute la cible choisie.
+- Une clé précise limite l’application :
+  - `armesSimples` pour une compétence ;
+  - `physique` pour l’initiative ;
+  - `arm` ou `tai` pour les attaques / dégâts basiques ;
+  - `vigueur`, `caractere`, `esquive`, `parade`, `mental` pour les défenses ;
+  - une compétence de technique comme `katon`, `raiton`, `gensou`, etc.
+- Les effets désactivés ne sont pas appliqués.
+- Les effets en durée `turn` ou `round` avec 0 tour / round restant ne sont pas appliqués.
+- Les effets cachés MJ restent appliqués mécaniquement s’ils sont actifs.
+
+### Limites V1.1
+
+- Les états comme Poison, Saignement, Sommeil, Paralysie ou Peur ne déclenchent pas encore d’automatisation propre.
+- Les effets ne se décrémentent pas encore automatiquement.
+- Les techniques ne créent pas encore automatiquement leurs effets.
+- Chidori-gatana et les buffs d’arme ciblée sont préparés par la structure, mais pas encore automatisés depuis les techniques.
+- Aucun changement Santé / Blessures complet.
+
 ## 0.1.50 - Effets actifs / passifs V1
 
 ### Ajouté

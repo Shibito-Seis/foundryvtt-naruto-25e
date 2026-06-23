@@ -2628,3 +2628,67 @@
     justify-content: flex-start;
   }
 }
+
+/* ----------------------------------------- */
+/* 0.1.51 — Modificateurs d'effets V1.1      */
+/* ----------------------------------------- */
+
+.shinobi-v2-effect-modifiers {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 0.55rem;
+  border: 1px solid rgba(201, 163, 93, 0.24);
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.shinobi-v2-effect-modifiers-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.shinobi-v2-effect-modifiers-header strong {
+  color: var(--v2-gold);
+  text-transform: uppercase;
+}
+
+.shinobi-v2-effect-modifier-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.shinobi-v2-effect-modifier-row {
+  display: grid;
+  grid-template-columns: minmax(8rem, 1fr) minmax(10rem, 1.2fr) 5rem minmax(8rem, 1fr) minmax(12rem, 1.4fr) auto;
+  gap: 0.35rem;
+  align-items: end;
+  padding: 0.45rem;
+  border: 1px solid rgba(201, 163, 93, 0.18);
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.shinobi-v2-effect-modifier-row label {
+  min-width: 0;
+}
+
+.shinobi-v2-effect-modifier-row label.is-wide {
+  min-width: 12rem;
+}
+
+.shinobi-v2-effect-modifier-row button {
+  white-space: nowrap;
+}
+
+@media (max-width: 1120px) {
+  .shinobi-v2-effect-modifier-row {
+    grid-template-columns: repeat(2, minmax(10rem, 1fr));
+  }
+
+  .shinobi-v2-effect-modifier-row button {
+    justify-self: start;
+  }
+}
