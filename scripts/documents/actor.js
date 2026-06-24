@@ -5730,12 +5730,13 @@ async decreaseBase(baseKey) {
       ? damageResult.parts.map((part) => `${safe(part.label)} ${Number(part.value ?? 0)}`).join(" + ")
       : "—";
     const effectModifierSummaryHtml = this._getNarutoEffectModifierSummaryHtml(damageResult.effectModifierSummary);
+    const itemThemeClass = String(payload.itemThemeClass ?? "");
 
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: this }),
       flavor: `Dégâts — ${safeSourceName}`,
       content: `
-        <div class="naruto-roll-card naruto-damage-card">
+        <div class="naruto-roll-card naruto-damage-card ${itemThemeClass}">
           <header class="naruto-roll-header">
             <h3>Dégâts — ${safeSourceName}</h3>
           </header>
@@ -7155,9 +7156,10 @@ async decreaseBase(baseKey) {
     }).join("");
 
     const waitingText = "Le propriétaire de la cible ou le MJ choisit la défense utilisée contre cette attaque.";
+    const itemThemeClass = String(data.itemThemeClass ?? "");
 
     return `
-      <div class="naruto-roll-card naruto-opposed-card is-pending">
+      <div class="naruto-roll-card naruto-opposed-card is-pending ${itemThemeClass}">
         <header class="naruto-roll-header">
           <h3>${safe(data.label)}</h3>
         </header>
@@ -7202,9 +7204,10 @@ async decreaseBase(baseKey) {
     const impactPercent = Math.max(8, Math.min(92, Number(data.impactPercent ?? 50)));
     const kunaiClass = success ? "is-hit" : "is-miss";
     const damageAvailable = Boolean(data.damageAvailable);
+    const itemThemeClass = String(data.itemThemeClass ?? "");
 
     return `
-      <div class="naruto-roll-card naruto-opposed-card ${success ? "is-hit" : "is-miss"}">
+      <div class="naruto-roll-card naruto-opposed-card ${success ? "is-hit" : "is-miss"} ${itemThemeClass}">
         <header class="naruto-roll-header">
           <h3>${safe(data.label)}</h3>
         </header>
@@ -7290,6 +7293,7 @@ async decreaseBase(baseKey) {
     });
     const effectText = String(profile.effectText ?? "");
     const attackEffectModifierSummary = profile.attackEffectModifierSummary ?? null;
+    const itemThemeClass = String(profile.itemThemeClass ?? "");
 
     const targets = Array.from(game.user?.targets ?? []);
 
@@ -7332,6 +7336,7 @@ async decreaseBase(baseKey) {
         label,
         attackTotal,
         attackEffectModifierSummary,
+        itemThemeClass,
         defenseType,
         kind: String(profile.kind ?? defenseType),
         itemId: String(profile.itemId ?? ""),
@@ -7511,7 +7516,8 @@ async decreaseBase(baseKey) {
             kind: data.kind ?? "",
             damageKey: data.damageKey ?? data.kind ?? data.damageType,
             damage: data.damage,
-            damageType: data.damageType
+            damageType: data.damageType,
+            itemThemeClass: data.itemThemeClass ?? ""
           } : null,
           defenseResult: resultData,
           defenseResolvedFrom: message.id
@@ -7906,6 +7912,7 @@ async decreaseBase(baseKey) {
       .map((target) => target?.actor?.id ?? "")
       .filter(Boolean);
     const appliedEffects = this._getItemAppliedEffects(item);
+    const itemThemeClass = this._getNarutoItemChatThemeClass(item);
 
     const attackEffectModifierSummary = skillData
       ? this._getNarutoEffectModifierSummary("attack", {
@@ -7943,6 +7950,7 @@ async decreaseBase(baseKey) {
         sourceType: "technique",
         targetType: "technique",
         appliedEffects,
+        itemThemeClass,
         damageKey: item.system?.skill ?? item.system?.family ?? "technique",
         defenseType: this._getTechniqueDefenseType(item),
         damageFormula: String(item.system?.damage?.formula ?? ""),

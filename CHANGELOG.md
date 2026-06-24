@@ -2,6 +2,24 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.52.3 - Propagation des thèmes de cartes
+
+### Corrigé
+
+- Les thèmes visuels de techniques sont désormais transmis aux cartes de demande de défense.
+- Les thèmes visuels de techniques sont désormais transmis aux cartes de résultat attaque / défense.
+- Les thèmes visuels de techniques sont désormais transmis aux cartes de dégâts.
+- Une technique ciblée Katon, Suiton, Raïton, Doton, Fūton, Mokuton, Gensou, Yūryoku, Kage ou Iryō conserve donc son ambiance visuelle sur toute la chaîne :
+  - demande de défense ;
+  - confrontation ;
+  - dégâts.
+
+### Notes
+
+- Cette passe ne modifie pas les mécaniques de défense, de dégâts ou d’effets.
+- Les cartes sans cible utilisaient déjà les thèmes de `0.1.52.2`.
+- Les visuels restent volontairement simples : ils posent la base technique pour de futurs fonds plus poussés.
+
 ## 0.1.52.2 - Fallbacks ciblés et cartes thématiques
 
 ### Ajouté
