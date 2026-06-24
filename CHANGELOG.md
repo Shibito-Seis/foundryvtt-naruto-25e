@@ -2,6 +2,47 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.52.2 - Fallbacks ciblés et cartes thématiques
+
+### Ajouté
+
+- Ajout d’un fallback ciblé pour les pouvoirs personnels de lignée sans effet déclaré :
+  - Sharingan ;
+  - Mangekyō ;
+  - Byakugan ;
+  - Rinnegan ;
+  - Tenseigan ;
+  - Yūrengan ;
+  - formes personnelles Akimichi.
+- Ajout d’un thème visuel sur les cartes de techniques et pouvoirs de lignée :
+  - Katon ;
+  - Suiton ;
+  - Raïton ;
+  - Doton ;
+  - Fūton ;
+  - Mokuton ;
+  - Gensou ;
+  - Yūryoku ;
+  - Kage ;
+  - Iryō ;
+  - Sharingan ;
+  - Mangekyō ;
+  - Byakugan ;
+  - Rinnegan ;
+  - Tenseigan.
+
+### Modifié
+
+- Les pouvoirs de lignée personnels peuvent à nouveau proposer un effet applicable même sans JSON enrichi.
+- Les techniques offensives de lignée comme Kagemane ou Mokuton ne reçoivent pas de fallback générique.
+- Les cartes de pouvoirs de lignée utilisent désormais aussi la base visuelle `.naruto-roll-card`.
+
+### Notes
+
+- Les fallbacks restent temporaires et doivent être remplacés par des effets JSON dédiés lors de la passe `0.1.53`.
+- Les techniques offensives comme Kyōfu, Kagemane, Chidori-gatana, Amaterasu ou Tsukuyomi devront être enrichies dans leurs fichiers JSON pour appliquer des effets précis.
+- Aucun changement Santé / Blessures complet.
+
 ## 0.1.52.1 - Correction application des effets d’Items
 
 ### Corrigé

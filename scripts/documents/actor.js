@@ -4240,10 +4240,169 @@ _prepareExperience(system) {
       ? item.getAppliedNarutoEffects()
       : foundry.utils.deepClone(item.system?.effects?.applied ?? []);
 
-    return Array.isArray(declaredEffects)
+    const activeDeclaredEffects = Array.isArray(declaredEffects)
       ? declaredEffects.filter((effect) => effect.enabled !== false)
       : [];
+
+    if (activeDeclaredEffects.length) return activeDeclaredEffects;
+
+    return this._getFallbackAppliedEffectsForItem(item);
   }
+
+  _getFallbackAppliedEffectsForItem(item) {
+    if (!item || item.type !== "pouvoirLignee") return [];
+    if (!this._isPersonalLineageFallbackEligible(item)) return [];
+
+    const system = item.system ?? {};
+    const powerType = String(system.powerType ?? "maintained");
+    const maintenanceCost = Math.max(0, Number(system.maintenanceCost ?? 0));
+
+    return [
+      {
+        id: "fallback-personal-lineage-power",
+        name: item.name,
+        category: "lineage",
+        mode: powerType === "maintained" ? "maintained" : "active",
+        statusKey: "none",
+        rank: Math.max(0, Number(system.lineageRank ?? 0)),
+        enabled: true,
+        applyTarget: "self",
+        sourceName: item.name,
+        sourceUuid: item.uuid,
+        sourceType: "lineage",
+        targetType: "none",
+        targetItemId: "",
+        durationType: powerType === "active" || powerType === "maintained" ? "untilCancelled" : "manual",
+        remainingRounds: 0,
+        remainingTurns: 0,
+        maintenanceCost,
+        isHidden: false,
+        notes: String(system.effect ?? ""),
+        modifierNotes: "Fallback temporaire : effet personnel de lignée. À remplacer par un effet JSON dédié.",
+        modifiers: []
+      }
+    ];
+  }
+
+  _isPersonalLineageFallbackEligible(item) {
+    if (!item || item.type !== "pouvoirLignee") return false;
+
+    const system = item.system ?? {};
+    const powerType = String(system.powerType ?? "maintained");
+
+    if (powerType === "passive") return false;
+
+    const normalize = (value) => {
+      return String(value ?? "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+    };
+
+    const clan = normalize(system.clan ?? system.taxonomy?.clan ?? "");
+    const text = normalize([
+      item.name,
+      system.effect,
+      system.clan,
+      system.powerType,
+      system.taxonomy?.category,
+      system.taxonomy?.subcategory,
+      system.taxonomy?.clan,
+      system.taxonomy?.school,
+      system.taxonomy?.tags?.join?.(" ")
+    ].join(" "));
+
+    const personalKeywords = [
+      "sharingan",
+      "mangekyo",
+      "mangekyou",
+      "byakugan",
+      "tenseigan",
+      "rinnegan",
+      "yurengan",
+      "dojutsu",
+      "dōjutsu"
+    ];
+
+    if (personalKeywords.some((keyword) => text.includes(keyword))) {
+      return true;
+    }
+
+    if (clan === "akimichi") {
+      return [
+        "forme",
+        "baika",
+        "papillon",
+        "colossal",
+        "geante",
+        "geant",
+        "taille",
+        "souveraine",
+        "expansion"
+      ].some((keyword) => text.includes(keyword));
+    }
+
+    return false;
+  }
+
+  _getNarutoItemChatThemeClass(item) {
+    if (!item) return "";
+
+    const system = item.system ?? {};
+
+    const normalize = (value) => {
+      return String(value ?? "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+    };
+
+    const text = normalize([
+      item.name,
+      item.type,
+      system.family,
+      system.domain,
+      system.skill,
+      system.base,
+      system.damage?.type,
+      system.clan,
+      system.taxonomy?.category,
+      system.taxonomy?.subcategory,
+      system.taxonomy?.clan,
+      system.taxonomy?.element,
+      system.taxonomy?.school,
+      system.taxonomy?.tags?.join?.(" ")
+    ].join(" "));
+
+    const rules = [
+      ["mangekyo", ["mangekyo", "mangekyou", "amaterasu", "tsukuyomi", "susano", "susanoo", "kotoamatsukami", "izanagi", "izanami"]],
+      ["sharingan", ["sharingan", "uchiha"]],
+      ["byakugan", ["byakugan", "hyuga", "juken"]],
+      ["rinnegan", ["rinnegan"]],
+      ["tenseigan", ["tenseigan"]],
+      ["katon", ["katon", "fire", "feu"]],
+      ["suiton", ["suiton", "water", "eau"]],
+      ["raiton", ["raiton", "lightning", "foudre", "electricite", "electric"]],
+      ["doton", ["doton", "earth", "terre"]],
+      ["futon", ["futon", "wind", "vent"]],
+      ["mokuton", ["mokuton", "bois"]],
+      ["gensou", ["gensou", "genjutsu", "illusion"]],
+      ["yuryoku", ["yuryoku", "spirituel", "emotionnel", "emotionnelle"]],
+      ["kage", ["kage", "nara", "ombre"]],
+      ["iryo", ["iryo", "medical", "medecine", "soin"]]
+    ];
+
+    const classes = ["naruto-themed-item-card"];
+
+    for (const [theme, keywords] of rules) {
+      if (keywords.some((keyword) => text.includes(keyword))) {
+        classes.push(`naruto-theme-${theme}`);
+      }
+    }
+
+    return classes.join(" ");
+  }
+
 
   _getItemAppliedEffectsChatHtml(item, options = {}) {
     const effects = this._getItemAppliedEffects(item);
@@ -7637,6 +7796,7 @@ async decreaseBase(baseKey) {
     const safeDamageFormula = foundry.utils.escapeHTML?.(damageFormula || "—") ?? (damageFormula || "—");
     const safeDamageType = foundry.utils.escapeHTML?.(damageType) ?? damageType;
     const safeEffect = foundry.utils.escapeHTML?.(effectText) ?? effectText;
+    const itemThemeClass = this._getNarutoItemChatThemeClass(item);
 
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: this }),
@@ -7656,7 +7816,7 @@ async decreaseBase(baseKey) {
         }
       },
       content: `
-        <div class="naruto-roll-card naruto-technique-card">
+        <div class="naruto-roll-card naruto-technique-card ${itemThemeClass}">
           <header class="naruto-roll-header">
             <h3>${safeTechniqueName} — ${safeActorName}</h3>
           </header>
@@ -9623,6 +9783,7 @@ async decreaseBase(baseKey) {
     const lineageRank = Math.max(0, Number(item.system.lineageRank ?? 0));
     const appliedEffects = this._getItemAppliedEffects(item);
     const appliedEffectsHtml = this._getItemAppliedEffectsChatHtml(item);
+    const itemThemeClass = this._getNarutoItemChatThemeClass(item);
 
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: this }),
@@ -9642,7 +9803,7 @@ async decreaseBase(baseKey) {
         }
       },
       content: `
-        <div class="naruto-lineage-power-card">
+        <div class="naruto-roll-card naruto-lineage-power-card ${itemThemeClass}">
           <header><h3>${safePowerName}</h3></header>
           <p><strong>${safeActorName}</strong> active un pouvoir de lignée.</p>
 

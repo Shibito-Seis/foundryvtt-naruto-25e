@@ -2070,3 +2070,218 @@
   margin-top: 0.7rem;
   margin-bottom: 0.7rem;
 }
+
+/* ----------------------------------------- */
+/* 0.1.52.2 — Cartes de chat thématiques     */
+/* ----------------------------------------- */
+
+.naruto-themed-item-card {
+  border-width: 2px;
+  box-shadow: inset 0 0 1.4rem rgba(0, 0, 0, 0.08);
+}
+
+.naruto-themed-item-card::after {
+  position: absolute;
+  right: 0.75rem;
+  top: 0.4rem;
+  z-index: 0;
+  opacity: 0.12;
+  color: currentColor;
+  font-size: 3.2rem;
+  font-weight: 900;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.naruto-themed-item-card .naruto-roll-header,
+.naruto-themed-item-card .naruto-technique-meta,
+.naruto-themed-item-card .naruto-technique-details,
+.naruto-themed-item-card .naruto-technique-effect,
+.naruto-themed-item-card .naruto-item-applied-effects,
+.naruto-themed-item-card > p,
+.naruto-themed-item-card > div {
+  position: relative;
+  z-index: 1;
+}
+
+.naruto-theme-katon {
+  border-color: rgba(190, 55, 24, 0.78);
+  background:
+    radial-gradient(circle at top right, rgba(255, 80, 20, 0.28), transparent 8rem),
+    linear-gradient(135deg, rgba(72, 18, 8, 0.16), rgba(20, 20, 20, 0.06));
+}
+
+.naruto-theme-katon::after {
+  content: "火";
+  color: rgba(205, 48, 18, 0.9);
+}
+
+.naruto-theme-suiton {
+  border-color: rgba(35, 115, 190, 0.72);
+  background:
+    radial-gradient(circle at top right, rgba(60, 160, 220, 0.26), transparent 8rem),
+    linear-gradient(135deg, rgba(10, 42, 72, 0.16), rgba(20, 20, 20, 0.06));
+}
+
+.naruto-theme-suiton::after {
+  content: "水";
+  color: rgba(35, 115, 190, 0.9);
+}
+
+.naruto-theme-raiton {
+  border-color: rgba(185, 160, 42, 0.82);
+  background:
+    radial-gradient(circle at top right, rgba(255, 220, 70, 0.26), transparent 8rem),
+    linear-gradient(135deg, rgba(70, 62, 10, 0.16), rgba(20, 20, 20, 0.06));
+}
+
+.naruto-theme-raiton::after {
+  content: "雷";
+  color: rgba(185, 150, 25, 0.95);
+}
+
+.naruto-theme-doton {
+  border-color: rgba(130, 92, 45, 0.78);
+  background:
+    radial-gradient(circle at top right, rgba(160, 100, 45, 0.24), transparent 8rem),
+    linear-gradient(135deg, rgba(58, 36, 16, 0.16), rgba(20, 20, 20, 0.06));
+}
+
+.naruto-theme-doton::after {
+  content: "土";
+  color: rgba(125, 78, 36, 0.9);
+}
+
+.naruto-theme-futon {
+  border-color: rgba(74, 150, 105, 0.72);
+  background:
+    radial-gradient(circle at top right, rgba(120, 215, 155, 0.22), transparent 8rem),
+    linear-gradient(135deg, rgba(16, 62, 42, 0.14), rgba(20, 20, 20, 0.06));
+}
+
+.naruto-theme-futon::after {
+  content: "風";
+  color: rgba(60, 145, 95, 0.9);
+}
+
+.naruto-theme-mokuton {
+  border-color: rgba(72, 125, 60, 0.78);
+  background:
+    radial-gradient(circle at top right, rgba(90, 165, 65, 0.24), transparent 8rem),
+    linear-gradient(135deg, rgba(24, 62, 28, 0.16), rgba(20, 20, 20, 0.06));
+}
+
+.naruto-theme-mokuton::after {
+  content: "木";
+  color: rgba(62, 130, 54, 0.92);
+}
+
+.naruto-theme-gensou {
+  border-color: rgba(210, 95, 170, 0.72);
+  background:
+    radial-gradient(circle at top right, rgba(255, 120, 205, 0.22), transparent 8rem),
+    linear-gradient(135deg, rgba(86, 22, 72, 0.14), rgba(20, 20, 20, 0.06));
+}
+
+.naruto-theme-gensou::after {
+  content: "幻";
+  color: rgba(200, 82, 165, 0.9);
+}
+
+.naruto-theme-yuryoku {
+  border-color: rgba(140, 82, 210, 0.72);
+  background:
+    radial-gradient(circle at top right, rgba(160, 95, 235, 0.22), transparent 8rem),
+    linear-gradient(135deg, rgba(50, 24, 86, 0.16), rgba(20, 20, 20, 0.06));
+}
+
+.naruto-theme-yuryoku::after {
+  content: "魂";
+  color: rgba(136, 80, 205, 0.9);
+}
+
+.naruto-theme-kage {
+  border-color: rgba(70, 70, 88, 0.78);
+  background:
+    radial-gradient(circle at top right, rgba(50, 50, 70, 0.28), transparent 8rem),
+    linear-gradient(135deg, rgba(10, 10, 18, 0.22), rgba(20, 20, 20, 0.06));
+}
+
+.naruto-theme-kage::after {
+  content: "影";
+  color: rgba(50, 50, 70, 0.95);
+}
+
+.naruto-theme-iryo {
+  border-color: rgba(80, 170, 135, 0.72);
+  background:
+    radial-gradient(circle at top right, rgba(110, 230, 180, 0.2), transparent 8rem),
+    linear-gradient(135deg, rgba(20, 70, 58, 0.14), rgba(20, 20, 20, 0.06));
+}
+
+.naruto-theme-iryo::after {
+  content: "医";
+  color: rgba(70, 165, 130, 0.9);
+}
+
+.naruto-theme-sharingan {
+  border-color: rgba(170, 18, 24, 0.86);
+  background:
+    radial-gradient(circle at top right, rgba(190, 18, 24, 0.3), transparent 8rem),
+    radial-gradient(circle at bottom left, rgba(20, 20, 20, 0.2), transparent 10rem),
+    linear-gradient(135deg, rgba(88, 8, 12, 0.18), rgba(20, 20, 20, 0.06));
+}
+
+.naruto-theme-sharingan::after {
+  content: "写";
+  color: rgba(170, 18, 24, 0.95);
+}
+
+.naruto-theme-mangekyo {
+  border-color: rgba(115, 12, 28, 0.92);
+  background:
+    radial-gradient(circle at top right, rgba(180, 10, 35, 0.34), transparent 8rem),
+    radial-gradient(circle at center, rgba(0, 0, 0, 0.18), transparent 10rem),
+    linear-gradient(135deg, rgba(58, 0, 12, 0.26), rgba(20, 20, 20, 0.06));
+}
+
+.naruto-theme-mangekyo::after {
+  content: "万";
+  color: rgba(140, 8, 30, 0.98);
+}
+
+.naruto-theme-byakugan {
+  border-color: rgba(190, 190, 210, 0.85);
+  background:
+    radial-gradient(circle at top right, rgba(230, 230, 255, 0.26), transparent 8rem),
+    linear-gradient(135deg, rgba(90, 90, 112, 0.12), rgba(20, 20, 20, 0.06));
+}
+
+.naruto-theme-byakugan::after {
+  content: "白";
+  color: rgba(150, 150, 180, 0.95);
+}
+
+.naruto-theme-rinnegan {
+  border-color: rgba(145, 100, 200, 0.82);
+  background:
+    radial-gradient(circle at top right, rgba(155, 110, 220, 0.28), transparent 8rem),
+    linear-gradient(135deg, rgba(54, 35, 82, 0.18), rgba(20, 20, 20, 0.06));
+}
+
+.naruto-theme-rinnegan::after {
+  content: "輪";
+  color: rgba(130, 85, 190, 0.95);
+}
+
+.naruto-theme-tenseigan {
+  border-color: rgba(65, 190, 210, 0.82);
+  background:
+    radial-gradient(circle at top right, rgba(75, 220, 240, 0.26), transparent 8rem),
+    linear-gradient(135deg, rgba(20, 78, 88, 0.16), rgba(20, 20, 20, 0.06));
+}
+
+.naruto-theme-tenseigan::after {
+  content: "転";
+  color: rgba(55, 175, 200, 0.95);
+}
