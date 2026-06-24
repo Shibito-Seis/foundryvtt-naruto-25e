@@ -571,8 +571,9 @@ NARUTO25E.effectModifierTypes = {
 };
 
 NARUTO25E.effectApplicationTargets = {
-  self: "Appliquer à soi",
+  self: "Appliquer au lanceur",
   target: "Appliquer à la cible",
+  selected: "Appliquer au token sélectionné",
   weapon: "Appliquer à une arme",
   manual: "Application manuelle"
 };

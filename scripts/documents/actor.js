@@ -4240,80 +4240,9 @@ _prepareExperience(system) {
       ? item.getAppliedNarutoEffects()
       : foundry.utils.deepClone(item.system?.effects?.applied ?? []);
 
-    if (declaredEffects.length) return declaredEffects;
-
-    return this._getAutomaticAppliedEffectsForItem(item);
-  }
-
-  _getAutomaticAppliedEffectsForItem(item) {
-    if (!item) return [];
-
-    if (item.type === "technique") {
-      const maintenanceCost = Math.max(0, Number(item.system?.chakra?.maintenance ?? 0));
-
-      if (maintenanceCost <= 0) return [];
-
-      return [
-        {
-          id: "auto-maintained-technique",
-          name: item.name,
-          category: "technique",
-          mode: "maintained",
-          statusKey: "none",
-          rank: 0,
-          enabled: true,
-          applyTarget: "self",
-          sourceName: item.name,
-          sourceUuid: item.uuid,
-          sourceType: "technique",
-          targetType: "technique",
-          targetItemId: item.id,
-          durationType: "untilCancelled",
-          remainingRounds: 0,
-          remainingTurns: 0,
-          maintenanceCost,
-          isHidden: false,
-          notes: String(item.system?.effect ?? ""),
-          modifierNotes: "",
-          modifiers: []
-        }
-      ];
-    }
-
-    if (item.type === "pouvoirLignee") {
-      const powerType = String(item.system?.powerType ?? "maintained");
-      const maintenanceCost = Math.max(0, Number(item.system?.maintenanceCost ?? 0));
-
-      if (powerType === "passive") return [];
-
-      return [
-        {
-          id: "auto-lineage-power",
-          name: item.name,
-          category: "lineage",
-          mode: powerType === "maintained" ? "maintained" : "active",
-          statusKey: "none",
-          rank: Math.max(0, Number(item.system?.lineageRank ?? 0)),
-          enabled: true,
-          applyTarget: "self",
-          sourceName: item.name,
-          sourceUuid: item.uuid,
-          sourceType: "lineage",
-          targetType: "none",
-          targetItemId: "",
-          durationType: "untilCancelled",
-          remainingRounds: 0,
-          remainingTurns: 0,
-          maintenanceCost,
-          isHidden: false,
-          notes: String(item.system?.effect ?? ""),
-          modifierNotes: "",
-          modifiers: []
-        }
-      ];
-    }
-
-    return [];
+    return Array.isArray(declaredEffects)
+      ? declaredEffects.filter((effect) => effect.enabled !== false)
+      : [];
   }
 
   _getItemAppliedEffectsChatHtml(item, options = {}) {
@@ -4346,6 +4275,7 @@ _prepareExperience(system) {
           const targetType = String(effect.targetType ?? "none");
           const showSelfButton = ["self", "manual"].includes(applyTarget) && targetType !== "weapon";
           const showTargetButton = ["target", "manual"].includes(applyTarget) && hasSingleTarget && targetType !== "weapon";
+          const showSelectedButton = targetType !== "weapon";
           const showWeaponButton = applyTarget === "weapon" || targetType === "weapon";
           const categoryLabel = NARUTO25E.effectCategories?.[effect.category] ?? effect.category;
           const modeLabel = NARUTO25E.effectModes?.[effect.mode] ?? effect.mode;
@@ -4368,7 +4298,7 @@ _prepareExperience(system) {
                     data-effect-id="${effectId}"
                     data-application="self"
                   >
-                    Appliquer à soi
+                    Appliquer au lanceur
                   </button>
                 ` : ""}
 
@@ -4380,6 +4310,17 @@ _prepareExperience(system) {
                     data-application="target"
                   >
                     Appliquer à la cible
+                  </button>
+                ` : ""}
+
+                ${showSelectedButton ? `
+                  <button
+                    type="button"
+                    class="naruto-chat-apply-item-effect"
+                    data-effect-id="${effectId}"
+                    data-application="selected"
+                  >
+                    Appliquer au token sélectionné
                   </button>
                 ` : ""}
 
@@ -7193,85 +7134,93 @@ async decreaseBase(baseKey) {
 
     const targets = Array.from(game.user?.targets ?? []);
 
-    if (targets.length !== 1) {
-      ui.notifications.warn("Cible exactement un token pour créer une demande de défense.");
+    if (!targets.length) {
+      ui.notifications.warn("Aucun token ciblé : jet simple sans demande de défense.");
       return this._rollExplodingD10(label, attackTotal, {
         flavor: `${label} — ${this.name}`,
         effectModifierSummary: attackEffectModifierSummary
       });
     }
 
-    const targetToken = targets[0];
-    const targetActor = targetToken?.actor;
-
-    if (!targetActor || targetActor.type !== "shinobi") {
-      ui.notifications.warn("La cible doit être un acteur Shinobi.");
-      return null;
-    }
-
-    const defenseOptions = targetActor._getDefenseOptionsForAttack?.({
-      ...profile,
-      defenseType
-    }) ?? [];
-
-    if (!defenseOptions.length) {
-      ui.notifications.warn("Aucune défense valide disponible pour cette cible.");
-      return null;
-    }
-
     const safeLabel = foundry.utils.escapeHTML?.(label) ?? label;
     const safeActorName = foundry.utils.escapeHTML?.(this.name) ?? this.name;
-    const safeTargetName = foundry.utils.escapeHTML?.(targetActor.name) ?? targetActor.name;
-    const ownerIds = this._getActorPrimaryOwnerIds(targetActor);
-    const defenseData = {
-      actorId: this.id,
-      actorName: this.name,
-      targetActorId: targetActor.id,
-      targetName: targetActor.name,
-      label,
-      attackTotal,
-      attackEffectModifierSummary,
-      defenseType,
-      kind: String(profile.kind ?? defenseType),
-      itemId: String(profile.itemId ?? ""),
-      itemType: String(profile.itemType ?? ""),
-      sourceUuid: String(profile.sourceUuid ?? ""),
-      sourceType: String(profile.sourceType ?? profile.itemType ?? "custom"),
-      targetType: String(profile.targetType ?? ""),
-      appliedEffects: Array.isArray(profile.appliedEffects)
-        ? foundry.utils.deepClone(profile.appliedEffects)
-        : [],
-      damageKey: String(profile.damageKey ?? profile.kind ?? damageType),
-      damageFormula,
-      damageType,
-      damage: damageData,
-      effectText,
-      defenseOptions: defenseOptions.map((option) => ({
-        key: String(option.key ?? ""),
-        label: String(option.label ?? option.key ?? "Défense"),
-        total: Math.max(0, Number(option.total ?? 0)),
-        mode: String(option.mode ?? "active"),
-        counterKey: String(option.counterKey ?? ""),
-        limited: Boolean(option.limited),
-        remaining: option.remaining === null || option.remaining === undefined ? null : Number(option.remaining),
-        defenseKey: String(option.defenseKey ?? ""),
-        defenseFamily: String(option.defenseFamily ?? ""),
-        effectModifierSummary: option.effectModifierSummary ?? null
-      }))
-    };
+    let createdRequests = 0;
 
-    await ChatMessage.create({
-      speaker: ChatMessage.getSpeaker({ actor: this }),
-      flavor: `Défense demandée — ${safeLabel}`,
-      flags: {
-        "naruto-25e": {
-          defenseRequest: defenseData
-        }
-      },
-      content: this._buildDefenseRequestCardContent(defenseData)
-    });
+    for (const targetToken of targets) {
+      const targetActor = targetToken?.actor;
 
-    ui.notifications.info(`Défense demandée à ${safeTargetName} contre ${safeActorName}.`);
+      if (!targetActor || targetActor.type !== "shinobi") {
+        ui.notifications.warn("Une cible ignorée : elle doit être un acteur Shinobi.");
+        continue;
+      }
+
+      const defenseOptions = targetActor._getDefenseOptionsForAttack?.({
+        ...profile,
+        defenseType
+      }) ?? [];
+
+      if (!defenseOptions.length) {
+        ui.notifications.warn(`Aucune défense valide disponible pour ${targetActor.name}.`);
+        continue;
+      }
+
+      const safeTargetName = foundry.utils.escapeHTML?.(targetActor.name) ?? targetActor.name;
+      const defenseData = {
+        actorId: this.id,
+        actorName: this.name,
+        targetActorId: targetActor.id,
+        targetName: targetActor.name,
+        label,
+        attackTotal,
+        attackEffectModifierSummary,
+        defenseType,
+        kind: String(profile.kind ?? defenseType),
+        itemId: String(profile.itemId ?? ""),
+        itemType: String(profile.itemType ?? ""),
+        sourceUuid: String(profile.sourceUuid ?? ""),
+        sourceType: String(profile.sourceType ?? profile.itemType ?? "custom"),
+        targetType: String(profile.targetType ?? ""),
+        appliedEffects: Array.isArray(profile.appliedEffects)
+          ? foundry.utils.deepClone(profile.appliedEffects)
+          : [],
+        damageKey: String(profile.damageKey ?? profile.kind ?? damageType),
+        damageFormula,
+        damageType,
+        damage: damageData,
+        effectText,
+        defenseOptions: defenseOptions.map((option) => ({
+          key: String(option.key ?? ""),
+          label: String(option.label ?? option.key ?? "Défense"),
+          total: Math.max(0, Number(option.total ?? 0)),
+          mode: String(option.mode ?? "active"),
+          counterKey: String(option.counterKey ?? ""),
+          limited: Boolean(option.limited),
+          remaining: option.remaining === null || option.remaining === undefined ? null : Number(option.remaining),
+          defenseKey: String(option.defenseKey ?? ""),
+          defenseFamily: String(option.defenseFamily ?? ""),
+          effectModifierSummary: option.effectModifierSummary ?? null
+        }))
+      };
+
+      await ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor: this }),
+        flavor: `Défense demandée — ${safeLabel}`,
+        flags: {
+          "naruto-25e": {
+            defenseRequest: defenseData
+          }
+        },
+        content: this._buildDefenseRequestCardContent(defenseData)
+      });
+
+      createdRequests += 1;
+      ui.notifications.info(`Défense demandée à ${safeTargetName} contre ${safeActorName}.`);
+    }
+
+    if (!createdRequests) {
+      ui.notifications.warn("Aucune demande de défense n’a pu être créée.");
+    }
+
     return null;
   }
 
@@ -7346,9 +7295,10 @@ async decreaseBase(baseKey) {
       ? foundry.utils.deepClone(data.appliedEffects)
       : [];
 
-    const sourceItem = this.items.get(String(data.itemId ?? ""));
+    const attackerActor = game.actors?.get(String(data.actorId ?? ""));
+    const sourceItem = attackerActor?.items?.get(String(data.itemId ?? ""));
     const itemEffectRequest = success && appliedEffects.length ? {
-      actorId: this.id,
+      actorId: data.actorId ?? "",
       itemId: data.itemId ?? "",
       itemUuid: data.sourceUuid ?? "",
       sourceName: data.label ?? "",
@@ -7358,8 +7308,8 @@ async decreaseBase(baseKey) {
       effects: appliedEffects
     } : null;
 
-    const appliedEffectsHtml = itemEffectRequest && sourceItem
-      ? this._getItemAppliedEffectsChatHtml(sourceItem, {
+    const appliedEffectsHtml = itemEffectRequest && sourceItem && typeof attackerActor?._getItemAppliedEffectsChatHtml === "function"
+      ? attackerActor._getItemAppliedEffectsChatHtml(sourceItem, {
           targetActorIds: [targetActor.id]
         })
       : "";
@@ -7812,7 +7762,7 @@ async decreaseBase(baseKey) {
       attackEffectModifierSummary
     );
 
-    if (rollEnabled && offensive && targets.length === 1 && skillData) {
+    if (rollEnabled && offensive && targets.length >= 1 && skillData) {
       const maintenanceCost = Math.max(0, Number(item.system?.chakra?.maintenance ?? 0));
       const effectText = [
         String(item.system?.effect ?? ""),
@@ -11159,6 +11109,23 @@ Hooks.on("renderChatMessage", (message, html) => {
       }
 
       actorId = targetActorIds[0];
+
+      if (targetType === "none") {
+        targetType = "actor";
+      }
+    }
+
+    if (application === "selected") {
+      const controlledTokens = Array.from(canvas?.tokens?.controlled ?? []);
+      const selectedToken = controlledTokens.length === 1 ? controlledTokens[0] : null;
+      const selectedActor = selectedToken?.actor ?? null;
+
+      if (!selectedActor || selectedActor.type !== "shinobi") {
+        ui.notifications.warn("Sélectionne exactement un token Shinobi pour appliquer cet effet.");
+        return;
+      }
+
+      actorId = selectedActor.id;
 
       if (targetType === "none") {
         targetType = "actor";

@@ -2,6 +2,25 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.52.1 - Correction application des effets d’Items
+
+### Corrigé
+
+- Suppression de la génération automatique d’effets génériques pour les techniques maintenues.
+- Suppression de la génération automatique d’effets génériques pour les pouvoirs de lignée actifs / maintenus.
+- Les entretiens actifs restent gérés par le système d’entretien existant, sans doublon dans l’onglet Effets.
+- Renommage du bouton `Appliquer à soi` en `Appliquer au lanceur`.
+- Ajout du bouton `Appliquer au token sélectionné`.
+- Le bouton `Appliquer au token sélectionné` reste disponible même lorsqu’une cible existe.
+- Les résultats de défense appliquent correctement les effets au lanceur ou à la cible selon le bouton choisi.
+- Les techniques offensives avec plusieurs tokens ciblés créent désormais une demande de défense pour chaque cible Shinobi ciblée.
+
+### Notes
+
+- Les effets offensifs comme Peur, Surprise, Immobilisation ou Paralysie doivent être déclarés dans les JSON de techniques / pouvoirs pour viser correctement la cible.
+- Les techniques de zone / multicibles sont traitées en V1 par une demande de défense séparée pour chaque cible sélectionnée.
+- Chidori-gatana et les buffs d’arme seront rendus pleinement jouables lors de la passe JSON des techniques / pouvoirs.
+
 ## 0.1.52 - Effets d’Items et presets V1
 
 ### Ajouté
