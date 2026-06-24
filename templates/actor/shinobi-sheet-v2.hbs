@@ -2639,6 +2639,12 @@
         <section class="shinobi-v2-panel shinobi-v2-effects-panel">
           <h2>Effets actifs / passifs</h2>
 
+          <datalist id="naruto-effect-modifier-key-presets">
+            {{#each v2.effects.modifierKeyOptions as |option|}}
+              <option value="{{option.key}}">{{option.label}}</option>
+            {{/each}}
+          </datalist>
+
           <div class="shinobi-v2-effects-header">
             <p class="shinobi-v2-muted">
               {{v2.effects.count}} effet(s) visible(s)
@@ -2656,7 +2662,7 @@
           </div>
 
           <p class="shinobi-v2-muted">
-            V1 : les effets sont suivis et structurés ici, mais leurs modificateurs ne sont pas encore automatiquement appliqués aux jets, attaques ou dégâts.
+            V1.2 : les effets structurés peuvent être appliqués depuis certaines cartes de techniques / pouvoirs, et leurs modificateurs actifs peuvent être lus par les jets, attaques, défenses et dégâts.
           </p>
 
           {{#if v2.effects.items.length}}
@@ -2974,8 +2980,9 @@
                                 data-modifier-id="{{modifier.id}}"
                                 data-field="key"
                                 type="text"
+                                list="naruto-effect-modifier-key-presets"
                                 value="{{modifier.key}}"
-                                placeholder="all, armesSimples, arm, tai, raiton..."
+                                placeholder="Choisir une clé ou écrire une clé personnalisée"
                                 {{#unless @root.v2.effects.canEdit}}disabled{{/unless}}
                               />
                             </label>

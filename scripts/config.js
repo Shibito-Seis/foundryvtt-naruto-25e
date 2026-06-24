@@ -570,6 +570,67 @@ NARUTO25E.effectModifierTypes = {
   custom: "Personnalisé"
 };
 
+NARUTO25E.effectApplicationTargets = {
+  self: "Appliquer à soi",
+  target: "Appliquer à la cible",
+  weapon: "Appliquer à une arme",
+  manual: "Application manuelle"
+};
+
+NARUTO25E.effectModifierKeyPresets = {
+  universal: {
+    label: "Universel",
+    keys: {
+      all: "Toutes les clés"
+    }
+  },
+  base: {
+    label: "Bases",
+    keys: {
+      cor: "Corps",
+      esp: "Esprit",
+      arm: "Armes",
+      tai: "Taijutsu",
+      nin: "Ninjutsu",
+      gen: "Genjutsu",
+      lign: "Lignée"
+    }
+  },
+  attack: {
+    label: "Attaques",
+    keys: {
+      arm: "Attaque ARM",
+      tai: "Attaque TAI",
+      technique: "Technique",
+      genjutsu: "Genjutsu"
+    }
+  },
+  defense: {
+    label: "Défenses",
+    keys: {
+      esquive: "Esquive",
+      parade: "Parade",
+      mental: "Mental",
+      vigueur: "Vigueur",
+      caractere: "Caractère"
+    }
+  },
+  damage: {
+    label: "Dégâts",
+    keys: {
+      physical: "Dégâts physiques",
+      mental: "Dégâts mentaux",
+      arm: "Dégâts ARM",
+      tai: "Dégâts TAI",
+      katon: "Dégâts Katon",
+      raiton: "Dégâts Raïton",
+      suiton: "Dégâts Suiton",
+      doton: "Dégâts Doton",
+      futon: "Dégâts Fūton"
+    }
+  }
+};
+
 NARUTO25E.heritageModes = {
   clan: "Clan",
   voie: "Voie",

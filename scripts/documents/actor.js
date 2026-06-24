@@ -4191,6 +4191,222 @@ _prepareExperience(system) {
     return true;
   }
 
+  async applyNarutoEffectFromItemDefinition(effectDefinition = {}, options = {}) {
+    if (this.type !== "shinobi") return false;
+
+    if (!this._canUserEditNarutoEffects()) {
+      ui.notifications.warn("Tu n’as pas les droits nécessaires pour appliquer cet effet.");
+      return false;
+    }
+
+    const effects = foundry.utils.deepClone(this.system.effects?.narutoEffects ?? []);
+
+    if (effects.length >= NARUTO25E_EFFECT_LIMITS.max) {
+      ui.notifications.warn(`Maximum ${NARUTO25E_EFFECT_LIMITS.max} effets suivis.`);
+      return false;
+    }
+
+    const rawEffect = foundry.utils.deepClone(effectDefinition ?? {});
+    const sourceName = String(options.sourceName ?? rawEffect.sourceName ?? rawEffect.name ?? "Effet");
+    const sourceUuid = String(options.sourceUuid ?? rawEffect.sourceUuid ?? "");
+    const sourceType = String(options.sourceType ?? rawEffect.sourceType ?? "custom");
+    const targetType = String(options.targetType ?? rawEffect.targetType ?? "none");
+    const targetItemId = String(options.targetItemId ?? rawEffect.targetItemId ?? "");
+
+    rawEffect.id = foundry.utils.randomID?.(8) ?? `effect-${Date.now()}`;
+    rawEffect.enabled = true;
+    rawEffect.sourceName = sourceName;
+    rawEffect.sourceUuid = sourceUuid;
+    rawEffect.sourceType = this._normalizeNarutoEffectKey(NARUTO25E.effectSourceTypes, sourceType, "custom");
+    rawEffect.targetType = this._normalizeNarutoEffectKey(NARUTO25E.effectTargetTypes, targetType, "none");
+    rawEffect.targetItemId = targetItemId;
+
+    const normalizedEffect = this._normalizeNarutoEffectData(rawEffect, effects.length);
+
+    effects.push(normalizedEffect);
+
+    await this.update({
+      "system.effects.narutoEffects": effects
+    });
+
+    ui.notifications.info(`${normalizedEffect.name} appliqué à ${this.name}.`);
+    return true;
+  }
+
+  _getItemAppliedEffects(item) {
+    if (!item) return [];
+
+    const declaredEffects = typeof item.getAppliedNarutoEffects === "function"
+      ? item.getAppliedNarutoEffects()
+      : foundry.utils.deepClone(item.system?.effects?.applied ?? []);
+
+    if (declaredEffects.length) return declaredEffects;
+
+    return this._getAutomaticAppliedEffectsForItem(item);
+  }
+
+  _getAutomaticAppliedEffectsForItem(item) {
+    if (!item) return [];
+
+    if (item.type === "technique") {
+      const maintenanceCost = Math.max(0, Number(item.system?.chakra?.maintenance ?? 0));
+
+      if (maintenanceCost <= 0) return [];
+
+      return [
+        {
+          id: "auto-maintained-technique",
+          name: item.name,
+          category: "technique",
+          mode: "maintained",
+          statusKey: "none",
+          rank: 0,
+          enabled: true,
+          applyTarget: "self",
+          sourceName: item.name,
+          sourceUuid: item.uuid,
+          sourceType: "technique",
+          targetType: "technique",
+          targetItemId: item.id,
+          durationType: "untilCancelled",
+          remainingRounds: 0,
+          remainingTurns: 0,
+          maintenanceCost,
+          isHidden: false,
+          notes: String(item.system?.effect ?? ""),
+          modifierNotes: "",
+          modifiers: []
+        }
+      ];
+    }
+
+    if (item.type === "pouvoirLignee") {
+      const powerType = String(item.system?.powerType ?? "maintained");
+      const maintenanceCost = Math.max(0, Number(item.system?.maintenanceCost ?? 0));
+
+      if (powerType === "passive") return [];
+
+      return [
+        {
+          id: "auto-lineage-power",
+          name: item.name,
+          category: "lineage",
+          mode: powerType === "maintained" ? "maintained" : "active",
+          statusKey: "none",
+          rank: Math.max(0, Number(item.system?.lineageRank ?? 0)),
+          enabled: true,
+          applyTarget: "self",
+          sourceName: item.name,
+          sourceUuid: item.uuid,
+          sourceType: "lineage",
+          targetType: "none",
+          targetItemId: "",
+          durationType: "untilCancelled",
+          remainingRounds: 0,
+          remainingTurns: 0,
+          maintenanceCost,
+          isHidden: false,
+          notes: String(item.system?.effect ?? ""),
+          modifierNotes: "",
+          modifiers: []
+        }
+      ];
+    }
+
+    return [];
+  }
+
+  _getItemAppliedEffectsChatHtml(item, options = {}) {
+    const effects = this._getItemAppliedEffects(item);
+
+    if (!effects.length) return "";
+
+    const targetActorIds = Array.isArray(options.targetActorIds)
+      ? options.targetActorIds.map((entry) => String(entry ?? "")).filter(Boolean)
+      : [];
+
+    const hasSingleTarget = targetActorIds.length === 1;
+    const weapons = Array.from(this.items ?? [])
+      .filter((entry) => entry.type === "arme")
+      .map((entry) => ({
+        id: entry.id,
+        name: entry.name
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name, "fr"));
+
+    const safe = (value) => foundry.utils.escapeHTML?.(String(value ?? "")) ?? String(value ?? "");
+
+    return `
+      <div class="naruto-item-applied-effects">
+        <strong>Effets déclarés</strong>
+
+        ${effects.map((effect) => {
+          const effectId = safe(effect.id);
+          const applyTarget = String(effect.applyTarget ?? "self");
+          const targetType = String(effect.targetType ?? "none");
+          const showSelfButton = ["self", "manual"].includes(applyTarget) && targetType !== "weapon";
+          const showTargetButton = ["target", "manual"].includes(applyTarget) && hasSingleTarget && targetType !== "weapon";
+          const showWeaponButton = applyTarget === "weapon" || targetType === "weapon";
+          const categoryLabel = NARUTO25E.effectCategories?.[effect.category] ?? effect.category;
+          const modeLabel = NARUTO25E.effectModes?.[effect.mode] ?? effect.mode;
+          const durationLabel = NARUTO25E.effectDurationTypes?.[effect.durationType] ?? effect.durationType;
+
+          return `
+            <div class="naruto-item-applied-effect" data-effect-id="${effectId}">
+              <div class="naruto-item-applied-effect-main">
+                <span>${safe(effect.name)}</span>
+                <small>${safe(categoryLabel)} · ${safe(modeLabel)} · ${safe(durationLabel)}</small>
+              </div>
+
+              ${effect.notes ? `<p>${safe(effect.notes)}</p>` : ""}
+
+              <div class="naruto-item-applied-effect-actions">
+                ${showSelfButton ? `
+                  <button
+                    type="button"
+                    class="naruto-chat-apply-item-effect"
+                    data-effect-id="${effectId}"
+                    data-application="self"
+                  >
+                    Appliquer à soi
+                  </button>
+                ` : ""}
+
+                ${showTargetButton ? `
+                  <button
+                    type="button"
+                    class="naruto-chat-apply-item-effect"
+                    data-effect-id="${effectId}"
+                    data-application="target"
+                  >
+                    Appliquer à la cible
+                  </button>
+                ` : ""}
+
+                ${showWeaponButton ? `
+                  <select class="naruto-chat-effect-weapon-select" data-effect-id="${effectId}">
+                    <option value="">— Choisir une arme —</option>
+                    ${weapons.map((weapon) => `<option value="${safe(weapon.id)}">${safe(weapon.name)}</option>`).join("")}
+                  </select>
+
+                  <button
+                    type="button"
+                    class="naruto-chat-apply-item-effect"
+                    data-effect-id="${effectId}"
+                    data-application="weapon"
+                  >
+                    Appliquer à l’arme
+                  </button>
+                ` : ""}
+              </div>
+            </div>
+          `;
+        }).join("")}
+      </div>
+    `;
+  }
+
+
   _isNarutoEffectCurrentlyActive(effect = {}) {
     if (effect.enabled === false) return false;
 
@@ -6953,6 +7169,7 @@ async decreaseBase(baseKey) {
         ${success ? `
           <p>L’action touche ou affecte la cible.</p>
           ${this._createDamageButtonHtml(damageAvailable)}
+          ${data.appliedEffectsHtml ?? ""}
         ` : `<p>La défense tient bon.</p>`}
       </div>
     `;
@@ -7018,7 +7235,12 @@ async decreaseBase(baseKey) {
       kind: String(profile.kind ?? defenseType),
       itemId: String(profile.itemId ?? ""),
       itemType: String(profile.itemType ?? ""),
+      sourceUuid: String(profile.sourceUuid ?? ""),
+      sourceType: String(profile.sourceType ?? profile.itemType ?? "custom"),
       targetType: String(profile.targetType ?? ""),
+      appliedEffects: Array.isArray(profile.appliedEffects)
+        ? foundry.utils.deepClone(profile.appliedEffects)
+        : [],
       damageKey: String(profile.damageKey ?? profile.kind ?? damageType),
       damageFormula,
       damageType,
@@ -7120,6 +7342,29 @@ async decreaseBase(baseKey) {
       `
       : "";
 
+    const appliedEffects = Array.isArray(data.appliedEffects)
+      ? foundry.utils.deepClone(data.appliedEffects)
+      : [];
+
+    const sourceItem = this.items.get(String(data.itemId ?? ""));
+    const itemEffectRequest = success && appliedEffects.length ? {
+      actorId: this.id,
+      itemId: data.itemId ?? "",
+      itemUuid: data.sourceUuid ?? "",
+      sourceName: data.label ?? "",
+      sourceUuid: data.sourceUuid ?? "",
+      sourceType: data.sourceType ?? "technique",
+      targetActorIds: [targetActor.id],
+      effects: appliedEffects
+    } : null;
+
+    const appliedEffectsHtml = itemEffectRequest && sourceItem
+      ? this._getItemAppliedEffectsChatHtml(sourceItem, {
+          targetActorIds: [targetActor.id]
+        })
+      : "";
+
+
     const resultData = {
       ...data,
       defenseLabel: defense.label,
@@ -7136,6 +7381,8 @@ async decreaseBase(baseKey) {
       margin,
       impactPercent,
       damageAvailable: Boolean(data.damage?.calculation?.enabled),
+      itemEffectRequest,
+      appliedEffectsHtml,
       resistanceBlock
     };
 
@@ -7144,6 +7391,7 @@ async decreaseBase(baseKey) {
       flavor: `${data.label} — ${data.actorName} contre ${data.targetName}`,
       flags: {
         "naruto-25e": {
+          itemEffectRequest,
           damagePayload: success ? {
             actorId: this.id,
             targetActorId: targetActor.id,
@@ -7418,6 +7666,13 @@ async decreaseBase(baseKey) {
     const skillData = this._getTechniqueSkillTotal(item);
     const effectModifierSummary = options.effectModifierSummary ?? skillData?.effectModifierSummary ?? null;
     const effectModifierSummaryHtml = this._getNarutoEffectModifierSummaryHtml(effectModifierSummary);
+    const targetActorIds = Array.isArray(options.targetActorIds)
+      ? options.targetActorIds.map((entry) => String(entry ?? "")).filter(Boolean)
+      : [];
+    const appliedEffects = this._getItemAppliedEffects(item);
+    const appliedEffectsHtml = this._getItemAppliedEffectsChatHtml(item, {
+      targetActorIds
+    });
 
     const safeTechniqueName = foundry.utils.escapeHTML?.(item.name) ?? item.name;
     const safeActorName = foundry.utils.escapeHTML?.(this.name) ?? this.name;
@@ -7436,6 +7691,20 @@ async decreaseBase(baseKey) {
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: this }),
       flavor: `Technique : ${safeTechniqueName}`,
+      flags: {
+        "naruto-25e": {
+          itemEffectRequest: appliedEffects.length ? {
+            actorId: this.id,
+            itemId: item.id,
+            itemUuid: item.uuid,
+            sourceName: item.name,
+            sourceUuid: item.uuid,
+            sourceType: "technique",
+            targetActorIds,
+            effects: appliedEffects
+          } : null
+        }
+      },
       content: `
         <div class="naruto-roll-card naruto-technique-card">
           <header class="naruto-roll-header">
@@ -7472,6 +7741,8 @@ async decreaseBase(baseKey) {
           </div>
 
           ${effectModifierSummaryHtml}
+
+          ${appliedEffectsHtml}
 
           ${maintenanceCost > 0 ? `
             <p class="naruto-technique-maintained">
@@ -7521,6 +7792,10 @@ async decreaseBase(baseKey) {
     const rollEnabled = item.system?.roll?.enabled !== false;
     const offensive = this._isTechniqueOffensive(item);
     const targets = Array.from(game.user?.targets ?? []);
+    const targetActorIds = targets
+      .map((target) => target?.actor?.id ?? "")
+      .filter(Boolean);
+    const appliedEffects = this._getItemAppliedEffects(item);
 
     const attackEffectModifierSummary = skillData
       ? this._getNarutoEffectModifierSummary("attack", {
@@ -7554,7 +7829,10 @@ async decreaseBase(baseKey) {
         kind: String(item.system?.skill ?? item.system?.family ?? "technique"),
         itemId: item.id,
         itemType: item.type,
+        sourceUuid: item.uuid,
+        sourceType: "technique",
         targetType: "technique",
+        appliedEffects,
         damageKey: item.system?.skill ?? item.system?.family ?? "technique",
         defenseType: this._getTechniqueDefenseType(item),
         damageFormula: String(item.system?.damage?.formula ?? ""),
@@ -7585,7 +7863,8 @@ async decreaseBase(baseKey) {
       chakraSpend,
       roll,
       rollTotal,
-      effectModifierSummary: combinedEffectModifierSummary
+      effectModifierSummary: combinedEffectModifierSummary,
+      targetActorIds
     });
 
     return roll;
@@ -9392,16 +9671,34 @@ async decreaseBase(baseKey) {
     const safeEffect = foundry.utils.escapeHTML?.(item.system.effect ?? "") ?? "";
     const safeClan = foundry.utils.escapeHTML?.(item.system.clan ?? "—") ?? "—";
     const lineageRank = Math.max(0, Number(item.system.lineageRank ?? 0));
+    const appliedEffects = this._getItemAppliedEffects(item);
+    const appliedEffectsHtml = this._getItemAppliedEffectsChatHtml(item);
 
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: this }),
       flavor: `${safeActorName} active ${safePowerName}`,
+      flags: {
+        "naruto-25e": {
+          itemEffectRequest: appliedEffects.length ? {
+            actorId: this.id,
+            itemId: item.id,
+            itemUuid: item.uuid,
+            sourceName: item.name,
+            sourceUuid: item.uuid,
+            sourceType: "lineage",
+            targetActorIds: [],
+            effects: appliedEffects
+          } : null
+        }
+      },
       content: `
         <div class="naruto-lineage-power-card">
           <header><h3>${safePowerName}</h3></header>
           <p><strong>${safeActorName}</strong> active un pouvoir de lignée.</p>
 
           ${safeEffect ? `<p class="lineage-power-effect"><strong>Effet :</strong> ${safeEffect}</p>` : ""}
+
+          ${appliedEffectsHtml}
 
           <div><strong>Clan :</strong> ${safeClan}</div>
           <div><strong>Rang requis :</strong> ${lineageRank}</div>
@@ -10824,6 +11121,75 @@ Hooks.on("renderChatMessage", (message, html) => {
     await targetActor.applyDamageToHealthTrack(damage, {
       damageType,
       sourceName
+    });
+  });
+
+  html.find(".naruto-chat-apply-item-effect").on("click", async (event) => {
+    event.preventDefault();
+
+    const button = event.currentTarget;
+    const effectId = String(button.dataset.effectId ?? "");
+    const application = String(button.dataset.application ?? "self");
+    const request = message.getFlag("naruto-25e", "itemEffectRequest");
+
+    if (!request || !Array.isArray(request.effects)) {
+      ui.notifications.warn("Aucun effet applicable trouvé sur cette carte.");
+      return;
+    }
+
+    const effect = request.effects.find((entry) => String(entry.id ?? "") === effectId);
+
+    if (!effect) {
+      ui.notifications.warn("Effet introuvable sur cette carte.");
+      return;
+    }
+
+    let actorId = String(request.actorId ?? "");
+    let targetType = String(effect.targetType ?? "none");
+    let targetItemId = "";
+
+    if (application === "target") {
+      const targetActorIds = Array.isArray(request.targetActorIds)
+        ? request.targetActorIds.map((entry) => String(entry ?? "")).filter(Boolean)
+        : [];
+
+      if (targetActorIds.length !== 1) {
+        ui.notifications.warn("Aucune cible unique disponible pour appliquer cet effet.");
+        return;
+      }
+
+      actorId = targetActorIds[0];
+
+      if (targetType === "none") {
+        targetType = "actor";
+      }
+    }
+
+    if (application === "weapon") {
+      const effectContainer = $(button).closest(".naruto-item-applied-effect");
+      targetItemId = String(effectContainer.find(".naruto-chat-effect-weapon-select").val() ?? "");
+
+      if (!targetItemId) {
+        ui.notifications.warn("Choisis une arme avant d’appliquer cet effet.");
+        return;
+      }
+
+      targetType = "weapon";
+    }
+
+    const actor = game.actors?.get(actorId);
+
+    if (!actor || typeof actor.applyNarutoEffectFromItemDefinition !== "function") {
+      ui.notifications.warn("Acteur introuvable pour appliquer cet effet.");
+      return;
+    }
+
+    await actor.applyNarutoEffectFromItemDefinition(effect, {
+      sourceName: request.sourceName ?? effect.sourceName ?? "",
+      sourceUuid: request.sourceUuid ?? effect.sourceUuid ?? "",
+      sourceType: request.sourceType ?? effect.sourceType ?? "custom",
+      targetType,
+      targetItemId
     });
   });
 });

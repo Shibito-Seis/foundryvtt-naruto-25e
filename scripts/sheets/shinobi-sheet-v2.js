@@ -1607,6 +1607,8 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
       label
     }));
 
+    const modifierKeyOptions = this._buildV2EffectModifierKeyOptions();
+
     const targetItems = Array.from(this.actor?.items ?? [])
       .filter((item) => ["arme", "armure", "technique", "equipement", "consommable", "pouvoirLignee"].includes(item.type))
       .map((item) => ({
@@ -1709,9 +1711,50 @@ export class Naruto25eShinobiSheetV2 extends Naruto25eShinobiSheet {
       durationTypeOptions,
       modifierTargetOptions,
       modifierTypeOptions,
+      modifierKeyOptions,
       targetItems
     };
   }
+
+  _buildV2EffectModifierKeyOptions() {
+    const options = new Map();
+
+    const addOption = (key, label, group = "") => {
+      const optionKey = String(key ?? "").trim();
+
+      if (!optionKey || options.has(optionKey)) return;
+
+      const groupLabel = group ? `${group} — ` : "";
+
+      options.set(optionKey, {
+        key: optionKey,
+        label: `${groupLabel}${label || optionKey}`
+      });
+    };
+
+    addOption("all", "Toutes les clés", "Universel");
+
+    for (const [baseKey, baseLabel] of Object.entries(NARUTO25E.baseLabels ?? {})) {
+      addOption(baseKey, baseLabel, "Base");
+    }
+
+    for (const [skillKey, skill] of Object.entries(NARUTO25E.skillDefinitions ?? {})) {
+      addOption(skillKey, skill.label ?? skillKey, "Compétence");
+    }
+
+    for (const group of Object.values(NARUTO25E.effectModifierKeyPresets ?? {})) {
+      const groupLabel = String(group.label ?? "");
+      const keys = group.keys ?? {};
+
+      for (const [key, label] of Object.entries(keys)) {
+        addOption(key, label, groupLabel);
+      }
+    }
+
+    return Array.from(options.values())
+      .sort((a, b) => a.label.localeCompare(b.label, "fr"));
+  }
+
 
   _getV2EffectTone(effect = {}) {
     if (effect.enabled === false) return "inactive";

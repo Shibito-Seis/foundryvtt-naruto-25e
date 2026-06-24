@@ -2,6 +2,50 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.52 - Effets d’Items et presets V1
+
+### Ajouté
+
+- Ajout d’une structure `system.effects.applied` sur les Items.
+- Les techniques, pouvoirs de lignée, consommables et équipements peuvent désormais porter des définitions d’effets applicables.
+- Ajout d’une normalisation des effets déclarés côté Item.
+- Ajout de boutons d’application d’effets dans les cartes de chat :
+  - appliquer à soi ;
+  - appliquer à la cible ;
+  - appliquer à une arme.
+- Les effets appliqués depuis une carte de chat créent un effet central dans `system.effects.narutoEffects` sur l’Actor concerné.
+- Ajout d’une génération automatique d’effet pour les techniques maintenues sans effet déclaré.
+- Ajout d’une génération automatique d’effet pour les pouvoirs de lignée actifs / maintenus sans effet déclaré.
+- Ajout de presets de clés pour les modificateurs structurés :
+  - compétences ;
+  - bases ;
+  - attaques ;
+  - défenses ;
+  - dégâts ;
+  - clé universelle `all`.
+
+### Modifié
+
+- L’onglet Effets propose maintenant une aide à la saisie des clés de modificateurs via liste de suggestions.
+- Les cartes de techniques peuvent afficher les effets déclarés par l’Item.
+- Les résultats d’attaques ciblées peuvent proposer l’application d’effets à la cible après réussite.
+
+### Sécurité
+
+- L’application d’un effet reste volontaire :
+  - l’effet n’est pas appliqué automatiquement dès l’utilisation de la technique ;
+  - le joueur propriétaire ou le MJ doit cliquer sur le bouton d’application.
+- Un joueur ne peut appliquer un effet que sur une fiche qu’il possède, sauf intervention MJ.
+- Les effets d’arme exigent de choisir une arme avant application.
+
+### Limites V1
+
+- Les fichiers JSON de techniques et pouvoirs ne sont pas encore tous enrichis avec leurs effets déclarés.
+- Les effets complexes comme Poison, Saignement, Sommeil ou Paralysie ne résolvent pas encore automatiquement leurs conséquences.
+- Les effets ne se décrémentent pas encore automatiquement.
+- Les fiches Item n’ont pas encore d’interface dédiée complète pour éditer les effets appliqués.
+- Le drag & drop façon PF2e est reporté à une future passe.
+
 ## 0.1.51 - Effets et jets V1.1
 
 ### Ajouté

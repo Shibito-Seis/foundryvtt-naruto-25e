@@ -42,6 +42,8 @@ export class Naruto25eItem extends Item {
             : "manual";
         system.automation.notes = system.automation.notes ?? "";
 
+        this._prepareItemAppliedEffects(system);
+
         system.damage = system.damage ?? {};
         system.damage.formula = system.damage.formula ?? "";
         system.damage.type = system.damage.type ?? "none";
@@ -75,6 +77,100 @@ export class Naruto25eItem extends Item {
             system.uses.value = system.uses.max;
         }
     }
+
+    _prepareItemAppliedEffects(system) {
+        system.effects = system.effects ?? {};
+
+        const effectSource = system.effects.applied;
+
+        const rawEffects = Array.isArray(effectSource)
+            ? effectSource
+            : effectSource && typeof effectSource === "object"
+                ? Object.keys(effectSource)
+                    .filter((key) => /^\d+$/.test(String(key)))
+                    .sort((a, b) => Number(a) - Number(b))
+                    .map((key) => effectSource[key])
+                : [];
+
+        system.effects.applied = rawEffects
+            .slice(0, 20)
+            .map((effect, index) => this._normalizeItemAppliedEffectData(effect, index));
+    }
+
+    _normalizeItemEffectKey(collection, key, fallback = "") {
+        const normalizedKey = String(key ?? fallback);
+
+        return collection?.[normalizedKey] ? normalizedKey : fallback;
+    }
+
+    _normalizeItemAppliedEffectModifier(modifier = {}, index = 0) {
+        const modifierNumber = Math.max(1, Number(index ?? 0) + 1);
+
+        return {
+            id: String(modifier.id ?? "") || `modifier-${modifierNumber}`,
+            target: this._normalizeItemEffectKey(NARUTO25E.effectModifierTargets, modifier.target, "none"),
+            key: String(modifier.key ?? ""),
+            value: Number(modifier.value ?? 0),
+            type: this._normalizeItemEffectKey(NARUTO25E.effectModifierTypes, modifier.type, "flat"),
+            condition: String(modifier.condition ?? "")
+        };
+    }
+
+    _normalizeItemAppliedEffectData(effect = {}, index = 0) {
+        const effectNumber = Math.max(1, Number(index ?? 0) + 1);
+        const defaultSourceType = this.type === "pouvoirLignee"
+            ? "lineage"
+            : this.type === "technique"
+                ? "technique"
+                : this.type === "consommable"
+                    ? "consumable"
+                    : "equipment";
+
+        const rank = Math.max(0, Math.min(10, Number(effect.rank ?? 0)));
+        const remainingRounds = Math.max(0, Math.min(999, Number(effect.remainingRounds ?? 0)));
+        const remainingTurns = Math.max(0, Math.min(999, Number(effect.remainingTurns ?? 0)));
+        const maintenanceCost = Math.max(0, Number(effect.maintenanceCost ?? 0));
+
+        const modifiers = Array.isArray(effect.modifiers)
+            ? effect.modifiers
+                .slice(0, 20)
+                .map((modifier, modifierIndex) => this._normalizeItemAppliedEffectModifier(modifier, modifierIndex))
+            : [];
+
+        return {
+            id: String(effect.id ?? "") || `applied-effect-${effectNumber}`,
+            name: String(effect.name ?? this.name ?? `Effet ${effectNumber}`),
+            category: this._normalizeItemEffectKey(NARUTO25E.effectCategories, effect.category, "custom"),
+            mode: this._normalizeItemEffectKey(NARUTO25E.effectModes, effect.mode, "active"),
+            statusKey: this._normalizeItemEffectKey(NARUTO25E.effectStatusKeys, effect.statusKey, "none"),
+            rank,
+            enabled: effect.enabled !== false,
+            applyTarget: this._normalizeItemEffectKey(NARUTO25E.effectApplicationTargets, effect.applyTarget, "self"),
+            sourceName: String(effect.sourceName ?? this.name ?? ""),
+            sourceUuid: String(effect.sourceUuid ?? this.uuid ?? ""),
+            sourceType: this._normalizeItemEffectKey(NARUTO25E.effectSourceTypes, effect.sourceType, defaultSourceType),
+            targetType: this._normalizeItemEffectKey(NARUTO25E.effectTargetTypes, effect.targetType, "none"),
+            targetItemId: String(effect.targetItemId ?? ""),
+            durationType: this._normalizeItemEffectKey(NARUTO25E.effectDurationTypes, effect.durationType, "manual"),
+            remainingRounds,
+            remainingTurns,
+            maintenanceCost,
+            isHidden: Boolean(effect.isHidden),
+            notes: String(effect.notes ?? ""),
+            modifierNotes: String(effect.modifierNotes ?? ""),
+            modifiers
+        };
+    }
+
+    getAppliedNarutoEffects() {
+        const appliedEffects = Array.isArray(this.system.effects?.applied)
+            ? this.system.effects.applied
+            : [];
+
+        return foundry.utils.deepClone(appliedEffects)
+            .filter((effect) => effect.enabled !== false);
+    }
+
 
     _inferDefaultTaxonomyCategory() {
         if (this.type === "arme") return "arme";

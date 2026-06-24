@@ -504,6 +504,9 @@
           "status": "manual",
           "notes": ""
         },
+        "effects": {
+          "applied": []
+        },
         "uses": {
           "enabled": false,
           "value": 0,

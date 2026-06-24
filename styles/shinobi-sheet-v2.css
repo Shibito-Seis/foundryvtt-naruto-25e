@@ -2692,3 +2692,68 @@
     justify-self: start;
   }
 }
+
+/* ----------------------------------------- */
+/* 0.1.52 — Effets applicables depuis Items   */
+/* ----------------------------------------- */
+
+.naruto-item-applied-effects {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin: 0.55rem 0;
+  padding: 0.55rem;
+  border: 1px solid rgba(201, 163, 93, 0.36);
+  background: rgba(201, 163, 93, 0.08);
+}
+
+.naruto-item-applied-effects > strong {
+  color: #7a4f12;
+  text-transform: uppercase;
+}
+
+.naruto-item-applied-effect {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.45rem;
+  border: 1px solid rgba(80, 80, 80, 0.24);
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.naruto-item-applied-effect-main {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.naruto-item-applied-effect-main span {
+  font-weight: 800;
+}
+
+.naruto-item-applied-effect-main small {
+  opacity: 0.72;
+}
+
+.naruto-item-applied-effect p {
+  margin: 0;
+  font-size: 12px;
+  opacity: 0.86;
+}
+
+.naruto-item-applied-effect-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.naruto-item-applied-effect-actions button {
+  flex: 0 0 auto;
+}
+
+.naruto-item-applied-effect-actions select {
+  min-width: 12rem;
+}
