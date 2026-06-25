@@ -1032,6 +1032,179 @@ function getDocumentTargetPackKey(source, document) {
   return getPackKeyFromPackTarget(packTarget) || source.pack;
 }
 
+function normalizeActorTechniqueSyncName(value) {
+  return String(value ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+}
+
+function getActorTechniqueSyncKey(document) {
+  const type = String(document?.type ?? "").trim();
+  const name = normalizeActorTechniqueSyncName(document?.name ?? "");
+
+  if (!type || !name) return "";
+
+  return `${type}::${name}`;
+}
+
+function isActorTechniqueSyncDisabled(item) {
+  const flags = item?.flags?.["naruto-25e"] ?? {};
+
+  return Boolean(
+    flags.disableCompendiumSync
+    || flags.noCompendiumSync
+    || flags.customTechnique
+  );
+}
+
+async function buildNaruto25eTechniqueReferenceIndex() {
+  const references = new Map();
+  const duplicates = [];
+  const packKeys = getDeclaredPackKeys(DATA_SOURCES);
+
+  for (const packKey of packKeys) {
+    const pack = game.packs.get(packKey);
+
+    if (!pack || pack.documentName !== "Item") continue;
+
+    const documents = await pack.getDocuments();
+
+    for (const document of documents) {
+      if (!document || document.type !== "technique") continue;
+
+      const syncKey = getActorTechniqueSyncKey(document);
+      if (!syncKey) continue;
+
+      const reference = {
+        key: syncKey,
+        packKey,
+        document,
+        data: document.toObject()
+      };
+
+      if (references.has(syncKey)) {
+        duplicates.push({
+          key: syncKey,
+          kept: references.get(syncKey)?.document?.name ?? "",
+          ignored: document.name ?? "",
+          pack: packKey
+        });
+        continue;
+      }
+
+      references.set(syncKey, reference);
+    }
+  }
+
+  return {
+    references,
+    duplicates
+  };
+}
+
+export async function syncNaruto25eActorTechniquesFromCompendiums(options = {}) {
+  const notify = options.notify !== false;
+
+  if (!game.user?.isGM) {
+    ui.notifications.warn("Seul le MJ peut synchroniser les techniques des acteurs.");
+    return {
+      actors: 0,
+      inspected: 0,
+      matched: 0,
+      updated: 0,
+      skipped: 0,
+      missing: 0,
+      errors: []
+    };
+  }
+
+  const summary = {
+    actors: 0,
+    inspected: 0,
+    matched: 0,
+    updated: 0,
+    skipped: 0,
+    missing: 0,
+    errors: []
+  };
+
+  const { references, duplicates } = await buildNaruto25eTechniqueReferenceIndex();
+
+  if (duplicates.length > 0) {
+    console.warn("Naruto 2.5e | Doublons de synchronisation de techniques détectés :", duplicates);
+  }
+
+  for (const actor of game.actors ?? []) {
+    if (!actor || actor.type !== "shinobi") continue;
+
+    summary.actors += 1;
+
+    const updates = [];
+
+    for (const item of actor.items ?? []) {
+      if (!item || item.type !== "technique") continue;
+
+      summary.inspected += 1;
+
+      if (isActorTechniqueSyncDisabled(item)) {
+        summary.skipped += 1;
+        continue;
+      }
+
+      const syncKey = getActorTechniqueSyncKey(item);
+      const reference = references.get(syncKey);
+
+      if (!reference) {
+        summary.missing += 1;
+        continue;
+      }
+
+      summary.matched += 1;
+
+      const sourceData = foundry.utils.deepClone(reference.data ?? {});
+      const sourceSystem = foundry.utils.deepClone(sourceData.system ?? {});
+
+      updates.push({
+        _id: item.id,
+        name: sourceData.name ?? item.name,
+        img: sourceData.img ?? item.img,
+        system: sourceSystem,
+        "flags.naruto-25e.syncKey": syncKey,
+        "flags.naruto-25e.syncSourcePack": reference.packKey,
+        "flags.naruto-25e.sourceItemId": reference.document?.id ?? "",
+        "flags.naruto-25e.sourceItemUuid": reference.document?.uuid ?? "",
+        "flags.naruto-25e.syncedFromCompendiumAt": new Date().toISOString()
+      });
+    }
+
+    if (!updates.length) continue;
+
+    try {
+      await actor.updateEmbeddedDocuments("Item", updates);
+      summary.updated += updates.length;
+    } catch (error) {
+      console.error(`Naruto 2.5e | Synchronisation impossible pour ${actor.name}`, error);
+      summary.errors.push({
+        actor: actor.name,
+        message: error?.message ?? String(error)
+      });
+    }
+  }
+
+  console.table([summary]);
+
+  if (notify) {
+    ui.notifications.info(
+      `Synchronisation Naruto 2.5e : ${summary.updated} technique(s) d’acteur mise(s) à jour, ${summary.missing} introuvable(s), ${summary.skipped} ignorée(s).`
+    );
+  }
+
+  return summary;
+}
+
 async function collectDocumentsByTargetPack(sources = DATA_SOURCES) {
   const documentsByPack = new Map();
   const sourceResults = [];
@@ -1325,6 +1498,7 @@ async function collectDocumentsForSource(source) {
 
 export async function importNaruto25eTechniquePacks(options = {}) {
   const clear = Boolean(options.clear);
+  const syncActors = options.syncActors !== false;
 
   if (!game.user?.isGM) {
     ui.notifications.warn("Seul le MJ peut importer les données Naruto 2.5e.");
@@ -1380,8 +1554,39 @@ export async function importNaruto25eTechniquePacks(options = {}) {
   const totalImported = finalResults.reduce((total, result) => total + Number(result.imported ?? 0), 0);
   const totalDeleted = finalResults.reduce((total, result) => total + Number(result.deleted ?? 0), 0);
 
+  let actorSyncResult = null;
+
+  if (syncActors) {
+    try {
+      actorSyncResult = await syncNaruto25eActorTechniquesFromCompendiums({
+        notify: false
+      });
+
+      results.push({
+        pack: "actors",
+        type: "synchronisation acteurs",
+        source: "compendiums",
+        imported: actorSyncResult.updated,
+        deleted: 0,
+        actors: actorSyncResult.actors,
+        inspected: actorSyncResult.inspected,
+        matched: actorSyncResult.matched,
+        missing: actorSyncResult.missing,
+        skipped: actorSyncResult.skipped,
+        errors: actorSyncResult.errors.length
+      });
+    } catch (error) {
+      console.error("Naruto 2.5e | Synchronisation des techniques d’acteurs impossible après import.", error);
+      ui.notifications.warn("Import terminé, mais la synchronisation des techniques d’acteurs a échoué. Voir console.");
+    }
+  }
+
+  const actorSyncText = actorSyncResult
+    ? ` ${actorSyncResult.updated} technique(s) d’acteur synchronisée(s).`
+    : "";
+
   ui.notifications.info(
-    `Import Naruto 2.5e terminé : ${totalImported} entrée(s) créée(s), ${totalDeleted} ancienne(s) entrée(s) supprimée(s), ${sourceEntriesRead} entrée(s) lue(s) depuis les sources.`
+    `Import Naruto 2.5e terminé : ${totalImported} entrée(s) créée(s), ${totalDeleted} ancienne(s) entrée(s) supprimée(s), ${sourceEntriesRead} entrée(s) lue(s) depuis les sources.${actorSyncText}`
   );
 
   console.table(results);

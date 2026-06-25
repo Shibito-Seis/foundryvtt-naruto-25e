@@ -2,6 +2,32 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.53.2 - Synchronisation des techniques d’acteurs
+
+### Ajouté
+
+- Ajout d’une synchronisation MJ des techniques possédées par les acteurs Shinobi depuis les compendiums Naruto 2.5e.
+- Après un import/réimport des packs de données, les techniques déjà présentes sur les fiches d’acteurs sont mises à jour en place depuis leur version de compendium.
+- Ajout d’une fonction système accessible en console MJ :
+  - `game.naruto25e.syncActorTechniques()`.
+
+### Modifié
+
+- L’importeur de données Naruto 2.5e lance désormais automatiquement la synchronisation des techniques d’acteurs après l’import des compendiums.
+- La synchronisation conserve l’ID embedded de la technique sur l’acteur, au lieu de supprimer/recréer l’Item.
+- La correspondance V1 se fait par type d’Item et nom normalisé de la technique.
+
+### Sécurité
+
+- Les techniques introuvables dans les compendiums ne sont pas supprimées.
+- Les techniques portant un flag `flags.naruto-25e.disableCompendiumSync`, `flags.naruto-25e.noCompendiumSync` ou `flags.naruto-25e.customTechnique` sont ignorées.
+- Les techniques custom ou maison peuvent donc être protégées de la synchronisation par flag.
+
+### Notes
+
+- Cette passe évite de devoir supprimer/reprendre manuellement les techniques déjà présentes sur les PJ après chaque enrichissement JSON.
+- Les techniques sont mises à jour depuis les compendiums importés : il faut donc d’abord réimporter les packs pour propager les derniers JSON.
+
 ## 0.1.53.1 - Correction affichage des effets ciblés
 
 ### Corrigé

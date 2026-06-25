@@ -6,6 +6,7 @@ import { Naruto25eItemSheet } from "./sheets/item-sheet.js";
 import {
   autoImportMissingNaruto25eDataPacks,
   importNaruto25eTechniquePacks,
+  syncNaruto25eActorTechniquesFromCompendiums,
   Naruto25eTechniqueImportApplication
 } from "./importers/technique-pack-importer.js";
 import {
@@ -271,6 +272,7 @@ Hooks.once("init", async function () {
   game.naruto25e = foundry.utils.mergeObject(game.naruto25e ?? {}, {
     autoImportMissingDataPacks: autoImportMissingNaruto25eDataPacks,
     importTechniquePacks: importNaruto25eTechniquePacks,
+    syncActorTechniques: syncNaruto25eActorTechniquesFromCompendiums,
     openTechniqueImporter: () => new Naruto25eTechniqueImportApplication().render(true),
     openShinobimancerChoice: (actor, options = {}) => {
       if (!actor || actor.type !== "shinobi") {
