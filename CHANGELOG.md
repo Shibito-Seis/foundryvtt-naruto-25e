@@ -2,6 +2,25 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.53.1 - Correction affichage des effets ciblés
+
+### Corrigé
+
+- Les cartes de résultat de défense peuvent désormais afficher les boutons d’effets à partir des effets déjà transmis par la demande de défense.
+- Les effets déclarés sur une technique ne dépendent plus uniquement de la relecture de l’Item source dans l’acteur attaquant.
+- `Yūryoku : Kyoufu` peut afficher ses boutons `Peur` et `Surprise` après une défense réussie.
+- `Kage : Kagemane` peut afficher son bouton `Ombre liée` après une défense réussie.
+
+### Modifié
+
+- Nettoyage de la détection offensive des techniques : les textes d’effet sont désormais normalisés sans accents avant comparaison.
+- Suppression des doublons de mots-clés accentués / non accentués dans `_isTechniqueOffensive`.
+
+### Notes
+
+- Aucun changement `.hbs` ou `.css`.
+- Si une technique déjà présente sur une fiche ne contient pas les nouveaux effets JSON, supprimer l’ancienne technique de la fiche puis la reprendre depuis le compendium réimporté.
+
 ## 0.1.53.0 - Effets JSON V1 : Yūryoku, Kage et Fūin
 
 ### Ajouté

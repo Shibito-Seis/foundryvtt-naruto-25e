@@ -4405,7 +4405,9 @@ _prepareExperience(system) {
 
 
   _getItemAppliedEffectsChatHtml(item, options = {}) {
-    const effects = this._getItemAppliedEffects(item);
+    const effects = Array.isArray(options.effects)
+      ? foundry.utils.deepClone(options.effects).filter((effect) => effect.enabled !== false)
+      : this._getItemAppliedEffects(item);
 
     if (!effects.length) return "";
 
@@ -7472,9 +7474,11 @@ async decreaseBase(baseKey) {
       effects: appliedEffects
     } : null;
 
-    const appliedEffectsHtml = itemEffectRequest && sourceItem && typeof attackerActor?._getItemAppliedEffectsChatHtml === "function"
-      ? attackerActor._getItemAppliedEffectsChatHtml(sourceItem, {
-          targetActorIds: [targetActor.id]
+    const appliedEffectsRenderer = attackerActor ?? this;
+    const appliedEffectsHtml = itemEffectRequest && typeof appliedEffectsRenderer?._getItemAppliedEffectsChatHtml === "function"
+      ? appliedEffectsRenderer._getItemAppliedEffectsChatHtml(sourceItem ?? null, {
+          targetActorIds: [targetActor.id],
+          effects: appliedEffects
         })
       : "";
 
@@ -7666,13 +7670,20 @@ async decreaseBase(baseKey) {
     const system = item?.system ?? {};
     const damageFormula = String(system.damage?.formula ?? "").trim();
     const damageType = String(system.damage?.type ?? "none").toLowerCase();
-    const effect = String(system.effect ?? "").toLowerCase();
+
+    const normalize = (value) => {
+      return String(value ?? "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+    };
+
+    const effect = normalize(system.effect);
 
     if (damageFormula && damageType !== "none") return true;
 
     return [
       "attaque",
-      "dégât",
       "degat",
       "blesse",
       "touche",
@@ -7681,13 +7692,13 @@ async decreaseBase(baseKey) {
       "obstrue",
       "hallucination",
       "sommeil",
-      "brûlure",
       "brulure",
       "immobilise",
       "immobiliser",
-      "contrôle",
       "controle",
+      "controler",
       "entrave",
+      "entravee",
       "paralys"
     ].some((keyword) => effect.includes(keyword));
   }
