@@ -7682,8 +7682,38 @@ async decreaseBase(baseKey) {
       "hallucination",
       "sommeil",
       "brûlure",
-      "brulure"
+      "brulure",
+      "immobilise",
+      "immobiliser",
+      "contrôle",
+      "controle",
+      "entrave",
+      "paralys"
     ].some((keyword) => effect.includes(keyword));
+  }
+
+  _hasTargetedAppliedTechniqueEffect(item, appliedEffects = null) {
+    if (!item || item.type !== "technique") return false;
+
+    const effects = Array.isArray(appliedEffects)
+      ? appliedEffects
+      : this._getItemAppliedEffects(item);
+
+    return effects.some((effect) => {
+      if (effect?.enabled === false) return false;
+
+      const applyTarget = String(effect.applyTarget ?? "self");
+      const targetType = String(effect.targetType ?? "none");
+
+      if (targetType === "weapon") return false;
+      if (applyTarget === "target") return true;
+
+      if (["manual", "selected"].includes(applyTarget)) {
+        return ["actor", "custom", "summon"].includes(targetType);
+      }
+
+      return false;
+    });
   }
 
   _getTechniqueDefenseType(item) {
@@ -7906,12 +7936,12 @@ async decreaseBase(baseKey) {
     await this._startMaintainedTechnique(item, chakraSpend);
 
     const rollEnabled = item.system?.roll?.enabled !== false;
-    const offensive = this._isTechniqueOffensive(item);
     const targets = Array.from(game.user?.targets ?? []);
     const targetActorIds = targets
       .map((target) => target?.actor?.id ?? "")
       .filter(Boolean);
     const appliedEffects = this._getItemAppliedEffects(item);
+    const offensive = this._isTechniqueOffensive(item) || this._hasTargetedAppliedTechniqueEffect(item, appliedEffects);
     const itemThemeClass = this._getNarutoItemChatThemeClass(item);
 
     const attackEffectModifierSummary = skillData

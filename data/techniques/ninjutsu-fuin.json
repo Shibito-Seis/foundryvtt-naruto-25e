@@ -20,7 +20,31 @@
       "prerequisites": { "strict": true, "type": "skill", "value": "fuin", "masteryRank": 5, "validated": false, "text": "Compétence Fūin possédée." },
       "effect": "Augmente la capacité de soin de +11 via un sceau passif d’anesthésie et de stabilisation.",
       "taxonomy": { "category": "ninjutsu", "subcategory": "fuin", "rankGroup": "c", "element": "fuin", "startingEligible": false, "packTarget": "techniques-ninjutsu", "tags": ["fuin", "sceau-passif", "medecine", "soin", "rituel"] },
-      "automation": { "status": "manual", "notes": "Soin et blessure à résoudre manuellement jusqu’au système Santé/Blessures." }
+      "automation": {
+        "status": "partial",
+        "notes": "Effet déclaré pour suivi depuis la carte de chat. Résolution mécanique avancée à gérer manuellement jusqu’aux modules Santé/Blessures/Sceaux."
+      },
+      "effects": {
+        "applied": [
+          {
+            "id": "fuin-momification-blessure",
+            "name": "Fūin : Momification — Blessure scellée",
+            "category": "buff",
+            "mode": "active",
+            "statusKey": "custom",
+            "rank": 1,
+            "enabled": true,
+            "applyTarget": "manual",
+            "sourceType": "technique",
+            "targetType": "actor",
+            "durationType": "manual",
+            "maintenanceCost": 0,
+            "notes": "La blessure de la cible est scellée temporairement par anesthésie et stabilisation. La technique donne +11 au soin lié à cette blessure, à résoudre manuellement jusqu’au système Santé/Blessures.",
+            "modifierNotes": "Sceau médical : bonus de soin +11 à appliquer manuellement au test concerné.",
+            "modifiers": []
+          }
+        ]
+      }
     }
   },
   {
@@ -44,7 +68,31 @@
       "prerequisites": { "strict": true, "type": "skill", "value": "fuin", "masteryRank": 5, "validated": false, "text": "Compétence Fūin possédée." },
       "effect": "Déverrouillage de Sceau Dynamique NIN+10.",
       "taxonomy": { "category": "ninjutsu", "subcategory": "fuin", "rankGroup": "c", "element": "fuin", "startingEligible": false, "packTarget": "techniques-ninjutsu", "tags": ["fuin", "sceau-dynamique", "dissipation", "rituel"] },
-      "automation": { "status": "manual", "notes": "Déverrouillage de sceau à arbitrer manuellement." }
+      "automation": {
+        "status": "partial",
+        "notes": "Effet déclaré pour suivi depuis la carte de chat. Résolution mécanique avancée à gérer manuellement jusqu’aux modules Santé/Blessures/Sceaux."
+      },
+      "effects": {
+        "applied": [
+          {
+            "id": "fuin-retour-nature-deverrouillage",
+            "name": "Fūin : Retour à la Nature — Sceau déverrouillé",
+            "category": "technique",
+            "mode": "active",
+            "statusKey": "custom",
+            "rank": 1,
+            "enabled": true,
+            "applyTarget": "manual",
+            "sourceType": "technique",
+            "targetType": "actor",
+            "durationType": "manual",
+            "maintenanceCost": 0,
+            "notes": "Déverrouillage de sceau dynamique avec valeur NIN+10. Sert de suivi sur la cible ou le sceau traité.",
+            "modifierNotes": "Déverrouillage de sceau dynamique : NIN+10 à résoudre manuellement.",
+            "modifiers": []
+          }
+        ]
+      }
     }
   },
   {
@@ -68,7 +116,31 @@
       "prerequisites": { "strict": true, "type": "skill", "value": "fuin", "masteryRank": 5, "validated": false, "text": "Compétence Fūin possédée." },
       "effect": "Réduit la solidité de la cible de -(NIN+10).",
       "taxonomy": { "category": "ninjutsu", "subcategory": "fuin", "rankGroup": "c", "element": "fuin", "startingEligible": false, "packTarget": "techniques-ninjutsu", "tags": ["fuin", "sceau-dynamique", "solidite", "affaiblissement", "rituel"] },
-      "automation": { "status": "manual", "notes": "Réduction de solidité à gérer manuellement." }
+      "automation": {
+        "status": "partial",
+        "notes": "Effet déclaré pour suivi depuis la carte de chat. Résolution mécanique avancée à gérer manuellement jusqu’aux modules Santé/Blessures/Sceaux."
+      },
+      "effects": {
+        "applied": [
+          {
+            "id": "fuin-fragilisation-solidite",
+            "name": "Fūin : Fragilisation — Solidité réduite",
+            "category": "debuff",
+            "mode": "active",
+            "statusKey": "custom",
+            "rank": 1,
+            "enabled": true,
+            "applyTarget": "manual",
+            "sourceType": "technique",
+            "targetType": "custom",
+            "durationType": "manual",
+            "maintenanceCost": 0,
+            "notes": "Réduit la solidité de la cible de -(NIN+10). À appliquer sur l’objet, la barrière, la structure ou la cible concernée selon arbitrage MJ.",
+            "modifierNotes": "Malus de solidité : -(NIN+10), résolution manuelle.",
+            "modifiers": []
+          }
+        ]
+      }
     }
   },
   {
@@ -92,7 +164,31 @@
       "prerequisites": { "strict": true, "type": "skill", "value": "fuin", "masteryRank": 5, "validated": false, "text": "Compétence Fūin possédée." },
       "effect": "Renvoie un contractant Kuchiyose avec un bonus de +11.",
       "taxonomy": { "category": "ninjutsu", "subcategory": "fuin", "rankGroup": "c", "element": "fuin", "startingEligible": false, "packTarget": "techniques-ninjutsu", "tags": ["fuin", "sceau", "kuchiyose", "contrat", "rituel"] },
-      "automation": { "status": "manual", "notes": "Renvoi de contractant à résoudre manuellement." }
+      "automation": {
+        "status": "partial",
+        "notes": "Effet déclaré pour suivi depuis la carte de chat. Résolution mécanique avancée à gérer manuellement jusqu’aux modules Santé/Blessures/Sceaux."
+      },
+      "effects": {
+        "applied": [
+          {
+            "id": "fuin-keiyaku-renvoi",
+            "name": "Fūin : Keiyaku Fūin — Contrat rompu",
+            "category": "technique",
+            "mode": "active",
+            "statusKey": "custom",
+            "rank": 1,
+            "enabled": true,
+            "applyTarget": "manual",
+            "sourceType": "technique",
+            "targetType": "actor",
+            "durationType": "manual",
+            "maintenanceCost": 0,
+            "notes": "Renvoie un contractant Kuchiyose avec un bonus de +11. À appliquer en suivi narratif sur le contractant, l’invocation ou la cible concernée.",
+            "modifierNotes": "Renvoi de contractant Kuchiyose : +11 à résoudre manuellement.",
+            "modifiers": []
+          }
+        ]
+      }
     }
   }
 ]

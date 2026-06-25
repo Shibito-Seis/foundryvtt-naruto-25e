@@ -20,7 +20,31 @@
       "prerequisites": { "strict": true, "type": "skill", "value": "kage", "masteryRank": 5, "validated": false, "text": "Compétence Kage possédée. Clan Nara ou accès validé." },
       "effect": "Sur jet de Kage réussi, le personnage peut immobiliser ou contrôler une cible par son ombre. Effet détaillé à automatiser plus tard.",
       "taxonomy": { "category": "lignee", "subcategory": "kage", "rankGroup": "d", "clan": "nara", "packTarget": "techniques-lignees", "tags": ["nara", "kage", "ombre", "controle", "maintien"] },
-      "automation": { "status": "manual", "notes": "Fondation jouable V1 depuis la progression Nara. Coût exact à préciser." }
+      "automation": {
+        "status": "partial",
+        "notes": "Technique de contrôle sans dégâts : l’effet Entravé/Ombre liée est déclaré sur la cible. Coût exact encore à préciser."
+      },
+      "effects": {
+        "applied": [
+          {
+            "id": "kage-kagemane-entrave",
+            "name": "Kage : Kagemane — Ombre liée",
+            "category": "condition",
+            "mode": "maintained",
+            "statusKey": "restrained",
+            "rank": 1,
+            "enabled": true,
+            "applyTarget": "target",
+            "sourceType": "technique",
+            "targetType": "actor",
+            "durationType": "untilCancelled",
+            "maintenanceCost": 0,
+            "notes": "La cible est immobilisée ou contrôlée par son ombre après réussite du jet de Kage. Le degré exact de contrôle reste arbitré par le MJ.",
+            "modifierNotes": "Contrôle d’ombre maintenu. Coût papier à préciser.",
+            "modifiers": []
+          }
+        ]
+      }
     }
   },
   {
@@ -40,23 +64,47 @@
       "target": "Zone ou individuelle",
       "area": "",
       "damage": {
-  "formula": "LIGN",
-  "type": "shadow",
-  "scaling": "Dégâts d’ombre offensifs.",
-  "calculation": {
-    "enabled": true,
-    "bases": ["lign"],
-    "flat": 0,
-    "perItem": 0,
-    "perItemLimitBase": "",
-    "condition": "Valeur V1 : LIGN. Le fichier source mentionnait “LIGN ou Kage selon arbitrage”. Si le MJ préfère la compétence Kage, résoudre manuellement."
-  }
-},
+        "formula": "LIGN",
+        "type": "shadow",
+        "scaling": "Dégâts d’ombre offensifs.",
+        "calculation": {
+          "enabled": true,
+          "bases": ["lign"],
+          "flat": 0,
+          "perItem": 0,
+          "perItemLimitBase": "",
+          "condition": "Valeur V1 : LIGN. Le fichier source mentionnait “LIGN ou Kage selon arbitrage”. Si le MJ préfère la compétence Kage, résoudre manuellement."
+        }
+      },
       "chakra": { "initial": 0, "maintenance": 0, "text": "Coût papier non détaillé dans la source consultée" },
       "prerequisites": { "strict": true, "type": "skill", "value": "kage", "masteryRank": 5, "validated": false, "text": "Compétence Kage possédée. Clan Nara ou accès validé." },
       "effect": "Sur jet de Kage réussi, le personnage transforme son ombre en arme offensive. Dégâts et zone à automatiser plus tard.",
       "taxonomy": { "category": "lignee", "subcategory": "kage", "rankGroup": "d", "clan": "nara", "packTarget": "techniques-lignees", "tags": ["nara", "kage", "ombre", "degats", "zone"] },
-      "automation": { "status": "manual", "notes": "Fondation jouable V1 depuis la progression Nara. Coût exact à préciser." }
+      "automation": {
+        "status": "partial",
+        "notes": "Dégâts LIGN calculables. Effet de suivi narratif applicable manuellement aux cibles touchées ou prises dans la zone."
+      },
+      "effects": {
+        "applied": [
+          {
+            "id": "kage-kage-nui-zone-ombre",
+            "name": "Kage : Kage Nui — Ombres offensives",
+            "category": "technique",
+            "mode": "active",
+            "statusKey": "custom",
+            "rank": 1,
+            "enabled": true,
+            "applyTarget": "manual",
+            "sourceType": "technique",
+            "targetType": "actor",
+            "durationType": "manual",
+            "maintenanceCost": 0,
+            "notes": "La cible est frappée ou menacée par les ombres matérialisées. Les dégâts LIGN sont calculables ; les éventuelles entraves/impacts de zone restent à résoudre selon la scène.",
+            "modifierNotes": "Effet de suivi narratif pour une cible affectée par Kage Nui.",
+            "modifiers": []
+          }
+        ]
+      }
     }
   }
 ]

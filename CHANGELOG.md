@@ -2,6 +2,35 @@
 
 Toutes les modifications notables de ce système seront listées ici.
 
+## 0.1.53.0 - Effets JSON V1 : Yūryoku, Kage et Fūin
+
+### Ajouté
+
+- Ajout d’effets déclarés `system.effects.applied` sur toutes les techniques du fichier `genjutsu-yuryoku.json` :
+  - `Yūryoku : Kyoufu` ;
+  - `Yūryoku : Juri`.
+- Ajout d’effets déclarés `system.effects.applied` sur toutes les techniques du fichier `lignees-kage.json` :
+  - `Kage : Kagemane` ;
+  - `Kage : Kage Nui`.
+- Ajout d’effets déclarés `system.effects.applied` sur toutes les techniques du fichier `ninjutsu-fuin.json` :
+  - `Fūin : Momification de la Blessure` ;
+  - `Fūin : Retour à la Nature` ;
+  - `Fūin : Fragilisation Alchimiste` ;
+  - `Fūin : Keiyaku Fūin`.
+
+### Modifié
+
+- Une technique possédant un effet déclaré ciblé peut désormais passer par le flux de défense ciblée même sans dégâts calculables.
+- `Kage : Kagemane` peut donc demander une défense et proposer l’application de son effet d’ombre liée sur la cible.
+- Les effets de Fūin sont suivis depuis les cartes de chat, mais leurs conséquences complexes restent résolues manuellement.
+
+### Notes
+
+- Cette passe ne modifie pas le système Sharingan / Mangekyō déjà automatisé.
+- Les effets déclarés restent volontaires : ils ne sont appliqués qu’après clic depuis la carte de chat.
+- Les effets de santé, blessure, sceau, solidité et contrat restent suivis en V1 sans automatisation complète.
+- Les prochains blocs JSON seront traités fichier par fichier, sans laisser de technique du fichier commencé de côté.
+
 ## 0.1.52.3 - Propagation des thèmes de cartes
 
 ### Corrigé

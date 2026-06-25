@@ -16,23 +16,64 @@
       "target": "Individuelle",
       "area": "",
       "damage": {
-  "formula": "GEN + 2",
-  "type": "emotional",
-  "scaling": "Dégâts émotionnels.",
-  "calculation": {
-    "enabled": true,
-    "bases": ["gen"],
-    "flat": 2,
-    "perItem": 0,
-    "perItemLimitBase": "",
-    "condition": "Émotion Effroi : Peur 1 / Surprise 1. États à gérer manuellement jusqu’à la 0.1.42."
-  }
-},
+        "formula": "GEN + 2",
+        "type": "emotional",
+        "scaling": "Dégâts émotionnels.",
+        "calculation": {
+          "enabled": true,
+          "bases": ["gen"],
+          "flat": 2,
+          "perItem": 0,
+          "perItemLimitBase": "",
+          "condition": "Émotion Effroi : Peur 1 / Surprise 1. États à gérer manuellement jusqu’à la 0.1.42."
+        }
+      },
       "chakra": { "initial": 10, "maintenance": 3, "text": "10/3 pts" },
       "prerequisites": { "strict": true, "type": "skill", "value": "yuryoku", "masteryRank": 5, "validated": false, "text": "Compétence Yūryoku possédée." },
       "effect": "Émotion Effroi : Peur 1 / Surprise 1. Dégâts émotionnels GEN+2. Entretien standard.",
       "taxonomy": { "category": "genjutsu", "subcategory": "yuryoku", "rankGroup": "d", "academy": false, "startingEligible": true, "packTarget": "techniques-genjutsu", "tags": ["yuryoku", "emotion", "peur", "degats-emotionnels", "maintien"] },
-      "automation": { "status": "manual", "notes": "Le document laisse EFFET/CHAKRA vides, mais le coût est déduit du niveau 1 : 10/3. Conditions à gérer manuellement." }
+      "automation": {
+        "status": "partial",
+        "notes": "Dégâts émotionnels calculables. Peur 1 et Surprise 1 sont déclarés comme effets applicables à la cible, avec entretien porté par Peur."
+      },
+      "effects": {
+        "applied": [
+          {
+            "id": "yuryoku-kyoufu-peur",
+            "name": "Yūryoku : Kyoufu — Peur",
+            "category": "condition",
+            "mode": "maintained",
+            "statusKey": "fear",
+            "rank": 1,
+            "enabled": true,
+            "applyTarget": "target",
+            "sourceType": "technique",
+            "targetType": "actor",
+            "durationType": "untilCancelled",
+            "maintenanceCost": 3,
+            "notes": "Émotion Effroi : la cible subit Peur 1 tant que la technique est maintenue. Les conséquences exactes restent résolues par le MJ jusqu’au système complet des états.",
+            "modifierNotes": "État émotionnel déclaré par Kyoufu.",
+            "modifiers": []
+          },
+          {
+            "id": "yuryoku-kyoufu-surprise",
+            "name": "Yūryoku : Kyoufu — Surprise",
+            "category": "condition",
+            "mode": "maintained",
+            "statusKey": "surprise",
+            "rank": 1,
+            "enabled": true,
+            "applyTarget": "target",
+            "sourceType": "technique",
+            "targetType": "actor",
+            "durationType": "untilCancelled",
+            "maintenanceCost": 0,
+            "notes": "Émotion Effroi : la cible subit Surprise 1 en complément de Peur 1. Ne pas doubler l’entretien : l’entretien est porté par l’effet Peur.",
+            "modifierNotes": "État émotionnel déclaré par Kyoufu.",
+            "modifiers": []
+          }
+        ]
+      }
     }
   },
   {
@@ -52,23 +93,47 @@
       "target": "Individuelle",
       "area": "",
       "damage": {
-  "formula": "GEN + 2",
-  "type": "emotional",
-  "scaling": "Dégâts émotionnels.",
-  "calculation": {
-    "enabled": true,
-    "bases": ["gen"],
-    "flat": 2,
-    "perItem": 0,
-    "perItemLimitBase": "",
-    "condition": "Émotion Acceptation 2. État à gérer manuellement jusqu’à la 0.1.42."
-  }
-},
+        "formula": "GEN + 2",
+        "type": "emotional",
+        "scaling": "Dégâts émotionnels.",
+        "calculation": {
+          "enabled": true,
+          "bases": ["gen"],
+          "flat": 2,
+          "perItem": 0,
+          "perItemLimitBase": "",
+          "condition": "Émotion Acceptation 2. État à gérer manuellement jusqu’à la 0.1.42."
+        }
+      },
       "chakra": { "initial": 8, "maintenance": 3, "text": "8/3 pts" },
       "prerequisites": { "strict": true, "type": "skill", "value": "yuryoku", "masteryRank": 5, "validated": false, "text": "Compétence Yūryoku possédée." },
       "effect": "Émotion Acceptation 2. Dégâts émotionnels GEN+2. Entretien standard.",
       "taxonomy": { "category": "genjutsu", "subcategory": "yuryoku", "rankGroup": "d", "academy": false, "startingEligible": true, "packTarget": "techniques-genjutsu", "tags": ["yuryoku", "emotion", "acceptation", "degats-emotionnels", "maintien"] },
-      "automation": { "status": "manual", "notes": "Le document laisse EFFET/CHAKRA vides, mais le coût est déduit du niveau 1 : 8/3. Conditions à gérer manuellement." }
+      "automation": {
+        "status": "partial",
+        "notes": "Dégâts émotionnels calculables. Acceptation 2 déclarée comme effet applicable à la cible."
+      },
+      "effects": {
+        "applied": [
+          {
+            "id": "yuryoku-juri-acceptation",
+            "name": "Yūryoku : Juri — Acceptation",
+            "category": "condition",
+            "mode": "maintained",
+            "statusKey": "custom",
+            "rank": 2,
+            "enabled": true,
+            "applyTarget": "target",
+            "sourceType": "technique",
+            "targetType": "actor",
+            "durationType": "untilCancelled",
+            "maintenanceCost": 3,
+            "notes": "Émotion Acceptation 2 : la cible est placée dans un état d’apaisement/acceptation tant que la technique est maintenue. Les conséquences exactes restent résolues par le MJ jusqu’au système complet des états.",
+            "modifierNotes": "État émotionnel déclaré par Juri.",
+            "modifiers": []
+          }
+        ]
+      }
     }
   }
 ]
